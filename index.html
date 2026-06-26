@@ -357,7 +357,11 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-art, .tape-track, .tape-dot { animation: none; }
-}
+} 
+  cd Scalpclock-home
+  git add index.html
+  git commit -m "fix: mobile layout — nav, cards, metrics, spacing"
+  git push origin main
 </style>
 </head>
 <body>
@@ -382,8 +386,9 @@ footer {
       <a href="#accuracy">Why Accurate</a>
     </div>
     <a class="nav-cta" href="#signals">See Live Signals</a> 
-    <a class="nav-cta" href="/dashboard" style="background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
-  </div>
+    <a class="nav-cta nav-cta-dash" href="/dashboard" style="background:transparent;border:1px solid
+  rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
+      <a class="nav-cta" href="#signals">See Live Signals</a>  </div>
 </div>
 
 <div class="shell" id="top">
