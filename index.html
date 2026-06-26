@@ -189,6 +189,70 @@ section { position: relative; padding: 80px 0; }
 @media (max-width: 900px) { .sig-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 540px)  { .sig-grid { grid-template-columns: 1fr; } }
 
+/* watchlist add bar */
+.watchlist-bar {
+  display: flex; align-items: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+}
+.watchlist-input {
+  font-family: var(--mono); font-size: .82rem; font-weight: 600;
+  background: rgba(255,255,255,.04); border: 1px solid var(--line);
+  border-radius: 9px; color: var(--text); padding: 9px 14px; width: 200px;
+  outline: none; transition: border-color .15s; text-transform: uppercase;
+}
+.watchlist-input:focus { border-color: var(--green); }
+.watchlist-input::placeholder { color: var(--t30); text-transform: none; font-weight: 400; }
+.watchlist-add-btn {
+  font-family: var(--disp); font-weight: 700; font-size: .88rem;
+  padding: 9px 18px; border-radius: 9px; border: 1px solid rgba(22,217,126,.4);
+  background: rgba(22,217,126,.08); color: var(--green); cursor: pointer; transition: .15s;
+}
+.watchlist-add-btn:hover { background: rgba(22,217,126,.16); }
+.custom-section { margin-top: 24px; }
+.custom-section-title {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--t30); margin-bottom: 14px;
+}
+.custom-remove {
+  position: absolute; top: 10px; right: 12px;
+  font-size: 1.1rem; color: var(--t30); cursor: pointer;
+  background: none; border: none; line-height: 1; padding: 2px 5px;
+  transition: color .15s; font-family: var(--body);
+}
+.custom-remove:hover { color: var(--text); }
+
+/* signal history */
+.history-section {
+  margin-top: 28px; background: var(--panel);
+  border: 1px solid var(--line); border-radius: var(--r); overflow: hidden;
+}
+.history-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px; border-bottom: 1px solid var(--line);
+}
+.history-head-title {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--t55); display: flex; align-items: center; gap: 8px;
+}
+.btn-clear-history {
+  font-family: var(--mono); font-size: .7rem; color: var(--t30);
+  background: none; border: 1px solid rgba(255,255,255,.08);
+  border-radius: 6px; padding: 4px 10px; cursor: pointer; transition: .15s;
+}
+.btn-clear-history:hover { color: var(--text); border-color: var(--t30); }
+.hist-row {
+  display: flex; align-items: center; gap: 12px; padding: 10px 18px;
+  border-bottom: 1px solid rgba(255,255,255,.03); font-size: .8rem;
+  flex-wrap: wrap;
+}
+.hist-row:last-child { border-bottom: none; }
+.hist-sym { font-family: var(--disp); font-weight: 700; font-size: .95rem; min-width: 46px; }
+.hist-arrow { font-family: var(--mono); font-size: .78rem; font-weight: 600; flex: 1; }
+.hist-arrow.up { color: var(--green); }
+.hist-arrow.dn { color: var(--red); }
+.hist-rsi { font-family: var(--mono); font-size: .72rem; color: var(--t55); min-width: 56px; }
+.hist-price { font-family: var(--mono); font-size: .72rem; color: var(--t55); min-width: 60px; }
+.hist-time { font-family: var(--mono); font-size: .68rem; color: var(--t30); margin-left: auto; }
+
 /* stale (market closed) state */
 .card.stale { opacity: .82; }
 .stale-banner {
@@ -397,10 +461,9 @@ footer {
       <a href="#how">How It Works</a>
       <a href="#accuracy">Why Accurate</a>
     </div>
-    <a class="nav-cta" href="#signals">See Live Signals</a> 
-    <a class="nav-cta nav-cta-dash" href="/dashboard" style="background:transparent;border:1px solid
-  rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
-      <a class="nav-cta" href="#signals">See Live Signals</a>  </div>
+    <a class="nav-cta nav-cta-dash" href="/dashboard" style="background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
+    <a class="nav-cta" href="#signals">See Live Signals</a>
+  </div>
 </div>
 
 <div class="shell" id="top">
@@ -434,11 +497,35 @@ footer {
         <p class="lead">Every ticker scored on real RSI timing. Green means buyers have the edge (calls). Red means sellers do (puts). Updated every few seconds while the market is open.</p>
       </div>
       <div class="board-status" id="boardStatus">
-        <div id="marketState" style="font-family:var(--mono)">Connecting...</div>
+        <div id="marketState" style="font-family:var(--mono)" role="status" aria-live="polite">Connecting...</div>
         <div id="asOf" style="color:var(--t30);margin-top:3px;font-family:var(--mono);font-size:.72rem"></div>
       </div>
     </div>
-    <div class="sig-grid" id="board"></div>
+    <div class="sig-grid" id="board" role="region" aria-label="Live signal board" aria-live="polite"></div>
+
+    <!-- custom watchlist -->
+    <div class="watchlist-bar">
+      <input class="watchlist-input" id="addTickerInput" type="text" maxlength="5"
+        placeholder="Add any ticker (e.g. AMD)" aria-label="Add ticker to watchlist"
+        onkeydown="if(event.key==='Enter') addCustomTicker()">
+      <button class="watchlist-add-btn" onclick="addCustomTicker()">+ Watch</button>
+    </div>
+    <div id="customSection" style="display:none" class="custom-section">
+      <div class="custom-section-title">Custom Watchlist</div>
+      <div class="sig-grid" id="customBoard"></div>
+    </div>
+
+    <!-- signal history -->
+    <div id="historySection" class="history-section" style="display:none">
+      <div class="history-head">
+        <div class="history-head-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Signal History
+        </div>
+        <button class="btn-clear-history" onclick="clearHistory()">Clear</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
   </div>
 </section>
 
@@ -684,6 +771,7 @@ footer {
       var chgCol = chgUp ? 'var(--green)' : 'var(--red)';
 
       el.className = 'card ' + (tone === 'hold' ? '' : tone) + (data.marketOpen ? '' : ' stale');
+      el.setAttribute('aria-label', tk.symbol + ': ' + tk.signal + ', RSI ' + tk.rsi);
       el.innerHTML =
         (!data.marketOpen ? '<div class="stale-banner">&#9679; Market closed — last session data</div>' : '') +
         '<div class="c-top">' +
@@ -691,15 +779,18 @@ footer {
           '<div><div class="c-price">' + fmt(tk.price) + '</div>' +
           '<div class="c-chg" style="color:' + chgCol + '">' + (chgUp ? '+' : '') + tk.changePct + '%</div></div>' +
         '</div>' +
-        '<div class="gauge-row">' + gaugeHTML(tk.rsi, color) +
+        '<div class="gauge-row" aria-label="RSI ' + tk.rsi + '">' + gaugeHTML(tk.rsi, color) +
           '<div class="sig-wrap">' +
-            '<div class="sig ' + tone + '">' + tk.signal +
+            '<div class="sig ' + tone + '" role="status" aria-label="Signal: ' + tk.signal + '">' + tk.signal +
               (tk.conviction ? '<span class="conviction ' + tone + '">' + tk.conviction + '</span>' : '') +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div class="c-explain">' + tk.explain + '</div>';
     });
+
+    trackHistory(data.tickers, data.marketOpen);
+    if (customSyms.length > 0) refreshCustomTickers(data.marketOpen);
   }
 
   function load() {
@@ -710,6 +801,178 @@ footer {
         marketState.innerHTML = '<span class="closed">&#9679; reconnecting...</span>';
       });
   }
+
+  // ── client-side RSI (for custom tickers) ──────────────────────
+  function clientRSI(closes, period) {
+    period = period || 14;
+    if (closes.length < period + 1) return 50;
+    var g = 0, l = 0;
+    for (var i = 1; i <= period; i++) {
+      var d = closes[i] - closes[i - 1];
+      if (d >= 0) g += d; else l -= d;
+    }
+    var ag = g / period, al = l / period;
+    for (var i = period + 1; i < closes.length; i++) {
+      var d = closes[i] - closes[i - 1];
+      ag = (ag * (period - 1) + Math.max(d, 0)) / period;
+      al = (al * (period - 1) + Math.max(-d, 0)) / period;
+    }
+    return al === 0 ? 100 : 100 - 100 / (1 + ag / al);
+  }
+
+  function sigFromRSI(rsi) {
+    if (rsi <= 20) return { tone: 'buy', signal: 'Buy Calls', conviction: 'HARD', explain: 'RSI ' + rsi.toFixed(1) + ' — extremely oversold. Strong call setup.' };
+    if (rsi <= 30) return { tone: 'buy', signal: 'Buy Calls', conviction: null,   explain: 'RSI ' + rsi.toFixed(1) + ' — oversold. Calls have the edge.' };
+    if (rsi >= 80) return { tone: 'sell', signal: 'Buy Puts',  conviction: 'HARD', explain: 'RSI ' + rsi.toFixed(1) + ' — extremely overbought. Strong put setup.' };
+    if (rsi >= 70) return { tone: 'sell', signal: 'Buy Puts',  conviction: null,   explain: 'RSI ' + rsi.toFixed(1) + ' — overbought. Puts have the edge.' };
+    return { tone: 'hold', signal: 'Hold', conviction: null, explain: 'RSI ' + rsi.toFixed(1) + ' — neutral zone. No edge right now.' };
+  }
+
+  // ── custom watchlist ───────────────────────────────────────────
+  var customSyms = JSON.parse(localStorage.getItem('sc_watchlist') || '[]');
+
+  window.addCustomTicker = function () {
+    var input = document.getElementById('addTickerInput');
+    var sym = (input.value || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+    if (!sym || customSyms.indexOf(sym) >= 0 || SYMS.indexOf(sym) >= 0) { input.value = ''; return; }
+    customSyms.push(sym);
+    localStorage.setItem('sc_watchlist', JSON.stringify(customSyms));
+    input.value = '';
+    document.getElementById('customSection').style.display = 'block';
+    fetchAndRenderCustom(sym, true);
+  };
+
+  window.removeCustomTicker = function (sym) {
+    customSyms = customSyms.filter(function (s) { return s !== sym; });
+    localStorage.setItem('sc_watchlist', JSON.stringify(customSyms));
+    var el = document.getElementById('card-' + sym);
+    if (el) el.remove();
+    if (customSyms.length === 0) document.getElementById('customSection').style.display = 'none';
+  };
+
+  function renderCustomCard(tk, isOpen) {
+    var el = document.getElementById('card-' + tk.symbol);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'card-' + tk.symbol;
+      document.getElementById('customBoard').appendChild(el);
+    }
+    var tone = tk.tone, color = gaugeColor(tone);
+    var chgUp = tk.changePct >= 0;
+    var chgCol = chgUp ? 'var(--green)' : 'var(--red)';
+    el.className = 'card ' + (tone === 'hold' ? '' : tone) + (!isOpen ? ' stale' : '');
+    el.setAttribute('aria-label', tk.symbol + ': ' + tk.signal + ', RSI ' + tk.rsi);
+    el.innerHTML =
+      '<button class="custom-remove" onclick="removeCustomTicker(\'' + tk.symbol + '\')" aria-label="Remove ' + tk.symbol + '">×</button>' +
+      (!isOpen ? '<div class="stale-banner">&#9679; Market closed — last session data</div>' : '') +
+      '<div class="c-top">' +
+        '<div><div class="c-sym">' + tk.symbol + '</div><div class="c-name">' + tk.symbol + '</div></div>' +
+        '<div><div class="c-price">' + fmt(tk.price) + '</div>' +
+        '<div class="c-chg" style="color:' + chgCol + '">' + (chgUp ? '+' : '') + tk.changePct + '%</div></div>' +
+      '</div>' +
+      '<div class="gauge-row" aria-label="RSI ' + tk.rsi + '">' + gaugeHTML(tk.rsi, color) +
+        '<div class="sig-wrap">' +
+          '<div class="sig ' + tone + '" role="status" aria-label="Signal: ' + tk.signal + '">' + tk.signal +
+            (tk.conviction ? '<span class="conviction ' + tone + '">' + tk.conviction + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="c-explain">' + tk.explain + '</div>';
+  }
+
+  function buildCustomTicker(sym, candles) {
+    var closes = candles.map(function (c) { return c.close; }).slice(-30);
+    var rsiVal = clientRSI(closes);
+    var sig = sigFromRSI(rsiVal);
+    var last = candles[candles.length - 1], first = candles[0];
+    var chgPct = Number(((last.close - first.open) / first.open * 100).toFixed(2));
+    return Object.assign({ symbol: sym, ok: true, price: last.close, changePct: chgPct, rsi: Number(rsiVal.toFixed(1)) }, sig);
+  }
+
+  function fetchAndRenderCustom(sym, isOpen) {
+    if (isOpen === undefined) isOpen = true;
+    var board = document.getElementById('customBoard');
+    if (!document.getElementById('card-' + sym)) {
+      var el = document.createElement('div');
+      el.id = 'card-' + sym;
+      el.className = 'card';
+      el.innerHTML = '<div class="c-sym">' + sym + '</div><div class="c-explain skel">Fetching data...</div>';
+      board.appendChild(el);
+    }
+    fetch('/api/bars?symbol=' + sym + '&tf=5Min')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.candles || data.candles.length < 5) throw new Error('no data');
+        renderCustomCard(buildCustomTicker(sym, data.candles), isOpen);
+      })
+      .catch(function () {
+        var el = document.getElementById('card-' + sym);
+        if (el) el.innerHTML =
+          '<button class="custom-remove" onclick="removeCustomTicker(\'' + sym + '\')" aria-label="Remove ' + sym + '">×</button>' +
+          '<div class="c-sym">' + sym + '</div>' +
+          '<div class="c-explain" style="color:var(--t30)">No data — invalid ticker?</div>';
+      });
+  }
+
+  function refreshCustomTickers(isOpen) {
+    customSyms.forEach(function (sym) { fetchAndRenderCustom(sym, isOpen); });
+  }
+
+  // ── signal history ─────────────────────────────────────────────
+  var prevSigs = {};
+  var sigHistory = JSON.parse(localStorage.getItem('sc_sig_history') || '[]');
+
+  function trackHistory(tickers, isOpen) {
+    if (!isOpen) { renderHistory(); return; }
+    var changed = false;
+    tickers.forEach(function (tk) {
+      if (!tk.ok) return;
+      var prev = prevSigs[tk.symbol];
+      if (prev && prev.tone !== tk.tone) {
+        sigHistory.unshift({
+          sym: tk.symbol, from: prev.signal, to: tk.signal,
+          tone: tk.tone, rsi: tk.rsi, price: tk.price,
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        });
+        changed = true;
+      }
+      prevSigs[tk.symbol] = { tone: tk.tone, signal: tk.signal };
+    });
+    if (changed) {
+      sigHistory = sigHistory.slice(0, 50);
+      localStorage.setItem('sc_sig_history', JSON.stringify(sigHistory));
+    }
+    renderHistory();
+  }
+
+  function renderHistory() {
+    var section = document.getElementById('historySection');
+    if (sigHistory.length === 0) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    document.getElementById('historyList').innerHTML = sigHistory.slice(0, 20).map(function (h) {
+      var cls = h.tone === 'buy' ? 'up' : h.tone === 'sell' ? 'dn' : '';
+      return '<div class="hist-row">' +
+        '<span class="hist-sym">' + h.sym + '</span>' +
+        '<span class="hist-arrow ' + cls + '">' + h.from + ' → ' + h.to + '</span>' +
+        '<span class="hist-rsi">RSI ' + h.rsi + '</span>' +
+        '<span class="hist-price">' + fmt(h.price) + '</span>' +
+        '<span class="hist-time">' + h.time + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.clearHistory = function () {
+    sigHistory = [];
+    localStorage.removeItem('sc_sig_history');
+    document.getElementById('historySection').style.display = 'none';
+  };
+
+  // init custom watchlist on load
+  if (customSyms.length > 0) {
+    document.getElementById('customSection').style.display = 'block';
+    refreshCustomTickers(true);
+  }
+  renderHistory();
 
   skeleton();
   load();

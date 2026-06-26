@@ -62,7 +62,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* QUICK LINKS */
 .section-title{font-family:var(--disp);font-weight:700;font-size:1.2rem;margin-bottom:16px;color:var(--t80);}
-.links-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px;}
+.links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+@media(max-width:700px){.links-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:420px){.links-grid{grid-template-columns:1fr;}}
 @media(max-width:500px){.links-grid{grid-template-columns:1fr;}}
 .link-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;
   text-decoration:none;color:var(--text);transition:.18s;display:flex;flex-direction:column;gap:10px;}
@@ -189,6 +191,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
       <div class="link-title">ScalpCharts</div>
       <div class="link-desc">Live candlestick charts with pattern detection and alerts.</div>
+    </a>
+    <a class="link-card" href="/exitassistant">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="link-title">Exit Assistant</div>
+      <div class="link-desc">Profit clock, exit signals, and probability targets for your open trades.</div>
     </a>
   </div>
 
