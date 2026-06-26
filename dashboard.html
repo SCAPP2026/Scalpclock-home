@@ -95,7 +95,38 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .btn-upgrade{font-family:var(--disp);font-weight:700;font-size:1rem;padding:12px 28px;
   border-radius:10px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
 .btn-upgrade:hover{background:#20e88a;transform:translateY(-1px);}
-</style>
+  /* TRADE HISTORY */
+  .trade-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .trade-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  @media(max-width:600px){.trade-summary{grid-template-columns:repeat(2,1fr);}}
+  .trade-stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .trade-stat .stat-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t30);marg
+  in-bottom:6px;}
+  .trade-stat .stat-val{font-family:var(--disp);font-weight:700;font-size:1.3rem;}
+  .trade-table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:32px;}
+  .trade-table{width:100%;border-collapse:collapse;font-size:.84rem;}
+  .trade-table th{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t30);padding:12px
+  16px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  .trade-table td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+  .trade-table tr:last-child td{border-bottom:none;}
+  .trade-table tr:hover td{background:rgba(255,255,255,.02);}
+  .t-sym{font-family:var(--disp);font-weight:700;font-size:1rem;}
+  .t-dir{font-family:var(--mono);font-size:.72rem;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+  .t-dir.calls{background:rgba(22,217,126,.12);color:var(--green);}
+  .t-dir.puts{background:rgba(255,59,70,.12);color:#ff3b46;}
+  .t-pnl{font-family:var(--mono);font-weight:700;font-size:.88rem;white-space:nowrap;}
+  .t-pnl.win{color:var(--green);}
+  .t-pnl.loss{color:#ff3b46;}
+  .t-date{font-family:var(--mono);font-size:.75rem;color:var(--t55);}
+  .t-price{font-family:var(--mono);font-size:.8rem;color:var(--t80);}
+  .t-badge{font-family:var(--mono);font-size:.65rem;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:4px;}
+  .t-badge.win{background:rgba(22,217,126,.12);color:var(--green);}
+  .t-badge.loss{background:rgba(255,59,70,.12);color:#ff3b46;}
+  .trade-empty{text-align:center;padding:52px 24px;color:var(--t30);}
+  .trade-empty svg{width:40px;height:40px;stroke:var(--t30);fill:none;stroke-width:1.4;margin-bottom:14px;}
+  .trade-empty p{font-size:.9rem;margin-top:8px;}
+  @media(max-width:640px){.trade-table th:nth-child(4),.trade-table td:nth-child(4),.trade-table th:nth-child(5),.trade-table
+  td:nth-child(5){display:none;}}</style>
 </head>
 <body>
 
@@ -180,8 +211,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <span class="account-val" id="emailVerified">—</span>
     </div>
   </div>
-
-  <div class="upgrade">
+<div class="section-title" style="margin-top:32px;">Closed Trade History</div>
+    <div class="trade-summary" id="tradeSummary" style="display:none;">
+      <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
+      <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
+      <div class="trade-stat"><div class="stat-label">Total P&amp;L</div><div class="stat-val" id="tTotalPnl">—</div></div>
+      <div class="trade-stat"><div class="stat-label">Avg P&amp;L</div><div class="stat-val" id="tAvgPnl">—</div></div>
+    </div>
+    <div class="trade-table-wrap">
+      <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr><th>Symbol</th><th>Direction</th><th>P&amp;L</th><th
+  >Entry</th><th>Exit</th><th>Date</th><th>Result</th></tr></thead><tbody id="tradeBody"></tbody></table>
+      <div class="trade-empty" id="tradeEmpty">
+        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" 
+  width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        <strong>No closed trades yet</strong>
+        <p>Trades you close will appear here with full P&amp;L history.</p>
+      </div>
+    </div>  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
     <p>Get premium signals, priority alerts, and advanced chart features. Coming soon.</p>
     <button class="btn-upgrade">Upgrade to Pro — Coming Soon</button>
@@ -222,13 +268,42 @@ async function init() {
     document.getElementById('marketStatus').textContent = '—';
   }
 }
-
-async function signOut() {
+async function loadTrades(userId) {
+    try {
+      const { data: trades, error } = await sb.from('trades').select('*').eq('user_id', userId).eq('status',
+  'closed').order('closed_at', { ascending: false });
+      if (error || !trades || trades.length === 0) return;
+      const wins = trades.filter(t => (t.pnl || 0) > 0);
+      const totalPnl = trades.reduce((s, t) => s + (t.pnl || 0), 0);
+      const avgPnl = totalPnl / trades.length;
+      const winRate = (wins.length / trades.length * 100).toFixed(0);
+      document.getElementById('tTotal').textContent = trades.length;
+      document.getElementById('tWinRate').textContent = winRate + '%';
+      document.getElementById('tWinRate').style.color = winRate >= 50 ? 'var(--green)' : '#ff3b46';
+      document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
+      document.getElementById('tradeSummary').style.display = 'grid';
+      document.getElementById('tradeBody').innerHTML = trades.map(t => {
+        const win = (t.pnl || 0) >= 0, dir = (t.direction || 'calls').toLowerCase();
+        const date = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+        const pnlPct = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + t.pnl_pct.toFixed(1) + '%' : '';
+        return `<tr><td><span class="t-sym">${t.symbol||'—'}</span></td><td><span class="t-dir
+  ${dir==='puts'?'puts':'calls'}">${dir==='puts'?'PUTS':'CALLS'}</span></td><td><span class="t-pnl
+  ${win?'win':'loss'}">${fmtPnl(t.pnl||0)}${pnlPct?' <small style="opacity:.6">'+pnlPct+'</small>':''}</span></td><td><span
+  class="t-price">${t.entry_price!=null?'$'+Number(t.entry_price).toFixed(2):'—'}</span></td><td><span
+  class="t-price">${t.exit_price!=null?'$'+Number(t.exit_price).toFixed(2):'—'}</span></td><td><span
+  class="t-date">${date}</span></td><td><span class="t-badge ${win?'win':'loss'}">${win?'WIN':'LOSS'}</span></td></tr>`;
+      }).join('');
+      document.getElementById('tradeTable').style.display = 'table';
+      document.getElementById('tradeEmpty').style.display = 'none';
+    } catch(e) {}
+  }
+  function fmtPnl(n) { const abs = Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); return
+  (n>=0?'+$':'-$')+abs; }async function signOut() {
   await sb.auth.signOut();
   window.location.href = '/';
 }
 
-init();
+init()loadTrades(user.id);
 </script>
 </body>
 </html>
