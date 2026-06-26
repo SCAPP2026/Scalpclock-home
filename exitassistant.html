@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock · Exit Assistant — Profit Clock</title>
+<meta name="description" content="AI-powered exit signals. Know when to take profit, move your stop, or hold. Real-time RSI, velocity, and volume analysis.">
+<link rel="icon" href="hero.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #080c12;
+    --surface: #0e1420;
+    --border:  #1a2235;
+    --border2: #243050;
+    --text:    #c8d4e8;
+    --muted:   #4a5a78;
+    --accent:  #00d4aa;
+    --bull:    #00c96b;
+    --bear:    #ff4566;
+    --warn:    #f5a623;
+    --info:    #5b9cf6;
+    --glow:    rgba(0,212,170,0.15);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 11px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--muted); font-weight: 400; }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--border2); }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+
+  .ticker-select {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .ticker-select:focus { border-color: var(--accent); }
+
+  .entry-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .entry-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .entry-input {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 10px;
+    width: 96px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .entry-input:focus { border-color: var(--accent); }
+  .entry-input::placeholder { color: var(--muted); font-weight: 400; }
+
+  .btn-set {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn-set:hover { opacity: 0.85; }
+
+  .gain-pill {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(0,201,107,0.12);
+    color: var(--bull);
+    border: 1px solid rgba(0,201,107,0.25);
+    white-space: nowrap;
+  }
+  .gain-pill.neg { background: rgba(255,69,102,0.12); color: var(--bear); border-color: rgba(255,69,102,0.25); }
+
+  .price-display {
+    margin-left: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .price-main {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .price-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .price-delta.up { background: rgba(0,201,107,0.15); color: var(--bull); }
+  .price-delta.dn { background: rgba(255,69,102,0.15); color: var(--bear); }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--bull);
+    box-shadow: 0 0 6px var(--bull);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.45; transform: scale(0.75); }
+  }
+  .live-text { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 1px; }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto auto 1fr;
+    min-height: 0;
+  }
+
+  /* ── CLOCK SECTION ── */
+  .clock-section {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 24px 20px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    gap: 18px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* The big clock */
+  .clock-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .clock-svg { width: 250px; height: 250px; }
+
+  /* Track ring */
+  .clock-track {
+    fill: none;
+    stroke: #1a2235;
+    stroke-width: 10;
+  }
+
+  /* Glow ring behind arc */
+  .clock-glow {
+    fill: none;
+    stroke: var(--bull);
+    stroke-width: 16;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  /* Progress arc */
+  .clock-arc {
+    fill: none;
+    stroke: var(--bull);
+    stroke-width: 10;
+    stroke-linecap: round;
+    /* circumference = 2π × 108 ≈ 678.58 */
+    stroke-dasharray: 678.58;
+    stroke-dashoffset: 678.58;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                stroke 0.5s ease;
+  }
+
+  .clock-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 2px;
+    pointer-events: none;
+  }
+
+  .clock-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 50px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -3px;
+    transition: color 0.4s ease;
+  }
+  .clock-time.green  { color: var(--bull); text-shadow: 0 0 40px rgba(0,201,107,0.35); }
+  .clock-time.yellow { color: var(--warn); text-shadow: 0 0 40px rgba(245,166,35,0.35); }
+  .clock-time.red    { color: var(--bear); text-shadow: 0 0 40px rgba(255,69,102,0.35); }
+
+  .clock-unit {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .clock-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  /* Target selector tabs */
+  .target-tabs {
+    display: flex;
+    gap: 6px;
+  }
+  .t-tab {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .t-tab:hover { color: var(--text); border-color: var(--border2); background: rgba(255,255,255,0.03); }
+  .t-tab.active {
+    background: rgba(0,212,170,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── EXIT SIGNAL ── */
+  .exit-section {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 14px 24px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exit-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--muted);
+    background: rgba(14,20,32,0.6);
+    transition: border-left-color 0.4s ease;
+  }
+  .exit-card.s-green  { border-left-color: var(--bull); }
+  .exit-card.s-yellow { border-left-color: var(--warn); }
+  .exit-card.s-red    { border-left-color: var(--bear); }
+
+  .exit-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+
+  .exit-body { flex: 1; min-width: 0; }
+
+  .exit-level {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .exit-level.green  { color: var(--bull); }
+  .exit-level.yellow { color: var(--warn); }
+  .exit-level.red    { color: var(--bear); }
+
+  .exit-msg {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.45;
+  }
+  .exit-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  /* ── STATS STRIP ── */
+  .stats-section {
+    grid-column: 1;
+    grid-row: 3;
+    display: flex;
+    align-items: stretch;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 22px;
+    border-right: 1px solid var(--border);
+    gap: 4px;
+    flex: 1;
+    min-width: 80px;
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    transition: color 0.3s;
+  }
+  .stat-val.up   { color: var(--bull); }
+  .stat-val.dn   { color: var(--bear); }
+  .stat-val.warn { color: var(--warn); }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .sidebar-hdr {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* Probability cards */
+  .prob-card {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .prob-card:hover { background: rgba(255,255,255,0.02); }
+  .prob-card.active { background: rgba(0,212,170,0.05); border-left: 3px solid var(--accent); padding-left: 13px; }
+
+  .prob-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+  }
+  .prob-target {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .prob-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .prob-target-price {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 7px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .prob-target-price span { color: var(--text); }
+
+  .prob-bar-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 7px;
+  }
+  .prob-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .prob-time {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .prob-time b {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* Momentum meter */
+  .momentum-wrap {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+  .momentum-hdr {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .momentum-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .momentum-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease, background 0.4s ease;
+  }
+  .momentum-detail {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .momentum-detail b { color: var(--text); }
+
+  /* Empty state */
+  .no-entry-state {
+    padding: 32px 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .no-entry-state .big-icon { font-size: 36px; }
+  .no-entry-state h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+  .no-entry-state p { font-size: 11px; color: var(--muted); line-height: 1.6; max-width: 200px; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 760px) {
+    .main {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+    .clock-section, .exit-section { border-right: none; }
+    .stats-section { border-right: none; grid-row: auto; }
+    .sidebar { grid-column: 1; grid-row: auto; border-left: none; border-top: 1px solid var(--border); }
+    .clock-svg { width: 210px; height: 210px; }
+    .clock-time { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="back-link" href="index.html">← Home</a>
+  <div class="logo">Scalp<span>exit</span></div>
+
+  <div class="header-controls">
+    <select class="ticker-select" id="tickerSel" onchange="onTickerChange()">
+      <option>SPY</option>
+      <option>QQQ</option>
+      <option>TSLA</option>
+      <option>NVDA</option>
+      <option>IWM</option>
+      <option>AAPL</option>
+    </select>
+
+    <div class="entry-group">
+      <span class="entry-label">Entry $</span>
+      <input class="entry-input" id="entryInput" type="number" step="0.01" min="0.01" placeholder="e.g. 582.00">
+      <button class="btn-set" onclick="setEntry()">Set</button>
+    </div>
+
+    <div class="gain-pill" id="gainPill">—</div>
+
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <span class="live-text">LIVE</span>
+    </div>
+  </div>
+
+  <div class="price-display">
+    <div class="price-main" id="priceMain">—</div>
+    <div class="price-delta up" id="priceDelta">—</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- CLOCK -->
+  <div class="clock-section">
+    <div class="section-label">Profit Clock — Estimated Time to Target</div>
+
+    <div class="clock-wrap">
+      <svg class="clock-svg" viewBox="0 0 250 250">
+        <defs>
+          <filter id="arcglow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Background track -->
+        <circle class="clock-track" cx="125" cy="125" r="108"/>
+        <!-- Glow layer -->
+        <circle id="arcGlow" cx="125" cy="125" r="108"
+          fill="none" stroke="var(--bull)" stroke-width="18" opacity="0"
+          stroke-dasharray="678.58" stroke-dashoffset="678.58"
+          transform="rotate(-90 125 125)"
+          style="transition: stroke-dashoffset 0.9s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease, opacity 0.5s ease;
+                 filter: blur(8px);"/>
+        <!-- Progress arc -->
+        <circle id="clockArc" cx="125" cy="125" r="108"
+          fill="none" stroke="var(--bull)" stroke-width="10"
+          stroke-linecap="round"
+          stroke-dasharray="678.58"
+          stroke-dashoffset="678.58"
+          transform="rotate(-90 125 125)"
+          style="transition: stroke-dashoffset 0.9s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease;"/>
+      </svg>
+
+      <div class="clock-inner">
+        <div class="clock-time" id="clockTime">--:--</div>
+        <div class="clock-unit" id="clockUnit">min · sec</div>
+        <div class="clock-sub" id="clockSub">set entry to begin</div>
+      </div>
+    </div>
+
+    <div class="target-tabs" id="targetTabs">
+      <button class="t-tab active" data-pct="10" onclick="pickTarget(this)">+10%</button>
+      <button class="t-tab" data-pct="20" onclick="pickTarget(this)">+20%</button>
+      <button class="t-tab" data-pct="30" onclick="pickTarget(this)">+30%</button>
+      <button class="t-tab" data-pct="50" onclick="pickTarget(this)">+50%</button>
+    </div>
+  </div>
+
+  <!-- EXIT SIGNAL -->
+  <div class="exit-section">
+    <div class="exit-card" id="exitCard">
+      <div class="exit-icon" id="exitIcon">👁</div>
+      <div class="exit-body">
+        <div class="exit-level" id="exitLevel">WATCHING</div>
+        <div class="exit-msg" id="exitMsg">Enter your entry price above to activate exit signals.</div>
+        <div class="exit-sub" id="exitSub">Live RSI · velocity · volume analysis · updates every 5s</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-section">
+    <div class="stat-item">
+      <div class="stat-lbl">Velocity</div>
+      <div class="stat-val" id="sVel">—</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">RSI (14)</div>
+      <div class="stat-val" id="sRSI">—</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">ATR (14)</div>
+      <div class="stat-val" id="sATR">—</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Volume</div>
+      <div class="stat-val" id="sVol">—</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Momentum</div>
+      <div class="stat-val" id="sMom">—</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Trend</div>
+      <div class="stat-val" id="sTrend">—</div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-hdr">Profit Targets</div>
+
+    <div id="probCards">
+      <div class="no-entry-state">
+        <div class="big-icon">🎯</div>
+        <h3>Set Your Entry Price</h3>
+        <p>Enter the price you bought at to see probability estimates and estimated times for each profit level.</p>
+      </div>
+    </div>
+
+    <div class="momentum-wrap">
+      <div class="momentum-hdr">Momentum Meter</div>
+      <div class="momentum-track">
+        <div class="momentum-fill" id="momFill" style="width:0%;background:var(--muted)"></div>
+      </div>
+      <div class="momentum-detail" id="momDetail">Waiting for data...</div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let ticker       = 'SPY';
+let entryPrice   = null;
+let candles      = [];
+let clockTarget  = 10;
+let fetchTimer   = null;
+
+// ── Bootstrap ──────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(location.search);
+  if (p.get('t')) {
+    ticker = p.get('t').toUpperCase();
+    const sel = document.getElementById('tickerSel');
+    if ([...sel.options].some(o => o.value === ticker)) sel.value = ticker;
+  }
+  refresh();
+  fetchTimer = setInterval(refresh, 5000);
+});
+
+function onTickerChange() {
+  ticker = document.getElementById('tickerSel').value;
+  entryPrice = null;
+  document.getElementById('entryInput').value = '';
+  document.getElementById('gainPill').style.display = 'none';
+  candles = [];
+  resetDisplay();
+  refresh();
+}
+
+function setEntry() {
+  const v = parseFloat(document.getElementById('entryInput').value);
+  if (!isNaN(v) && v > 0) {
+    entryPrice = v;
+    if (candles.length > 0) render();
+  }
+}
+
+function pickTarget(btn) {
+  document.querySelectorAll('.t-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  clockTarget = parseInt(btn.dataset.pct);
+  if (candles.length > 0) render();
+}
+
+// ── Fetch ──────────────────────────────────────────────────────────────────
+async function refresh() {
+  try {
+    const res = await fetch(`/api/bars?symbol=${ticker}&tf=1Min`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.candles && data.candles.length >= 5) {
+      candles = data.candles;
+      render();
+    }
+  } catch (_) {}
+}
+
+// ── Algorithms ──────────────────────────────────────────────────────────────
+
+// $ per minute (1-min bars ≡ 1 bar per minute)
+function velocity(bars, n = 5) {
+  if (bars.length < n + 1) return 0;
+  const sl = bars.slice(-n);
+  return (sl[sl.length - 1].close - sl[0].close) / n;
+}
+
+// Compare early-half vs late-half velocity (+ = accelerating)
+function velTrend(bars, n = 10) {
+  if (bars.length < n + 2) return 0;
+  const half = Math.floor(n / 2);
+  const early = bars.slice(-n, -half);
+  const late  = bars.slice(-half);
+  const ev = (early[early.length-1].close - early[0].close) / half;
+  const lv = (late[late.length-1].close  - late[0].close)  / half;
+  return lv - ev;
+}
+
+function atr(bars, period = 14) {
+  if (bars.length < 2) return 0;
+  const trs = [];
+  for (let i = 1; i < bars.length; i++) {
+    const c = bars[i], p = bars[i-1];
+    trs.push(Math.max(c.high - c.low, Math.abs(c.high - p.close), Math.abs(c.low - p.close)));
+  }
+  const sl = trs.slice(-period);
+  return sl.reduce((a, b) => a + b, 0) / sl.length;
+}
+
+function rsi(bars, period = 14) {
+  const closes = bars.map(b => b.close);
+  if (closes.length < period + 1) return 50;
+  let ag = 0, al = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closes[i] - closes[i-1];
+    if (d >= 0) ag += d; else al -= d;
+  }
+  ag /= period; al /= period;
+  for (let i = period + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i-1];
+    ag = (ag * (period - 1) + Math.max(d, 0)) / period;
+    al = (al * (period - 1) + Math.max(-d, 0)) / period;
+  }
+  return al === 0 ? 100 : 100 - 100 / (1 + ag / al);
+}
+
+// Returns fractional change: +0.2 = volume 20% higher in recent half
+function volTrend(bars, n = 6) {
+  if (bars.length < n + 1) return 0;
+  const half = Math.floor(n / 2);
+  const sl = bars.slice(-n);
+  const ev = sl.slice(0, half).reduce((a, b) => a + b.volume, 0) / half;
+  const lv = sl.slice(half).reduce((a, b) => a + b.volume, 0) / half;
+  return ev > 0 ? (lv - ev) / ev : 0;
+}
+
+// Minutes to target (fractional). null if velocity ≤ 0 or target already passed.
+function etaMinutes(currentPrice, basePx, targetPct, vel) {
+  if (vel <= 0) return null;
+  const targetPx = basePx * (1 + targetPct / 100);
+  const diff = targetPx - currentPrice;
+  if (diff <= 0) return 0; // already there
+  return diff / vel;
+}
+
+// Probability model: conservative base × contextual adjusters
+function probability(targetPct, rsiVal, vel, atrVal, vt) {
+  const BASE = { 10: 0.54, 20: 0.27, 30: 0.13, 50: 0.05 };
+  let p = BASE[targetPct] ?? 0.05;
+
+  // RSI
+  if      (rsiVal <= 25) p *= 1.80;
+  else if (rsiVal <= 35) p *= 1.40;
+  else if (rsiVal <= 48) p *= 1.15;
+  else if (rsiVal <= 58) p *= 1.00;
+  else if (rsiVal <= 68) p *= 0.75;
+  else if (rsiVal <= 76) p *= 0.45;
+  else                   p *= 0.20;
+
+  // Velocity vs ATR
+  const a = atrVal || 0.01;
+  if      (vel > a * 0.6)   p *= 1.45;
+  else if (vel > a * 0.25)  p *= 1.15;
+  else if (vel > 0)         p *= 0.85;
+  else if (vel > -a * 0.25) p *= 0.50;
+  else                      p *= 0.20;
+
+  // Volume trend
+  if      (vt > 0.30)  p *= 1.25;
+  else if (vt > 0.05)  p *= 1.08;
+  else if (vt > -0.15) p *= 0.92;
+  else                 p *= 0.72;
+
+  return Math.min(0.97, Math.max(0.01, p));
+}
+
+// Exit recommendation engine
+function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal) {
+  const a = atrVal || 0.01;
+
+  if (gainPct !== null && gainPct >= 25)
+    return { level:'TAKE PROFIT', color:'red', icon:'🔴',
+      msg: `+${gainPct.toFixed(1)}% locked and loaded. Close it — don't give it back.`,
+      sub: 'Full or partial exit strongly recommended' };
+
+  if (rsiVal >= 82)
+    return { level:'EXIT SIGNAL', color:'red', icon:'🚨',
+      msg: `RSI ${rsiVal.toFixed(1)} — Extremely overbought. Exhaustion imminent.`,
+      sub: 'Reversal probability is very high within 1–3 candles' };
+
+  if (vel < -a * 0.35 && gainPct !== null && gainPct > 4)
+    return { level:'EXIT SIGNAL', color:'red', icon:'⚠️',
+      msg: 'Price reversing on you. Protect open gains — momentum flipped.',
+      sub: 'Consider full or partial exit now' };
+
+  if (rsiVal >= 74)
+    return { level:'MOMENTUM FADING', color:'yellow', icon:'🟡',
+      msg: `RSI ${rsiVal.toFixed(1)} — Overbought territory. Edge is shrinking.`,
+      sub: 'Scale out or move stop to lock in gains' };
+
+  if (gainPct !== null && gainPct >= 11 && vtrendVal < -a * 0.08)
+    return { level:'MOVE YOUR STOP', color:'yellow', icon:'🛡',
+      msg: `+${gainPct.toFixed(1)}% on the trade and velocity decelerating.`,
+      sub: 'Trail your stop to protect profits — don\'t hand them back' };
+
+  if (vt < -0.28 && vel < a * 0.2)
+    return { level:'VOLUME DRYING UP', color:'yellow', icon:'📉',
+      msg: 'Volume collapsing as price stalls. Momentum may be over.',
+      sub: 'Tighten your stop — risk/reward is shifting' };
+
+  if (vtrendVal < -a * 0.12)
+    return { level:'DECELERATING', color:'yellow', icon:'⏸',
+      msg: 'Momentum slowing over last 10 bars.',
+      sub: 'Hold 2–3 more minutes and reassess — watch RSI and volume' };
+
+  if (rsiVal <= 35 && vel > 0)
+    return { level:'HOLD — OVERSOLD BOUNCE', color:'green', icon:'🟢',
+      msg: `RSI ${rsiVal.toFixed(1)} — Strong rebound in progress. Room to run.`,
+      sub: 'Significant RSI headroom before overbought — stay in' };
+
+  if (vel > a * 0.45 && vt > 0.05)
+    return { level:'HOLD — STRONG MOMENTUM', color:'green', icon:'🟢',
+      msg: 'Rising price on rising volume. Momentum is confirmed.',
+      sub: 'Conditions are favorable — no exit signal' };
+
+  if (vel > 0 && rsiVal < 62)
+    return { level:'HOLD', color:'green', icon:'🟢',
+      msg: `RSI ${rsiVal.toFixed(1)} — Momentum intact. Hold another 3–5 minutes.`,
+      sub: 'No exit signal — monitor RSI approaching 70' };
+
+  return { level:'WATCHING', color:'yellow', icon:'👁',
+    msg: 'Neutral conditions. No clear edge in either direction.',
+    sub: 'Wait for RSI or velocity to give a clearer signal' };
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function render() {
+  const bars  = candles;
+  const last  = bars[bars.length - 1];
+  const now   = last.close;
+  const open  = bars[0].open;
+
+  // Header price
+  const dayPct = ((now - open) / open * 100).toFixed(2);
+  document.getElementById('priceMain').textContent = `$${now.toFixed(2)}`;
+  const dEl = document.getElementById('priceDelta');
+  dEl.textContent = `${dayPct >= 0 ? '+' : ''}${dayPct}%`;
+  dEl.className = 'price-delta ' + (dayPct >= 0 ? 'up' : 'dn');
+
+  // Metrics
+  const vel    = velocity(bars);
+  const vtrend = velTrend(bars);
+  const atrVal = atr(bars);
+  const rsiVal = rsi(bars);
+  const vt     = volTrend(bars);
+
+  // Gain from entry
+  let gainPct = null;
+  if (entryPrice) {
+    gainPct = (now - entryPrice) / entryPrice * 100;
+    const pill = document.getElementById('gainPill');
+    pill.style.display = 'inline-flex';
+    pill.textContent = `${gainPct >= 0 ? '+' : ''}${gainPct.toFixed(2)}% from entry`;
+    pill.className = 'gain-pill' + (gainPct < 0 ? ' neg' : '');
+  }
+
+  // Stats strip
+  const velSign = vel >= 0 ? '+' : '';
+  const velEl = document.getElementById('sVel');
+  velEl.textContent = `${velSign}$${Math.abs(vel).toFixed(3)}`;
+  velEl.className = 'stat-val ' + (vel > 0.001 ? 'up' : vel < -0.001 ? 'dn' : '');
+
+  const rEl = document.getElementById('sRSI');
+  rEl.textContent = rsiVal.toFixed(1);
+  rEl.className = 'stat-val ' + (rsiVal >= 70 ? 'warn' : rsiVal <= 30 ? 'up' : '');
+
+  document.getElementById('sATR').textContent = `$${atrVal.toFixed(3)}`;
+
+  const lastVol = last.volume || 0;
+  document.getElementById('sVol').textContent =
+    lastVol >= 1e6 ? `${(lastVol/1e6).toFixed(1)}M`
+    : lastVol >= 1e3 ? `${(lastVol/1e3).toFixed(0)}K`
+    : String(lastVol);
+
+  const momStr = vtrend > atrVal*0.05 ? 'Building' : vtrend < -atrVal*0.05 ? 'Fading' : 'Steady';
+  const momEl = document.getElementById('sMom');
+  momEl.textContent = momStr;
+  momEl.className = 'stat-val ' + (momStr==='Building'?'up': momStr==='Fading'?'dn':'');
+
+  const trendStr = vel > atrVal*0.2 ? 'Strong ↑' : vel > 0.001 ? 'Weak ↑' : vel < -atrVal*0.2 ? 'Strong ↓' : vel < -0.001 ? 'Weak ↓' : 'Flat';
+  const tEl = document.getElementById('sTrend');
+  tEl.textContent = trendStr;
+  tEl.className = 'stat-val ' + (trendStr.includes('↑') ? 'up' : trendStr.includes('↓') ? 'dn' : '');
+
+  // Exit signal
+  const sig = exitSignal(rsiVal, vel, vt, gainPct, vtrend, atrVal);
+  const card = document.getElementById('exitCard');
+  card.className = 'exit-card s-' + sig.color;
+  document.getElementById('exitIcon').textContent = sig.icon;
+  const lvEl = document.getElementById('exitLevel');
+  lvEl.textContent = sig.level;
+  lvEl.className = 'exit-level ' + sig.color;
+  document.getElementById('exitMsg').textContent = sig.msg;
+  document.getElementById('exitSub').textContent = sig.sub;
+
+  // Momentum meter
+  const momPct = Math.min(100, Math.max(0, ((vel / (atrVal * 0.6)) * 50 + 50)));
+  const fill = document.getElementById('momFill');
+  fill.style.width = momPct + '%';
+  fill.style.background = momPct > 68 ? 'var(--bull)' : momPct > 42 ? 'var(--warn)' : 'var(--bear)';
+  document.getElementById('momDetail').innerHTML =
+    `<b>${momStr}</b> · ${vel >= 0 ? '+' : ''}$${vel.toFixed(3)}/min · Vol ${vt >= 0 ? '+' : ''}${(vt*100).toFixed(0)}%`;
+
+  // Profit clock
+  renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig);
+
+  // Probability cards (needs entry)
+  if (entryPrice) renderProbCards(now, vel, atrVal, rsiVal, vt);
+}
+
+function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {
+  const CIRC = 678.58;
+  const arc  = document.getElementById('clockArc');
+  const glow = document.getElementById('arcGlow');
+  const tEl  = document.getElementById('clockTime');
+  const uEl  = document.getElementById('clockUnit');
+  const sEl  = document.getElementById('clockSub');
+
+  // Arc color tracks signal state
+  const arcColor = sig.color === 'green' ? 'var(--bull)'
+                 : sig.color === 'red'   ? 'var(--bear)'
+                 : 'var(--warn)';
+  arc.style.stroke  = arcColor;
+  glow.style.stroke = arcColor;
+
+  if (!entryPrice) {
+    arc.style.strokeDashoffset = CIRC;
+    glow.style.strokeDashoffset = CIRC;
+    glow.style.opacity = '0';
+    tEl.textContent = '--:--';
+    tEl.className   = 'clock-time';
+    uEl.textContent = 'min · sec';
+    sEl.textContent = 'set entry to begin';
+    return;
+  }
+
+  const progress = Math.min(1, Math.max(0, gainPct / clockTarget));
+  const offset   = CIRC * (1 - progress);
+  arc.style.strokeDashoffset  = offset;
+  glow.style.strokeDashoffset = offset;
+  glow.style.opacity = progress > 0.05 ? '0.4' : '0';
+
+  const targetPx = entryPrice * (1 + clockTarget / 100);
+
+  if (gainPct >= clockTarget) {
+    // Target reached
+    tEl.textContent = '✓';
+    tEl.className   = 'clock-time green';
+    uEl.textContent = `+${clockTarget}% TARGET REACHED`;
+    sEl.textContent = `exit at $${targetPx.toFixed(2)}`;
+    return;
+  }
+
+  const eta = etaMinutes(now, entryPrice, clockTarget, vel);
+
+  if (eta === null || vel <= 0) {
+    tEl.textContent = '↓';
+    tEl.className   = 'clock-time red';
+    uEl.textContent = 'momentum reversed';
+    sEl.textContent = `target $${targetPx.toFixed(2)} (+${clockTarget}%)`;
+    return;
+  }
+
+  if (eta > 720) {
+    // More than 12 hours — not meaningful today
+    tEl.textContent = '∞';
+    tEl.className   = 'clock-time yellow';
+    uEl.textContent = 'insufficient velocity';
+    sEl.textContent = `target $${targetPx.toFixed(2)} (+${clockTarget}%)`;
+    return;
+  }
+
+  const totalSec = Math.round(eta * 60);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+
+  tEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
+  tEl.className   = 'clock-time ' + sig.color;
+  uEl.textContent = 'estimated time remaining';
+  sEl.textContent = `→ $${targetPx.toFixed(2)}  (+${clockTarget}%)`;
+}
+
+function renderProbCards(now, vel, atrVal, rsiVal, vt) {
+  const TARGETS = [10, 20, 30, 50];
+  const container = document.getElementById('probCards');
+
+  container.innerHTML = TARGETS.map(pct => {
+    const prob    = probability(pct, rsiVal, vel, atrVal, vt);
+    const probPct = Math.round(prob * 100);
+    const eta     = etaMinutes(now, entryPrice, pct, vel);
+    const px      = (entryPrice * (1 + pct / 100)).toFixed(2);
+    const isActive = pct === clockTarget;
+
+    const barColor = probPct >= 58 ? 'var(--bull)' : probPct >= 35 ? 'var(--warn)' : 'var(--bear)';
+    const pctColor = probPct >= 58 ? 'var(--bull)' : probPct >= 35 ? 'var(--warn)' : 'var(--bear)';
+
+    let timeStr;
+    if (eta === null || vel <= 0) timeStr = 'Momentum reversed';
+    else if (eta > 720)           timeStr = '> 12 hrs at current pace';
+    else {
+      const h = Math.floor(eta / 60);
+      const m = Math.round(eta % 60);
+      timeStr = h > 0 ? `~${h}h ${m}m` : `~${m} min`;
+    }
+
+    return `
+<div class="prob-card${isActive ? ' active' : ''}" data-pct="${pct}">
+  <div class="prob-row">
+    <div class="prob-target">+${pct}%</div>
+    <div class="prob-pct" style="color:${pctColor}">${probPct}%</div>
+  </div>
+  <div class="prob-target-price">Target: <span>$${px}</span></div>
+  <div class="prob-bar-track">
+    <div class="prob-bar-fill" style="width:${probPct}%;background:${barColor}"></div>
+  </div>
+  <div class="prob-time">⏱ <b>${timeStr}</b> at current momentum</div>
+</div>`;
+  }).join('');
+
+  // Sync sidebar card clicks with clock target
+  container.querySelectorAll('.prob-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const pct = parseInt(card.dataset.pct);
+      document.querySelectorAll('.t-tab').forEach(b =>
+        b.classList.toggle('active', parseInt(b.dataset.pct) === pct));
+      clockTarget = pct;
+      render();
+    });
+  });
+}
+
+function resetDisplay() {
+  document.getElementById('priceMain').textContent = '—';
+  document.getElementById('priceDelta').textContent = '—';
+  document.getElementById('clockTime').textContent = '--:--';
+  document.getElementById('clockTime').className = 'clock-time';
+  document.getElementById('clockSub').textContent = 'Loading...';
+  document.getElementById('clockArc').style.strokeDashoffset = '678.58';
+  document.getElementById('arcGlow').style.strokeDashoffset = '678.58';
+  document.getElementById('arcGlow').style.opacity = '0';
+  document.getElementById('probCards').innerHTML = `
+    <div class="no-entry-state">
+      <div class="big-icon">🎯</div>
+      <h3>Set Your Entry Price</h3>
+      <p>Enter the price you bought at to see probability estimates and time targets for each profit level.</p>
+    </div>`;
+  ['sVel','sRSI','sATR','sVol','sMom','sTrend'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+    document.getElementById(id).className = 'stat-val';
+  });
+}
+</script>
+</body>
+</html>
