@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Live Pattern Scanner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080c12;
+    --surface:  #0e1420;
+    --border:   #1a2235;
+    --border2:  #243050;
+    --text:     #c8d4e8;
+    --muted:    #4a5a78;
+    --accent:   #00d4aa;
+    --bull:     #00c96b;
+    --bear:     #ff4566;
+    --warn:     #f5a623;
+    --info:     #5b9cf6;
+    --glow:     rgba(0, 212, 170, 0.15);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--muted); font-weight: 400; }
+
+  .ticker-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .ticker-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-input-wrap::before {
+    content: '$';
+    position: absolute;
+    left: 10px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  input[type="text"] {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 12px 7px 24px;
+    width: 110px;
+    text-transform: uppercase;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+
+  .btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn.secondary {
+    background: var(--border2);
+    color: var(--text);
+  }
+
+  .price-display {
+    margin-left: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .price-main {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .price-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .price-change.up { background: rgba(0,201,107,0.15); color: var(--bull); }
+  .price-change.dn { background: rgba(255,69,102,0.15); color: var(--bear); }
+
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bull);
+    box-shadow: 0 0 6px var(--bull);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* TIMEFRAME TABS */
+  .tf-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .tf-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tf-btn:hover { color: var(--text); border-color: var(--border2); }
+  .tf-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(0,212,170,0.08); }
+
+  .separator { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* CHART AREA */
+  .chart-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas#chart {
+    display: block;
+    flex: 1;
+    width: 100%;
+  }
+
+  /* PATTERN OVERLAY LABELS */
+  #pattern-overlays {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .pattern-label {
+    position: absolute;
+    background: rgba(14,20,32,0.92);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    transform: translateX(-50%);
+    pointer-events: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .pattern-label.bear { border-color: var(--bear); color: var(--bear); }
+  .pattern-label.warn { border-color: var(--warn); color: var(--warn); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(-4px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sidebar-section {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* ALERT FEED */
+  .alert-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .alert-feed::-webkit-scrollbar { width: 4px; }
+  .alert-feed::-webkit-scrollbar-track { background: transparent; }
+  .alert-feed::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .alert-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    animation: slideIn 0.3s ease;
+    border-left: 3px solid var(--accent);
+  }
+  .alert-card.bear { border-left-color: var(--bear); }
+  .alert-card.warn { border-left-color: var(--warn); }
+  .alert-card.info { border-left-color: var(--info); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .alert-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .alert-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .alert-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+  }
+  .alert-badge.bull { background: rgba(0,201,107,0.15); color: var(--bull); }
+  .alert-badge.bear { background: rgba(255,69,102,0.15); color: var(--bear); }
+  .alert-badge.warn { background: rgba(245,166,35,0.15); color: var(--warn); }
+
+  .alert-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* PATTERN INFO PANEL */
+  .pattern-info {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .pattern-info-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .pattern-info-text {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .pattern-info-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .stat-label { color: var(--muted); }
+  .stat-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+  .stat-val.bull { color: var(--bull); }
+  .stat-val.bear { color: var(--bear); }
+  .stat-val.warn { color: var(--warn); }
+
+  /* OHLCV row */
+  .ohlcv {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .ohlcv-item { text-align: center; }
+  .ohlcv-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .ohlcv-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: #fff; }
+
+  .forming-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 6px;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    animation: glow 2s ease-in-out infinite;
+  }
+  .forming-badge.bear { background: rgba(255,69,102,0.1); border-color: var(--bear); color: var(--bear); }
+  @keyframes glow {
+    0%,100% { box-shadow: 0 0 0 0 transparent; }
+    50% { box-shadow: 0 0 8px 2px var(--glow); }
+  }
+
+  #forming-wrap {
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Volume bar below chart */
+  canvas#vol {
+    width: 100%;
+    height: 60px;
+    display: block;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Scalp<span>clock</span></div>
+  <div class="ticker-bar">
+    <div class="ticker-input-wrap">
+      <input type="text" id="tickerInput" value="AAPL" maxlength="5" placeholder="AAPL">
+    </div>
+    <button class="btn" onclick="loadTicker()">Load</button>
+    <div class="live-dot" id="liveDot"></div>
+    <span style="font-size:11px;color:var(--muted)">LIVE</span>
+  </div>
+  <div class="price-display">
+    <div class="price-main" id="priceMain">—</div>
+    <div class="price-change up" id="priceChange">—</div>
+  </div>
+</header>
+
+<div class="tf-bar">
+  <button class="tf-btn active" onclick="setTF(this,'1m')">1m</button>
+  <button class="tf-btn" onclick="setTF(this,'5m')">5m</button>
+  <button class="tf-btn" onclick="setTF(this,'15m')">15m</button>
+  <div class="separator"></div>
+  <button class="tf-btn active" style="pointer-events:none;color:var(--text);border:none;" id="tfLabel">Candlestick</button>
+</div>
+
+<div class="ohlcv">
+  <div class="ohlcv-item"><div class="ohlcv-lbl">Open</div><div class="ohlcv-val" id="ohlcO">—</div></div>
+  <div class="ohlcv-item"><div class="ohlcv-lbl">High</div><div class="ohlcv-val" id="ohlcH" style="color:var(--bull)">—</div></div>
+  <div class="ohlcv-item"><div class="ohlcv-lbl">Low</div><div class="ohlcv-val" id="ohlcL" style="color:var(--bear)">—</div></div>
+  <div class="ohlcv-item"><div class="ohlcv-lbl">Close</div><div class="ohlcv-val" id="ohlcC">—</div></div>
+  <div class="ohlcv-item"><div class="ohlcv-lbl">Volume</div><div class="ohlcv-val" id="ohlcV">—</div></div>
+</div>
+
+<div id="forming-wrap">
+  <span style="font-size:11px;color:var(--muted)">Scanning for patterns...</span>
+</div>
+
+<div class="main">
+  <div class="chart-wrap">
+    <canvas id="chart"></canvas>
+    <div id="pattern-overlays"></div>
+    <canvas id="vol"></canvas>
+  </div>
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Pattern Alerts</div>
+      <div id="alert-feed" class="alert-feed"></div>
+    </div>
+    <div class="pattern-info" id="patternInfo">
+      <div class="pattern-info-title">Select a pattern to learn more</div>
+      <div class="pattern-info-text">Patterns will appear here as they form on the chart. Click any alert to see an explanation.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── PATTERN LIBRARY ───────────────────────────────────────────
+const PATTERNS = {
+  'Bullish Morning Star': {
+    type: 'bull',
+    reliability: '78%',
+    signal: 'Strong Reversal',
+    candles: 3,
+    desc: 'A 3-candle reversal: large bearish candle, a small-bodied doji/spinning top, then a large bullish candle closing above the midpoint of the first. Signals a bottom reversal.',
+    detect: (c) => {
+      if (c.length < 3) return false;
+      const [a,b,d] = c.slice(-3);
+      return a.close < a.open && // bearish first
+        Math.abs(b.close - b.open) < (a.open - a.close) * 0.3 && // small middle
+        d.close > d.open && // bullish third
+        d.close > (a.open + a.close) / 2; // closes above midpoint
+    }
+  },
+  'Bearish Evening Star': {
+    type: 'bear',
+    reliability: '75%',
+    signal: 'Strong Reversal',
+    candles: 3,
+    desc: 'Mirror of the Morning Star. A bullish candle, small-bodied star, then a bearish close below the first candle\'s midpoint. Classic topping pattern.',
+    detect: (c) => {
+      if (c.length < 3) return false;
+      const [a,b,d] = c.slice(-3);
+      return a.close > a.open &&
+        Math.abs(b.close - b.open) < (a.close - a.open) * 0.3 &&
+        d.close < d.open &&
+        d.close < (a.open + a.close) / 2;
+    }
+  },
+  'Bullish Engulfing': {
+    type: 'bull',
+    reliability: '63%',
+    signal: 'Reversal',
+    candles: 2,
+    desc: 'A bearish candle followed by a larger bullish candle that completely engulfs the prior body. Buyers overwhelmed sellers — momentum shift in progress.',
+    detect: (c) => {
+      if (c.length < 2) return false;
+      const [a,b] = c.slice(-2);
+      return a.close < a.open && b.close > b.open &&
+        b.open < a.close && b.close > a.open;
+    }
+  },
+  'Bearish Engulfing': {
+    type: 'bear',
+    reliability: '61%',
+    signal: 'Reversal',
+    candles: 2,
+    desc: 'A bullish candle followed by a larger bearish candle that engulfs it. Sellers have taken over — watch for a continuation lower.',
+    detect: (c) => {
+      if (c.length < 2) return false;
+      const [a,b] = c.slice(-2);
+      return a.close > a.open && b.close < b.open &&
+        b.open > a.close && b.close < a.open;
+    }
+  },
+  'Doji': {
+    type: 'warn',
+    reliability: '55%',
+    signal: 'Indecision',
+    candles: 1,
+    desc: 'Open and close are virtually equal. The market is undecided. Often precedes a reversal — context matters. Look for this after a trend for maximum significance.',
+    detect: (c) => {
+      if (c.length < 1) return false;
+      const b = c[c.length - 1];
+      const bodySize = Math.abs(b.close - b.open);
+      const range = b.high - b.low;
+      return range > 0 && bodySize / range < 0.1;
+    }
+  },
+  'Hammer': {
+    type: 'bull',
+    reliability: '60%',
+    signal: 'Potential Reversal',
+    candles: 1,
+    desc: 'Small body near the top of the range with a long lower wick (2x+ the body). Shows buyers rejected lower prices. Bullish when appearing after a downtrend.',
+    detect: (c) => {
+      if (c.length < 1) return false;
+      const b = c[c.length - 1];
+      const body = Math.abs(b.close - b.open);
+      const lowerWick = Math.min(b.close, b.open) - b.low;
+      const upperWick = b.high - Math.max(b.close, b.open);
+      return lowerWick >= body * 2 && upperWick <= body * 0.5 && body > 0;
+    }
+  },
+  'Shooting Star': {
+    type: 'bear',
+    reliability: '59%',
+    signal: 'Potential Reversal',
+    candles: 1,
+    desc: 'Small body near the bottom of the range with a long upper wick (2x+ the body). Sellers pushed prices back down — bearish signal after an uptrend.',
+    detect: (c) => {
+      if (c.length < 1) return false;
+      const b = c[c.length - 1];
+      const body = Math.abs(b.close - b.open);
+      const upperWick = b.high - Math.max(b.close, b.open);
+      const lowerWick = Math.min(b.close, b.open) - b.low;
+      return upperWick >= body * 2 && lowerWick <= body * 0.5 && body > 0;
+    }
+  },
+  'Three White Soldiers': {
+    type: 'bull',
+    reliability: '82%',
+    signal: 'Strong Continuation',
+    candles: 3,
+    desc: 'Three consecutive bullish candles each closing higher, each opening within the prior body. One of the most reliable bullish continuation signals.',
+    detect: (c) => {
+      if (c.length < 3) return false;
+      const [a,b,d] = c.slice(-3);
+      return a.close > a.open && b.close > b.open && d.close > d.open &&
+        b.close > a.close && d.close > b.close &&
+        b.open > a.open && d.open > b.open;
+    }
+  },
+  'Three Black Crows': {
+    type: 'bear',
+    reliability: '80%',
+    signal: 'Strong Continuation',
+    candles: 3,
+    desc: 'Three consecutive bearish candles each closing lower, each opening within the prior body. A powerful bearish signal — sellers are firmly in control.',
+    detect: (c) => {
+      if (c.length < 3) return false;
+      const [a,b,d] = c.slice(-3);
+      return a.close < a.open && b.close < b.open && d.close < d.open &&
+        b.close < a.close && d.close < b.close &&
+        b.open < a.open && d.open < b.open;
+    }
+  }
+};
+
+// ─── STATE ─────────────────────────────────────────────────────
+let candles = [];
+let ticker = 'AAPL';
+let basePrice = 178.50;
+let currentPrice = basePrice;
+let alertHistory = [];
+let detectedSet = new Set();
+let simInterval = null;
+let liveCandle = null;
+let candleInterval = 5000; // 5 seconds per candle in demo
+
+// ─── CHART SETUP ───────────────────────────────────────────────
+const chartCanvas = document.getElementById('chart');
+const volCanvas = document.getElementById('vol');
+const ctx = chartCanvas.getContext('2d');
+const vctx = volCanvas.getContext('2d');
+
+function resizeCanvases() {
+  const wrap = chartCanvas.parentElement;
+  chartCanvas.width = wrap.clientWidth;
+  chartCanvas.height = wrap.clientHeight - 60;
+  volCanvas.width = wrap.clientWidth;
+  volCanvas.height = 60;
+  drawChart();
+}
+window.addEventListener('resize', resizeCanvases);
+
+// ─── SEED DATA ─────────────────────────────────────────────────
+function seedCandles(base) {
+  const arr = [];
+  let price = base;
+  for (let i = 0; i < 48; i++) {
+    const o = price + (Math.random() - 0.5) * 0.8;
+    const move = (Math.random() - 0.48) * 2;
+    const c = o + move;
+    const h = Math.max(o, c) + Math.random() * 0.6;
+    const l = Math.min(o, c) - Math.random() * 0.6;
+    arr.push({ open: o, high: h, low: l, close: c, volume: Math.floor(50000 + Math.random() * 200000) });
+    price = c;
+  }
+  return arr;
+}
+
+// ─── TICKER LOADERS ─────────────────────────────────────────────
+const TICKERS = {
+  AAPL: 178.50, TSLA: 248.30, NVDA: 875.20, MSFT: 415.60,
+  AMZN: 189.40, GOOGL: 175.80, META: 520.10, SPY: 522.30,
+  QQQ: 445.20, AMD: 168.90
+};
+
+function loadTicker() {
+  ticker = document.getElementById('tickerInput').value.toUpperCase() || 'AAPL';
+  basePrice = TICKERS[ticker] || 100 + Math.random() * 400;
+  currentPrice = basePrice;
+  candles = seedCandles(basePrice);
+  detectedSet.clear();
+  alertHistory = [];
+  document.getElementById('alert-feed').innerHTML = '';
+  document.getElementById('forming-wrap').innerHTML = '<span style="font-size:11px;color:var(--muted)">Scanning for patterns...</span>';
+  document.getElementById('pattern-overlays').innerHTML = '';
+  clearInterval(simInterval);
+  resizeCanvases();
+  updateOHLC(candles[candles.length - 1]);
+  updatePrice(candles[candles.length - 1].close, candles[0].open);
+  runPatternDetection();
+  startSimulation();
+}
+
+// ─── SIMULATION ─────────────────────────────────────────────────
+function startSimulation() {
+  simInterval = setInterval(() => {
+    const prev = candles[candles.length - 1];
+    const o = prev.close + (Math.random() - 0.5) * 0.3;
+    const move = (Math.random() - 0.47) * 2.5;
+    const c = o + move;
+    const h = Math.max(o, c) + Math.random() * 0.8;
+    const l = Math.min(o, c) - Math.random() * 0.8;
+    const newCandle = { open: o, high: h, low: l, close: c, volume: Math.floor(40000 + Math.random() * 180000), isNew: true };
+    candles.push(newCandle);
+    if (candles.length > 80) candles.shift();
+    currentPrice = c;
+    updatePrice(c, candles[0].open);
+    updateOHLC(newCandle);
+    runPatternDetection();
+    drawChart();
+  }, candleInterval);
+}
+
+// ─── PATTERN DETECTION ─────────────────────────────────────────
+function runPatternDetection() {
+  const forming = [];
+  Object.entries(PATTERNS).forEach(([name, pat]) => {
+    if (pat.detect(candles)) {
+      const key = name + '_' + candles.length;
+      if (!detectedSet.has(key)) {
+        detectedSet.add(key);
+        fireAlert(name, pat);
+      }
+      forming.push({ name, type: pat.type });
+    }
+  });
+  renderFormingBadges(forming);
+}
+
+function renderFormingBadges(forming) {
+  const wrap = document.getElementById('forming-wrap');
+  if (!forming.length) {
+    wrap.innerHTML = '<span style="font-size:11px;color:var(--muted)">No active patterns detected — scanning...</span>';
+    return;
+  }
+  wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);margin-right:4px">Forming:</span>' +
+    forming.map(f =>
+      `<span class="forming-badge ${f.type === 'bear' ? 'bear' : ''}">
+        <span style="font-size:9px">${f.type === 'bull' ? '▲' : f.type === 'bear' ? '▼' : '◆'}</span>
+        ${f.name}
+      </span>`
+    ).join('');
+}
+
+function fireAlert(name, pat) {
+  const now = new Date();
+  const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  alertHistory.unshift({ name, pat, time, price: currentPrice.toFixed(2) });
+
+  const feed = document.getElementById('alert-feed');
+  const card = document.createElement('div');
+  card.className = `alert-card ${pat.type === 'bear' ? 'bear' : pat.type === 'warn' ? 'warn' : ''}`;
+  card.innerHTML = `
+    <div class="alert-header">
+      <div class="alert-name">${name}</div>
+      <div class="alert-time">${time}</div>
+    </div>
+    <div class="alert-badge ${pat.type}">
+      ${pat.type === 'bull' ? '▲ BULLISH' : pat.type === 'bear' ? '▼ BEARISH' : '◆ NEUTRAL'} · ${pat.signal}
+    </div>
+    <div class="alert-desc">${pat.desc.substring(0, 80)}...</div>
+  `;
+  card.style.cursor = 'pointer';
+  card.onclick = () => showPatternInfo(name, pat);
+  feed.insertBefore(card, feed.firstChild);
+  if (feed.children.length > 20) feed.removeChild(feed.lastChild);
+  showPatternInfo(name, pat);
+}
+
+function showPatternInfo(name, pat) {
+  document.getElementById('patternInfo').innerHTML = `
+    <div class="pattern-info-title">${name}</div>
+    <div class="pattern-info-text">${pat.desc}</div>
+    <div class="pattern-info-stat">
+      <span class="stat-label">Historical Reliability</span>
+      <span class="stat-val ${pat.type}">${pat.reliability}</span>
+    </div>
+    <div class="pattern-info-stat">
+      <span class="stat-label">Signal Type</span>
+      <span class="stat-val ${pat.type}">${pat.signal}</span>
+    </div>
+    <div class="pattern-info-stat">
+      <span class="stat-label">Candles Involved</span>
+      <span class="stat-val">${pat.candles}</span>
+    </div>
+  `;
+}
+
+// ─── DRAW CHART ─────────────────────────────────────────────────
+function drawChart() {
+  const W = chartCanvas.width, H = chartCanvas.height;
+  if (W === 0 || H === 0) return;
+  ctx.clearRect(0, 0, W, H);
+
+  const visible = candles.slice(-55);
+  const n = visible.length;
+  if (!n) return;
+
+  const padL = 8, padR = 60, padT = 20, padB = 10;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  const allH = visible.map(c => c.high), allL = visible.map(c => c.low);
+  const maxP = Math.max(...allH), minP = Math.min(...allL);
+  const range = maxP - minP || 1;
+
+  const toY = (p) => padT + (1 - (p - minP) / range) * chartH;
+  const cw = Math.max(4, (chartW / n) - 2);
+  const gap = chartW / n;
+  const toX = (i) => padL + i * gap + gap / 2;
+
+  // Grid lines
+  ctx.strokeStyle = '#1a2235';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (i / 5) * chartH;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    const price = maxP - (i / 5) * range;
+    ctx.fillStyle = '#4a5a78';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(price.toFixed(2), W - padR + 4, y + 4);
+  }
+
+  // Candles
+  const overlayPositions = [];
+  visible.forEach((c, i) => {
+    const x = toX(i);
+    const isBull = c.close >= c.open;
+    const color = isBull ? '#00c96b' : '#ff4566';
+    const bodyTop = toY(Math.max(c.open, c.close));
+    const bodyBot = toY(Math.min(c.open, c.close));
+    const bodyH = Math.max(1, bodyBot - bodyTop);
+
+    // Wick
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, toY(c.high));
+    ctx.lineTo(x, toY(c.low));
+    ctx.stroke();
+
+    // Body
+    if (isBull) {
+      ctx.fillStyle = '#00c96b';
+    } else {
+      ctx.fillStyle = '#ff4566';
+    }
+
+    // Highlight last few candles if pattern detected
+    const isHighlighted = checkCandleHighlight(i, n);
+    if (isHighlighted) {
+      ctx.save();
+      ctx.shadowColor = isHighlighted === 'bull' ? '#00c96b' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623';
+      ctx.shadowBlur = 8;
+    }
+    ctx.fillRect(x - cw / 2, bodyTop, cw, bodyH);
+    if (isHighlighted) {
+      ctx.strokeStyle = isHighlighted === 'bull' ? '#00d4aa' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x - cw / 2, bodyTop, cw, bodyH);
+      ctx.restore();
+      if (i === n - 1) {
+        overlayPositions.push({ x, y: toY(c.high) - 18, type: isHighlighted });
+      }
+    }
+  });
+
+  // Current price line
+  const lastClose = visible[n - 1].close;
+  const py = toY(lastClose);
+  ctx.strokeStyle = '#00d4aa';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(padL, py);
+  ctx.lineTo(W - padR, py);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Price label
+  ctx.fillStyle = '#00d4aa';
+  ctx.fillRect(W - padR + 2, py - 8, padR - 2, 16);
+  ctx.fillStyle = '#000';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(lastClose.toFixed(2), W - padR + 2 + (padR - 2) / 2, py + 4);
+
+  // Volume
+  drawVolume(visible);
+}
+
+function checkCandleHighlight(i, n) {
+  // Check if pattern detected and highlight recent candles
+  const recent = candles.slice(-55);
+  const c = recent;
+  const patterns = Object.entries(PATTERNS);
+  for (const [name, pat] of patterns) {
+    if (pat.detect(c) && i >= n - pat.candles) {
+      return pat.type;
+    }
+  }
+  return null;
+}
+
+function drawVolume(visible) {
+  const W = volCanvas.width, H = volCanvas.height;
+  vctx.clearRect(0, 0, W, H);
+  const n = visible.length;
+  if (!n) return;
+  const maxVol = Math.max(...visible.map(c => c.volume));
+  const gap = W / n;
+  const bw = Math.max(2, gap - 2);
+  visible.forEach((c, i) => {
+    const x = i * gap + gap / 2;
+    const h = (c.volume / maxVol) * (H - 4);
+    vctx.fillStyle = c.close >= c.open ? 'rgba(0,201,107,0.4)' : 'rgba(255,69,102,0.4)';
+    vctx.fillRect(x - bw / 2, H - h, bw, h);
+  });
+  vctx.fillStyle = '#4a5a78';
+  vctx.font = '9px JetBrains Mono, monospace';
+  vctx.textAlign = 'left';
+  vctx.fillText('VOL', 4, 10);
+}
+
+// ─── UI HELPERS ─────────────────────────────────────────────────
+function updatePrice(price, open) {
+  const chg = price - open;
+  const pct = ((chg / open) * 100).toFixed(2);
+  document.getElementById('priceMain').textContent = `$${price.toFixed(2)}`;
+  const el = document.getElementById('priceChange');
+  el.className = 'price-change ' + (chg >= 0 ? 'up' : 'dn');
+  el.textContent = `${chg >= 0 ? '+' : ''}${chg.toFixed(2)} (${chg >= 0 ? '+' : ''}${pct}%)`;
+}
+
+function updateOHLC(c) {
+  document.getElementById('ohlcO').textContent = c.open.toFixed(2);
+  document.getElementById('ohlcH').textContent = c.high.toFixed(2);
+  document.getElementById('ohlcL').textContent = c.low.toFixed(2);
+  document.getElementById('ohlcC').textContent = c.close.toFixed(2);
+  document.getElementById('ohlcV').textContent = (c.volume / 1000).toFixed(0) + 'K';
+}
+
+function setTF(btn, tf) {
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tf === '1m') candleInterval = 3000;
+  if (tf === '5m') candleInterval = 5000;
+  if (tf === '15m') candleInterval = 8000;
+  clearInterval(simInterval);
+  startSimulation();
+}
+
+// ─── INIT ───────────────────────────────────────────────────────
+setTimeout(() => {
+  resizeCanvases();
+  loadTicker();
+}, 100);
+</script>
+</body>
+</html>
