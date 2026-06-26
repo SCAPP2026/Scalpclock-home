@@ -20,7 +20,6 @@ export async function onRequest(context) {
     'APCA-API-SECRET-KEY': SECRET,
   };
 
-  // Alpaca market data base URL
   const BASE = 'https://data.alpaca.markets/v2';
 
   // Check if market is open
@@ -31,16 +30,36 @@ export async function onRequest(context) {
     marketOpen = clock.is_open;
   } catch (e) {}
 
-  // Fetch 5-min bars for RSI(14) — need at least 15 bars
+  // Fetch bars — go back 5 days to ensure we get data after hours/weekends
   const now   = new Date();
-  const start = new Date(now.getTime() - 2 * 60 * 60 * 1000); // 2 hours ago
+  const start = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
   const startISO = start.toISOString();
 
   async function fetchBars(symbol) {
-    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=30&feed=iex`;
+    // Try 5-min bars first
+    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=100&feed=sip`;
     const res = await fetch(url, { headers });
     const data = await res.json();
-    return (data.bars || []).map(b => b.c); // closing prices
+    const bars = data.bars || [];
+    // Return last 30 closing prices
+    return bars.slice(-30).map(b => b.c);
+  }
+
+  async function fetchLatestBar(symbol) {
+    // Gets the most recent bar regardless of time
+    const url = `${BASE}/stocks/${symbol}/bars/latest?feed=sip`;
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+    return data.bar || null;
+  }
+
+  async function fetchPrevDayBar(symbol) {
+    // Get last 2 daily bars to compute change
+    const url = `${BASE}/stocks/${symbol}/bars?timeframe=1Day&start=${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()}&limit=2&feed=sip`;
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+    const bars = data.bars || [];
+    return bars.length >= 2 ? bars[bars.length - 2].c : null;
   }
 
   function calcRSI(closes, period = 14) {
@@ -73,43 +92,28 @@ export async function onRequest(context) {
     return { tone: 'hold', signal: 'Hold', conviction: null, explain: `RSI ${rsi.toFixed(1)} — neutral zone. No edge right now.` };
   }
 
-  // Fetch latest quotes for price + change
-  async function fetchQuote(symbol) {
-    const url = `${BASE}/stocks/${symbol}/quotes/latest?feed=iex`;
-    const res = await fetch(url, { headers });
-    const data = await res.json();
-    return data.quote || null;
-  }
-
-  async function fetchPrevClose(symbol) {
-    const url = `${BASE}/stocks/${symbol}/bars/latest?timeframe=1Day&feed=iex`;
-    const res = await fetch(url, { headers });
-    const data = await res.json();
-    return data.bar?.c || null;
-  }
-
   const tickers = await Promise.all(SYMBOLS.map(async (sym) => {
     try {
-      const [closes, quote, prevClose] = await Promise.all([
+      const [closes, latestBar, prevClose] = await Promise.all([
         fetchBars(sym),
-        fetchQuote(sym),
-        fetchPrevClose(sym),
+        fetchLatestBar(sym),
+        fetchPrevDayBar(sym),
       ]);
 
       const rsi   = calcRSI(closes);
       const sig   = getSignal(rsi);
-      const price = quote ? (quote.ap + quote.bp) / 2 : null;
+      const price = latestBar ? latestBar.c : null;
       const changePct = (price && prevClose)
         ? ((price - prevClose) / prevClose * 100).toFixed(2)
         : null;
 
       return {
-        symbol:     sym,
-        name:       NAMES[sym],
-        ok:         true,
+        symbol:    sym,
+        name:      NAMES[sym],
+        ok:        true,
         price,
-        changePct:  changePct ? Number(changePct) : 0,
-        rsi:        rsi ? Number(rsi.toFixed(1)) : 50,
+        changePct: changePct ? Number(changePct) : 0,
+        rsi:       rsi ? Number(rsi.toFixed(1)) : 50,
         ...sig,
       };
     } catch (e) {
