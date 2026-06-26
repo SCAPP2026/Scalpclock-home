@@ -28,7 +28,7 @@ export async function onRequest(context) {
     const clockRes = await fetch('https://paper-api.alpaca.markets/v2/clock', { headers });
     const clock = await clockRes.json();
     marketOpen = clock.is_open;
-  } catch (e) {}
+  } catch (e) { console.error('Alpaca clock fetch failed:', e.message); }
 
   // Fetch bars — go back 5 days to ensure we get data after hours/weekends
   const now   = new Date();

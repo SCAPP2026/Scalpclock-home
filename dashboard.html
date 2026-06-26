@@ -267,6 +267,8 @@ async function init() {
   } catch(e) {
     document.getElementById('marketStatus').textContent = '—';
   }
+
+  loadTrades(user.id);
 }
 async function loadTrades(userId) {
     try {
@@ -303,7 +305,7 @@ async function loadTrades(userId) {
   window.location.href = '/';
 }
 
-init()loadTrades(user.id);
+init();
 </script>
 </body>
 </html>
