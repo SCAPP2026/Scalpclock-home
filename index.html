@@ -637,11 +637,7 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-art, .tape-track, .tape-dot { animation: none; }
-} 
-  cd Scalpclock-home
-  git add index.html
-  git commit -m "fix: mobile layout — nav, cards, metrics, spacing"
-  git push origin main
+}
 </style>
 </head>
 <body>
@@ -1357,14 +1353,14 @@ footer {
     });
     if (!best) return;
 
-    var isBull   = best.tone === 'bull';
+    var isBull   = best.tone === 'buy';
     var dist     = Math.abs(best.rsi - 50);
     var score    = Math.min(98, Math.round(68 + (dist / 22) * 28));
     var conf     = Math.min(97, Math.round(63 + (dist / 22) * 30));
     var move     = Math.round(9 + (dist / 22) * 21);
     var p        = best.price || 100;
-    var sigTxt   = isBull ? 'BUY CALLS' : (best.tone === 'bear' ? 'BUY PUTS' : 'WATCHING');
-    var sigCls   = isBull ? 'buy' : (best.tone === 'bear' ? 'sell' : '');
+    var sigTxt   = isBull ? 'BUY CALLS' : (best.tone === 'sell' ? 'BUY PUTS' : 'WATCHING');
+    var sigCls   = isBull ? 'buy' : (best.tone === 'sell' ? 'sell' : '');
     var moveCls  = isBull ? 'up' : 'dn';
     var entry    = p.toFixed(2);
     var stop     = (isBull ? p * 0.9855 : p * 1.0155).toFixed(2);
@@ -1406,9 +1402,9 @@ footer {
       var tone = tk.tone;
       return {
         sym:   tk.symbol,
-        sig:   tone === 'bull' ? 'BUY CALLS' : tone === 'bear' ? 'BUY PUTS' : 'WATCHING',
-        cls:   tone === 'bull' ? 'buy' : tone === 'bear' ? 'sell' : '',
-        mvCls: tone === 'bear' ? 'dn' : 'up'
+        sig:   tone === 'buy' ? 'BUY CALLS' : tone === 'sell' ? 'BUY PUTS' : 'WATCHING',
+        cls:   tone === 'buy' ? 'buy' : tone === 'sell' ? 'sell' : '',
+        mvCls: tone === 'sell' ? 'dn' : 'up'
       };
     });
     var si = 0;

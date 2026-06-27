@@ -99,11 +99,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .btn-upgrade:hover{background:#20e88a;transform:translateY(-1px);}
   /* TRADE HISTORY */
   .trade-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-  .trade-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
   @media(max-width:600px){.trade-summary{grid-template-columns:repeat(2,1fr);}}
   .trade-stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
-  .trade-stat .stat-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t30);marg
-  in-bottom:6px;}
+  .trade-stat .stat-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t30);margin-bottom:6px;}
   .trade-stat .stat-val{font-family:var(--disp);font-weight:700;font-size:1.3rem;}
   .trade-table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:32px;}
   .trade-table{width:100%;border-collapse:collapse;font-size:.84rem;}
@@ -292,6 +290,7 @@ async function loadTrades(userId) {
       document.getElementById('tWinRate').textContent = winRate + '%';
       document.getElementById('tWinRate').style.color = winRate >= 50 ? 'var(--green)' : '#ff3b46';
       document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
+      document.getElementById('tAvgPnl').textContent = fmtPnl(avgPnl);
       document.getElementById('tradeSummary').style.display = 'grid';
       document.getElementById('tradeBody').innerHTML = trades.map(t => {
         const win = (t.pnl || 0) >= 0, dir = (t.direction || 'calls').toLowerCase();
