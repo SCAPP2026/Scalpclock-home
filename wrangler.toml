@@ -6,7 +6,3 @@ pages_build_output_dir = "."
 # Required:  ALPACA_KEY_ID, ALPACA_SECRET
 # These are never committed to source control.
 
-[[rules]]
-type = "Text"
-globs = ["**/*.html", "**/*.js", "**/*.css", "**/*.toml"]
-fallthrough = true
