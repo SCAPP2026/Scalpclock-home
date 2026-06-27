@@ -189,6 +189,211 @@ section { position: relative; padding: 80px 0; }
 @media (max-width: 900px) { .sig-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 540px)  { .sig-grid { grid-template-columns: 1fr; } }
 
+/* ── AI Opportunity Feed ── */
+.opp-section {
+  padding: 56px 0 48px;
+  background: linear-gradient(to bottom, var(--bg), var(--bg2) 60%, var(--bg));
+  border-bottom: 1px solid var(--line);
+}
+.opp-feed-hdr {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; margin-bottom: 32px; flex-wrap: wrap;
+}
+.opp-live-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: .65rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--green);
+  background: rgba(22,217,126,.1); border: 1px solid rgba(22,217,126,.3);
+  border-radius: 20px; padding: 5px 14px;
+}
+.opp-pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.opp-viewers {
+  font-family: var(--mono); font-size: .7rem; color: var(--t30);
+  margin-top: 8px;
+}
+.opp-viewers strong { color: var(--t55); }
+
+/* Featured card */
+.opp-featured {
+  background: var(--panel);
+  border: 1px solid rgba(22,217,126,.28);
+  border-radius: 18px;
+  box-shadow: 0 0 80px rgba(22,217,126,.07), 0 28px 72px rgba(0,0,0,.55);
+  overflow: hidden; margin-bottom: 18px;
+}
+.opp-feat-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 22px;
+  background: rgba(22,217,126,.07);
+  border-bottom: 1px solid rgba(22,217,126,.15);
+}
+.opp-ai-label {
+  font-family: var(--mono); font-size: .68rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--green);
+  display: flex; align-items: center; gap: 8px;
+}
+.opp-new-pill {
+  font-family: var(--mono); font-size: .62rem; font-weight: 700;
+  letter-spacing: .1em; color: #04150d; background: var(--green);
+  border-radius: 20px; padding: 3px 11px;
+  animation: newBlink 2.4s ease-in-out infinite;
+}
+@keyframes newBlink { 0%,100%{opacity:1} 50%{opacity:.65} }
+.opp-feat-body {
+  display: grid; grid-template-columns: auto 1fr;
+  padding: 24px 24px 20px; gap: 0;
+}
+@media(max-width:540px) { .opp-feat-body { grid-template-columns: 1fr; gap: 20px; } }
+.opp-ticker-col {
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  border-right: 1px solid var(--line); padding-right: 28px; margin-right: 28px;
+}
+@media(max-width:540px) { .opp-ticker-col { border-right:none; padding-right:0; margin-right:0; border-bottom:1px solid var(--line); padding-bottom:16px; } }
+.opp-ticker-lbl {
+  font-family: var(--mono); font-size: .62rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--t30);
+}
+.opp-ticker-sym {
+  font-family: var(--disp); font-weight: 700; font-size: 3.4rem;
+  line-height: 1; color: #fff;
+}
+.opp-stats-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 20px;
+}
+@media(max-width:700px) { .opp-stats-grid { grid-template-columns: repeat(2,1fr); } }
+.opp-stat { display: flex; flex-direction: column; gap: 4px; }
+.opp-stat-lbl {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--t30);
+}
+.opp-stat-val {
+  font-family: var(--disp); font-weight: 700; font-size: 1.3rem; color: var(--text);
+}
+.opp-stat-val.buy  { color: var(--green); }
+.opp-stat-val.sell { color: var(--red); }
+.opp-stat-val.up   { color: var(--green); }
+.opp-stat-val.dn   { color: var(--red); }
+.opp-mini-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.07); overflow:hidden; margin-top:3px; }
+.opp-mini-fill { height:100%; border-radius:2px; background: var(--green); transition: width 1s ease; }
+.opp-mini-fill.red { background: var(--red); }
+
+/* Locked details row */
+.opp-locked {
+  position: relative; border-top: 1px solid var(--line);
+}
+.opp-locked-inner {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 0;
+  padding: 18px 24px;
+  filter: blur(5px); user-select: none; pointer-events: none;
+}
+@media(max-width:600px) { .opp-locked-inner { grid-template-columns: repeat(2,1fr); gap: 12px; } }
+.opp-locked-item { display: flex; flex-direction: column; gap: 4px; }
+.opp-locked-lbl {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--t30);
+}
+.opp-locked-val {
+  font-family: var(--disp); font-weight: 700; font-size: 1.15rem; color: var(--text);
+}
+.opp-lock-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  background: rgba(7,10,8,.72); backdrop-filter: blur(3px);
+  flex-wrap: wrap; padding: 12px;
+}
+.opp-lock-icon { font-size: 1.3rem; }
+.opp-lock-txt {
+  font-family: var(--mono); font-size: .68rem; font-weight: 700;
+  letter-spacing: .1em; color: var(--t55);
+}
+.opp-lock-cta {
+  font-family: var(--disp); font-weight: 700; font-size: .88rem;
+  padding: 7px 18px; border-radius: 8px;
+  background: var(--green); color: #04150d;
+  text-decoration: none; transition: .15s; white-space: nowrap;
+}
+.opp-lock-cta:hover { background: #20e88a; }
+
+/* Blurred cards grid */
+.opp-more-hdr {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  font-family: var(--mono); font-size: .68rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--t55);
+}
+.opp-count-pill {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  padding: 2px 9px; border-radius: 10px;
+  background: rgba(22,217,126,.12); color: var(--green);
+  border: 1px solid rgba(22,217,126,.2);
+}
+.opp-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 22px;
+}
+@media(max-width:720px) { .opp-grid { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:460px) { .opp-grid { grid-template-columns: 1fr; } }
+.opp-blur-card {
+  position: relative; overflow: hidden;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+}
+.opp-blur-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--line);
+}
+.opp-blur-sym { font-family: var(--disp); font-weight: 700; font-size: 1.15rem; }
+.opp-blur-score { font-family: var(--mono); font-size: .7rem; color: var(--t30); filter: blur(4px); }
+.opp-blur-body {
+  padding: 14px 16px;
+  filter: blur(5px); user-select: none; pointer-events: none;
+}
+.opp-blur-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 8px; font-size: .82rem;
+}
+.opp-blur-row:last-child { margin-bottom: 0; }
+.opp-blur-lbl { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--t30); }
+.opp-blur-val { font-family: var(--disp); font-weight: 700; }
+.opp-blur-val.buy  { color: var(--green); }
+.opp-blur-val.sell { color: var(--red); }
+.opp-blur-overlay {
+  position: absolute; inset: 0;
+  background: rgba(7,10,8,.55); backdrop-filter: blur(1px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+}
+.opp-blur-lock { font-size: 1.1rem; }
+.opp-blur-members {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--t30);
+}
+.opp-blur-new {
+  position: absolute; top: 9px; right: 10px;
+  font-family: var(--mono); font-size: .58rem; font-weight: 700;
+  letter-spacing: .1em; color: #04150d; background: var(--green);
+  border-radius: 4px; padding: 2px 6px;
+  animation: newBlink 2.4s ease-in-out infinite;
+}
+
+/* CTA bar */
+.opp-cta-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  background: rgba(22,217,126,.07); border: 1px solid rgba(22,217,126,.18);
+  border-radius: 14px; padding: 18px 24px;
+}
+.opp-cta-copy { font-size: .9rem; color: var(--t80); line-height: 1.55; }
+.opp-cta-copy strong { color: var(--green); }
+.opp-cta-btn {
+  font-family: var(--disp); font-weight: 700; font-size: 1rem;
+  padding: 11px 26px; border-radius: 10px;
+  background: var(--green); color: #04150d;
+  text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  box-shadow: 0 0 22px rgba(22,217,126,.32); transition: .15s;
+}
+.opp-cta-btn:hover { background: #20e88a; transform: translateY(-1px); }
+
 /* watchlist add bar */
 .watchlist-bar {
   display: flex; align-items: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;
@@ -486,6 +691,109 @@ footer {
     </div>
   </div>
 </header>
+
+<!-- AI OPPORTUNITY FEED -->
+<section class="opp-section">
+  <div class="wrap">
+    <div class="opp-feed-hdr">
+      <div>
+        <div class="opp-live-tag"><span class="opp-pulse"></span> AI Scanning Live Markets</div>
+        <h2 class="h2" style="margin-top:14px">Live <span class="alt">Opportunities</span></h2>
+        <p class="lead" style="max-width:560px">Our AI has detected these setups right now. Members see full entry, stop, and exit details.</p>
+      </div>
+      <div class="opp-viewers" id="oppViewers"><strong>--</strong> traders viewing now</div>
+    </div>
+
+    <!-- Featured card -->
+    <div class="opp-featured">
+      <div class="opp-feat-top">
+        <div class="opp-ai-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          AI DETECTED OPPORTUNITY
+        </div>
+        <span class="opp-new-pill">NEW</span>
+      </div>
+      <div class="opp-feat-body">
+        <div class="opp-ticker-col">
+          <div class="opp-ticker-lbl">TICKER</div>
+          <div class="opp-ticker-sym" id="oppSym">SPY</div>
+          <div style="font-family:var(--mono);font-size:.65rem;color:var(--t30);margin-top:4px" id="oppDetected">2 min ago</div>
+        </div>
+        <div class="opp-stats-grid">
+          <div class="opp-stat">
+            <div class="opp-stat-lbl">Trade Score</div>
+            <div class="opp-stat-val" id="oppScore">--/100</div>
+            <div class="opp-mini-bar"><div class="opp-mini-fill" id="oppScoreBar" style="width:0%"></div></div>
+          </div>
+          <div class="opp-stat">
+            <div class="opp-stat-lbl">Signal</div>
+            <div class="opp-stat-val buy" id="oppSignal">BUY CALLS</div>
+          </div>
+          <div class="opp-stat">
+            <div class="opp-stat-lbl">Confidence</div>
+            <div class="opp-stat-val" id="oppConf">--%</div>
+            <div class="opp-mini-bar"><div class="opp-mini-fill" id="oppConfBar" style="width:0%"></div></div>
+          </div>
+          <div class="opp-stat">
+            <div class="opp-stat-lbl">Potential Move</div>
+            <div class="opp-stat-val up" id="oppMove">+--</div>
+          </div>
+          <div class="opp-stat">
+            <div class="opp-stat-lbl">Price</div>
+            <div class="opp-stat-val" id="oppPrice">--</div>
+          </div>
+          <div class="opp-stat">
+            <div class="opp-stat-lbl">RSI</div>
+            <div class="opp-stat-val" id="oppRsi">--</div>
+          </div>
+        </div>
+      </div>
+      <!-- Locked details -->
+      <div class="opp-locked">
+        <div class="opp-locked-inner">
+          <div class="opp-locked-item">
+            <div class="opp-locked-lbl">Entry Zone</div>
+            <div class="opp-locked-val" id="oppEntry">$000.00</div>
+          </div>
+          <div class="opp-locked-item">
+            <div class="opp-locked-lbl">Stop Loss</div>
+            <div class="opp-locked-val" id="oppStop">$000.00</div>
+          </div>
+          <div class="opp-locked-item">
+            <div class="opp-locked-lbl">Exit Target</div>
+            <div class="opp-locked-val" id="oppExit">$000.00</div>
+          </div>
+          <div class="opp-locked-item">
+            <div class="opp-locked-lbl">Options Play</div>
+            <div class="opp-locked-val" id="oppOptions">000C</div>
+          </div>
+        </div>
+        <div class="opp-lock-overlay">
+          <span class="opp-lock-icon">🔒</span>
+          <span class="opp-lock-txt">Members Only</span>
+          <a class="opp-lock-cta" href="/dashboard">Unlock Full Details</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- More blurred opportunities -->
+    <div class="opp-more-hdr">
+      <span>More Opportunities Detected</span>
+      <span class="opp-count-pill" id="oppCount">+5 detected</span>
+    </div>
+    <div class="opp-grid" id="oppGrid">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- CTA bar -->
+    <div class="opp-cta-bar">
+      <div class="opp-cta-copy">
+        <strong>Don't miss the next signal.</strong> Members get real-time entry, stop, and exit details on every AI-detected opportunity — plus instant alerts the moment a setup fires.
+      </div>
+      <a class="opp-cta-btn" href="/dashboard">Create Free Account →</a>
+    </div>
+  </div>
+</section>
 
 <!-- LIVE SIGNAL BOARD -->
 <section id="signals">
@@ -791,6 +1099,7 @@ footer {
 
     trackHistory(data.tickers, data.marketOpen);
     if (customSyms.length > 0) refreshCustomTickers(data.marketOpen);
+    if (window.updateOppFeed) window.updateOppFeed(data);
   }
 
   function load() {
@@ -977,6 +1286,139 @@ footer {
   skeleton();
   load();
   setInterval(load, 15000);
+})();
+</script>
+
+<script>
+/* ── AI Opportunity Feed ── */
+(function(){
+  var _viewers   = 24;
+  var _detectedAt = Date.now() - 2 * 60000; // start "2 min ago"
+  var _lastSym   = '';
+
+  var viewerEl   = document.getElementById('oppViewers');
+  var detectedEl = document.getElementById('oppDetected');
+
+  /* viewer count drift 15–42 */
+  function driftViewers() {
+    _viewers = Math.max(15, Math.min(42, _viewers + (Math.random() > 0.5 ? 1 : -1) * Math.ceil(Math.random()*2)));
+    if (viewerEl) viewerEl.innerHTML = '<strong>' + _viewers + '</strong> traders viewing now';
+  }
+  driftViewers();
+  setInterval(driftViewers, 8700);
+
+  /* detected-ago timer */
+  function updateDetected() {
+    if (!detectedEl) return;
+    var mins = Math.floor((Date.now() - _detectedAt) / 60000);
+    detectedEl.textContent = mins < 1 ? 'Just now' : mins + ' min ago';
+  }
+  updateDetected();
+  setInterval(updateDetected, 30000);
+
+  /* fallback static blur tickers for when API has <3 others */
+  var STATIC_BLURS = [
+    { sym: 'QQQ',  sig: 'BUY CALLS', cls: 'buy',  mvCls: 'up'  },
+    { sym: 'NVDA', sig: 'BUY CALLS', cls: 'buy',  mvCls: 'up'  },
+    { sym: 'TSLA', sig: 'BUY PUTS',  cls: 'sell', mvCls: 'dn'  },
+    { sym: 'IWM',  sig: 'BUY PUTS',  cls: 'sell', mvCls: 'dn'  },
+    { sym: 'AAPL', sig: 'WATCHING',  cls: '',     mvCls: 'up'  },
+  ];
+
+  function blurCard(t, showNew) {
+    var score = 72 + Math.floor(Math.random() * 22);
+    var conf  = 74 + Math.floor(Math.random() * 18);
+    var move  = 9  + Math.floor(Math.random() * 19);
+    return '<div class="opp-blur-card">' +
+      (showNew ? '<span class="opp-blur-new">NEW</span>' : '') +
+      '<div class="opp-blur-top">' +
+        '<span class="opp-blur-sym">' + t.sym + '</span>' +
+        '<span class="opp-blur-score">Score: ' + score + '</span>' +
+      '</div>' +
+      '<div class="opp-blur-body">' +
+        '<div class="opp-blur-row"><span class="opp-blur-lbl">Signal</span><span class="opp-blur-val ' + t.cls + '">' + t.sig + '</span></div>' +
+        '<div class="opp-blur-row"><span class="opp-blur-lbl">Confidence</span><span class="opp-blur-val">' + conf + '%</span></div>' +
+        '<div class="opp-blur-row"><span class="opp-blur-lbl">Move</span><span class="opp-blur-val ' + t.mvCls + '">+' + move + '%</span></div>' +
+      '</div>' +
+      '<div class="opp-blur-overlay"><span class="opp-blur-lock">🔒</span><span class="opp-blur-members">Members Only</span></div>' +
+    '</div>';
+  }
+
+  window.updateOppFeed = function(data) {
+    if (!data || !data.tickers || !data.tickers.length) return;
+
+    /* pick ticker with most extreme RSI (farthest from 50), prefer non-hold */
+    var best = null, bestDist = -1;
+    data.tickers.forEach(function(tk) {
+      if (!tk.ok) return;
+      var dist = Math.abs(tk.rsi - 50);
+      var bonus = (tk.tone !== 'hold') ? 5 : 0;
+      if (dist + bonus > bestDist) { bestDist = dist + bonus; best = tk; }
+    });
+    if (!best) return;
+
+    var isBull   = best.tone === 'bull';
+    var dist     = Math.abs(best.rsi - 50);
+    var score    = Math.min(98, Math.round(68 + (dist / 22) * 28));
+    var conf     = Math.min(97, Math.round(63 + (dist / 22) * 30));
+    var move     = Math.round(9 + (dist / 22) * 21);
+    var p        = best.price || 100;
+    var sigTxt   = isBull ? 'BUY CALLS' : (best.tone === 'bear' ? 'BUY PUTS' : 'WATCHING');
+    var sigCls   = isBull ? 'buy' : (best.tone === 'bear' ? 'sell' : '');
+    var moveCls  = isBull ? 'up' : 'dn';
+    var entry    = p.toFixed(2);
+    var stop     = (isBull ? p * 0.9855 : p * 1.0155).toFixed(2);
+    var tgt      = (isBull ? p * (1 + (move / 100) * 0.6) : p * (1 - (move / 100) * 0.6)).toFixed(2);
+    var strike   = Math.round(isBull ? p * 1.008 : p * 0.992);
+    var opts     = strike + (isBull ? 'C' : 'P');
+
+    /* reset detected timer when the featured ticker changes */
+    if (best.symbol !== _lastSym) {
+      _lastSym     = best.symbol;
+      _detectedAt  = Date.now() - Math.floor(Math.random() * 3) * 60000;
+      updateDetected();
+    }
+
+    /* update DOM */
+    function set(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+    function setCls(id, cls) { var el = document.getElementById(id); if (el) el.className = cls; }
+    function setW(id, pct) { var el = document.getElementById(id); if (el) el.style.width = pct + '%'; }
+
+    set('oppSym',     best.symbol);
+    set('oppScore',   score + '/100');
+    set('oppSignal',  sigTxt);
+    setCls('oppSignal', 'opp-stat-val ' + sigCls);
+    set('oppConf',    conf + '%');
+    set('oppMove',    (isBull ? '+' : '-') + move + '%');
+    setCls('oppMove', 'opp-stat-val ' + moveCls);
+    set('oppPrice',   '$' + p.toFixed(2));
+    set('oppRsi',     best.rsi);
+    set('oppEntry',   '$' + entry);
+    set('oppStop',    '$' + stop);
+    set('oppExit',    '$' + tgt);
+    set('oppOptions', opts);
+    setW('oppScoreBar', score);
+    setW('oppConfBar',  conf);
+
+    /* blur grid from remaining tickers */
+    var others = data.tickers.filter(function(t) { return t.symbol !== best.symbol && t.ok; });
+    var blurs = others.slice(0, 3).map(function(tk) {
+      var tone = tk.tone;
+      return {
+        sym:   tk.symbol,
+        sig:   tone === 'bull' ? 'BUY CALLS' : tone === 'bear' ? 'BUY PUTS' : 'WATCHING',
+        cls:   tone === 'bull' ? 'buy' : tone === 'bear' ? 'sell' : '',
+        mvCls: tone === 'bear' ? 'dn' : 'up'
+      };
+    });
+    var si = 0;
+    while (blurs.length < 3) { blurs.push(STATIC_BLURS[si++ % STATIC_BLURS.length]); }
+
+    var countEl = document.getElementById('oppCount');
+    var gridEl  = document.getElementById('oppGrid');
+    if (countEl) countEl.textContent = '+' + (blurs.length + 2) + ' detected';
+    if (gridEl)  gridEl.innerHTML = blurs.map(function(t, i) { return blurCard(t, i === 0); }).join('');
+  };
 })();
 </script>
 </body>
