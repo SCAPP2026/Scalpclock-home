@@ -1,0 +1,12 @@
+# Environment / secrets — never commit these
+.env
+.dev.vars
+
+# Wrangler
+.wrangler/
+
+# Nested clone (accidental git clone inside repo)
+Scalpclock-home/
+
+# OS
+.DS_Store
