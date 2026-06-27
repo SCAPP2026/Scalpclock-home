@@ -181,7 +181,7 @@ async function signUp() {
 async function signInGoogle() {
   await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: 'https://scalpclock.com/' }
+    options: { redirectTo: window.location.origin + '/' }
   });
 }
 </script>
