@@ -113,8 +113,10 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+const _from = new URLSearchParams(location.search).get('from') || '/';
+
 sb.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = '/';
+  if (session) window.location.href = _from;
 });
 
 function showTab(tab) {
@@ -140,7 +142,7 @@ async function signIn() {
     showMsg(error.message, 'error');
     btn.disabled = false; btn.textContent = 'Sign In';
   } else {
-    window.location.href = '/';
+    window.location.href = _from;
   }
 }
 

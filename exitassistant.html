@@ -6,6 +6,7 @@
 <title>ScalpClock · Exit Assistant — Profit Clock</title>
 <meta name="description" content="AI-powered exit signals. Know when to take profit, move your stop, or hold. Real-time RSI, velocity, and volume analysis.">
 <link rel="icon" href="hero.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
@@ -579,7 +580,7 @@
   }
 </style>
 </head>
-<body>
+<body style="visibility:hidden">
 
 <!-- HEADER -->
 <header>
@@ -729,6 +730,15 @@
 </div><!-- /main -->
 
 <script>
+(async function () {
+  const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+  const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) { window.location.href = '/login?from=/exitassistant'; return; }
+  document.body.style.visibility = 'visible';
+})();
+
 // ── State ──────────────────────────────────────────────────────────────────
 let ticker       = 'SPY';
 let entryPrice   = null;
