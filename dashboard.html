@@ -334,8 +334,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
-    <p>Get premium signals, priority alerts, and advanced chart features. Coming soon.</p>
-    <button class="btn-upgrade">Upgrade to Pro — Coming Soon</button>
+    <p>Get premium signals, priority alerts, and advanced chart features.</p>
+    <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Upgrade to Pro — $29/mo</button>
   </div>
 
 </div>
@@ -540,12 +540,43 @@ function showModal(elId, msg, type) {
   document.getElementById(elId).innerHTML = `<div class="modal-msg ${type}">${msg}</div>`;
 }
 
+async function startCheckout() {
+  const btn = document.getElementById('upgradeBtn');
+  btn.disabled = true;
+  btn.textContent = 'Redirecting to Stripe…';
+  try {
+    const res = await fetch('/api/stripe-checkout', { method: 'POST' });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Upgrade to Pro — $29/mo';
+      alert(data.error || 'Could not start checkout. Please try again.');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Upgrade to Pro — $29/mo';
+  }
+}
+
+function checkUpgradeReturn() {
+  if (new URLSearchParams(location.search).get('upgraded') !== '1') return;
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:200;background:#16d97e;color:#04150d;font-family:var(--disp);font-weight:700;font-size:.95rem;padding:13px 28px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.5);';
+  toast.textContent = '🎉 Welcome to Pro! Your subscription is active.';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 6000);
+  history.replaceState({}, '', '/dashboard');
+}
+
 async function signOut() {
   await sb.auth.signOut();
   window.location.href = '/';
 }
 
 init();
+checkUpgradeReturn();
 </script>
 </body>
 </html>

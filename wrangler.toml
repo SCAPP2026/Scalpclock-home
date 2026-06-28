@@ -4,5 +4,7 @@ pages_build_output_dir = "."
 
 # Secrets — set in Cloudflare dashboard → Settings → Environment variables
 # Required:  ALPACA_KEY_ID, ALPACA_SECRET
+#            STRIPE_KEY      (Stripe restricted key — rk_live_…)
+#            STRIPE_PRICE_ID (Stripe Price ID for the Pro plan — price_…)
 # These are never committed to source control.
 
