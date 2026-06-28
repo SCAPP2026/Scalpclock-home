@@ -126,7 +126,41 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .trade-empty svg{width:40px;height:40px;stroke:var(--t30);fill:none;stroke-width:1.4;margin-bottom:14px;}
   .trade-empty p{font-size:.9rem;margin-top:8px;}
   @media(max-width:640px){.trade-table th:nth-child(4),.trade-table td:nth-child(4),.trade-table th:nth-child(5),.trade-table
-  td:nth-child(5){display:none;}}</style>
+  td:nth-child(5){display:none;}}
+  /* LOG TRADE */
+  .journal-header{display:flex;align-items:center;justify-content:space-between;margin-top:32px;margin-bottom:16px;}
+  .btn-log-trade{font-family:var(--disp);font-weight:700;font-size:.88rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
+  .btn-log-trade:hover{background:#20e88a;}
+  .open-trades-wrap{background:var(--panel);border:1px solid rgba(22,217,126,.25);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+  .open-trades-head{padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:8px;}
+  .open-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);animation:blink 2s infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .btn-close-trade{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:5px;border:1px solid rgba(255,59,70,.4);background:rgba(255,59,70,.08);color:#ff3b46;cursor:pointer;transition:.15s;white-space:nowrap;}
+  .btn-close-trade:hover{background:rgba(255,59,70,.18);}
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;z-index:120;background:rgba(4,8,5,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;}
+  .modal-card{background:var(--bg2,#0b110d);border:1px solid rgba(22,217,126,.25);border-radius:16px;padding:32px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.7);}
+  .modal-title{font-family:var(--disp);font-weight:700;font-size:1.35rem;margin-bottom:20px;}
+  .modal-title span{color:var(--green);}
+  .modal-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .modal-label{font-size:.78rem;color:var(--t55);font-weight:500;}
+  .modal-input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:8px;padding:10px 13px;color:var(--text);font-family:var(--body);font-size:.93rem;outline:none;transition:.15s;}
+  .modal-input:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
+  .dir-toggle{display:flex;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .dir-btn{flex:1;padding:9px;font-family:var(--disp);font-weight:700;font-size:.9rem;background:transparent;border:none;color:var(--t55);cursor:pointer;transition:.15s;}
+  .dir-btn.active.calls{background:rgba(22,217,126,.15);color:var(--green);}
+  .dir-btn.active.puts{background:rgba(255,59,70,.12);color:#ff3b46;}
+  .modal-note{font-size:.75rem;color:var(--t30);margin-bottom:16px;}
+  .modal-msg{font-size:.78rem;padding:8px 12px;border-radius:6px;margin-bottom:12px;text-align:center;}
+  .modal-msg.error{background:rgba(255,59,70,.1);color:#ff3b46;}
+  .modal-msg.success{background:rgba(22,217,126,.1);color:var(--green);}
+  .modal-actions{display:flex;gap:10px;margin-top:4px;}
+  .btn-modal-submit{flex:1;font-family:var(--disp);font-weight:700;font-size:.95rem;padding:11px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
+  .btn-modal-submit:hover{background:#20e88a;}
+  .btn-modal-submit:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-modal-cancel{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:11px 18px;border-radius:9px;background:transparent;border:1px solid rgba(205,211,210,.2);color:var(--t55);cursor:pointer;transition:.15s;}
+  .btn-modal-cancel:hover{border-color:var(--t55);color:var(--text);}
+  </style>
 </head>
 <body>
 
@@ -218,23 +252,87 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <span class="account-val" id="emailVerified">—</span>
     </div>
   </div>
-<div class="section-title" style="margin-top:32px;">Closed Trade History</div>
-    <div class="trade-summary" id="tradeSummary" style="display:none;">
-      <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
-      <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
-      <div class="trade-stat"><div class="stat-label">Total P&amp;L</div><div class="stat-val" id="tTotalPnl">—</div></div>
-      <div class="trade-stat"><div class="stat-label">Avg P&amp;L</div><div class="stat-val" id="tAvgPnl">—</div></div>
+<!-- TRADE JOURNAL -->
+  <div class="journal-header">
+    <div class="section-title" style="margin:0">Trade Journal</div>
+    <button class="btn-log-trade" onclick="openLogModal()">+ Log New Trade</button>
+  </div>
+
+  <!-- Open Trades -->
+  <div id="openTradesWrap" class="open-trades-wrap" style="display:none">
+    <div class="open-trades-head"><span class="open-dot"></span>Open Positions</div>
+    <table class="trade-table" id="openTradeTable"><thead><tr>
+      <th>Symbol</th><th>Direction</th><th>Entry</th><th>Date</th><th>Action</th>
+    </tr></thead><tbody id="openTradeBody"></tbody></table>
+  </div>
+
+  <!-- Win Rate Summary -->
+  <div class="trade-summary" id="tradeSummary" style="display:none;">
+    <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
+    <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
+    <div class="trade-stat"><div class="stat-label">Total P&amp;L</div><div class="stat-val" id="tTotalPnl">—</div></div>
+    <div class="trade-stat"><div class="stat-label">Avg P&amp;L</div><div class="stat-val" id="tAvgPnl">—</div></div>
+  </div>
+
+  <!-- Closed Trades -->
+  <div class="trade-table-wrap">
+    <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr>
+      <th>Symbol</th><th>Direction</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Date</th><th>Result</th>
+    </tr></thead><tbody id="tradeBody"></tbody></table>
+    <div class="trade-empty" id="tradeEmpty">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      <strong>No closed trades yet</strong>
+      <p>Log a trade above, then close it to see your P&amp;L and win rate.</p>
     </div>
-    <div class="trade-table-wrap">
-      <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr><th>Symbol</th><th>Direction</th><th>P&amp;L</th><th
-  >Entry</th><th>Exit</th><th>Date</th><th>Result</th></tr></thead><tbody id="tradeBody"></tbody></table>
-      <div class="trade-empty" id="tradeEmpty">
-        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" 
-  width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-        <strong>No closed trades yet</strong>
-        <p>Trades you close will appear here with full P&amp;L history.</p>
+  </div>
+
+  <!-- Log Trade Modal -->
+  <div id="logModal" class="modal-overlay" style="display:none">
+    <div class="modal-card">
+      <div class="modal-title">Log <span>New Trade</span></div>
+      <div id="logMsg"></div>
+      <div class="modal-field">
+        <label class="modal-label">Symbol</label>
+        <input class="modal-input" id="lt-symbol" type="text" maxlength="5" placeholder="e.g. SPY" style="text-transform:uppercase">
       </div>
-    </div>  <div class="upgrade">
+      <div class="modal-field">
+        <label class="modal-label">Direction</label>
+        <div class="dir-toggle">
+          <button class="dir-btn calls active" id="lt-calls" onclick="setDir('calls')">📈 Calls</button>
+          <button class="dir-btn puts" id="lt-puts" onclick="setDir('puts')">📉 Puts</button>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Entry Price</label>
+        <input class="modal-input" id="lt-entry" type="number" min="0.01" step="0.01" placeholder="e.g. 2.50">
+      </div>
+      <p class="modal-note">Entry price = option premium per share. P&amp;L calculated when you close the trade.</p>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeLogModal()">Cancel</button>
+        <button class="btn-modal-submit" id="lt-btn" onclick="logTrade()">Log Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Close Trade Modal -->
+  <div id="closeModal" class="modal-overlay" style="display:none">
+    <div class="modal-card">
+      <div class="modal-title">Close <span id="ct-title">Trade</span></div>
+      <div id="closeMsg"></div>
+      <div class="modal-field">
+        <label class="modal-label">Exit Price</label>
+        <input class="modal-input" id="ct-exit" type="number" min="0.01" step="0.01" placeholder="e.g. 3.80">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Actual P&amp;L ($) <span style="color:var(--t30);font-weight:400">— optional, overrides calc</span></label>
+        <input class="modal-input" id="ct-pnl" type="number" step="0.01" placeholder="e.g. 320.00 or -150.00">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeCloseModal()">Cancel</button>
+        <button class="btn-modal-submit" id="ct-btn" onclick="closeTrade()">Close Trade</button>
+      </div>
+    </div>
+  </div>  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
     <p>Get premium signals, priority alerts, and advanced chart features. Coming soon.</p>
     <button class="btn-upgrade">Upgrade to Pro — Coming Soon</button>
@@ -247,11 +345,21 @@ const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+let _uid = null;
+let _tradeToClose = null;
+let _logDir = 'calls';
+
+function fmtPnl(n) {
+  const abs = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (n >= 0 ? '+$' : '-$') + abs;
+}
+
 async function init() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = '/login'; return; }
 
   const user = session.user;
+  _uid = user.id;
   const email = user.email || '';
   const firstName = email.split('@')[0];
 
@@ -264,7 +372,6 @@ async function init() {
   const created = new Date(user.created_at);
   document.getElementById('memberSince').textContent = created.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-  // Check market status
   try {
     const res = await fetch('/api/signals');
     const data = await res.json();
@@ -275,40 +382,165 @@ async function init() {
     document.getElementById('marketStatus').textContent = '—';
   }
 
-  loadTrades(user.id);
+  loadAllTrades();
 }
-async function loadTrades(userId) {
-    try {
-      const { data: trades, error } = await sb.from('trades').select('*').eq('user_id', userId).eq('status',
-  'closed').order('closed_at', { ascending: false });
-      if (error || !trades || trades.length === 0) return;
-      const wins = trades.filter(t => (t.pnl || 0) > 0);
-      const totalPnl = trades.reduce((s, t) => s + (t.pnl || 0), 0);
-      const avgPnl = totalPnl / trades.length;
-      const winRate = (wins.length / trades.length * 100).toFixed(0);
-      document.getElementById('tTotal').textContent = trades.length;
-      document.getElementById('tWinRate').textContent = winRate + '%';
-      document.getElementById('tWinRate').style.color = winRate >= 50 ? 'var(--green)' : '#ff3b46';
-      document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
-      document.getElementById('tAvgPnl').textContent = fmtPnl(avgPnl);
-      document.getElementById('tradeSummary').style.display = 'grid';
-      document.getElementById('tradeBody').innerHTML = trades.map(t => {
-        const win = (t.pnl || 0) >= 0, dir = (t.direction || 'calls').toLowerCase();
-        const date = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
-        const pnlPct = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + t.pnl_pct.toFixed(1) + '%' : '';
-        return `<tr><td><span class="t-sym">${t.symbol||'—'}</span></td><td><span class="t-dir
-  ${dir==='puts'?'puts':'calls'}">${dir==='puts'?'PUTS':'CALLS'}</span></td><td><span class="t-pnl
-  ${win?'win':'loss'}">${fmtPnl(t.pnl||0)}${pnlPct?' <small style="opacity:.6">'+pnlPct+'</small>':''}</span></td><td><span
-  class="t-price">${t.entry_price!=null?'$'+Number(t.entry_price).toFixed(2):'—'}</span></td><td><span
-  class="t-price">${t.exit_price!=null?'$'+Number(t.exit_price).toFixed(2):'—'}</span></td><td><span
-  class="t-date">${date}</span></td><td><span class="t-badge ${win?'win':'loss'}">${win?'WIN':'LOSS'}</span></td></tr>`;
-      }).join('');
-      document.getElementById('tradeTable').style.display = 'table';
-      document.getElementById('tradeEmpty').style.display = 'none';
-    } catch(e) {}
+
+async function loadAllTrades() {
+  await Promise.all([loadOpenTrades(), loadClosedTrades()]);
+}
+
+async function loadOpenTrades() {
+  try {
+    const { data: trades } = await sb.from('trades').select('*')
+      .eq('user_id', _uid).eq('status', 'open').order('id', { ascending: false });
+    const wrap = document.getElementById('openTradesWrap');
+    if (!trades || trades.length === 0) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    document.getElementById('openTradeBody').innerHTML = trades.map(t => {
+      const dir = (t.direction || 'calls').toLowerCase();
+      const date = t.created_at ? new Date(t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+      return `<tr>
+        <td><span class="t-sym">${t.symbol || '—'}</span></td>
+        <td><span class="t-dir ${dir}">${dir.toUpperCase()}</span></td>
+        <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
+        <td><span class="t-date">${date}</span></td>
+        <td><button class="btn-close-trade" onclick="openCloseModal(${t.id},'${t.symbol}','${dir}',${t.entry_price})">Close</button></td>
+      </tr>`;
+    }).join('');
+  } catch(e) {}
+}
+
+async function loadClosedTrades() {
+  try {
+    const { data: trades } = await sb.from('trades').select('*')
+      .eq('user_id', _uid).eq('status', 'closed').order('closed_at', { ascending: false });
+    if (!trades || trades.length === 0) {
+      document.getElementById('tradeEmpty').style.display = 'block';
+      document.getElementById('tradeTable').style.display = 'none';
+      document.getElementById('tradeSummary').style.display = 'none';
+      return;
+    }
+    const wins = trades.filter(t => (t.pnl || 0) > 0);
+    const totalPnl = trades.reduce((s, t) => s + (t.pnl || 0), 0);
+    const winRate = (wins.length / trades.length * 100).toFixed(0);
+    document.getElementById('tTotal').textContent = trades.length;
+    document.getElementById('tWinRate').textContent = winRate + '%';
+    document.getElementById('tWinRate').style.color = winRate >= 50 ? 'var(--green)' : '#ff3b46';
+    document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
+    document.getElementById('tAvgPnl').textContent = fmtPnl(totalPnl / trades.length);
+    document.getElementById('tradeSummary').style.display = 'grid';
+    document.getElementById('tradeBody').innerHTML = trades.map(t => {
+      const win = (t.pnl || 0) >= 0, dir = (t.direction || 'calls').toLowerCase();
+      const date = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+      const pnlPct = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + Number(t.pnl_pct).toFixed(1) + '%' : '';
+      return `<tr>
+        <td><span class="t-sym">${t.symbol || '—'}</span></td>
+        <td><span class="t-dir ${dir}">${dir.toUpperCase()}</span></td>
+        <td><span class="t-pnl ${win ? 'win' : 'loss'}">${fmtPnl(t.pnl || 0)}${pnlPct ? ' <small style="opacity:.6">' + pnlPct + '</small>' : ''}</span></td>
+        <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
+        <td><span class="t-price">${t.exit_price != null ? '$' + Number(t.exit_price).toFixed(2) : '—'}</span></td>
+        <td><span class="t-date">${date}</span></td>
+        <td><span class="t-badge ${win ? 'win' : 'loss'}">${win ? 'WIN' : 'LOSS'}</span></td>
+      </tr>`;
+    }).join('');
+    document.getElementById('tradeTable').style.display = 'table';
+    document.getElementById('tradeEmpty').style.display = 'none';
+  } catch(e) {}
+}
+
+/* ── Log Trade Modal ── */
+function openLogModal() {
+  document.getElementById('lt-symbol').value = '';
+  document.getElementById('lt-entry').value = '';
+  document.getElementById('logMsg').innerHTML = '';
+  setDir('calls');
+  document.getElementById('lt-btn').disabled = false;
+  document.getElementById('lt-btn').textContent = 'Log Entry';
+  document.getElementById('logModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('lt-symbol').focus(), 100);
+}
+function closeLogModal() { document.getElementById('logModal').style.display = 'none'; }
+
+function setDir(dir) {
+  _logDir = dir;
+  document.getElementById('lt-calls').className = 'dir-btn calls' + (dir === 'calls' ? ' active' : '');
+  document.getElementById('lt-puts').className  = 'dir-btn puts'  + (dir === 'puts'  ? ' active' : '');
+}
+
+async function logTrade() {
+  const sym   = (document.getElementById('lt-symbol').value || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+  const entry = parseFloat(document.getElementById('lt-entry').value);
+  if (!sym)              { showModal('logMsg', 'Enter a ticker symbol.', 'error'); return; }
+  if (isNaN(entry) || entry <= 0) { showModal('logMsg', 'Enter a valid entry price.', 'error'); return; }
+
+  const btn = document.getElementById('lt-btn');
+  btn.disabled = true; btn.textContent = 'Logging...';
+
+  const { error } = await sb.from('trades').insert({
+    user_id:     _uid,
+    symbol:      sym,
+    direction:   _logDir,
+    entry_price: entry,
+    status:      'open',
+  });
+
+  if (error) {
+    showModal('logMsg', error.message, 'error');
+    btn.disabled = false; btn.textContent = 'Log Entry';
+  } else {
+    closeLogModal();
+    loadAllTrades();
   }
-  function fmtPnl(n) { const abs = Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); return
-  (n>=0?'+$':'-$')+abs; }async function signOut() {
+}
+
+/* ── Close Trade Modal ── */
+function openCloseModal(id, symbol, dir, entryPrice) {
+  _tradeToClose = { id, symbol, dir, entry_price: entryPrice };
+  document.getElementById('ct-title').textContent = symbol + ' ' + dir.toUpperCase();
+  document.getElementById('ct-exit').value = '';
+  document.getElementById('ct-pnl').value = '';
+  document.getElementById('closeMsg').innerHTML = '';
+  document.getElementById('ct-btn').disabled = false;
+  document.getElementById('ct-btn').textContent = 'Close Trade';
+  document.getElementById('closeModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('ct-exit').focus(), 100);
+}
+function closeCloseModal() { document.getElementById('closeModal').style.display = 'none'; }
+
+async function closeTrade() {
+  const exit      = parseFloat(document.getElementById('ct-exit').value);
+  const manualPnl = document.getElementById('ct-pnl').value.trim();
+  if (isNaN(exit) || exit <= 0) { showModal('closeMsg', 'Enter a valid exit price.', 'error'); return; }
+
+  const t      = _tradeToClose;
+  const pnl    = manualPnl !== '' ? parseFloat(manualPnl) : parseFloat((exit - t.entry_price).toFixed(2));
+  const pnlPct = parseFloat(((exit - t.entry_price) / t.entry_price * 100).toFixed(2));
+
+  const btn = document.getElementById('ct-btn');
+  btn.disabled = true; btn.textContent = 'Closing...';
+
+  const { error } = await sb.from('trades').update({
+    exit_price: exit,
+    pnl,
+    pnl_pct:    pnlPct,
+    status:     'closed',
+    closed_at:  new Date().toISOString(),
+  }).eq('id', t.id).eq('user_id', _uid);
+
+  if (error) {
+    showModal('closeMsg', error.message, 'error');
+    btn.disabled = false; btn.textContent = 'Close Trade';
+  } else {
+    closeCloseModal();
+    loadAllTrades();
+  }
+}
+
+function showModal(elId, msg, type) {
+  document.getElementById(elId).innerHTML = `<div class="modal-msg ${type}">${msg}</div>`;
+}
+
+async function signOut() {
   await sb.auth.signOut();
   window.location.href = '/';
 }
