@@ -543,6 +543,16 @@ section { position: relative; padding: 80px 0; }
 .c-ind.vwap-flat{ background: rgba(205,211,210,.08); color: var(--t30); }
 .c-ind.vol-norm { background: rgba(205,211,210,.08); color: var(--t30); }
 .c-ind.vol-surge{ background: rgba(255,122,26,.12);  color: var(--orange); }
+.c-priority { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.priority-score { font-family: var(--mono); font-size: .65rem; color: var(--t30); }
+.priority-badge {
+  font-family: var(--mono); font-size: .58rem; font-weight: 700;
+  padding: 3px 8px; border-radius: 4px; letter-spacing: .1em; text-transform: uppercase;
+}
+.priority-elite   { background: rgba(22,217,126,.14);  color: var(--green); border: 1px solid rgba(22,217,126,.35); }
+.priority-strong  { background: rgba(255,215,0,.12);   color: #ffd700;      border: 1px solid rgba(255,215,0,.35); }
+.priority-watch   { background: rgba(238,243,240,.07); color: var(--text);  border: 1px solid rgba(238,243,240,.2); }
+.priority-notrade { background: rgba(255,59,70,.10);   color: #ff3b46;      border: 1px solid rgba(255,59,70,.3); }
 .skel { color: var(--t30); font-family: var(--mono); font-size: .82rem; }
 
 /* ── process rail (replaces numbered cards) ── */
@@ -807,9 +817,9 @@ footer {
   <div class="wrap">
     <div class="board-head">
       <div>
-        <div class="eyebrow">Live Board</div>
-        <h2 class="h2">Today's <span class="alt">signals</span>, right now.</h2>
-        <p class="lead">Every ticker scored on real RSI timing. Green means buyers have the edge (calls). Red means sellers do (puts). Updated every few seconds while the market is open.</p>
+        <div class="eyebrow">AI Opportunities</div>
+        <h2 class="h2">Top 10 <span class="alt">setups</span>, right now.</h2>
+        <p class="lead">20 tickers scored on RSI, VWAP, and volume confluence. Ranked by opportunity score. Elite Setup fires when all three align. Updated live.</p>
       </div>
       <div class="board-status" id="boardStatus">
         <div id="marketState" style="font-family:var(--mono)" role="status" aria-live="polite">Connecting...</div>
@@ -1032,13 +1042,14 @@ footer {
 
   /* ── skeleton ── */
   function skeleton() {
-    board.innerHTML = SYMS.map(function (s) {
-      return '<div class="card" id="card-' + s + '">' +
-        '<div class="c-top"><div><div class="c-sym">' + s + '</div><div class="c-name skel">loading</div></div>' +
+    board.innerHTML = Array(10).fill(null).map(function () {
+      return '<div class="card">' +
+        '<div class="c-top"><div><div class="c-sym skel">——</div><div class="c-name skel">loading</div></div>' +
         '<div><div class="c-price skel">--</div></div></div>' +
+        '<div class="c-priority"><div style="width:90px;height:16px;background:rgba(255,255,255,.05);border-radius:4px"></div></div>' +
         '<div class="gauge-row">' + gaugeHTML(50, 'var(--chrome)') +
-        '<div class="sig-wrap"><div class="sig hold skel">reading market</div></div></div>' +
-        '<div class="c-explain skel">Pulling live price and scoring the timing...</div></div>';
+        '<div class="sig-wrap"><div class="sig hold skel">scanning…</div></div></div>' +
+        '<div class="c-explain skel">Scoring opportunity…</div></div>';
     }).join('');
   }
 
@@ -1055,6 +1066,29 @@ footer {
     }).join('');
     // duplicate for seamless loop
     tapeTrack.innerHTML = items + items;
+  }
+
+  /* ── opportunity scoring ── */
+  function calcScore(tk) {
+    if (!tk.ok || tk.rsi == null) return 0;
+    var dist = Math.abs(tk.rsi - 50);
+    var base;
+    if (dist >= 30)      base = 93 + Math.min(5, (dist - 30) * 0.7);
+    else if (dist >= 20) base = 83 + (dist - 20);
+    else if (dist >= 10) base = 68 + (dist - 10) * 1.5;
+    else                 base = 40 + dist * 2.8;
+    var vd = tk.vwapDist || 0, vs = tk.volSurge || 1, tone = tk.tone;
+    var vwapAligned = (tone === 'buy' && vd < -0.1) || (tone === 'sell' && vd > 0.1);
+    var vwapBonus = vwapAligned ? Math.min(3, 1 + Math.abs(vd) * 0.3) : 0;
+    var volBonus  = vs >= 2.0 ? 3 : vs >= 1.5 ? 2 : vs >= 1.2 ? 1 : 0;
+    return Math.min(100, Math.round(base + vwapBonus + volBonus));
+  }
+
+  function priorityTier(score) {
+    if (score >= 95) return { label: 'Elite Setup',  cls: 'elite' };
+    if (score >= 85) return { label: 'Strong Setup', cls: 'strong' };
+    if (score >= 70) return { label: 'Watchlist',    cls: 'watch' };
+    return               { label: 'No Trade',    cls: 'notrade' };
   }
 
   /* ── confluence indicator badges ── */
@@ -1086,43 +1120,42 @@ footer {
 
     renderTape(data.tickers);
 
-    data.tickers.forEach(function (tk) {
-      var el = document.getElementById('card-' + tk.symbol);
-      if (!el) return;
+    var scored = data.tickers
+      .filter(function (tk) { return tk.ok; })
+      .map(function (tk) { return Object.assign({ _score: calcScore(tk) }, tk); });
+    scored.sort(function (a, b) { return b._score - a._score; });
+    var top10 = scored.slice(0, 10);
 
-      if (!tk.ok) {
-        el.className = 'card';
-        el.querySelector('.c-name').textContent = tk.name;
-        el.querySelector('.c-price').textContent = '--';
-        el.querySelector('.sig-wrap').innerHTML = '<div class="sig hold">No signal</div>';
-        el.querySelector('.c-explain').textContent = 'Reconnecting to the market for this ticker.';
-        return;
-      }
-
-      var tone  = tk.tone;
-      var color = gaugeColor(tone);
-      var chgUp = tk.changePct >= 0;
+    board.innerHTML = top10.map(function (tk) {
+      var score  = tk._score;
+      var tier   = priorityTier(score);
+      var tone   = tk.tone;
+      var color  = gaugeColor(tone);
+      var chgUp  = tk.changePct >= 0;
       var chgCol = chgUp ? 'var(--green)' : 'var(--red)';
-
-      el.className = 'card ' + (tone === 'hold' ? '' : tone) + (data.marketOpen ? '' : ' stale');
-      el.setAttribute('aria-label', tk.symbol + ': ' + tk.signal + ', RSI ' + tk.rsi);
-      el.innerHTML =
+      var cls    = 'card ' + (tone === 'hold' ? '' : tone) + (data.marketOpen ? '' : ' stale');
+      return '<div class="' + cls + '" aria-label="' + tk.symbol + ': ' + tk.signal + ', score ' + score + '">' +
         (!data.marketOpen ? '<div class="stale-banner">&#9679; Market closed — last session data</div>' : '') +
         '<div class="c-top">' +
           '<div><div class="c-sym">' + tk.symbol + '</div><div class="c-name">' + tk.name + '</div></div>' +
           '<div><div class="c-price">' + fmt(tk.price) + '</div>' +
           '<div class="c-chg" style="color:' + chgCol + '">' + (chgUp ? '+' : '') + tk.changePct + '%</div></div>' +
         '</div>' +
+        '<div class="c-priority">' +
+          '<span class="priority-badge priority-' + tier.cls + '">' + tier.label + '</span>' +
+          '<span class="priority-score">' + score + '/100</span>' +
+        '</div>' +
         '<div class="gauge-row" aria-label="RSI ' + tk.rsi + '">' + gaugeHTML(tk.rsi, color) +
           '<div class="sig-wrap">' +
-            '<div class="sig ' + tone + '" role="status" aria-label="Signal: ' + tk.signal + '">' + tk.signal +
+            '<div class="sig ' + tone + '" role="status">' + tk.signal +
               (tk.conviction ? '<span class="conviction ' + tone + '">' + tk.conviction + '</span>' : '') +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div class="c-explain">' + tk.explain + '</div>' +
-        indicatorsHTML(tk);
-    });
+        indicatorsHTML(tk) +
+      '</div>';
+    }).join('');
 
     trackHistory(data.tickers, data.marketOpen);
     if (customSyms.length > 0) refreshCustomTickers(data.marketOpen);
