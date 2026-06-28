@@ -1,21 +1,39 @@
 export async function onRequestPost(context) {
   const { env, request } = context;
   const STRIPE_KEY = env.STRIPE_KEY;
-  const STRIPE_PRICE_ID = env.STRIPE_PRICE_ID;
+  const STRIPE_PRODUCT_ID = env.STRIPE_PRODUCT_ID;
 
-  if (!STRIPE_KEY || !STRIPE_PRICE_ID) {
+  if (!STRIPE_KEY || !STRIPE_PRODUCT_ID) {
     return new Response(JSON.stringify({ error: 'Stripe not configured' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 
+  const authHeader = { Authorization: `Bearer ${STRIPE_KEY}` };
+
+  // Look up the active price for this product
+  const pricesRes = await fetch(
+    `https://api.stripe.com/v1/prices?product=${STRIPE_PRODUCT_ID}&active=true&limit=1`,
+    { headers: authHeader }
+  );
+  const pricesData = await pricesRes.json();
+  const price = pricesData.data?.[0];
+
+  if (!price) {
+    return new Response(JSON.stringify({ error: 'No active price found for this product' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const origin = new URL(request.url).origin;
+  const mode = price.recurring ? 'subscription' : 'payment';
 
   const body = new URLSearchParams({
-    mode: 'subscription',
+    mode,
     'payment_method_types[]': 'card',
-    'line_items[0][price]': STRIPE_PRICE_ID,
+    'line_items[0][price]': price.id,
     'line_items[0][quantity]': '1',
     success_url: `${origin}/dashboard?upgraded=1`,
     cancel_url: `${origin}/dashboard`,
@@ -24,7 +42,7 @@ export async function onRequestPost(context) {
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${STRIPE_KEY}`,
+      ...authHeader,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: body.toString(),
