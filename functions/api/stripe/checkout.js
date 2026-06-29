@@ -15,6 +15,15 @@ export async function onRequest(context) {
     return new Response('Method not allowed', { status: 405 });
   }
 
+  try {
+    return await handleCheckout(env, request);
+  } catch (e) {
+    console.error('Checkout fatal:', e);
+    return json({ error: `Internal error: ${e.message}` }, 500);
+  }
+}
+
+async function handleCheckout(env, request) {
   let tier, billing;
   try {
     ({ tier, billing } = await request.json());
