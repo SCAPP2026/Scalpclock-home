@@ -411,7 +411,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
     <p>Get premium signals, priority alerts, and advanced chart features.</p>
-    <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Upgrade to Pro — $29/mo</button>
+    <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Upgrade to Pro — $9.99/mo</button>
   </div>
 
 </div>
@@ -628,12 +628,12 @@ async function startCheckout() {
       window.location.href = data.url;
     } else {
       btn.disabled = false;
-      btn.textContent = 'Upgrade to Pro — $29/mo';
+      btn.textContent = 'Upgrade to Pro — $9.99/mo';
       alert(data.error || 'Could not start checkout. Please try again.');
     }
   } catch (e) {
     btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro — $29/mo';
+    btn.textContent = 'Upgrade to Pro — $9.99/mo';
   }
 }
 
