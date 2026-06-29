@@ -20,12 +20,12 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:      #080c12;
-    --surface: #0e1420;
-    --border:  #1a2235;
-    --border2: #243050;
-    --text:    #c8d4e8;
-    --muted:   #4a5a78;
+    --bg:      #070b10;
+    --surface: #0e1824;
+    --border:  #1e2d42;
+    --border2: #2a3d58;
+    --text:    #dde8f5;
+    --muted:   #8aa4c0;
     --accent:  #00d4aa;
     --bull:    #00c96b;
     --bear:    #ff4566;
@@ -187,6 +187,155 @@
   }
   .price-delta.up { background: rgba(0,201,107,0.15); color: var(--bull); }
   .price-delta.dn { background: rgba(255,69,102,0.15); color: var(--bear); }
+
+  /* ── OPTION PREMIUM TRACKER ── */
+  .opt-tracker-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .opt-tracker-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .opt-contract-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .opt-input {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .opt-input:focus { border-color: var(--accent); }
+  .opt-input::placeholder { color: var(--muted); font-weight: 400; }
+  .opt-input-strike { width: 68px; }
+  .opt-input-expiry { width: 110px; }
+  .opt-type-btn {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt-type-btn.active-call { background: rgba(0,201,107,0.15); color: var(--bull); border-color: var(--bull); }
+  .opt-type-btn.active-put  { background: rgba(255,69,102,0.15); color: var(--bear); border-color: var(--bear); }
+  .opt-entry-group { display: flex; align-items: center; gap: 5px; }
+  .opt-entry-label { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .btn-opt-set {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+  .btn-opt-set:hover { opacity: 0.85; }
+  .btn-opt-clear {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-opt-clear:hover { color: var(--bear); border-color: var(--bear); }
+  .opt-live-display {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .opt-live-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .opt-live-sub {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .opt-pl-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0,201,107,0.1);
+    border: 1px solid rgba(0,201,107,0.2);
+    border-radius: 8px;
+    padding: 5px 12px;
+    min-width: 80px;
+  }
+  .opt-pl-pill.neg { background: rgba(255,69,102,0.1); border-color: rgba(255,69,102,0.2); }
+  .opt-pl-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bull);
+  }
+  .opt-pl-pill.neg .opt-pl-val { color: var(--bear); }
+  .opt-pl-pct {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .opt-greeks-row {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+  }
+  .opt-greek-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 7px;
+    white-space: nowrap;
+  }
+  .opt-greek-lbl { color: var(--muted); }
+  .opt-greek-val { color: var(--text); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+  .opt-status-msg { font-size: 11px; color: var(--muted); }
+  .opt-ticker-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,212,170,0.08);
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 5px;
+    padding: 3px 8px;
+  }
 
   .live-badge {
     display: flex;
@@ -930,6 +1079,11 @@
 
     /* Risk labels — shorten */
     .risk-labels { font-size: 8px; }
+
+    /* Option premium tracker — stack on mobile */
+    .opt-tracker-wrap { padding: 8px 14px; gap: 8px; }
+    .opt-live-display { margin-left: 0; width: 100%; }
+    .opt-greeks-row { flex-wrap: wrap; gap: 6px; }
   }
 
   /* ── VOICE BUTTON ── */
@@ -1146,6 +1300,25 @@
     <div class="price-delta up" id="priceDelta">—</div>
   </div>
 </header>
+
+<!-- OPTION PREMIUM TRACKER -->
+<div class="opt-tracker-wrap" id="optTrackerWrap">
+  <span class="opt-tracker-label">Option Contract</span>
+  <div class="opt-contract-row">
+    <button class="opt-type-btn active-call" id="optTypeBtn" onclick="toggleOptType()">CALL</button>
+    <input class="opt-input opt-input-strike" id="optStrikeInput" type="number" step="0.5" min="1" placeholder="Strike">
+    <input class="opt-input opt-input-expiry" id="optExpiryInput" type="date" title="Expiry date">
+    <div class="opt-entry-group">
+      <span class="opt-entry-label">Entry Premium $</span>
+      <input class="opt-input" id="optEntryPremium" type="number" step="0.01" min="0.01" placeholder="e.g. 1.25" style="width:80px">
+    </div>
+    <button class="btn-opt-set" onclick="setOptionContract()">Track</button>
+    <button class="btn-opt-clear" id="optClearBtn" onclick="clearOptionContract()" style="display:none">✕ Clear</button>
+  </div>
+  <div class="opt-live-display" id="optLiveDisplay">
+    <span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>
+  </div>
+</div>
 
 <!-- MAIN -->
 <div class="main">
@@ -1369,6 +1542,11 @@ let fetchTimer   = null;
 let lastSigLevel = '';
 let optionsTimer = null;
 
+// ── Option Premium Tracker State ────────────────────────────────────────────
+let optContract = null; // { strike, expiry, type, entryPremium }
+let optPremiumTimer = null;
+let optCurrentPrice = null;
+
 // ── Voice Alerts ───────────────────────────────────────────────────────────
 let voiceEnabled   = false;
 let lastSpokenKey  = '';
@@ -1415,6 +1593,116 @@ function maybeSpeak(sig, rsiVal, gainPct) {
     'HOLD — OVERSOLD BOUNCE': `ScalpClock. Oversold bounce in progress on ${ticker}. RSI ${rsiVal.toFixed(0)}. Room to run.`,
   };
   if (scripts[lvl]) speak(scripts[lvl]);
+}
+
+// ── Option Premium Tracker ─────────────────────────────────────────────────
+let optCallMode = true; // true=call, false=put
+
+function toggleOptType() {
+  optCallMode = !optCallMode;
+  const btn = document.getElementById('optTypeBtn');
+  btn.textContent = optCallMode ? 'CALL' : 'PUT';
+  btn.className = 'opt-type-btn ' + (optCallMode ? 'active-call' : 'active-put');
+}
+
+function setOptionContract() {
+  const strike = parseFloat(document.getElementById('optStrikeInput').value);
+  const expiry = document.getElementById('optExpiryInput').value;
+  const entry  = parseFloat(document.getElementById('optEntryPremium').value);
+
+  if (!strike || !expiry) {
+    document.getElementById('optStatusMsg').textContent = 'Enter strike and expiry date to track.';
+    return;
+  }
+
+  optContract = { strike, expiry, type: optCallMode ? 'call' : 'put', entryPremium: entry || null };
+  optCurrentPrice = null;
+
+  document.getElementById('optClearBtn').style.display = '';
+  document.getElementById('optStatusMsg').style.display = 'none';
+  document.getElementById('optLiveDisplay').innerHTML = `
+    <span class="opt-ticker-label">${ticker} ${strike}${optCallMode ? 'C' : 'P'} ${expiry.slice(5)}</span>
+    <span class="opt-status-msg" id="optStatusMsg">Fetching live premium...</span>`;
+
+  if (optPremiumTimer) clearInterval(optPremiumTimer);
+  fetchOptionPremium();
+  optPremiumTimer = setInterval(fetchOptionPremium, 10000);
+}
+
+function clearOptionContract() {
+  optContract = null;
+  optCurrentPrice = null;
+  if (optPremiumTimer) { clearInterval(optPremiumTimer); optPremiumTimer = null; }
+  document.getElementById('optClearBtn').style.display = 'none';
+  const display = document.getElementById('optLiveDisplay');
+  display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>';
+}
+
+async function fetchOptionPremium() {
+  if (!optContract) return;
+  const { strike, expiry, type, entryPremium } = optContract;
+  try {
+    const res  = await fetch(`/api/option-price?symbol=${ticker}&strike=${strike}&expiry=${expiry}&type=${type}`);
+    const data = await res.json();
+    renderOptionPremium(data, entryPremium);
+  } catch {
+    document.getElementById('optStatusMsg') &&
+      (document.getElementById('optStatusMsg').textContent = 'Premium fetch error — retrying...');
+  }
+}
+
+function renderOptionPremium(d, entryPremium) {
+  const display = document.getElementById('optLiveDisplay');
+  if (!display) return;
+
+  if (d.error) {
+    display.innerHTML = `<span class="opt-status-msg" id="optStatusMsg">Contract not found (${d.ticker || ''}). Check strike/expiry.</span>`;
+    return;
+  }
+
+  const price = d.mid ?? d.last ?? d.bid ?? null;
+  if (price === null) {
+    display.innerHTML = `<span class="opt-status-msg" id="optStatusMsg">No price data available yet</span>`;
+    return;
+  }
+
+  optCurrentPrice = price;
+  const typeStr   = d.type === 'put' ? 'P' : 'C';
+  const exStr     = d.expiry ? d.expiry.slice(5) : '';
+  const tickLabel = `${d.symbol} $${d.strike}${typeStr} ${exStr}`;
+
+  // P&L calc — options are priced per share; 1 contract = 100 shares
+  let plHTML = '';
+  if (entryPremium && entryPremium > 0) {
+    const plPct   = ((price - entryPremium) / entryPremium * 100);
+    const plDollar = (price - entryPremium) * 100; // per contract
+    const neg     = plPct < 0;
+    plHTML = `
+      <div class="opt-pl-pill${neg ? ' neg' : ''}">
+        <span class="opt-pl-val">${neg ? '' : '+'}${plDollar >= 0 ? '+' : ''}$${plDollar.toFixed(0)}</span>
+        <span class="opt-pl-pct">${plPct >= 0 ? '+' : ''}${plPct.toFixed(1)}% / contract</span>
+      </div>`;
+  }
+
+  const greeksHTML = (d.delta !== null || d.theta !== null) ? `
+    <div class="opt-greeks-row">
+      ${d.delta !== null ? `<span class="opt-greek-chip"><span class="opt-greek-lbl">Δ </span><span class="opt-greek-val">${d.delta.toFixed(2)}</span></span>` : ''}
+      ${d.gamma !== null ? `<span class="opt-greek-chip"><span class="opt-greek-lbl">Γ </span><span class="opt-greek-val">${d.gamma.toFixed(3)}</span></span>` : ''}
+      ${d.theta !== null ? `<span class="opt-greek-chip"><span class="opt-greek-lbl">Θ </span><span class="opt-greek-val">${d.theta.toFixed(2)}</span></span>` : ''}
+      ${d.iv    !== null ? `<span class="opt-greek-chip"><span class="opt-greek-lbl">IV </span><span class="opt-greek-val">${d.iv}%</span></span>` : ''}
+    </div>` : '';
+
+  const bidAsk = (d.bid !== null && d.ask !== null)
+    ? `<span class="opt-live-sub">Bid <b>$${d.bid.toFixed(2)}</b> / Ask <b>$${d.ask.toFixed(2)}</b></span>` : '';
+
+  display.innerHTML = `
+    <span class="opt-ticker-label">${tickLabel}</span>
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <span class="opt-live-price">$${price.toFixed(2)}</span>
+      ${bidAsk}
+    </div>
+    ${plHTML}
+    ${greeksHTML}`;
 }
 
 // ── Options Data ───────────────────────────────────────────────────────────
@@ -1501,6 +1789,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const sel = document.getElementById('tickerSel');
     if ([...sel.options].some(o => o.value === ticker)) sel.value = ticker;
   }
+  // Default expiry to next Friday
+  const nextFriday = (() => {
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun
+    const daysUntilFri = (5 - day + 7) % 7 || 7;
+    d.setDate(d.getDate() + daysUntilFri);
+    return d.toISOString().split('T')[0];
+  })();
+  document.getElementById('optExpiryInput').value = nextFriday;
+
   refresh();
   loadOptions();
   fetchTimer   = setInterval(refresh, 5000);
@@ -1518,6 +1816,8 @@ function onTickerChange() {
   resetDisplay();
   refresh();
   loadOptions();
+  // Clear option contract since it was for the old ticker
+  if (optContract) clearOptionContract();
 }
 
 function setEntry() {
