@@ -573,6 +573,120 @@
   .no-entry-state h3 { font-size: 14px; font-weight: 700; color: var(--text); }
   .no-entry-state p { font-size: 11px; color: var(--muted); line-height: 1.6; max-width: 200px; }
 
+  /* ── CONFIDENCE BADGE ── */
+  .confidence-card {
+    margin-top: 10px;
+    background: rgba(14,20,32,0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .confidence-score-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 64px;
+  }
+  .confidence-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    transition: color 0.4s;
+  }
+  .confidence-num.high { color: var(--bull); text-shadow: 0 0 20px rgba(0,201,107,0.4); }
+  .confidence-num.med  { color: var(--warn); text-shadow: 0 0 20px rgba(245,166,35,0.4); }
+  .confidence-num.low  { color: var(--bear); text-shadow: 0 0 20px rgba(255,69,102,0.4); }
+  .confidence-grade {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .confidence-grade.high { color: var(--bull); }
+  .confidence-grade.med  { color: var(--warn); }
+  .confidence-grade.low  { color: var(--bear); }
+  .confidence-body { flex: 1; min-width: 0; }
+  .confidence-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .confidence-bar-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .confidence-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.7s cubic-bezier(0.4,0,0.2,1), background 0.4s;
+  }
+  .confidence-factors { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  /* ── EMOTIONAL WARNING ── */
+  .emotional-warning {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid;
+    animation: warnPulse 2.2s ease-in-out infinite;
+  }
+  .emotional-warning.greed { background: rgba(245,166,35,0.08); border-color: rgba(245,166,35,0.45); }
+  .emotional-warning.panic { background: rgba(255,69,102,0.08); border-color: rgba(255,69,102,0.45); }
+  @keyframes warnPulse { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+  .warn-icon { font-size: 22px; flex-shrink: 0; }
+  .warn-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .emotional-warning.greed .warn-title { color: var(--warn); }
+  .emotional-warning.panic .warn-title { color: var(--bear); }
+  .warn-msg { font-size: 12px; color: #fff; line-height: 1.45; font-weight: 500; }
+
+  /* ── TRAILING STOP ── */
+  .trailing-stop-wrap {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .trailing-stop-hdr {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .ts-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+  }
+  .ts-label { font-size: 11px; color: var(--muted); }
+  .ts-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #fff; }
+  .ts-val.stop { color: var(--bear); }
+  .ts-val.lock { color: var(--bull); }
+  .ts-note { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
   /* ── MOBILE ── */
   @media (max-width: 760px) {
     .main {
@@ -735,6 +849,30 @@
         <div class="exit-sub" id="exitSub">Live RSI · velocity · volume analysis · updates every 5s</div>
       </div>
     </div>
+
+    <!-- CONFIDENCE BADGE -->
+    <div class="confidence-card" id="confidenceCard">
+      <div class="confidence-score-wrap">
+        <div class="confidence-num" id="confNum">—</div>
+        <div class="confidence-grade" id="confGrade">CONFIDENCE</div>
+      </div>
+      <div class="confidence-body">
+        <div class="confidence-label">Trade Confidence</div>
+        <div class="confidence-bar-track">
+          <div class="confidence-bar-fill" id="confBar" style="width:0%;background:var(--muted)"></div>
+        </div>
+        <div class="confidence-factors" id="confFactors">Waiting for data...</div>
+      </div>
+    </div>
+
+    <!-- EMOTIONAL WARNING -->
+    <div class="emotional-warning" id="emotionalWarn">
+      <div class="warn-icon" id="warnIcon">⚠️</div>
+      <div>
+        <div class="warn-title" id="warnTitle">WARNING</div>
+        <div class="warn-msg" id="warnMsg"></div>
+      </div>
+    </div>
   </div>
 
   <!-- STATS STRIP -->
@@ -775,6 +913,24 @@
         <h3>Set Your Entry Price</h3>
         <p>Enter the price you bought at to see probability estimates and estimated times for each profit level.</p>
       </div>
+    </div>
+
+    <!-- TRAILING STOP -->
+    <div class="trailing-stop-wrap" id="trailingStopWrap">
+      <div class="trailing-stop-hdr">Live Trailing Stop</div>
+      <div class="ts-row">
+        <span class="ts-label">Current</span>
+        <span class="ts-val" id="tsCurrentPrice">—</span>
+      </div>
+      <div class="ts-row">
+        <span class="ts-label">Recommended Stop</span>
+        <span class="ts-val stop" id="tsStopPrice">—</span>
+      </div>
+      <div class="ts-row" id="tsLockRow" style="display:none">
+        <span class="ts-label">If triggered, locks in</span>
+        <span class="ts-val lock" id="tsLockPct">—</span>
+      </div>
+      <div class="ts-note" id="tsNote">Set entry price to activate</div>
     </div>
 
     <div class="momentum-wrap">
@@ -823,6 +979,7 @@ function onTickerChange() {
   document.getElementById('entryInput').value = '';
   document.getElementById('gainPill').style.display = 'none';
   candles = [];
+  updateTargetTabs();
   resetDisplay();
   refresh();
 }
@@ -831,8 +988,21 @@ function setEntry() {
   const v = parseFloat(document.getElementById('entryInput').value);
   if (!isNaN(v) && v > 0) {
     entryPrice = v;
+    updateTargetTabs();
     if (candles.length > 0) render();
   }
+}
+
+function updateTargetTabs() {
+  document.querySelectorAll('.t-tab').forEach(btn => {
+    const pct = parseInt(btn.dataset.pct);
+    if (entryPrice) {
+      const target = entryPrice * (1 + pct / 100);
+      btn.textContent = `$${target.toFixed(2)}`;
+    } else {
+      btn.textContent = `+${pct}%`;
+    }
+  });
 }
 
 function pickTarget(btn) {
@@ -840,6 +1010,119 @@ function pickTarget(btn) {
   btn.classList.add('active');
   clockTarget = parseInt(btn.dataset.pct);
   if (candles.length > 0) render();
+}
+
+// ── Confidence Score (0-100) ───────────────────────────────────────────────
+function calcConfidence(rsiVal, vel, atrVal, vt, vtrend) {
+  const a = atrVal || 0.01;
+  let score = 50;
+
+  // RSI (±25)
+  if      (rsiVal <= 25) score += 22;
+  else if (rsiVal <= 38) score += 14;
+  else if (rsiVal <= 52) score += 5;
+  else if (rsiVal <= 62) score -= 3;
+  else if (rsiVal <= 72) score -= 14;
+  else                   score -= 25;
+
+  // Velocity vs ATR (±20)
+  if      (vel > a * 0.55) score += 20;
+  else if (vel > a * 0.25) score += 11;
+  else if (vel > 0)        score += 3;
+  else if (vel > -a * 0.2) score -= 10;
+  else                     score -= 20;
+
+  // Volume trend (±15)
+  if      (vt > 0.30)  score += 15;
+  else if (vt > 0.08)  score += 8;
+  else if (vt > -0.10) score += 0;
+  else                 score -= 10;
+
+  // Velocity trend/momentum (±10)
+  if      (vtrend > a * 0.06) score += 10;
+  else if (vtrend > 0)        score += 4;
+  else if (vtrend > -a * 0.06) score -= 4;
+  else                         score -= 10;
+
+  return Math.min(97, Math.max(3, Math.round(score)));
+}
+
+function renderConfidence(score, rsiVal, vel, atrVal, vt) {
+  const grade = score >= 72 ? 'HIGH' : score >= 48 ? 'MODERATE' : 'LOW';
+  const cls   = score >= 72 ? 'high' : score >= 48 ? 'med' : 'low';
+  const color = score >= 72 ? 'var(--bull)' : score >= 48 ? 'var(--warn)' : 'var(--bear)';
+
+  document.getElementById('confNum').textContent = score;
+  document.getElementById('confNum').className = `confidence-num ${cls}`;
+  document.getElementById('confGrade').textContent = grade;
+  document.getElementById('confGrade').className = `confidence-grade ${cls}`;
+  document.getElementById('confBar').style.width = score + '%';
+  document.getElementById('confBar').style.background = color;
+
+  const a = atrVal || 0.01;
+  const factors = [
+    `RSI ${rsiVal.toFixed(0)}`,
+    vel > a * 0.25 ? 'Vel ↑' : vel < 0 ? 'Vel ↓' : 'Vel →',
+    vt > 0.08 ? 'Vol ↑' : vt < -0.10 ? 'Vol ↓' : 'Vol →',
+    `ATR $${atrVal.toFixed(3)}`,
+  ];
+  document.getElementById('confFactors').textContent = factors.join(' · ');
+}
+
+// ── Trailing Stop ──────────────────────────────────────────────────────────
+function renderTrailingStop(currentPrice, entryPrice, atrVal) {
+  const stop = currentPrice - atrVal * 1.5;
+  document.getElementById('tsCurrentPrice').textContent = `$${currentPrice.toFixed(2)}`;
+  document.getElementById('tsStopPrice').textContent = `$${stop.toFixed(2)}`;
+
+  if (entryPrice) {
+    const lockPct = ((stop - entryPrice) / entryPrice * 100);
+    const lockRow = document.getElementById('tsLockRow');
+    lockRow.style.display = 'flex';
+    const lockEl = document.getElementById('tsLockPct');
+    lockEl.textContent = `${lockPct >= 0 ? '+' : ''}${lockPct.toFixed(1)}%`;
+    lockEl.className = `ts-val ${lockPct >= 0 ? 'lock' : 'stop'}`;
+    document.getElementById('tsNote').textContent =
+      lockPct >= 0
+        ? `Stop is ${(atrVal * 1.5).toFixed(2)} below current (1.5× ATR)`
+        : `Stop would lock in a loss — widen if trade still valid`;
+  } else {
+    document.getElementById('tsLockRow').style.display = 'none';
+    document.getElementById('tsNote').textContent = `Stop distance: $${(atrVal * 1.5).toFixed(2)} (1.5× ATR)`;
+  }
+}
+
+// ── Emotional Warning ──────────────────────────────────────────────────────
+function renderEmotionalWarning(gainPct, rsiVal, vel, atrVal) {
+  const el = document.getElementById('emotionalWarn');
+  if (gainPct === null) { el.style.display = 'none'; return; }
+
+  const a = atrVal || 0.01;
+  let type = null, icon = '', title = '', msg = '';
+
+  if (gainPct >= 20 || (gainPct >= 12 && rsiVal >= 72)) {
+    type = 'greed';
+    icon = '🟡';
+    title = 'GREED WARNING';
+    msg = gainPct >= 20
+      ? `+${gainPct.toFixed(1)}% is a strong trade. Greed can give it all back — take some profit.`
+      : `Up +${gainPct.toFixed(1)}% with RSI at ${rsiVal.toFixed(0)}. Don't let a winner turn into a loser.`;
+  } else if (gainPct <= -10 || (gainPct <= -5 && vel < -a * 0.35)) {
+    type = 'panic';
+    icon = '🔴';
+    title = 'PANIC WARNING';
+    msg = gainPct <= -10
+      ? `Down ${gainPct.toFixed(1)}% — don't panic-sell at the bottom. Wait for your stop or a bounce signal.`
+      : `Rapid drop of ${gainPct.toFixed(1)}%. Emotional exits rarely work — stick to your plan.`;
+  }
+
+  if (!type) { el.style.display = 'none'; return; }
+
+  el.style.display = 'flex';
+  el.className = `emotional-warning ${type}`;
+  document.getElementById('warnIcon').textContent = icon;
+  document.getElementById('warnTitle').textContent = title;
+  document.getElementById('warnMsg').textContent = msg;
 }
 
 // ── Fetch ──────────────────────────────────────────────────────────────────
@@ -1095,6 +1378,16 @@ function render() {
 
   // Probability cards (needs entry)
   if (entryPrice) renderProbCards(now, vel, atrVal, rsiVal, vt);
+
+  // Confidence badge
+  const conf = calcConfidence(rsiVal, vel, atrVal, vt, vtrend);
+  renderConfidence(conf, rsiVal, vel, atrVal, vt);
+
+  // Trailing stop
+  renderTrailingStop(now, entryPrice, atrVal);
+
+  // Emotional warning
+  renderEmotionalWarning(gainPct, rsiVal, vel, atrVal);
 }
 
 function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {
@@ -1195,10 +1488,10 @@ function renderProbCards(now, vel, atrVal, rsiVal, vt) {
     return `
 <div class="prob-card${isActive ? ' active' : ''}" data-pct="${pct}">
   <div class="prob-row">
-    <div class="prob-target">+${pct}%</div>
+    <div class="prob-target" style="font-size:15px">$${px}</div>
     <div class="prob-pct" style="color:${pctColor}">${probPct}%</div>
   </div>
-  <div class="prob-target-price">Target: <span>$${px}</span></div>
+  <div class="prob-target-price">+${pct}% target · <span style="color:${pctColor};font-weight:700">${probPct}% chance</span></div>
   <div class="prob-bar-track">
     <div class="prob-bar-fill" style="width:${probPct}%;background:${barColor}"></div>
   </div>
