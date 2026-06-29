@@ -37,21 +37,21 @@ export async function onRequest(context) {
   const todayStr = now.toISOString().slice(0, 10);
 
   async function fetchBars(symbol) {
-    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=200&feed=sip`;
+    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=200&feed=iex`;
     const res  = await fetch(url, { headers });
     const data = await res.json();
     return data.bars || [];
   }
 
   async function fetchLatestBar(symbol) {
-    const url  = `${BASE}/stocks/${symbol}/bars/latest?feed=sip`;
+    const url  = `${BASE}/stocks/${symbol}/bars/latest?feed=iex`;
     const res  = await fetch(url, { headers });
     const data = await res.json();
     return data.bar || null;
   }
 
   async function fetchPrevDayBar(symbol) {
-    const url  = `${BASE}/stocks/${symbol}/bars?timeframe=1Day&start=${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()}&limit=2&feed=sip`;
+    const url  = `${BASE}/stocks/${symbol}/bars?timeframe=1Day&start=${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()}&limit=2&feed=iex`;
     const res  = await fetch(url, { headers });
     const data = await res.json();
     const bars = data.bars || [];

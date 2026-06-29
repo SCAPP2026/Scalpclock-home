@@ -6,6 +6,13 @@
 <title>ScalpClock · Options. Speed. Edge. Live options-timing signals.</title>
 <meta name="description" content="ScalpClock reads the live market and tells you when to buy calls or buy puts on SPY, QQQ, TSLA, NVDA, IWM and AAPL. Real RSI timing, plain English, updated live.">
 <link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/hero.png">
 <meta property="og:title" content="ScalpClock · The time to profit is now">
 <meta property="og:description" content="Live options-timing signals on SPY, QQQ, TSLA, NVDA, IWM, AAPL. Real RSI, plain English.">
 <meta property="og:image" content="hero.png">
@@ -746,8 +753,9 @@ footer {
       <a href="#signals">Live Signals</a>
       <a href="/scalpchart">Charts</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="#how">How It Works</a>
-      <a href="#accuracy">Why Accurate</a>
+      <a href="/learn">Learn</a>
+      <a href="/faq">FAQ</a>
+      <a href="/pricing">Pricing</a>
     </div>
     <button class="btn-tour" onclick="startTour()" title="Quick tour">?</button>
     <a class="nav-cta nav-cta-dash" href="/dashboard" style="background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
@@ -1673,6 +1681,7 @@ footer {
   }
 })();
 </script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>
 

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock · Learn — RSI, VWAP, HARD Signals & Options Basics</title>
+<meta name="description" content="Understand how ScalpClock works. Learn RSI, VWAP, volume confluence, HARD signals, and the basics of options scalping — in plain English.">
+<link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;--bg3:#0e1610;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);--g-mid:rgba(22,217,126,.15);
+  --red:#ff3b46;--r-dim:rgba(255,59,70,.08);
+  --orange:#ff7a1a;
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --mono:'JetBrains Mono',monospace;
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --max:820px;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.75);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:1.32rem;letter-spacing:.02em;}
+.b-mark{width:30px;height:30px;border-radius:8px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;}
+.b-mark svg{width:18px;height:18px;}
+.brand em{color:var(--green);font-style:normal;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-family:var(--disp);font-weight:600;font-size:.9rem;color:var(--t55);padding:8px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(22,217,126,.08);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
+.nav-cta:hover{background:#20e88a;}
+@media(max-width:720px){.nav-links{display:none;}}
+
+/* PAGE HERO */
+.page-hero{text-align:center;padding:72px 24px 40px;position:relative;z-index:1;}
+.page-hero h1{font-family:var(--disp);font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-bottom:14px;}
+.page-hero h1 em{color:var(--green);font-style:normal;}
+.page-hero p{color:var(--t55);font-size:1rem;max-width:560px;margin:0 auto;}
+
+/* TOPIC NAV */
+.topic-nav{position:relative;z-index:1;padding:0 24px 40px;}
+.topic-nav .wrap{display:flex;flex-wrap:wrap;gap:10px;}
+.topic-pill{font-family:var(--disp);font-weight:600;font-size:.85rem;padding:8px 16px;border-radius:20px;border:1px solid var(--line);color:var(--t55);transition:.15s;cursor:pointer;}
+.topic-pill:hover{border-color:rgba(22,217,126,.4);color:var(--green);background:var(--g-dim);}
+
+/* CONTENT */
+.learn-content{position:relative;z-index:1;padding:0 24px 80px;}
+.learn-content .wrap{display:flex;flex-direction:column;gap:64px;}
+
+.section{scroll-margin-top:80px;}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;}
+.section-num{font-family:var(--mono);font-size:.75rem;color:var(--green);border:1px solid rgba(22,217,126,.3);border-radius:6px;padding:3px 8px;}
+.section h2{font-family:var(--disp);font-size:clamp(1.5rem,4vw,2rem);font-weight:700;}
+
+.prose{display:flex;flex-direction:column;gap:18px;}
+.prose p{color:var(--t80);line-height:1.75;font-size:1rem;}
+.prose strong{color:var(--text);font-weight:600;}
+.prose a{color:var(--green);text-decoration:underline;text-underline-offset:3px;}
+
+/* INFO CARDS */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+@media(max-width:560px){.info-grid{grid-template-columns:1fr;}}
+.info-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;}
+.info-card .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;color:var(--t30);margin-bottom:8px;text-transform:uppercase;}
+.info-card .val{font-family:var(--disp);font-size:1.3rem;font-weight:700;}
+.info-card .desc{color:var(--t55);font-size:.85rem;margin-top:6px;line-height:1.5;}
+.card-buy{border-color:rgba(22,217,126,.3);background:rgba(22,217,126,.04);}
+.card-sell{border-color:rgba(255,59,70,.3);background:rgba(255,59,70,.04);}
+.val-green{color:var(--green);}
+.val-red{color:var(--red);}
+
+/* HIGHLIGHT BLOCK */
+.highlight{background:var(--g-dim);border:1px solid rgba(22,217,126,.2);border-left:3px solid var(--green);border-radius:0 12px 12px 0;padding:20px 24px;margin-top:8px;}
+.highlight p{color:var(--t80);font-size:.95rem;line-height:1.7;}
+.highlight strong{color:var(--green);}
+
+.warn-block{background:rgba(255,122,26,.06);border:1px solid rgba(255,122,26,.2);border-left:3px solid var(--orange);border-radius:0 12px 12px 0;padding:20px 24px;margin-top:8px;}
+.warn-block p{color:var(--t80);font-size:.95rem;line-height:1.7;}
+
+/* TIER TABLE */
+.tier-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.9rem;}
+.tier-table th{font-family:var(--disp);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--t30);text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);}
+.tier-table td{padding:14px 16px;border-bottom:1px solid var(--line);color:var(--t80);}
+.tier-table tr:last-child td{border-bottom:none;}
+.badge{display:inline-block;font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.04em;padding:3px 10px;border-radius:20px;}
+.badge-elite{background:rgba(22,217,126,.15);color:var(--green);border:1px solid rgba(22,217,126,.3);}
+.badge-strong{background:rgba(255,214,0,.12);color:#ffd600;border:1px solid rgba(255,214,0,.3);}
+.badge-watch{background:rgba(238,243,240,.08);color:var(--t80);border:1px solid var(--line);}
+.badge-notrade{background:rgba(255,59,70,.1);color:#ff3b46;border:1px solid rgba(255,59,70,.3);}
+
+/* CTA STRIP */
+.learn-cta{text-align:center;position:relative;z-index:1;padding:0 24px 80px;}
+.learn-cta h3{font-family:var(--disp);font-size:1.6rem;font-weight:700;margin-bottom:10px;}
+.learn-cta p{color:var(--t55);font-size:.95rem;margin-bottom:24px;}
+.btn{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:13px 26px;border-radius:11px;transition:.15s;display:inline-block;border:1px solid transparent;}
+.btn-green{background:var(--green);color:#04150d;box-shadow:0 0 24px rgba(22,217,126,.3);}
+.btn-green:hover{background:#20e88a;}
+.btn-outline{border-color:rgba(22,217,126,.4);color:var(--green);margin-left:12px;}
+.btn-outline:hover{background:var(--g-dim);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <span class="b-mark">
+        <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line x1="9" y1="9" x2="9" y2="4.5"/>
+          <line x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </span>
+      Scalp<em>Clock</em>
+    </a>
+    <div class="nav-links">
+      <a href="/#signals">Live Signals</a>
+      <a href="/scalpchart">Charts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/learn" class="active">Learn</a>
+      <a href="/faq">FAQ</a>
+      <a href="/pricing">Pricing</a>
+    </div>
+    <a class="nav-cta" href="/login">Get Started</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>Learn the <em>Edge</em></h1>
+  <p>Understand the indicators behind every ScalpClock signal — so you can trade with confidence, not guesswork.</p>
+</div>
+
+<div class="topic-nav">
+  <div class="wrap">
+    <a class="topic-pill" href="#rsi">What is RSI?</a>
+    <a class="topic-pill" href="#hard-signal">HARD Signals</a>
+    <a class="topic-pill" href="#vwap">What is VWAP?</a>
+    <a class="topic-pill" href="#scoring">Scoring System</a>
+    <a class="topic-pill" href="#options">Options Basics</a>
+  </div>
+</div>
+
+<section class="learn-content">
+  <div class="wrap">
+
+    <!-- RSI -->
+    <div class="section" id="rsi">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>What is RSI?</h2>
+      </div>
+      <div class="prose">
+        <p>RSI stands for <strong>Relative Strength Index</strong>. It's a momentum oscillator that measures how fast and how much a price has moved over a recent period — and whether that move is stretched too far in one direction.</p>
+        <p>RSI runs on a 0–100 scale. A reading below 30 means the asset has been selling off hard and may be <strong>oversold</strong> — due for a bounce. Above 70 means it's been running up and may be <strong>overbought</strong> — due for a pullback.</p>
+        <div class="info-grid">
+          <div class="info-card card-buy">
+            <div class="label">Oversold Zone</div>
+            <div class="val val-green">RSI ≤ 30</div>
+            <div class="desc">Sellers have pushed too hard. Calls may have edge as price snaps back.</div>
+          </div>
+          <div class="info-card card-sell">
+            <div class="label">Overbought Zone</div>
+            <div class="val val-red">RSI ≥ 70</div>
+            <div class="desc">Buyers are exhausted. Puts may have edge as the move runs out of fuel.</div>
+          </div>
+        </div>
+        <p>ScalpClock uses a <strong>14-period RSI with Wilder smoothing</strong> on 5-minute bars — the same methodology professional traders use. That means we look at the last 14 candles (70 minutes of price action) and compute whether the current move is extreme relative to recent history.</p>
+        <div class="highlight">
+          <p><strong>ScalpClock extreme zones: RSI ≤ 20 or ≥ 80.</strong> These are our highest-conviction readings — they fire the strongest signal tier (Elite) and often pair with HARD conviction labels when volume and VWAP also align.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HARD SIGNALS -->
+    <div class="section" id="hard-signal">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>How to Read a HARD Signal</h2>
+      </div>
+      <div class="prose">
+        <p>Most signals are soft — a single indicator nudging in one direction. A <strong>HARD signal</strong> is different. It means multiple independent indicators are all pointing the same way at the same time. That's confluence, and confluence is where edge lives.</p>
+        <p>A HARD call signal fires when all of these are true simultaneously:</p>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="label">Condition 1</div>
+            <div class="val val-green">RSI ≤ 30</div>
+            <div class="desc">Price is deeply oversold on 5-min bars.</div>
+          </div>
+          <div class="info-card">
+            <div class="label">Condition 2</div>
+            <div class="val val-green">Below VWAP</div>
+            <div class="desc">Price is trading below the institutional anchor.</div>
+          </div>
+          <div class="info-card" style="margin-top:0;">
+            <div class="label">Condition 3</div>
+            <div class="val val-green">Vol ×1.5+</div>
+            <div class="desc">Volume is 1.5× the 20-bar average — someone's moving size.</div>
+          </div>
+          <div class="info-card" style="margin-top:0;">
+            <div class="label">Result</div>
+            <div class="val" style="color:var(--orange)">HARD</div>
+            <div class="desc">Conviction label fires. Signal card shows orange HARD badge.</div>
+          </div>
+        </div>
+        <p>The same logic applies in reverse for puts: RSI ≥ 70, price above VWAP, volume surging — those three together earn a HARD put signal.</p>
+        <div class="highlight">
+          <p><strong>HARD signals are rarer for a reason.</strong> They only fire when the setup is stacked. If you see HARD on SPY or QQQ during active market hours, that's the moment to pay attention — it's not just a single data point, it's a pattern with historically better outcomes.</p>
+        </div>
+        <div class="warn-block">
+          <p>Even HARD signals can fail. News events, Fed speeches, and earnings can override technical setups instantly. Always respect your stop-loss and never size into a HARD signal beyond your risk tolerance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VWAP -->
+    <div class="section" id="vwap">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>What is VWAP?</h2>
+      </div>
+      <div class="prose">
+        <p>VWAP stands for <strong>Volume-Weighted Average Price</strong>. It's the average price a stock has traded at throughout the day, weighted by how much volume occurred at each price level. Institutional traders — funds, desks, algorithms — use it as their primary intraday benchmark.</p>
+        <p>Because institutions use VWAP to decide whether they're getting a good fill or a bad one, price tends to mean-revert to it throughout the day. That makes it a powerful anchor for timing entries.</p>
+        <div class="info-grid">
+          <div class="info-card card-sell">
+            <div class="label">Price ABOVE VWAP</div>
+            <div class="val val-red">Bearish pressure</div>
+            <div class="desc">Buyers are paying above average. Sellers may defend. Pairs with overbought RSI for put setups.</div>
+          </div>
+          <div class="info-card card-buy">
+            <div class="label">Price BELOW VWAP</div>
+            <div class="val val-green">Bullish pressure</div>
+            <div class="desc">Buyers getting a discount. Support likely. Pairs with oversold RSI for call setups.</div>
+          </div>
+        </div>
+        <p>ScalpClock calculates VWAP fresh each day from the open using today's 5-minute bars, so you always see the current session's anchor — not yesterday's stale level.</p>
+        <p>When RSI is oversold <em>and</em> price is below VWAP, that's two independent signals agreeing. That combination is the engine behind most HARD call signals on ScalpClock.</p>
+      </div>
+    </div>
+
+    <!-- SCORING -->
+    <div class="section" id="scoring">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>ScalpClock's Scoring System</h2>
+      </div>
+      <div class="prose">
+        <p>Every ticker ScalpClock tracks gets a <strong>confluence score from 0–100</strong>. The score combines how extreme the RSI reading is, whether price is on the right side of VWAP, and whether volume is surging. The score drives which priority tier a signal falls into.</p>
+        <table class="tier-table">
+          <thead>
+            <tr>
+              <th>Tier</th>
+              <th>Score</th>
+              <th>What It Means</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-elite">Elite Setup</span></td>
+              <td>95–100</td>
+              <td>RSI in extreme zone + VWAP aligned + volume surge. Maximum confluence. Highest priority.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-strong">Strong Setup</span></td>
+              <td>85–94</td>
+              <td>Strong RSI reading with at least one confirming indicator. Good edge, slightly less conviction.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-watch">Watchlist</span></td>
+              <td>70–84</td>
+              <td>RSI is moving toward extremes. Not a trade yet — put it on your radar.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-notrade">No Trade</span></td>
+              <td>Below 70</td>
+              <td>RSI is neutral. No statistical edge right now. Avoid forcing a trade.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>The AI ranks all 20 tickers by score and surfaces the <strong>top 10 opportunities</strong> each refresh cycle. No Trade signals don't make the board unless fewer than 10 others qualify.</p>
+        <div class="highlight">
+          <p><strong>Focus on Elite and Strong setups.</strong> A Watchlist signal is context, not a trigger. The score isn't a guarantee — it's a ranking of where the technical edge is highest right now.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="section" id="options">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Options Basics for Scalpers</h2>
+      </div>
+      <div class="prose">
+        <p>ScalpClock tells you <strong>when</strong> to enter. Options give you <strong>leverage</strong> to profit from that timing without holding the underlying stock. Here's the minimum you need to understand.</p>
+        <div class="info-grid">
+          <div class="info-card card-buy">
+            <div class="label">Buy Calls when...</div>
+            <div class="val val-green">Bullish signal</div>
+            <div class="desc">You expect price to go UP. A call option gains value as the stock rises.</div>
+          </div>
+          <div class="info-card card-sell">
+            <div class="label">Buy Puts when...</div>
+            <div class="val val-red">Bearish signal</div>
+            <div class="desc">You expect price to go DOWN. A put option gains value as the stock falls.</div>
+          </div>
+        </div>
+        <p><strong>0DTE options</strong> (zero days to expiration) are popular with scalpers because they move fast and require less capital. But they lose value every minute — time decay (theta) is brutal. A signal needs to play out <em>quickly</em> on 0DTE, typically within the same session.</p>
+        <p>For scalping, most traders look for options that are <strong>at-the-money (ATM) or one strike in-the-money (ITM)</strong>. These have the best balance of leverage and delta — meaning they move closely with the underlying stock price.</p>
+        <div class="warn-block">
+          <p><strong>Options can expire worthless.</strong> Never trade options with money you can't afford to lose. Position size matters more than the signal. Even a perfect technical setup can be wiped out by a news event or a wider market reversal. Start small, learn the mechanics before scaling up.</p>
+        </div>
+        <p>ScalpClock is the timing layer — it tells you when the technical conditions favor a move. The rest — expiry, strike, position size, stop-loss — is your job as the trader. Use the <a href="/exitassistant">Exit Assistant</a> to know when to close.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="learn-cta">
+  <h3>Ready to trade with edge?</h3>
+  <p>See live signals now — no account required for the signal board.</p>
+  <a class="btn btn-green" href="/">See Live Signals</a>
+  <a class="btn btn-outline" href="/faq">Read the FAQ</a>
+</div>
+
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock · FAQ — Frequently Asked Questions</title>
+<meta name="description" content="Answers to common questions about ScalpClock signals, accounts, tickers, and how options-timing works.">
+<link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --max:760px;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.75);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:1.32rem;letter-spacing:.02em;}
+.b-mark{width:30px;height:30px;border-radius:8px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;}
+.b-mark svg{width:18px;height:18px;}
+.brand em{color:var(--green);font-style:normal;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-family:var(--disp);font-weight:600;font-size:.9rem;color:var(--t55);padding:8px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(22,217,126,.08);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
+.nav-cta:hover{background:#20e88a;}
+@media(max-width:720px){.nav-links{display:none;}}
+
+/* PAGE */
+.page-hero{text-align:center;padding:72px 24px 48px;position:relative;z-index:1;}
+.page-hero h1{font-family:var(--disp);font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-bottom:14px;}
+.page-hero h1 em{color:var(--green);font-style:normal;}
+.page-hero p{color:var(--t55);font-size:1rem;}
+
+/* ACCORDION */
+.faq-list{position:relative;z-index:1;padding:0 24px 80px;}
+.faq-list .wrap{display:flex;flex-direction:column;gap:0;}
+.faq-item{border-bottom:1px solid var(--line);}
+.faq-item:first-child{border-top:1px solid var(--line);}
+.faq-q{width:100%;background:none;border:none;color:var(--text);font-family:var(--body);font-size:1rem;font-weight:600;text-align:left;padding:22px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;transition:.15s;}
+.faq-q:hover{color:var(--green);}
+.faq-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--g-dim);border:1px solid var(--line);display:grid;place-items:center;transition:.3s;}
+.faq-item.open .faq-icon{background:rgba(22,217,126,.15);border-color:rgba(22,217,126,.4);transform:rotate(45deg);}
+.faq-icon svg{width:12px;height:12px;}
+.faq-a{overflow:hidden;max-height:0;transition:max-height .35s ease,padding .25s;}
+.faq-item.open .faq-a{max-height:400px;}
+.faq-a p{color:var(--t80);font-size:.95rem;line-height:1.7;padding-bottom:22px;}
+.faq-a a{color:var(--green);text-decoration:underline;text-underline-offset:3px;}
+
+/* SECTION LABEL */
+.faq-section-label{font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.1em;color:var(--green);text-transform:uppercase;padding:32px 0 8px;max-width:var(--max);margin:0 auto;padding-left:0;}
+
+/* CTA */
+.faq-cta{text-align:center;position:relative;z-index:1;padding:0 24px 80px;}
+.faq-cta p{color:var(--t55);margin-bottom:20px;font-size:.95rem;}
+.btn-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:12px 24px;border-radius:10px;transition:.15s;display:inline-block;}
+.btn-green{background:var(--green);color:#04150d;}
+.btn-green:hover{background:#20e88a;}
+.btn-outline{border:1px solid rgba(22,217,126,.4);color:var(--green);}
+.btn-outline:hover{background:var(--g-dim);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <span class="b-mark">
+        <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line x1="9" y1="9" x2="9" y2="4.5"/>
+          <line x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </span>
+      Scalp<em>Clock</em>
+    </a>
+    <div class="nav-links">
+      <a href="/#signals">Live Signals</a>
+      <a href="/scalpchart">Charts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/learn">Learn</a>
+      <a href="/faq" class="active">FAQ</a>
+      <a href="/pricing">Pricing</a>
+    </div>
+    <a class="nav-cta" href="/login">Get Started</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>Frequently <em>Asked</em> Questions</h1>
+  <p>Everything you need to know about ScalpClock before you trade.</p>
+</div>
+
+<section class="faq-list">
+  <div class="wrap">
+
+    <div class="faq-section-label">The Basics</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        Is this paper trading or real money?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>ScalpClock provides <strong>real market signals</strong> — but you execute all trades yourself through your own brokerage. We are a signal and timing platform, not a broker. There is no paper trading mode; every signal reflects live or recent market data. Your money, your decisions, your broker.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        How often do signals refresh?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>The live signal board refreshes every <strong>60 seconds</strong> during market hours. Each refresh pulls the latest 5-minute bars from our data feed, recalculates RSI(14), VWAP, and volume surge for all 20 tickers, and re-ranks the top 10 opportunities. Signal quality is better when the market is actively trading (9:45 AM–4:00 PM ET).</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        What does HARD mean?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>A <strong>HARD signal</strong> is our highest-confidence alert. It fires when multiple indicators align simultaneously: RSI is in extreme territory (≤20 oversold or ≥80 overbought), price is on the wrong side of VWAP, <em>and</em> volume is surging above the 20-bar average. Seeing HARD on a call or put means the statistical edge is stacked — it's not just one indicator, it's confluence. <a href="/learn#hard-signal">Learn more about HARD signals →</a></p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        Do I need an account to use ScalpClock?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>The live signal board on the home page is accessible without an account. To use the <strong>Exit Assistant</strong>, <strong>trade journal</strong>, or <strong>dashboard</strong>, you need a free ScalpClock account. Creating one takes under 30 seconds — just an email and password, no credit card required.</p></div>
+    </div>
+
+    <div class="faq-section-label">Signals & Data</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        What tickers does ScalpClock cover?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>ScalpClock monitors <strong>20 tickers</strong>: SPY, QQQ, IWM, AAPL, MSFT, AMZN, GOOGL, META, NVDA, TSLA, AMD, NFLX, COIN, PLTR, SOFI, ARM, GLD, TLT, XLE, and MSTR. The AI ranks these 20 by confluence score and surfaces the top 10 opportunities each refresh cycle.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        What is the difference between Free and Pro?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>Free gives you 4 delayed signals and 2 AI explanations per day, plus the 15-minute delayed watchlist. Pro ($9.99/mo) unlocks <strong>unlimited real-time signals</strong>, push notifications, confidence scores, options entry/exit recommendations, news catalyst integration, and full mobile access. <a href="/pricing">See the full comparison →</a></p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        How accurate are the signals?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>Signal accuracy depends on market conditions. <strong>HARD signals</strong> (highest confluence) have historically shown a strong directional edge intraday, particularly in high-liquidity names like SPY and QQQ. No signal is guaranteed — markets can gap, reverse on news, or squeeze against the technical setup. ScalpClock is a timing tool, not a guarantee. Always use position sizing and stops.</p></div>
+    </div>
+
+    <div class="faq-section-label">About ScalpClock</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        Is ScalpClock a financial advisor?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p><strong>No.</strong> ScalpClock is an educational and analytical tool. Nothing on this platform constitutes financial advice, investment advice, or a recommendation to buy or sell any security. Options trading involves significant risk of loss. You should consult a licensed financial advisor before trading. Trade responsibly.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">
+        Can I use ScalpClock on my phone?
+        <span class="faq-icon"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span>
+      </button>
+      <div class="faq-a"><p>Yes. ScalpClock is a <strong>Progressive Web App (PWA)</strong> — open it in your mobile browser and tap "Add to Home Screen" to install it like a native app. It loads fast, works offline with cached signals, and Pro users get push notifications delivered directly to their phone. No app store required.</p></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="faq-cta">
+  <p>Still have questions? Start with the free tier — no credit card needed.</p>
+  <div class="btn-group">
+    <a class="btn btn-green" href="/login">Create Free Account</a>
+    <a class="btn btn-outline" href="/learn">Learn How It Works</a>
+  </div>
+</div>
+
+<script>
+function toggle(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

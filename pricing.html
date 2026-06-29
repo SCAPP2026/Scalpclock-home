@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock · Pricing — Free, Pro & Elite</title>
+<meta name="description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing. Go Elite for unusual flow, earnings mode and priority alerts.">
+<link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.12);
+  --gold:#f5a623;--gold-dim:rgba(245,166,35,.12);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --max:1100px;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.75);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:1.32rem;letter-spacing:.02em;}
+.b-mark{width:30px;height:30px;border-radius:8px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;}
+.b-mark svg{width:18px;height:18px;}
+.brand em{color:var(--green);font-style:normal;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-family:var(--disp);font-weight:600;font-size:.9rem;color:var(--t55);padding:8px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(22,217,126,.08);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
+.nav-cta:hover{background:#20e88a;}
+@media(max-width:720px){.nav-links{display:none;}}
+
+/* HERO */
+.page-hero{text-align:center;padding:72px 24px 40px;position:relative;z-index:1;}
+.page-hero h1{font-family:var(--disp);font-size:clamp(2rem,5vw,3.2rem);font-weight:700;line-height:1.1;margin-bottom:16px;}
+.page-hero h1 em{color:var(--green);font-style:normal;}
+.page-hero p{color:var(--t80);font-size:clamp(15px,2vw,18px);max-width:520px;margin:0 auto;}
+
+/* TOGGLE */
+.billing-toggle{display:flex;align-items:center;gap:12px;justify-content:center;margin:32px 0 0;font-size:.9rem;color:var(--t55);}
+.toggle-pill{position:relative;width:48px;height:26px;background:var(--g-dim);border:1px solid rgba(22,217,126,.3);border-radius:13px;cursor:pointer;transition:.2s;}
+.toggle-pill::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--green);border-radius:50%;transition:.2s;}
+.toggle-pill.annual::after{transform:translateX(22px);}
+.save-badge{background:var(--g-dim);color:var(--green);border:1px solid rgba(22,217,126,.3);padding:2px 8px;border-radius:20px;font-size:.75rem;font-weight:600;}
+
+/* CARDS */
+.plans{position:relative;z-index:1;padding:40px 0 80px;}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
+@media(max-width:900px){.plans-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto;}}
+.plan-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;gap:0;transition:.2s;}
+.plan-card:hover{border-color:rgba(120,200,160,.3);}
+.plan-card.featured{border-color:var(--green);box-shadow:0 0 40px rgba(22,217,126,.15);position:relative;}
+.plan-card.elite{border-color:var(--gold);box-shadow:0 0 40px rgba(245,166,35,.1);}
+.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.06em;padding:4px 14px;border-radius:20px;white-space:nowrap;}
+.plan-badge.pro{background:var(--green);color:#04150d;}
+.plan-badge.elite{background:var(--gold);color:#1a0d00;}
+.plan-name{font-family:var(--disp);font-weight:700;font-size:1.4rem;margin-bottom:6px;}
+.plan-name.elite{color:var(--gold);}
+.plan-price{margin-bottom:6px;}
+.plan-price .amount{font-family:var(--disp);font-size:2.6rem;font-weight:700;line-height:1;}
+.plan-price .per{color:var(--t55);font-size:.85rem;margin-left:4px;}
+.plan-desc{color:var(--t55);font-size:.85rem;margin-bottom:28px;min-height:36px;}
+.plan-divider{border:none;border-top:1px solid var(--line);margin-bottom:22px;}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px;flex:1;}
+.feature-list li{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--t80);}
+.feature-list li .ic{flex-shrink:0;width:18px;height:18px;margin-top:1px;}
+.ic-yes{color:var(--green);}
+.ic-no{color:var(--t30);}
+.ic-gold{color:var(--gold);}
+.plan-cta{width:100%;font-family:var(--disp);font-weight:700;font-size:1rem;padding:14px;border-radius:11px;border:none;cursor:pointer;transition:.15s;display:block;text-align:center;}
+.cta-free{background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);}
+.cta-free:hover{background:var(--g-dim);}
+.cta-pro{background:var(--green);color:#04150d;box-shadow:0 0 24px rgba(22,217,126,.3);}
+.cta-pro:hover{background:#20e88a;transform:translateY(-1px);}
+.cta-elite{background:var(--gold);color:#1a0d00;box-shadow:0 0 24px rgba(245,166,35,.25);}
+.cta-elite:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
+/* WAITLIST FORM */
+.waitlist-wrap{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
+.waitlist-wrap input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:9px;padding:11px 14px;color:var(--text);font-family:var(--body);font-size:.9rem;outline:none;transition:.15s;width:100%;}
+.waitlist-wrap input:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
+.waitlist-wrap input::placeholder{color:var(--t30);}
+.waitlist-toast{font-size:.82rem;padding:10px 14px;border-radius:8px;text-align:center;display:none;}
+.toast-pro{background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);}
+.toast-elite{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--gold);}
+
+/* FOOTER NOTE */
+.footer-note{text-align:center;color:var(--t30);font-size:.82rem;padding:0 24px 60px;position:relative;z-index:1;}
+.footer-note a{color:var(--green);}
+
+/* FAQ STRIP */
+.compare-note{position:relative;z-index:1;text-align:center;padding:0 24px 24px;}
+.compare-note a{color:var(--green);font-size:.9rem;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="/">
+      <span class="b-mark">
+        <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line x1="9" y1="9" x2="9" y2="4.5"/>
+          <line x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </span>
+      Scalp<em>Clock</em>
+    </a>
+    <div class="nav-links">
+      <a href="/#signals">Live Signals</a>
+      <a href="/scalpchart">Charts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/learn">Learn</a>
+      <a href="/faq">FAQ</a>
+      <a href="/pricing" class="active">Pricing</a>
+    </div>
+    <a class="nav-cta" href="/login">Get Started</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>Simple, <em>Transparent</em> Pricing</h1>
+  <p>Start free and experience the platform. Upgrade when you're ready to trade with real-time edge.</p>
+  <div class="billing-toggle">
+    <span>Monthly</span>
+    <div class="toggle-pill" id="billingToggle" onclick="toggleBilling()"></div>
+    <span>Annual <span class="save-badge">Save 20%</span></span>
+  </div>
+</div>
+
+<section class="plans">
+  <div class="wrap">
+    <div class="plans-grid">
+
+      <!-- FREE -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><span class="amount">$0</span></div>
+        <div class="plan-desc">Experience ScalpClock before you commit.</div>
+        <hr class="plan-divider">
+        <ul class="feature-list">
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            4 delayed signals per day
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Market news feed
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Watchlist (15-min delayed data)
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            2 AI explanations per day
+          </li>
+          <li>
+            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+            <span style="color:var(--t30)">Real-time signals</span>
+          </li>
+          <li>
+            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+            <span style="color:var(--t30)">Push notifications</span>
+          </li>
+          <li>
+            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+            <span style="color:var(--t30)">Options recommendations</span>
+          </li>
+        </ul>
+        <a class="plan-cta cta-free" href="/login">Get Started Free</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card featured">
+        <div class="plan-badge pro">MOST POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">
+          <span class="amount" id="proPrice">$9.99</span>
+          <span class="per" id="proLabel">/month</span>
+        </div>
+        <div class="plan-desc">Everything you need to trade with real-time edge.</div>
+        <hr class="plan-divider">
+        <ul class="feature-list">
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Unlimited real-time signals
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Buy/Sell notifications
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Confidence score
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Push notifications
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Options entry/exit recommendations
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            News catalyst integration
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Full watchlist + mobile access
+          </li>
+        </ul>
+        <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Get Pro</button>
+        <div class="waitlist-toast toast-pro" id="proToast" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- ELITE -->
+      <div class="plan-card elite">
+        <div class="plan-badge elite">ELITE</div>
+        <div class="plan-name elite">Elite</div>
+        <div class="plan-price">
+          <span class="amount" style="font-size:1.8rem;color:var(--gold)">Coming Soon</span>
+        </div>
+        <div class="plan-desc">Everything in Pro, plus the deepest market intelligence we offer.</div>
+        <hr class="plan-divider">
+        <ul class="feature-list">
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Everything in Pro
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Live unusual options flow
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Advanced scanner
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Earnings mode
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            AI trade explanations
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Priority alerts
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Premium support
+          </li>
+        </ul>
+        <div class="waitlist-wrap" id="eliteForm">
+          <input type="email" id="eliteEmail" placeholder="your@email.com">
+          <button class="plan-cta cta-elite" onclick="joinWaitlist('elite')">Join Elite Waitlist</button>
+          <div class="waitlist-toast toast-elite" id="eliteToast">You're on the Elite list! We'll reach out first.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="compare-note">
+  <a href="/faq">Have questions? Read the FAQ →</a>
+</div>
+
+<p class="footer-note">No credit card required for free tier. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a></p>
+
+<script>
+let annual = false;
+
+function toggleBilling() {
+  annual = !annual;
+  document.getElementById('billingToggle').classList.toggle('annual', annual);
+  document.getElementById('proPrice').textContent = annual ? '$7.99' : '$9.99';
+  document.getElementById('proLabel').textContent = annual ? '/month, billed annually' : '/month';
+}
+
+async function startCheckout() {
+  const btn   = document.getElementById('proBtn');
+  const toast = document.getElementById('proToast');
+  btn.disabled   = true;
+  btn.textContent = 'Redirecting…';
+  toast.style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/stripe/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ tier: 'pro', billing: annual ? 'annual' : 'monthly' }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL returned');
+    }
+  } catch (err) {
+    toast.textContent    = 'Something went wrong — please try again.';
+    toast.style.display  = 'block';
+    toast.style.background = 'rgba(255,59,70,.08)';
+    toast.style.borderColor = 'rgba(255,59,70,.3)';
+    toast.style.color = '#ff3b46';
+    btn.disabled    = false;
+    btn.textContent = 'Get Pro';
+  }
+}
+
+function joinWaitlist(tier) {
+  const emailEl = document.getElementById(tier + 'Email');
+  const toast   = document.getElementById(tier + 'Toast');
+  const email   = emailEl.value.trim();
+  if (!email || !email.includes('@')) {
+    emailEl.style.borderColor = 'rgba(255,59,70,.5)';
+    emailEl.focus();
+    return;
+  }
+  emailEl.style.borderColor = '';
+  toast.style.display = 'block';
+  emailEl.disabled = true;
+}
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

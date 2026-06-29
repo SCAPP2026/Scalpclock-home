@@ -1,0 +1,25 @@
+{
+  "name": "ScalpClock",
+  "short_name": "ScalpClock",
+  "description": "Live options-timing signals for scalp traders",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070a08",
+  "theme_color": "#16d97e",
+  "icons": [
+    {
+      "src": "hero.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "hero.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

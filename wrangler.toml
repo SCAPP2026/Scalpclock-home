@@ -3,8 +3,14 @@ compatibility_date = "2024-09-23"
 pages_build_output_dir = "."
 
 # Secrets — set in Cloudflare dashboard → Settings → Environment variables
-# Required:  ALPACA_KEY_ID, ALPACA_SECRET
-#            STRIPE_KEY        (Stripe restricted key — rk_live_…)
-#            STRIPE_PRODUCT_ID (Stripe Product ID — prod_…)
-# These are never committed to source control.
+# Alpaca (market data):
+#   ALPACA_KEY_ID, ALPACA_SECRET
+# Stripe (payments):
+#   STRIPE_SECRET_KEY         — sk_live_... from Stripe dashboard
+#   STRIPE_WEBHOOK_SECRET     — whsec_... from Stripe webhook endpoint settings
+#   STRIPE_PRICE_PRO_MONTHLY  — price_... for $9.99/mo product
+#   STRIPE_PRICE_PRO_ANNUAL   — price_... for $95.88/yr product (~$7.99/mo)
+#   STRIPE_PRICE_ELITE_MONTHLY — price_... (when Elite launches)
+#   STRIPE_PRICE_ELITE_ANNUAL  — price_... (when Elite launches)
+# Never commit actual values to source control.
 
