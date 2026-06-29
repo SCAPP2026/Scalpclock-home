@@ -188,6 +188,35 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .btn-modal-submit:disabled{opacity:.5;cursor:not-allowed;}
   .btn-modal-cancel{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:11px 18px;border-radius:9px;background:transparent;border:1px solid rgba(205,211,210,.2);color:var(--t55);cursor:pointer;transition:.15s;}
   .btn-modal-cancel:hover{border-color:var(--t55);color:var(--text);}
+
+  /* ── EARNINGS CALENDAR ── */
+  .earnings-wrap{margin-top:32px;}
+  .earnings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .earnings-refresh{background:transparent;border:1px solid rgba(205,211,210,.15);color:var(--t55);font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:var(--disp);transition:.15s;}
+  .earnings-refresh:hover{color:var(--text);border-color:rgba(205,211,210,.35);}
+  .earnings-week{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .earnings-day{background:rgba(238,243,240,.04);border:1px solid rgba(238,243,240,.08);border-radius:10px;padding:10px 8px;min-height:90px;}
+  .earnings-day.today{border-color:rgba(22,217,126,.4);background:rgba(22,217,126,.05);}
+  .earnings-day.today .ед-label{color:var(--green);}
+  .ed-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t55);margin-bottom:8px;display:block;}
+  .ed-items{display:flex;flex-direction:column;gap:4px;}
+  .ed-item{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);font-weight:600;color:var(--text);padding:3px 5px;border-radius:5px;background:rgba(238,243,240,.05);border:1px solid rgba(238,243,240,.07);cursor:default;}
+  .ed-item:hover{border-color:rgba(22,217,126,.3);}
+  .ed-time{font-size:8px;font-weight:700;letter-spacing:.5px;padding:2px 4px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
+  .ed-time.pre{background:rgba(91,156,246,.15);color:#5b9cf6;}
+  .ed-time.amc{background:rgba(245,166,35,.15);color:#f5a623;}
+  .ed-time.unk{background:rgba(238,243,240,.08);color:var(--t55);}
+  .ed-empty{font-size:10px;color:rgba(238,243,240,.25);padding:4px 0;font-style:italic;}
+  .ed-more{font-size:10px;color:var(--t55);padding:3px 0;text-align:center;}
+  .earnings-status{font-size:12px;color:var(--t55);padding:16px 0;text-align:center;}
+  .earnings-today-alert{display:none;align-items:center;gap:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:#f5a623;}
+  .eta-icon{font-size:18px;flex-shrink:0;}
+  @media(max-width:640px){
+    .earnings-week{grid-template-columns:repeat(3,1fr);}
+  }
+  @media(max-width:420px){
+    .earnings-week{grid-template-columns:repeat(2,1fr);}
+  }
   </style>
 </head>
 <body>
@@ -280,6 +309,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <span class="account-val" id="emailVerified">—</span>
     </div>
   </div>
+<!-- EARNINGS CALENDAR -->
+  <div class="earnings-wrap" id="earningsWrap">
+    <div class="earnings-header">
+      <div class="section-title" style="margin:0">Earnings This Week</div>
+      <button class="earnings-refresh" onclick="loadEarnings()">↻ Refresh</button>
+    </div>
+    <div class="earnings-today-alert" id="earningsTodayAlert">
+      <span class="eta-icon">⚠️</span>
+      <span id="earningsTodayMsg"></span>
+    </div>
+    <div id="earningsContent"><div class="earnings-status">Loading earnings calendar...</div></div>
+  </div>
+
 <!-- TRADE JOURNAL -->
   <div class="journal-header">
     <div class="section-title" style="margin:0">Trade Journal</div>
@@ -678,8 +720,105 @@ async function signOut() {
   window.location.href = '/';
 }
 
+// ── Earnings Calendar ────────────────────────────────────────────────────────
+async function loadEarnings() {
+  const el = document.getElementById('earningsContent');
+  el.innerHTML = '<div class="earnings-status">Loading earnings calendar...</div>';
+  try {
+    const res  = await fetch('/api/earnings');
+    const data = await res.json();
+    renderEarnings(data);
+  } catch {
+    el.innerHTML = '<div class="earnings-status">Earnings data unavailable — check back later</div>';
+  }
+}
+
+function renderEarnings(data) {
+  const el     = document.getElementById('earningsContent');
+  const items  = data.earnings || [];
+  const today  = new Date().toISOString().split('T')[0];
+
+  if (!items.length) {
+    el.innerHTML = '<div class="earnings-status">No earnings found for the next two weeks.</div>';
+    return;
+  }
+
+  // Build Mon-Fri for this week and next
+  const days = [];
+  const start = new Date();
+  // Go back to Monday of this week
+  const dow = start.getDay();
+  const monday = new Date(start);
+  monday.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1));
+
+  for (let w = 0; w < 2; w++) {
+    for (let d = 0; d < 5; d++) {
+      const day = new Date(monday);
+      day.setDate(monday.getDate() + w * 7 + d);
+      days.push(day.toISOString().split('T')[0]);
+    }
+  }
+
+  // Group earnings by date
+  const byDate = {};
+  for (const e of items) {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  }
+
+  // Today alert — earnings today
+  const todayItems = byDate[today] || [];
+  const alertEl = document.getElementById('earningsTodayAlert');
+  const msgEl   = document.getElementById('earningsTodayMsg');
+  if (todayItems.length) {
+    const names = todayItems.slice(0, 5).map(e => e.symbol).join(', ');
+    const more  = todayItems.length > 5 ? ` +${todayItems.length - 5} more` : '';
+    msgEl.textContent = `Earnings TODAY: ${names}${more} — expect elevated IV and potential gaps. Check before trading options.`;
+    alertEl.style.display = 'flex';
+  } else {
+    alertEl.style.display = 'none';
+  }
+
+  const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+  // Split into this week / next week
+  const thisWeek = days.slice(0, 5);
+  const nextWeek = days.slice(5, 10);
+
+  function renderWeek(weekDays, label) {
+    const cols = weekDays.map((date, i) => {
+      const isToday = date === today;
+      const dayItems = byDate[date] || [];
+      const MAX = 6;
+      const shown = dayItems.slice(0, MAX);
+      const extra = dayItems.length - MAX;
+
+      const itemsHTML = shown.length
+        ? shown.map(e => {
+            const tc = e.time === 'pre-market' ? 'pre' : e.time === 'after-close' ? 'amc' : 'unk';
+            const tl = e.time === 'pre-market' ? 'PRE' : e.time === 'after-close' ? 'AMC' : '?';
+            return `<div class="ed-item" title="${e.symbol} · ${e.time}">
+              <span class="ed-time ${tc}">${tl}</span>${e.symbol}
+            </div>`;
+          }).join('') + (extra > 0 ? `<div class="ed-more">+${extra} more</div>` : '')
+        : '<div class="ed-empty">No earnings</div>';
+
+      return `<div class="earnings-day${isToday ? ' today' : ''}">
+        <span class="ed-label">${DAY_LABELS[i]} ${date.slice(5)}</span>
+        <div class="ed-items">${itemsHTML}</div>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:8px;font-size:10px;color:var(--t55);letter-spacing:1px;text-transform:uppercase;font-weight:700">${label}</div>
+    <div class="earnings-week" style="margin-bottom:16px">${cols}</div>`;
+  }
+
+  el.innerHTML = renderWeek(thisWeek, 'This Week') + renderWeek(nextWeek, 'Next Week');
+}
+
 init();
 checkUpgradeReturn();
+loadEarnings();
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>

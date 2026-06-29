@@ -1395,6 +1395,15 @@
       </div>
     </div>
 
+    <!-- EARNINGS WARNING -->
+    <div class="emotional-warning" id="earningsWarn" style="display:none">
+      <div class="warn-icon">📅</div>
+      <div>
+        <div class="warn-title" style="color:#f5a623" id="earningsWarnTitle">EARNINGS ALERT</div>
+        <div class="warn-msg" id="earningsWarnMsg"></div>
+      </div>
+    </div>
+
     <!-- EMOTIONAL WARNING -->
     <div class="emotional-warning" id="emotionalWarn">
       <div class="warn-icon" id="warnIcon">⚠️</div>
@@ -1708,6 +1717,45 @@ function renderOptionPremium(d, entryPremium) {
     ${greeksHTML}`;
 }
 
+// ── Earnings Warning ───────────────────────────────────────────────────────
+async function checkEarnings() {
+  try {
+    const res  = await fetch(`/api/earnings?symbol=${ticker}`);
+    const data = await res.json();
+    renderEarningsWarn(data.earnings || []);
+  } catch { /* non-critical */ }
+}
+
+function renderEarningsWarn(items) {
+  const el  = document.getElementById('earningsWarn');
+  const msg = document.getElementById('earningsWarnMsg');
+  if (!items.length) { el.style.display = 'none'; return; }
+
+  const today    = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+  const todayEarnings    = items.filter(e => e.date === today);
+  const tomorrowEarnings = items.filter(e => e.date === tomorrow);
+  const soonEarnings     = items.filter(e => e.date > tomorrow).slice(0, 1);
+
+  if (todayEarnings.length) {
+    const t = todayEarnings[0];
+    const when = t.time === 'pre-market' ? 'before market open' : t.time === 'after-close' ? 'after close' : 'today';
+    msg.textContent = `${ticker} reports earnings ${when}. IV is elevated — options are expensive. Expect a sharp move after the report. Consider closing before earnings to avoid IV crush.`;
+    el.style.display = 'flex';
+  } else if (tomorrowEarnings.length) {
+    const t = tomorrowEarnings[0];
+    const when = t.time === 'pre-market' ? 'tomorrow pre-market' : 'tomorrow after close';
+    msg.textContent = `${ticker} reports earnings ${when}. IV will expand into close today. Premium buyers: be aware of IV crush risk after the report.`;
+    el.style.display = 'flex';
+  } else if (soonEarnings.length) {
+    msg.textContent = `${ticker} has earnings on ${soonEarnings[0].date}. IV may begin expanding 3-5 days before. Watch for premium inflation.`;
+    el.style.display = 'flex';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
 // ── Options Data ───────────────────────────────────────────────────────────
 async function loadOptions() {
   const el = document.getElementById('optionsContent');
@@ -1805,8 +1853,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   refresh();
   loadOptions();
+  checkEarnings();
   fetchTimer   = setInterval(refresh, 5000);
-  optionsTimer = setInterval(loadOptions, 60000); // refresh options every 60s
+  optionsTimer = setInterval(loadOptions, 60000);
+  setInterval(checkEarnings, 3600000); // recheck earnings every hour
 });
 
 function onTickerChange() {
@@ -1820,6 +1870,7 @@ function onTickerChange() {
   resetDisplay();
   refresh();
   loadOptions();
+  checkEarnings();
   // Clear option contract since it was for the old ticker
   if (optContract) clearOptionContract();
 }
