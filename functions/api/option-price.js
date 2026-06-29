@@ -26,14 +26,20 @@ export async function onRequest(context) {
     );
     const data = await res.json();
 
-    if (data.status === 'NOT_FOUND' || !data.results) {
-      return json({ error: 'Contract not found', ticker: optionTicker }, 404);
+    if (!data.results) {
+      const status = data.status || 'UNKNOWN';
+      const msg = status === 'NOT_AUTHORIZED' ? 'Options data not authorized — check API key tier'
+                : status === 'NOT_FOUND'      ? 'Contract not found — verify strike and expiry'
+                : status === 'TOO_MANY_REQUESTS' ? 'Rate limit — try again shortly'
+                : `No data returned (${status})`;
+      return json({ error: msg, ticker: optionTicker, apiStatus: status }, 404);
     }
 
     const r   = data.results;
     const day = r.day || {};
     const q   = r.last_quote || {};
     const g   = r.greeks || {};
+    const mkt = r.market_status || null; // 'open' | 'closed' | 'extended-hours'
 
     const bid  = q.bid  ?? day.close ?? null;
     const ask  = q.ask  ?? day.close ?? null;
@@ -46,6 +52,7 @@ export async function onRequest(context) {
       bid, ask, mid, last,
       volume:       day.volume ?? null,
       openInterest: r.open_interest ?? null,
+      marketStatus: mkt,
       iv:           r.implied_volatility != null ? +(r.implied_volatility * 100).toFixed(1) : null,
       delta:        g.delta ?? null,
       gamma:        g.gamma ?? null,

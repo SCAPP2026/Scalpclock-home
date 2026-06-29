@@ -1578,10 +1578,11 @@ let lastSigLevel = '';
 let optionsTimer = null;
 
 // ── Option Premium Tracker State ────────────────────────────────────────────
-let optContract = null; // { strike, expiry, type, entryPremium }
+let optContract = null;       // { strike, expiry, type, entryPremium }
 let optPremiumTimer = null;
 let optCurrentPrice = null;
-let lastOptionsData  = null; // cached from loadOptions for delta/theta/IV
+let optContractGreeks = null; // greeks from the specific tracked contract (option-price API)
+let lastOptionsData  = null;  // cached from loadOptions for aggregate delta/theta/IV
 
 // ── Voice Alerts ───────────────────────────────────────────────────────────
 let voiceEnabled   = false;
@@ -1672,6 +1673,7 @@ function setOptionContract() {
 function clearOptionContract() {
   optContract = null;
   optCurrentPrice = null;
+  optContractGreeks = null;
   if (optPremiumTimer) { clearInterval(optPremiumTimer); optPremiumTimer = null; }
   document.getElementById('optClearBtn').style.display = 'none';
   const display = document.getElementById('optLiveDisplay');
@@ -1701,7 +1703,10 @@ function renderOptionPremium(d, entryPremium) {
   if (!display) return;
 
   if (d.error) {
-    display.innerHTML = `<span class="opt-status-msg" id="optStatusMsg">Contract not found (${d.ticker || ''}). Check strike/expiry.</span>`;
+    const hint = d.apiStatus === 'NOT_AUTHORIZED'
+      ? 'API key not authorized for options data'
+      : `${d.error}${d.ticker ? ' · ' + d.ticker : ''}`;
+    display.innerHTML = `<span class="opt-status-msg" id="optStatusMsg">${hint}</span>`;
     return;
   }
 
@@ -1712,6 +1717,10 @@ function renderOptionPremium(d, entryPremium) {
   }
 
   optCurrentPrice = price;
+  // Cache contract-specific greeks for direction-aware velocity
+  optContractGreeks = { delta: d.delta, theta: d.theta, gamma: d.gamma, vega: d.vega };
+
+  const mktClosed = d.marketStatus && d.marketStatus !== 'open';
   const typeStr   = d.type === 'put' ? 'P' : 'C';
   const exStr     = d.expiry ? d.expiry.slice(5) : '';
   const tickLabel = `${d.symbol} $${d.strike}${typeStr} ${exStr}`;
@@ -1740,11 +1749,12 @@ function renderOptionPremium(d, entryPremium) {
   const bidAsk = (d.bid !== null && d.ask !== null)
     ? `<span class="opt-live-sub">Bid <b>$${d.bid.toFixed(2)}</b> / Ask <b>$${d.ask.toFixed(2)}</b></span>` : '';
 
+  const mktBadge = mktClosed ? `<span class="opt-status-msg" style="font-size:10px;margin-left:8px">Market closed · last price</span>` : '';
   display.innerHTML = `
     <span class="opt-ticker-label">${tickLabel}</span>
-    <div style="display:flex;align-items:baseline;gap:8px">
+    <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
       <span class="opt-live-price">$${price.toFixed(2)}</span>
-      ${bidAsk}
+      ${bidAsk}${mktBadge}
     </div>
     ${plHTML}
     ${greeksHTML}`;
@@ -1940,76 +1950,106 @@ function pickTarget(btn) {
 }
 
 // ── AI Reason + Risk Meter ────────────────────────────────────────────────
-function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
+function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isPut) {
   const a = atrVal || 0.01;
   const parts = [];
 
-  // RSI
-  if      (rsiVal >= 78) parts.push(`RSI is <strong>deeply overbought at ${rsiVal.toFixed(0)}</strong> — sellers typically take control here`);
-  else if (rsiVal >= 68) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is overbought</strong> and losing headroom fast`);
-  else if (rsiVal >= 55) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is elevated with some room left before overbought`);
-  else if (rsiVal >= 45) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is neutral — no strong directional edge from momentum alone`);
-  else if (rsiVal >= 35) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is approaching oversold — upside room remains`);
-  else if (rsiVal >= 25) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is oversold</strong> — bounce potential is high`);
-  else                   parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is severely oversold</strong> — mean reversion likely`);
+  // Direction-aware effective values (same transform as exitSignal)
+  const effVel    = isPut ? -vel    : vel;
+  const effRSI    = isPut ? (100 - rsiVal) : rsiVal;
+  const effVTrend = isPut ? -vtrend : vtrend;
 
-  // Velocity
-  if      (vel > a * 0.5)  parts.push(`price is <strong>accelerating strongly</strong> at $${vel.toFixed(3)}/min`);
-  else if (vel > a * 0.2)  parts.push(`price has <strong>solid upward momentum</strong> at $${vel.toFixed(3)}/min`);
-  else if (vel > 0.001)    parts.push(`price is drifting upward slowly — <strong>weak momentum</strong>`);
-  else if (vel < -a * 0.4) parts.push(`price is <strong>dropping hard</strong> at $${Math.abs(vel).toFixed(3)}/min — momentum has flipped`);
-  else if (vel < -0.001)   parts.push(`<strong>momentum has stalled</strong> and turned slightly negative`);
-  else                     parts.push(`<strong>price is flat</strong> — no directional momentum`);
+  // RSI — interpreted from the option direction's perspective
+  if (isPut) {
+    // For puts: high RSI = overbought stock = potential reversal down = GOOD
+    if      (rsiVal >= 78) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} — deeply overbought</strong>. High probability of reversal down — <span style="color:var(--bull)">favorable for puts</span>`);
+    else if (rsiVal >= 68) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} is overbought</strong> — stock losing upside headroom, which benefits puts`);
+    else if (rsiVal >= 55) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)}</strong> is elevated — puts have moderate tailwind`);
+    else if (rsiVal >= 45) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)}</strong> is neutral — no strong directional edge`);
+    else if (rsiVal >= 35) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)}</strong> approaching oversold — bounce risk growing for put holders`);
+    else if (rsiVal >= 25) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} is oversold</strong> — <span style="color:var(--bear)">reversal risk for your put</span>. Stock may bounce`);
+    else                   parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} severely oversold</strong> — <span style="color:var(--bear)">high bounce risk</span>. Consider protecting put gains`);
+  } else {
+    if      (rsiVal >= 78) parts.push(`RSI is <strong>deeply overbought at ${rsiVal.toFixed(0)}</strong> — sellers typically take control here`);
+    else if (rsiVal >= 68) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is overbought</strong> and losing headroom fast`);
+    else if (rsiVal >= 55) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is elevated with some room left before overbought`);
+    else if (rsiVal >= 45) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is neutral — no strong directional edge from momentum alone`);
+    else if (rsiVal >= 35) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is approaching oversold — upside room remains`);
+    else if (rsiVal >= 25) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is oversold</strong> — bounce potential is high`);
+    else                   parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is severely oversold</strong> — mean reversion likely`);
+  }
+
+  // Velocity — described relative to the option direction
+  const absVel = Math.abs(vel).toFixed(3);
+  if (isPut) {
+    if      (vel < -a * 0.5)  parts.push(`stock is <strong>dropping hard at -$${absVel}/min</strong> — strong tailwind for your put`);
+    else if (vel < -a * 0.2)  parts.push(`stock has <strong>solid downward momentum</strong> at -$${absVel}/min — working in your put's favor`);
+    else if (vel < -0.001)    parts.push(`stock drifting down slowly — <strong>weak momentum</strong> for your put`);
+    else if (vel > a * 0.4)   parts.push(`stock is <strong>rising against your put</strong> at +$${absVel}/min — momentum has flipped bearish for puts`);
+    else if (vel > 0.001)     parts.push(`stock ticking up slightly — <strong>headwind for your put position</strong>`);
+    else                      parts.push(`<strong>stock is flat</strong> — theta decay is your biggest enemy right now`);
+  } else {
+    if      (vel > a * 0.5)  parts.push(`price is <strong>accelerating strongly</strong> at $${absVel}/min`);
+    else if (vel > a * 0.2)  parts.push(`price has <strong>solid upward momentum</strong> at $${absVel}/min`);
+    else if (vel > 0.001)    parts.push(`price is drifting upward slowly — <strong>weak momentum</strong>`);
+    else if (vel < -a * 0.4) parts.push(`price is <strong>dropping hard</strong> at -$${absVel}/min — momentum has flipped`);
+    else if (vel < -0.001)   parts.push(`<strong>momentum has stalled</strong> and turned slightly negative`);
+    else                     parts.push(`<strong>price is flat</strong> — no directional momentum`);
+  }
 
   // Volume
-  if      (vt > 0.25)  parts.push(`<strong>volume is surging ${(vt*100).toFixed(0)}% above average</strong>, confirming the move`);
-  else if (vt > 0.08)  parts.push(`volume is picking up, adding conviction to the move`);
-  else if (vt < -0.25) parts.push(`<strong>volume is collapsing</strong> — institutional support is fading`);
-  else if (vt < -0.08) parts.push(`volume is fading, which weakens the conviction`);
+  if      (vt > 0.25)  parts.push(`<strong>volume surging ${(vt*100).toFixed(0)}% above average</strong> — confirming the move`);
+  else if (vt > 0.08)  parts.push(`volume picking up, adding conviction`);
+  else if (vt < -0.25) parts.push(`<strong>volume collapsing</strong> — institutional support is fading`);
+  else if (vt < -0.08) parts.push(`volume fading, weakening conviction`);
 
-  // Velocity trend
-  if      (vtrend > a * 0.08)  parts.push(`momentum is <strong>building</strong>`);
-  else if (vtrend < -a * 0.08) parts.push(`momentum is <strong>decelerating</strong> — a warning sign`);
+  // Velocity trend (direction-aware)
+  if      (effVTrend > a * 0.08)  parts.push(`${isPut ? 'downward' : 'upward'} momentum is <strong>building</strong>`);
+  else if (effVTrend < -a * 0.08) parts.push(`${isPut ? 'downward' : 'upward'} momentum is <strong>decelerating</strong> — a warning sign`);
 
   // Gain context
   if (gainPct !== null) {
-    if      (gainPct >= 25) parts.push(`the trade is up <strong>+${gainPct.toFixed(1)}%</strong> — an exceptional move that deserves protection`);
-    else if (gainPct >= 10) parts.push(`the trade is up <strong>+${gainPct.toFixed(1)}%</strong> from entry`);
-    else if (gainPct >= 0)  parts.push(`currently up <strong>+${gainPct.toFixed(1)}%</strong> from entry`);
-    else if (gainPct >= -5) parts.push(`the position is <strong>down ${gainPct.toFixed(1)}%</strong> — within normal noise`);
-    else                    parts.push(`the position is <strong>down ${gainPct.toFixed(1)}%</strong> — reassess your thesis`);
+    const label = isPut ? 'on put premium' : 'from entry';
+    if      (gainPct >= 25) parts.push(`premium is up <strong>+${gainPct.toFixed(1)}%</strong> — exceptional move, protect it`);
+    else if (gainPct >= 10) parts.push(`up <strong>+${gainPct.toFixed(1)}% ${label}</strong>`);
+    else if (gainPct >= 0)  parts.push(`currently up <strong>+${gainPct.toFixed(1)}% ${label}</strong>`);
+    else if (gainPct >= -5) parts.push(`position is <strong>down ${gainPct.toFixed(1)}%</strong> — within normal noise`);
+    else                    parts.push(`position is <strong>down ${gainPct.toFixed(1)}%</strong> — reassess your thesis`);
   }
 
-  // Recommendation logic
+  // Recommendation — direction-aware
   let rec, recClass, recIcon;
+  const effHighRSI = effRSI >= 78; // high in effective space = near exhaustion
+  const effLowRSI  = effRSI <= 35;
+
   if (gainPct !== null && gainPct >= 25) {
     rec = 'SELL — TAKE PROFITS'; recClass = 'bear'; recIcon = '🔴';
-  } else if (rsiVal >= 78 || (gainPct !== null && gainPct >= 18 && rsiVal >= 70)) {
-    rec = 'SELL / SCALE OUT'; recClass = 'bear'; recIcon = '⚠️';
-  } else if (gainPct !== null && gainPct >= 10 && (rsiVal >= 68 || vtrend < -a * 0.05)) {
+  } else if (effHighRSI || (gainPct !== null && gainPct >= 18 && effRSI >= 70)) {
+    rec = isPut ? 'PROTECT PUT GAINS' : 'SELL / SCALE OUT'; recClass = 'bear'; recIcon = '⚠️';
+  } else if (gainPct !== null && gainPct >= 10 && (effRSI >= 68 || effVTrend < -a * 0.05)) {
     rec = 'SCALE OUT PARTIALLY'; recClass = 'warn'; recIcon = '⬇️';
   } else if (gainPct !== null && gainPct >= 6) {
     rec = 'TRAIL YOUR STOP'; recClass = 'warn'; recIcon = '🛡';
-  } else if (sig.tone === 'buy' || (rsiVal <= 35 && vel > 0)) {
-    rec = 'HOLD — ROOM TO RUN'; recClass = 'bull'; recIcon = '🟢';
-  } else if (sig.tone === 'hold' && vel > 0 && rsiVal < 62) {
+  } else if (effLowRSI && effVel > 0) {
+    rec = isPut ? 'HOLD — REVERSAL SETUP' : 'HOLD — ROOM TO RUN'; recClass = 'bull'; recIcon = '🟢';
+  } else if (effVel > 0 && effRSI < 62) {
     rec = 'HOLD POSITION'; recClass = 'bull'; recIcon = '🟢';
-  } else if (vel <= 0 && gainPct !== null && gainPct > 0) {
+  } else if (effVel <= 0 && gainPct !== null && gainPct > 0) {
     rec = 'TIGHTEN YOUR STOP'; recClass = 'warn'; recIcon = '⏸';
   } else {
     rec = 'WAIT FOR SIGNAL'; recClass = 'info'; recIcon = '👁';
   }
 
-  // Risk score (0-100)
+  // Risk score — direction-aware (risk is high when trade going AGAINST your direction)
   let risk = 25;
-  if      (rsiVal >= 75) risk += 30;
-  else if (rsiVal >= 65) risk += 18;
-  else if (rsiVal >= 55) risk += 8;
-  else if (rsiVal <= 35) risk -= 8;
+  if      (effRSI >= 75) risk += 30; // near exhaustion in your direction
+  else if (effRSI >= 65) risk += 18;
+  else if (effRSI >= 55) risk += 8;
+  else if (effRSI <= 35) risk -= 8;  // plenty of room still
 
-  if      (vel < -a * 0.35) risk += 22;
-  else if (vel < 0)          risk += 10;
-  else if (vel > a * 0.4)   risk -= 5;
+  if      (effVel < -a * 0.35) risk += 22; // momentum reversed against you
+  else if (effVel < 0)          risk += 10;
+  else if (effVel > a * 0.4)   risk -= 5;
 
   if (gainPct !== null) {
     if      (gainPct >= 22) risk += 26;
@@ -2019,7 +2059,7 @@ function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
   }
 
   if (vt < -0.2) risk += 10;
-  if (vtrend < -a * 0.1) risk += 8;
+  if (effVTrend < -a * 0.1) risk += 8;
 
   risk = Math.min(99, Math.max(3, Math.round(risk)));
   const riskLevel = risk >= 76 ? 'TAKE PROFITS' : risk >= 56 ? 'HIGH' : risk >= 36 ? 'MODERATE' : 'LOW';
@@ -2028,8 +2068,8 @@ function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
   return { text: parts.join('. ') + '.', rec, recClass, recIcon, risk, riskLevel, riskColor };
 }
 
-function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isOptMode, optCon, optData) {
-  const r = generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig);
+function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isOptMode, optCon, optData, isPut) {
+  const r = generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isPut);
 
   // Options addendum
   let optExtra = '';
@@ -2038,8 +2078,12 @@ function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isOptMode
     const g = optData?.greeks || {};
     const daysLeft = optCon.expiry ? ((new Date(optCon.expiry) - new Date()) / (1000 * 60 * 60 * 24)) : null;
 
-    if (g.delta != null)
-      lines.push(`<b>Delta ${g.delta.toFixed(2)}</b> — underlying moves $1, option moves ~$${Math.abs(g.delta).toFixed(2)}.`);
+    if (g.delta != null) {
+      const dNote = isPut
+        ? `Stock falls $1 → put gains ~$${Math.abs(g.delta).toFixed(2)}. Stock rises $1 → put loses ~$${Math.abs(g.delta).toFixed(2)}.`
+        : `Stock rises $1 → call gains ~$${Math.abs(g.delta).toFixed(2)}.`;
+      lines.push(`<b>Delta ${g.delta.toFixed(2)}</b> — ${dNote}`);
+    }
     if (g.theta != null)
       lines.push(`<b>Theta ${g.theta.toFixed(2)}</b> — losing ~$${Math.abs(g.theta * 100).toFixed(0)}/day per contract to time decay.`);
     if (optData?.iv != null)
@@ -2123,9 +2167,12 @@ function renderConfidence(score, rsiVal, vel, atrVal, vt) {
 }
 
 // ── Time Machine ──────────────────────────────────────────────────────────
-function renderTimeMachine(currentPrice, basePx, vel, atrVal, isOptMode) {
+// isPut, contractDelta, underlyingNow: for options-mode dual-price display
+function renderTimeMachine(currentPrice, basePx, vel, atrVal, isOptMode, isPut, contractDelta, underlyingNow) {
   const container = document.getElementById('timeMachineRows');
   const noteEl    = document.getElementById('tmNote');
+  const dir       = isPut ? -1 : 1;
+  const cDelta    = contractDelta || 0.40;
 
   const HORIZONS = [
     { label: '30 sec', minutes: 0.5 },
@@ -2135,6 +2182,7 @@ function renderTimeMachine(currentPrice, basePx, vel, atrVal, isOptMode) {
     { label: '15 min', minutes: 15  },
   ];
 
+  // Project premium (or stock price) forward with momentum decay
   function projectedPrice(minutes) {
     if (Math.abs(vel) < 0.0001) return currentPrice;
     let price = currentPrice;
@@ -2148,12 +2196,10 @@ function renderTimeMachine(currentPrice, basePx, vel, atrVal, isOptMode) {
   }
 
   const maxAbsPct = HORIZONS.reduce((m, h) => {
-    const pp = projectedPrice(h.minutes);
+    const pp  = projectedPrice(h.minutes);
     const pct = Math.abs((pp - currentPrice) / currentPrice * 100);
     return Math.max(m, pct);
   }, 0.01);
-
-  const unit = isOptMode ? 'premium' : '';
 
   container.innerHTML = HORIZONS.map(h => {
     const pp        = projectedPrice(h.minutes);
@@ -2163,37 +2209,59 @@ function renderTimeMachine(currentPrice, basePx, vel, atrVal, isOptMode) {
     const cls       = Math.abs(chgPct) < 0.01 ? 'flat' : chgPct > 0 ? 'up' : 'dn';
     const barColor  = cls === 'up' ? 'var(--bull)' : cls === 'dn' ? 'var(--bear)' : 'var(--muted)';
     const sign      = chgPct >= 0 ? '+' : '';
-    const plDollar  = isOptMode && fromEntry !== null ? ` · ${fromEntry >= 0 ? '+' : ''}$${((pp - basePx) * 100).toFixed(0)}/contract` : '';
-    const entryStr  = fromEntry !== null
-      ? `  <span style="color:${fromEntry>=0?'var(--bull)':'var(--bear)'};font-size:9px">(${fromEntry>=0?'+':''}${fromEntry.toFixed(1)}%${plDollar})</span>`
+    const plDollar  = isOptMode && fromEntry !== null
+      ? ` · ${fromEntry >= 0 ? '+' : ''}$${((pp - basePx) * 100).toFixed(0)}/contract`
       : '';
+    const entryStr  = fromEntry !== null
+      ? `<span style="color:${fromEntry>=0?'var(--bull)':'var(--bear)'};font-size:9px;margin-left:4px">(${fromEntry>=0?'+':''}${fromEntry.toFixed(1)}%${plDollar})</span>`
+      : '';
+
+    // Implied underlying stock price for options mode
+    let stockStr = '';
+    if (isOptMode && underlyingNow != null && cDelta > 0) {
+      // Δstock = Δpremium × dir / cDelta
+      // calls (dir=+1): premium up → stock went up
+      // puts  (dir=-1): premium up → stock went down
+      const premChange   = pp - currentPrice;
+      const stockMove    = premChange * dir / cDelta;
+      const impliedStock = underlyingNow + stockMove;
+      const sDir         = stockMove > 0.001 ? '↑' : stockMove < -0.001 ? '↓' : '→';
+      const sColor       = isPut
+        ? (stockMove < 0 ? 'var(--bull)' : 'var(--bear)')  // puts: stock falling = green
+        : (stockMove > 0 ? 'var(--bull)' : 'var(--bear)'); // calls: stock rising = green
+      stockStr = `<span style="color:${sColor};font-size:9px;margin-left:4px">${ticker} ${sDir}$${impliedStock.toFixed(2)}</span>`;
+    }
 
     return `<div class="tm-row">
   <span class="tm-time">${h.label}</span>
   <span class="tm-arrow">→</span>
   <span class="tm-pct ${cls}">${sign}${chgPct.toFixed(2)}%</span>
   <div class="tm-bar-track"><div class="tm-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>
-  <span class="tm-price">$${pp.toFixed(2)}${unit ? ' ' + unit : ''}${entryStr}</span>
+  <span class="tm-price">$${pp.toFixed(2)}${isOptMode ? ' prem' : ''}${entryStr}${stockStr}</span>
 </div>`;
   }).join('');
 
   if (Math.abs(vel) < 0.0001) {
     noteEl.textContent = 'Flat momentum — projections unreliable';
+  } else if (isOptMode) {
+    const dirNote = isPut
+      ? 'Puts profit when stock falls. Premium rises as stock drops.'
+      : 'Calls profit when stock rises. Premium rises as stock climbs.';
+    noteEl.textContent = `${dirNote} Projected via delta-adjusted velocity.`;
   } else {
-    noteEl.textContent = isOptMode
-      ? `Option premium projected via delta-adjusted velocity with decay model`
-      : `Based on current $${Math.abs(vel).toFixed(3)}/min velocity with decay model`;
+    noteEl.textContent = `Based on current $${Math.abs(vel).toFixed(3)}/min velocity with decay model`;
   }
 }
 
 // ── Trailing Stop ──────────────────────────────────────────────────────────
-function renderTrailingStop(currentPrice, basePx, atrVal, isOptMode) {
+function renderTrailingStop(currentPrice, basePx, atrVal, isOptMode, isPut) {
   let stop, noteText;
 
   if (isOptMode) {
-    // Options: trail 22% below current premium (tighter than stock — options move fast)
+    // Options: trail 22% below current premium (premium can't go negative)
     stop     = currentPrice * 0.78;
-    noteText = `Stop is 22% below current premium ($${(currentPrice - stop).toFixed(2)})`;
+    const dirNote = isPut ? 'Put premium stop' : 'Call premium stop';
+    noteText = `${dirNote}: 22% below current premium ($${(currentPrice - stop).toFixed(2)} cushion)`;
   } else {
     stop     = currentPrice - (atrVal || 0.01) * 1.5;
     noteText = `Stop distance: $${((atrVal || 0.01) * 1.5).toFixed(2)} (1.5× ATR)`;
@@ -2367,80 +2435,111 @@ function probability(targetPct, rsiVal, vel, atrVal, vt) {
   return Math.min(0.97, Math.max(0.01, p));
 }
 
-// Exit recommendation engine
-function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal, isOptMode, optCon, optData) {
+// Exit recommendation engine — fully direction-aware
+function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal, isOptMode, optCon, optData, isPut) {
   const a = atrVal || 0.01;
 
-  // Options-specific: theta burn warning (< 1 day to expiry)
+  // Direction transform:
+  // effVel > 0  = trade moving in your favor (stock UP for calls, stock DOWN for puts)
+  // effRSI high = instrument approaching exhaustion in your direction
+  // effVTrend   = acceleration in your direction
+  const effVel    = (isOptMode && isPut) ? -vel      : vel;
+  const effRSI    = (isOptMode && isPut) ? (100 - rsiVal) : rsiVal;
+  const effVTrend = (isOptMode && isPut) ? -vtrendVal : vtrendVal;
+
+  const dirStr    = isPut ? 'put' : 'call';
+  const goodDir   = isPut ? 'falling' : 'rising';
+  const badDir    = isPut ? 'rising'  : 'falling';
+
+  // ── Options-specific: theta / IV signals (direction-agnostic — premium erodes either way) ──
   if (isOptMode && optCon?.expiry) {
     const daysLeft = (new Date(optCon.expiry) - new Date()) / (1000 * 60 * 60 * 24);
     if (daysLeft < 1 && gainPct !== null && gainPct > 0) {
       return { level:'THETA BURNING', color:'red', icon:'⏰',
         msg: `Less than 1 day to expiry — theta is eroding your premium fast.`,
-        sub: `Take profit now. Every minute costs you on a 0DTE/1DTE option.` };
+        sub: `Take profit now. Every minute costs on a 0DTE/1DTE ${dirStr}.` };
     }
     if (daysLeft < 1 && gainPct !== null && gainPct <= 0) {
       return { level:'EXIT — TIME DECAY', color:'red', icon:'⏰',
-        msg: `Expiring today with a loss. Theta will take the rest — cut it now.`,
+        msg: `Expiring today with a loss. Theta will take the rest — cut now.`,
         sub: `Time value goes to zero at expiry. No recovery possible after close.` };
     }
-    // IV crush: elevated IV means option is expensive — if profitable, exit before crush
     if (optData?.ivCrushWarning && gainPct !== null && gainPct > 10) {
       return { level:'IV CRUSH RISK', color:'yellow', icon:'💥',
-        msg: `IV is elevated. If a catalyst hits, IV will collapse — so will your premium.`,
-        sub: `Lock in gains before the event. IV crush can wipe option value even if stock moves right.` };
+        msg: `IV is elevated. If the catalyst resolves, IV will collapse — so will your premium.`,
+        sub: `Lock in gains before the event. IV crush destroys option value even when direction is right.` };
     }
   }
 
+  // ── Take profit — direction-agnostic (premium % gain) ──
   if (gainPct !== null && gainPct >= (isOptMode ? 60 : 25))
     return { level:'TAKE PROFIT', color:'red', icon:'🔴',
-      msg: `+${gainPct.toFixed(1)}%${isOptMode ? ' on option premium' : ''} — close it. Don't let a winner turn loser.`,
+      msg: `+${gainPct.toFixed(1)}%${isOptMode ? ' on premium' : ''} — close it. Don't let a winner turn loser.`,
       sub: 'Full or partial exit strongly recommended' };
 
-  if (rsiVal >= 82)
+  // ── Exit signals — direction-aware via effVel/effRSI ──
+  if (effRSI >= 82)
     return { level:'EXIT SIGNAL', color:'red', icon:'🚨',
-      msg: `RSI ${rsiVal.toFixed(1)} — Extremely overbought. Exhaustion imminent.`,
-      sub: 'Reversal probability is very high within 1–3 candles' };
+      msg: isPut
+        ? `Stock RSI ${rsiVal.toFixed(1)} — deeply oversold. Bounce reversal risk — your put may lose.`
+        : `RSI ${rsiVal.toFixed(1)} — extremely overbought. Exhaustion imminent — calls at risk.`,
+      sub: 'High reversal probability within 1–3 candles' };
 
-  if (vel < -a * 0.35 && gainPct !== null && gainPct > 4)
+  if (effVel < -a * 0.35 && gainPct !== null && gainPct > 4)
     return { level:'EXIT SIGNAL', color:'red', icon:'⚠️',
-      msg: 'Price reversing on you. Protect open gains — momentum flipped.',
+      msg: isPut
+        ? `Stock rising against your put. Protect open gains — momentum flipped bullish.`
+        : `Price reversing on you. Protect open gains — momentum flipped bearish.`,
       sub: 'Consider full or partial exit now' };
 
-  if (rsiVal >= 74)
+  // ── Momentum fading ──
+  if (effRSI >= 74)
     return { level:'MOMENTUM FADING', color:'yellow', icon:'🟡',
-      msg: `RSI ${rsiVal.toFixed(1)} — Overbought territory. Edge is shrinking.`,
+      msg: isPut
+        ? `Stock RSI ${rsiVal.toFixed(1)} — oversold territory. Bounce risk growing — edge shrinking for puts.`
+        : `RSI ${rsiVal.toFixed(1)} — overbought territory. Edge is shrinking for calls.`,
       sub: 'Scale out or move stop to lock in gains' };
 
-  if (gainPct !== null && gainPct >= 11 && vtrendVal < -a * 0.08)
+  if (gainPct !== null && gainPct >= 11 && effVTrend < -a * 0.08)
     return { level:'MOVE YOUR STOP', color:'yellow', icon:'🛡',
-      msg: `+${gainPct.toFixed(1)}% on the trade and velocity decelerating.`,
+      msg: `+${gainPct.toFixed(1)}% on the trade and ${isPut ? 'downward' : 'upward'} momentum decelerating.`,
       sub: 'Trail your stop to protect profits — don\'t hand them back' };
 
-  if (vt < -0.28 && vel < a * 0.2)
+  if (vt < -0.28 && effVel < a * 0.2)
     return { level:'VOLUME DRYING UP', color:'yellow', icon:'📉',
-      msg: 'Volume collapsing as price stalls. Momentum may be over.',
+      msg: `Volume collapsing as ${isPut ? 'decline' : 'advance'} stalls. Momentum may be over.`,
       sub: 'Tighten your stop — risk/reward is shifting' };
 
-  if (vtrendVal < -a * 0.12)
+  if (effVTrend < -a * 0.12)
     return { level:'DECELERATING', color:'yellow', icon:'⏸',
-      msg: 'Momentum slowing over last 10 bars.',
-      sub: 'Hold 2–3 more minutes and reassess — watch RSI and volume' };
+      msg: `${isPut ? 'Downward' : 'Upward'} momentum slowing over last 10 bars.`,
+      sub: 'Hold 2–3 more minutes and reassess' };
 
-  if (rsiVal <= 35 && vel > 0)
-    return { level:'HOLD — OVERSOLD BOUNCE', color:'green', icon:'🟢',
-      msg: `RSI ${rsiVal.toFixed(1)} — Strong rebound in progress. Room to run.`,
-      sub: 'Significant RSI headroom before overbought — stay in' };
+  // ── Hold signals — direction-aware ──
+  if (effRSI <= 35 && effVel > 0)
+    return { level: isPut ? 'HOLD — OVERBOUGHT REVERSAL' : 'HOLD — OVERSOLD BOUNCE', color:'green', icon:'🟢',
+      msg: isPut
+        ? `Stock RSI ${rsiVal.toFixed(1)} — overbought. Reversal down is high-probability. Put has room to run.`
+        : `RSI ${rsiVal.toFixed(1)} — strong rebound in progress. Room to run upward.`,
+      sub: isPut
+        ? 'Overbought stock tends to reverse — puts gain on the drop'
+        : 'Significant RSI headroom before overbought — stay in' };
 
-  if (vel > a * 0.45 && vt > 0.05)
+  if (effVel > a * 0.45 && vt > 0.05)
     return { level:'HOLD — STRONG MOMENTUM', color:'green', icon:'🟢',
-      msg: 'Rising price on rising volume. Momentum is confirmed.',
+      msg: isPut
+        ? `Stock falling hard on rising volume. Strong tailwind for your put.`
+        : `Rising price on rising volume. Momentum is confirmed.`,
       sub: 'Conditions are favorable — no exit signal' };
 
-  if (vel > 0 && rsiVal < 62)
+  if (effVel > 0 && effRSI < 62)
     return { level:'HOLD', color:'green', icon:'🟢',
-      msg: `RSI ${rsiVal.toFixed(1)} — Momentum intact. Hold another 3–5 minutes.`,
-      sub: 'No exit signal — monitor RSI approaching 70' };
+      msg: isPut
+        ? `Stock ${goodDir} (RSI ${rsiVal.toFixed(1)}) — put momentum intact. Hold 3–5 more minutes.`
+        : `RSI ${rsiVal.toFixed(1)} — momentum intact. Hold another 3–5 minutes.`,
+      sub: isPut
+        ? `No exit signal — watch RSI if stock approaches oversold (≤30)`
+        : `No exit signal — monitor RSI approaching 70` };
 
   return { level:'WATCHING', color:'yellow', icon:'👁',
     msg: 'Neutral conditions. No clear edge in either direction.',
@@ -2470,7 +2569,14 @@ function render() {
 
   // ── Options mode detection ──
   const optMode = !!(optContract && optCurrentPrice != null && optContract.entryPremium);
-  const delta   = lastOptionsData?.greeks?.delta ?? null;
+  const isPut   = optMode && optContract?.type === 'put';
+  const dir     = isPut ? -1 : 1; // +1: calls profit on stock rising; -1: puts profit on stock falling
+
+  // Contract delta: prefer specific contract's delta; fall back to aggregate ATM, then 0.40
+  const delta = lastOptionsData?.greeks?.delta ?? null;
+  const contractDelta = (optContractGreeks?.delta != null)
+    ? Math.abs(optContractGreeks.delta)
+    : (delta != null ? Math.abs(delta) : 0.40);
 
   // Gain pill — options mode shows premium P&L; stock mode shows stock P&L
   let gainPct = null;
@@ -2517,8 +2623,8 @@ function render() {
   tEl.textContent = trendStr;
   tEl.className = 'stat-val ' + (trendStr.includes('↑') ? 'up' : trendStr.includes('↓') ? 'dn' : '');
 
-  // Exit signal — options-aware
-  const sig = exitSignal(rsiVal, vel, vt, gainPct, vtrend, atrVal, optMode, optContract, lastOptionsData);
+  // Exit signal — direction-aware (puts invert velocity/RSI logic)
+  const sig = exitSignal(rsiVal, vel, vt, gainPct, vtrend, atrVal, optMode, optContract, lastOptionsData, isPut);
   const card = document.getElementById('exitCard');
   card.className = 'exit-card s-' + sig.color;
   document.getElementById('exitIcon').textContent = sig.icon;
@@ -2536,38 +2642,40 @@ function render() {
   document.getElementById('momDetail').innerHTML =
     `<b>${momStr}</b> · ${vel >= 0 ? '+' : ''}$${vel.toFixed(3)}/min · Vol ${vt >= 0 ? '+' : ''}${(vt*100).toFixed(0)}%`;
 
-  // Option velocity: delta-adjusted underlying velocity
-  const optVel = (optMode && delta) ? vel * Math.abs(delta) : null;
+  // Premium velocity ($/min), always positive when trade is winning:
+  //   calls: vel > 0 (stock rising) → optVel > 0 ✓
+  //   puts:  vel < 0 (stock falling) → optVel = (negative)×(delta)×(-1) = positive ✓
+  const optVel = optMode ? vel * contractDelta * dir : null;
 
   // Profit clock — options mode uses premium, stock mode uses underlying
   if (optMode) {
-    renderClock(optCurrentPrice, optVel ?? vel * 0.4, vtrend, atrVal, rsiVal, gainPct, sig, optContract.entryPremium);
+    renderClock(optCurrentPrice, optVel ?? vel * contractDelta * dir, vtrend, atrVal, rsiVal, gainPct, sig, optContract.entryPremium, isPut);
   } else {
-    renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, entryPrice);
+    renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, entryPrice, false);
   }
 
-  // Probability cards (needs entry — stock mode only)
+  // Probability cards (stock mode only — premium projection replaces this in opt mode)
   if (entryPrice && !optMode) renderProbCards(now, vel, atrVal, rsiVal, vt);
 
-  // AI Reason + Risk Meter — options-aware
-  renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, optMode, optContract, lastOptionsData);
+  // AI Reason + Risk Meter — direction-aware
+  renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, optMode, optContract, lastOptionsData, isPut);
 
   // Confidence badge
   const conf = calcConfidence(rsiVal, vel, atrVal, vt, vtrend);
   renderConfidence(conf, rsiVal, vel, atrVal, vt);
 
-  // Time machine — options mode uses delta-adjusted velocity
+  // Time machine — passes direction metadata for dual-price display
   if (optMode) {
-    renderTimeMachine(optCurrentPrice, optContract.entryPremium, optVel ?? vel * 0.4, null, true);
+    renderTimeMachine(optCurrentPrice, optContract.entryPremium, optVel ?? vel * contractDelta * dir, null, true, isPut, contractDelta, now);
   } else {
-    renderTimeMachine(now, entryPrice, vel, atrVal, false);
+    renderTimeMachine(now, entryPrice, vel, atrVal, false, false, 1, now);
   }
 
   // Trailing stop — options mode uses % trail on premium
   if (optMode) {
-    renderTrailingStop(optCurrentPrice, optContract.entryPremium, null, true);
+    renderTrailingStop(optCurrentPrice, optContract.entryPremium, null, true, isPut);
   } else {
-    renderTrailingStop(now, entryPrice, atrVal, false);
+    renderTrailingStop(now, entryPrice, atrVal, false, false);
   }
 
   // Emotional warning — options thresholds
@@ -2599,7 +2707,7 @@ function tickClock() {
   }
 }
 
-function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx) {
+function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isPut) {
   const CIRC  = 678.58;
   const arc   = document.getElementById('clockArc');
   const glow  = document.getElementById('arcGlow');
@@ -2636,7 +2744,9 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx) {
     tEl.className   = 'clock-time';
     tEl.style.fontSize = '22px';
     uEl.textContent = `$${now.toFixed(2)} · ${((now - candles[0].open) / candles[0].open * 100) >= 0 ? '+' : ''}${((now - candles[0].open) / candles[0].open * 100).toFixed(2)}%`;
-    sEl.textContent = isOpt ? 'enter premium paid to begin' : 'set entry price to start clock';
+    sEl.textContent = isOpt
+      ? (isPut ? 'put: stock must fall for premium to rise' : 'call: stock must rise for premium to rise')
+      : 'set entry price to start clock';
     pEl.textContent = '';
     pEl.className   = 'clock-pace';
     startClockTick();
@@ -2670,7 +2780,9 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx) {
     _clockEtaSec = null;
     tEl.textContent = '↓';
     tEl.className   = 'clock-time red';
-    uEl.textContent = isOpt ? 'premium losing ground' : 'momentum reversed';
+    uEl.textContent = isOpt
+      ? (isPut ? 'stock rising — put losing premium' : 'stock falling — call losing premium')
+      : 'momentum reversed';
     sEl.textContent = `target $${targetPx.toFixed(2)}${label} (+${clockTarget}%)`;
     pEl.textContent = 'BEHIND';
     pEl.className   = 'clock-pace behind';
