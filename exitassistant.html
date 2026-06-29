@@ -661,6 +661,138 @@
   .emotional-warning.panic .warn-title { color: var(--bear); }
   .warn-msg { font-size: 12px; color: #fff; line-height: 1.45; font-weight: 500; }
 
+  /* ── AI REASON PANEL ── */
+  .ai-reason-card {
+    margin-top: 10px;
+    background: rgba(10,14,24,0.8);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ai-reason-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0,212,170,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .ai-reason-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .ai-reason-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ai-pulse {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .ai-reason-text {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+  .ai-reason-text strong { color: #fff; font-weight: 600; }
+  .ai-rec-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ai-rec-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .ai-rec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.4s ease;
+  }
+  .ai-rec-badge.bull  { background: rgba(0,201,107,0.15); color: var(--bull); border: 1px solid rgba(0,201,107,0.35); }
+  .ai-rec-badge.warn  { background: rgba(245,166,35,0.15); color: var(--warn); border: 1px solid rgba(245,166,35,0.35); }
+  .ai-rec-badge.bear  { background: rgba(255,69,102,0.15); color: var(--bear); border: 1px solid rgba(255,69,102,0.35); }
+  .ai-rec-badge.info  { background: rgba(91,156,246,0.15); color: var(--info); border: 1px solid rgba(91,156,246,0.35); }
+
+  /* ── RISK METER ── */
+  .risk-meter-wrap {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .risk-meter-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .risk-meter-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .risk-level-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.4s;
+  }
+  .risk-gauge-track {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #00c96b 0%, #f5a623 40%, #ff4566 72%, #ff1244 100%);
+    position: relative;
+    margin-bottom: 5px;
+  }
+  .risk-needle {
+    position: absolute;
+    top: -5px;
+    width: 3px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: left 0.9s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  }
+  .risk-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
   /* ── TRAILING STOP ── */
   .trailing-stop-wrap {
     padding: 14px 16px;
@@ -873,6 +1005,35 @@
         <div class="warn-msg" id="warnMsg"></div>
       </div>
     </div>
+
+    <!-- AI REASON PANEL -->
+    <div class="ai-reason-card" id="aiReasonCard">
+      <!-- Risk Meter -->
+      <div class="risk-meter-wrap">
+        <div class="risk-meter-hdr">
+          <span class="risk-meter-title">Risk Meter</span>
+          <span class="risk-level-badge" id="riskLevelBadge">—</span>
+        </div>
+        <div class="risk-gauge-track">
+          <div class="risk-needle" id="riskNeedle" style="left:5%"></div>
+        </div>
+        <div class="risk-labels">
+          <span>LOW</span><span>MODERATE</span><span>HIGH</span><span>TAKE PROFITS</span>
+        </div>
+      </div>
+      <!-- Reasoning -->
+      <div class="ai-reason-hdr">
+        <div class="ai-reason-title">
+          <div class="ai-pulse"></div>
+          AI REASON — WHY?
+        </div>
+      </div>
+      <div class="ai-reason-text" id="aiReasonText">Waiting for data...</div>
+      <div class="ai-rec-row">
+        <span class="ai-rec-label">Recommendation</span>
+        <span class="ai-rec-badge info" id="aiRecBadge">—</span>
+      </div>
+    </div>
   </div>
 
   <!-- STATS STRIP -->
@@ -1010,6 +1171,113 @@ function pickTarget(btn) {
   btn.classList.add('active');
   clockTarget = parseInt(btn.dataset.pct);
   if (candles.length > 0) render();
+}
+
+// ── AI Reason + Risk Meter ────────────────────────────────────────────────
+function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
+  const a = atrVal || 0.01;
+  const parts = [];
+
+  // RSI
+  if      (rsiVal >= 78) parts.push(`RSI is <strong>deeply overbought at ${rsiVal.toFixed(0)}</strong> — sellers typically take control here`);
+  else if (rsiVal >= 68) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is overbought</strong> and losing headroom fast`);
+  else if (rsiVal >= 55) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is elevated with some room left before overbought`);
+  else if (rsiVal >= 45) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is neutral — no strong directional edge from momentum alone`);
+  else if (rsiVal >= 35) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is approaching oversold — upside room remains`);
+  else if (rsiVal >= 25) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is oversold</strong> — bounce potential is high`);
+  else                   parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is severely oversold</strong> — mean reversion likely`);
+
+  // Velocity
+  if      (vel > a * 0.5)  parts.push(`price is <strong>accelerating strongly</strong> at $${vel.toFixed(3)}/min`);
+  else if (vel > a * 0.2)  parts.push(`price has <strong>solid upward momentum</strong> at $${vel.toFixed(3)}/min`);
+  else if (vel > 0.001)    parts.push(`price is drifting upward slowly — <strong>weak momentum</strong>`);
+  else if (vel < -a * 0.4) parts.push(`price is <strong>dropping hard</strong> at $${Math.abs(vel).toFixed(3)}/min — momentum has flipped`);
+  else if (vel < -0.001)   parts.push(`<strong>momentum has stalled</strong> and turned slightly negative`);
+  else                     parts.push(`<strong>price is flat</strong> — no directional momentum`);
+
+  // Volume
+  if      (vt > 0.25)  parts.push(`<strong>volume is surging ${(vt*100).toFixed(0)}% above average</strong>, confirming the move`);
+  else if (vt > 0.08)  parts.push(`volume is picking up, adding conviction to the move`);
+  else if (vt < -0.25) parts.push(`<strong>volume is collapsing</strong> — institutional support is fading`);
+  else if (vt < -0.08) parts.push(`volume is fading, which weakens the conviction`);
+
+  // Velocity trend
+  if      (vtrend > a * 0.08)  parts.push(`momentum is <strong>building</strong>`);
+  else if (vtrend < -a * 0.08) parts.push(`momentum is <strong>decelerating</strong> — a warning sign`);
+
+  // Gain context
+  if (gainPct !== null) {
+    if      (gainPct >= 25) parts.push(`the trade is up <strong>+${gainPct.toFixed(1)}%</strong> — an exceptional move that deserves protection`);
+    else if (gainPct >= 10) parts.push(`the trade is up <strong>+${gainPct.toFixed(1)}%</strong> from entry`);
+    else if (gainPct >= 0)  parts.push(`currently up <strong>+${gainPct.toFixed(1)}%</strong> from entry`);
+    else if (gainPct >= -5) parts.push(`the position is <strong>down ${gainPct.toFixed(1)}%</strong> — within normal noise`);
+    else                    parts.push(`the position is <strong>down ${gainPct.toFixed(1)}%</strong> — reassess your thesis`);
+  }
+
+  // Recommendation logic
+  let rec, recClass, recIcon;
+  if (gainPct !== null && gainPct >= 25) {
+    rec = 'SELL — TAKE PROFITS'; recClass = 'bear'; recIcon = '🔴';
+  } else if (rsiVal >= 78 || (gainPct !== null && gainPct >= 18 && rsiVal >= 70)) {
+    rec = 'SELL / SCALE OUT'; recClass = 'bear'; recIcon = '⚠️';
+  } else if (gainPct !== null && gainPct >= 10 && (rsiVal >= 68 || vtrend < -a * 0.05)) {
+    rec = 'SCALE OUT PARTIALLY'; recClass = 'warn'; recIcon = '⬇️';
+  } else if (gainPct !== null && gainPct >= 6) {
+    rec = 'TRAIL YOUR STOP'; recClass = 'warn'; recIcon = '🛡';
+  } else if (sig.tone === 'buy' || (rsiVal <= 35 && vel > 0)) {
+    rec = 'HOLD — ROOM TO RUN'; recClass = 'bull'; recIcon = '🟢';
+  } else if (sig.tone === 'hold' && vel > 0 && rsiVal < 62) {
+    rec = 'HOLD POSITION'; recClass = 'bull'; recIcon = '🟢';
+  } else if (vel <= 0 && gainPct !== null && gainPct > 0) {
+    rec = 'TIGHTEN YOUR STOP'; recClass = 'warn'; recIcon = '⏸';
+  } else {
+    rec = 'WAIT FOR SIGNAL'; recClass = 'info'; recIcon = '👁';
+  }
+
+  // Risk score (0-100)
+  let risk = 25;
+  if      (rsiVal >= 75) risk += 30;
+  else if (rsiVal >= 65) risk += 18;
+  else if (rsiVal >= 55) risk += 8;
+  else if (rsiVal <= 35) risk -= 8;
+
+  if      (vel < -a * 0.35) risk += 22;
+  else if (vel < 0)          risk += 10;
+  else if (vel > a * 0.4)   risk -= 5;
+
+  if (gainPct !== null) {
+    if      (gainPct >= 22) risk += 26;
+    else if (gainPct >= 12) risk += 12;
+    else if (gainPct <= -8) risk += 18;
+    else if (gainPct <= -5) risk += 8;
+  }
+
+  if (vt < -0.2) risk += 10;
+  if (vtrend < -a * 0.1) risk += 8;
+
+  risk = Math.min(99, Math.max(3, Math.round(risk)));
+  const riskLevel = risk >= 76 ? 'TAKE PROFITS' : risk >= 56 ? 'HIGH' : risk >= 36 ? 'MODERATE' : 'LOW';
+  const riskColor = risk >= 76 ? 'var(--bear)' : risk >= 56 ? '#ff7043' : risk >= 36 ? 'var(--warn)' : 'var(--bull)';
+
+  return { text: parts.join('. ') + '.', rec, recClass, recIcon, risk, riskLevel, riskColor };
+}
+
+function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
+  const r = generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig);
+
+  // Risk meter
+  document.getElementById('riskNeedle').style.left = Math.min(97, r.risk) + '%';
+  const badge = document.getElementById('riskLevelBadge');
+  badge.textContent = r.riskLevel;
+  badge.style.color = r.riskColor;
+
+  // Reason text
+  document.getElementById('aiReasonText').innerHTML = r.text;
+
+  // Recommendation badge
+  const recEl = document.getElementById('aiRecBadge');
+  recEl.textContent = `${r.recIcon}  ${r.rec}`;
+  recEl.className = `ai-rec-badge ${r.recClass}`;
 }
 
 // ── Confidence Score (0-100) ───────────────────────────────────────────────
@@ -1378,6 +1646,9 @@ function render() {
 
   // Probability cards (needs entry)
   if (entryPrice) renderProbCards(now, vel, atrVal, rsiVal, vt);
+
+  // AI Reason + Risk Meter
+  renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig);
 
   // Confidence badge
   const conf = calcConfidence(rsiVal, vel, atrVal, vt, vtrend);
