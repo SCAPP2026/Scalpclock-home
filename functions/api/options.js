@@ -2,7 +2,7 @@ export async function onRequest(context) {
   const { env, request } = context;
   const url    = new URL(request.url);
   const symbol = (url.searchParams.get('symbol') || 'SPY').toUpperCase();
-  const KEY    = env.POLYGON_KEY;
+  const KEY    = env.MASSIVE_API_KEY;
 
   if (!KEY) return json({ error: 'No Polygon key configured', symbol }, 503);
 

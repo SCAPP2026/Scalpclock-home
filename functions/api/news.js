@@ -15,7 +15,7 @@ export async function onRequest(context) {
   }
 
   const results = await Promise.allSettled([
-    fetchPolygon(env.POLYGON_KEY),
+    fetchPolygon(env.MASSIVE_API_KEY),
     fetchFinnhub(env.FINNHUB_KEY),
     fetchFMP(env.FMP_KEY),
     fetchBenzinga(env.BENZINGA_KEY),

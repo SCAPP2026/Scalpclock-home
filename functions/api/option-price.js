@@ -7,7 +7,7 @@ export async function onRequest(context) {
   const strike = url.searchParams.get('strike');
   const expiry = url.searchParams.get('expiry'); // YYYY-MM-DD
   const ctype  = (url.searchParams.get('type') || 'call').toLowerCase();
-  const KEY    = env.POLYGON_KEY;
+  const KEY    = env.MASSIVE_API_KEY;
 
   if (!KEY)    return json({ error: 'No Polygon key configured' }, 503);
   if (!symbol || !strike || !expiry) return json({ error: 'Missing symbol, strike, or expiry' }, 400);
