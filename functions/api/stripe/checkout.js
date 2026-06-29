@@ -15,6 +15,9 @@ export async function onRequest(context) {
     return new Response('Method not allowed', { status: 405 });
   }
 
+  // DEBUG: remove after diagnosis
+  return json({ debug: true, method: request.method, hasSecret: !!env.STRIPE_SECRET_KEY, hasMonthly: !!env.STRIPE_PRICE_PRO_MONTHLY, hasAnnual: !!env.STRIPE_PRICE_PRO_ANNUAL }, 200);
+
   try {
     return await handleCheckout(env, request);
   } catch (e) {
