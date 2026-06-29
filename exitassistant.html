@@ -470,6 +470,30 @@
     font-weight: 600;
     margin-top: 4px;
   }
+  .clock-gain {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    min-height: 16px;
+    transition: color 0.3s;
+  }
+  .clock-gain.pos { color: var(--bull); }
+  .clock-gain.neg { color: var(--bear); }
+  .clock-gain.flat { color: var(--muted); }
+  .clock-pace {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 5px;
+    min-height: 14px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .clock-pace.ahead  { color: var(--bull); background: rgba(0,201,107,0.1); }
+  .clock-pace.ontrack { color: var(--warn); background: rgba(245,166,35,0.1); }
+  .clock-pace.behind { color: var(--bear); background: rgba(255,69,102,0.1); }
 
   /* Target selector tabs */
   .target-tabs {
@@ -1355,9 +1379,11 @@
       </svg>
 
       <div class="clock-inner">
+        <div class="clock-gain" id="clockGain"></div>
         <div class="clock-time" id="clockTime">--:--</div>
         <div class="clock-unit" id="clockUnit">min · sec</div>
         <div class="clock-sub" id="clockSub">set entry to begin</div>
+        <div class="clock-pace" id="clockPace"></div>
       </div>
     </div>
 
@@ -1593,14 +1619,17 @@ function maybeSpeak(sig, rsiVal, gainPct) {
   lastSigLevel = lvl;
   const g = gainPct !== null ? `You're ${gainPct >= 0 ? 'up' : 'down'} ${Math.abs(gainPct).toFixed(1)} percent. ` : '';
   const scripts = {
-    'EXIT SIGNAL':         `ScalpClock alert. Exit signal. ${g}RSI at ${rsiVal.toFixed(0)}. Sell or scale out now.`,
-    'TAKE PROFIT':         `ScalpClock alert. Take profit. ${g}Don't give it back. Exit the trade.`,
-    'MOMENTUM FADING':     `ScalpClock. Momentum is fading. RSI ${rsiVal.toFixed(0)}. Consider scaling out.`,
-    'MOVE YOUR STOP':      `ScalpClock. Move your stop to protect profits. Momentum is decelerating.`,
-    'VOLUME DRYING UP':    `ScalpClock. Volume is drying up. The move may be over. Tighten your stop.`,
-    'DECELERATING':        `ScalpClock. Momentum decelerating. Watch RSI and volume for the next signal.`,
+    'EXIT SIGNAL':            `ScalpClock alert. Exit signal. ${g}RSI at ${rsiVal.toFixed(0)}. Sell or scale out now.`,
+    'TAKE PROFIT':            `ScalpClock alert. Take profit. ${g}Don't give it back. Exit the trade.`,
+    'MOMENTUM FADING':        `ScalpClock. Momentum is fading. RSI ${rsiVal.toFixed(0)}. Consider scaling out.`,
+    'MOVE YOUR STOP':         `ScalpClock. Move your stop to protect profits. Momentum is decelerating.`,
+    'VOLUME DRYING UP':       `ScalpClock. Volume is drying up. The move may be over. Tighten your stop.`,
+    'DECELERATING':           `ScalpClock. Momentum decelerating. Watch RSI and volume for the next signal.`,
     'HOLD — STRONG MOMENTUM': `ScalpClock. Strong momentum confirmed on ${ticker}. Rising price, rising volume. Stay in.`,
     'HOLD — OVERSOLD BOUNCE': `ScalpClock. Oversold bounce in progress on ${ticker}. RSI ${rsiVal.toFixed(0)}. Room to run.`,
+    'THETA BURNING':          `ScalpClock alert. Theta is burning. Less than one day to expiry. Take your profit now before time decay takes it.`,
+    'EXIT — TIME DECAY':      `ScalpClock alert. Expiring today at a loss. Theta will take the rest. Cut the position now.`,
+    'IV CRUSH RISK':          `ScalpClock alert. IV crush risk detected. Implied volatility is elevated. Lock in your gains before the event passes.`,
   };
   if (scripts[lvl]) speak(scripts[lvl]);
 }
@@ -1658,8 +1687,12 @@ async function fetchOptionPremium() {
     const data = await res.json();
     renderOptionPremium(data, entryPremium);
   } catch {
-    document.getElementById('optStatusMsg') &&
-      (document.getElementById('optStatusMsg').textContent = 'Premium fetch error — retrying...');
+    const msgEl = document.getElementById('optStatusMsg');
+    if (msgEl) msgEl.textContent = 'Premium fetch error — retrying...';
+    else {
+      const display = document.getElementById('optLiveDisplay');
+      if (display) display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Premium fetch error — retrying...</span>';
+    }
   }
 }
 
@@ -1773,7 +1806,7 @@ async function loadOptions() {
 function renderOptions(d) {
   const el = document.getElementById('optionsContent');
   if (d.error || d.noData) {
-    el.innerHTML = `<div class="options-msg">${d.noData ? 'No options data — market may be closed' : 'Polygon key not configured'}</div>`;
+    el.innerHTML = `<div class="options-msg">${d.noData ? 'No options data — market may be closed' : 'Options data unavailable — check API key'}</div>`;
     return;
   }
   const { greeks, iv, ivRank, ivCrushWarning, callVolume, putVolume, callOI, putOI, pcRatio, unusualFlow } = d;
@@ -1856,13 +1889,15 @@ window.addEventListener('DOMContentLoaded', () => {
   checkEarnings();
   fetchTimer   = setInterval(refresh, 5000);
   optionsTimer = setInterval(loadOptions, 60000);
-  setInterval(checkEarnings, 3600000); // recheck earnings every hour
+  setInterval(checkEarnings, 3600000);
+  startClockTick();
 });
 
 function onTickerChange() {
   ticker = document.getElementById('tickerSel').value;
   entryPrice = null;
   lastSigLevel = '';
+  _clockEtaSec = null;
   document.getElementById('entryInput').value = '';
   document.getElementById('gainPill').style.display = 'none';
   candles = [];
@@ -1871,7 +1906,6 @@ function onTickerChange() {
   refresh();
   loadOptions();
   checkEarnings();
-  // Clear option contract since it was for the old ticker
   if (optContract) clearOptionContract();
 }
 
@@ -2543,77 +2577,148 @@ function render() {
   maybeSpeak(sig, rsiVal, gainPct);
 }
 
+// ── Real-time clock tick state ─────────────────────────────────────────────
+let _clockEtaSec  = null;  // ETA in seconds at last candle update
+let _clockSetAt   = null;  // Date.now() when ETA was set
+let _clockTickInt = null;  // setInterval handle
+
+function startClockTick() {
+  if (_clockTickInt) return;
+  _clockTickInt = setInterval(tickClock, 1000);
+}
+
+function tickClock() {
+  if (_clockEtaSec === null || _clockSetAt === null) return;
+  const elapsed = (Date.now() - _clockSetAt) / 1000;
+  const remaining = Math.max(0, _clockEtaSec - elapsed);
+  const m = Math.floor(remaining / 60);
+  const s = Math.floor(remaining % 60);
+  const tEl = document.getElementById('clockTime');
+  if (tEl && tEl.className.includes('clock-time') && !tEl.textContent.includes('✓') && !tEl.textContent.includes('↓') && !tEl.textContent.includes('∞')) {
+    tEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
+  }
+}
+
 function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx) {
-  const CIRC = 678.58;
-  const arc  = document.getElementById('clockArc');
-  const glow = document.getElementById('arcGlow');
-  const tEl  = document.getElementById('clockTime');
-  const uEl  = document.getElementById('clockUnit');
-  const sEl  = document.getElementById('clockSub');
+  const CIRC  = 678.58;
+  const arc   = document.getElementById('clockArc');
+  const glow  = document.getElementById('arcGlow');
+  const tEl   = document.getElementById('clockTime');
+  const uEl   = document.getElementById('clockUnit');
+  const sEl   = document.getElementById('clockSub');
+  const gEl   = document.getElementById('clockGain');
+  const pEl   = document.getElementById('clockPace');
   const isOpt = !!(optContract && optCurrentPrice != null && optContract.entryPremium);
 
-  // Arc color tracks signal state
   const arcColor = sig.color === 'green' ? 'var(--bull)'
                  : sig.color === 'red'   ? 'var(--bear)'
                  : 'var(--warn)';
   arc.style.stroke  = arcColor;
   glow.style.stroke = arcColor;
 
-  const hasEntry = isOpt ? true : !!entryPrice;
-  if (!hasEntry) {
-    arc.style.strokeDashoffset = CIRC;
-    glow.style.strokeDashoffset = CIRC;
-    glow.style.opacity = '0';
-    tEl.textContent = '--:--';
-    tEl.className   = 'clock-time';
-    uEl.textContent = 'min · sec';
-    sEl.textContent = isOpt ? 'enter premium paid to begin' : 'set entry to begin';
-    return;
+  // ── Gain display in clock center ──
+  if (gainPct !== null) {
+    const gSign = gainPct >= 0 ? '+' : '';
+    gEl.textContent = `${gSign}${gainPct.toFixed(1)}%${isOpt ? ' on premium' : ' from entry'}`;
+    gEl.className   = `clock-gain ${gainPct > 0.1 ? 'pos' : gainPct < -0.1 ? 'neg' : 'flat'}`;
+  } else {
+    gEl.textContent = '';
+    gEl.className   = 'clock-gain';
   }
 
-  const progress = Math.min(1, Math.max(0, gainPct / clockTarget));
+  const hasEntry = isOpt ? true : !!entryPrice;
+  if (!hasEntry) {
+    _clockEtaSec = null;
+    arc.style.strokeDashoffset  = CIRC;
+    glow.style.strokeDashoffset = CIRC;
+    glow.style.opacity = '0';
+    tEl.textContent = ticker;
+    tEl.className   = 'clock-time';
+    tEl.style.fontSize = '22px';
+    uEl.textContent = `$${now.toFixed(2)} · ${((now - candles[0].open) / candles[0].open * 100) >= 0 ? '+' : ''}${((now - candles[0].open) / candles[0].open * 100).toFixed(2)}%`;
+    sEl.textContent = isOpt ? 'enter premium paid to begin' : 'set entry price to start clock';
+    pEl.textContent = '';
+    pEl.className   = 'clock-pace';
+    startClockTick();
+    return;
+  }
+  tEl.style.fontSize = ''; // restore default
+
+  const progress = Math.min(1, Math.max(0, (gainPct ?? 0) / clockTarget));
   const offset   = CIRC * (1 - progress);
   arc.style.strokeDashoffset  = offset;
   glow.style.strokeDashoffset = offset;
   glow.style.opacity = progress > 0.05 ? '0.4' : '0';
 
   const targetPx = basePx * (1 + clockTarget / 100);
-  const label    = isOpt ? 'premium' : '';
+  const label    = isOpt ? ' premium' : '';
 
-  if (gainPct >= clockTarget) {
+  if ((gainPct ?? 0) >= clockTarget) {
+    _clockEtaSec = null;
     tEl.textContent = '✓';
     tEl.className   = 'clock-time green';
     uEl.textContent = `+${clockTarget}% TARGET REACHED`;
-    sEl.textContent = isOpt ? `exit at $${targetPx.toFixed(2)} premium` : `exit at $${targetPx.toFixed(2)}`;
+    sEl.textContent = `exit at $${targetPx.toFixed(2)}${label}`;
+    pEl.textContent = 'TARGET HIT';
+    pEl.className   = 'clock-pace ahead';
     return;
   }
 
   const eta = etaMinutes(now, basePx, clockTarget, vel);
 
   if (eta === null || vel <= 0) {
+    _clockEtaSec = null;
     tEl.textContent = '↓';
     tEl.className   = 'clock-time red';
     uEl.textContent = isOpt ? 'premium losing ground' : 'momentum reversed';
-    sEl.textContent = `target $${targetPx.toFixed(2)} ${label} (+${clockTarget}%)`;
+    sEl.textContent = `target $${targetPx.toFixed(2)}${label} (+${clockTarget}%)`;
+    pEl.textContent = 'BEHIND';
+    pEl.className   = 'clock-pace behind';
     return;
   }
 
-  if (eta > 720) {
+  if (eta > 120) {
+    _clockEtaSec = null;
     tEl.textContent = '∞';
     tEl.className   = 'clock-time yellow';
-    uEl.textContent = 'insufficient velocity';
-    sEl.textContent = `target $${targetPx.toFixed(2)} ${label} (+${clockTarget}%)`;
+    uEl.textContent = 'velocity too low';
+    sEl.textContent = `target $${targetPx.toFixed(2)}${label} (+${clockTarget}%)`;
+    pEl.textContent = 'SLOW PACE';
+    pEl.className   = 'clock-pace behind';
     return;
   }
 
+  // Set real-time ticker
   const totalSec = Math.round(eta * 60);
+  _clockEtaSec = totalSec;
+  _clockSetAt  = Date.now();
+  startClockTick();
+
   const m = Math.floor(totalSec / 60);
   const s = totalSec % 60;
-
   tEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
   tEl.className   = 'clock-time ' + sig.color;
   uEl.textContent = 'estimated time remaining';
-  sEl.textContent = `→ $${targetPx.toFixed(2)} ${label} (+${clockTarget}%)`;
+
+  // Theta cost note in options mode
+  const theta = lastOptionsData?.greeks?.theta;
+  const thetaCost = (isOpt && theta) ? ` · θ -$${Math.abs(theta * 100 * (eta / (24 * 60))).toFixed(2)}/contract` : '';
+  sEl.textContent = `→ $${targetPx.toFixed(2)}${label} (+${clockTarget}%)${thetaCost}`;
+
+  // Pace indicator — compare current gain rate to needed rate
+  const neededRate  = clockTarget / eta;        // % per minute needed
+  const currentRate = vel > 0 && basePx > 0 ? (vel / basePx * 100) : 0; // % per minute at current vel
+  const paceRatio   = neededRate > 0 ? currentRate / neededRate : 0;
+  if (paceRatio >= 1.15) {
+    pEl.textContent = 'AHEAD OF PACE';
+    pEl.className   = 'clock-pace ahead';
+  } else if (paceRatio >= 0.75) {
+    pEl.textContent = 'ON TRACK';
+    pEl.className   = 'clock-pace ontrack';
+  } else {
+    pEl.textContent = 'BEHIND PACE';
+    pEl.className   = 'clock-pace behind';
+  }
 }
 
 function renderProbCards(now, vel, atrVal, rsiVal, vt) {
