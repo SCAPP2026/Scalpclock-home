@@ -931,6 +931,129 @@
     /* Risk labels — shorten */
     .risk-labels { font-size: 8px; }
   }
+
+  /* ── VOICE BUTTON ── */
+  .voice-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+  .voice-btn:hover { color: var(--text); border-color: var(--text); }
+  .voice-btn.on { color: var(--bull); border-color: rgba(0,201,107,0.5); background: rgba(0,201,107,0.08); }
+
+  /* ── OPTIONS PANEL ── */
+  .options-wrap {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .options-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .options-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .options-refresh {
+    font-size: 9px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: none;
+    transition: color 0.15s;
+  }
+  .options-refresh:hover { color: var(--accent); }
+  .greeks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .greek-item {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+  .greek-lbl {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .greek-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .greek-val.warn { color: var(--warn); }
+  .greek-val.bear { color: var(--bear); }
+  .iv-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .iv-chip {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .iv-chip.rank { background: rgba(91,156,246,0.12); color: var(--info); border: 1px solid rgba(91,156,246,0.3); }
+  .iv-chip.crush { background: rgba(255,69,102,0.12); color: var(--bear); border: 1px solid rgba(255,69,102,0.35); animation: warnPulse 2s infinite; }
+  .pcr-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pcr-label { color: var(--muted); }
+  .pcr-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #fff; }
+  .unusual-hdr {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .unusual-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+  }
+  .unusual-row:last-child { border-bottom: none; }
+  .uf-type { font-weight: 700; font-size: 9px; padding: 1px 5px; border-radius: 3px; }
+  .uf-type.call { background: rgba(0,201,107,0.15); color: var(--bull); }
+  .uf-type.put  { background: rgba(255,69,102,0.15); color: var(--bear); }
+  .uf-strike { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #fff; }
+  .uf-ratio { margin-left: auto; color: var(--warn); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .options-msg { font-size: 11px; color: var(--muted); text-align: center; padding: 12px 0; }
 </style>
 </head>
 <body style="visibility:hidden">
@@ -1009,6 +1132,8 @@
     </div>
 
     <div class="gain-pill" id="gainPill">—</div>
+
+    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🔇 Voice</button>
 
     <div class="live-badge">
       <div class="live-dot"></div>
@@ -1168,6 +1293,17 @@
   <div class="sidebar">
     <div class="sidebar-hdr">Profit Targets</div>
 
+    <!-- OPTIONS PANEL -->
+    <div class="options-wrap" id="optionsWrap">
+      <div class="options-hdr">
+        <span class="options-title">Options Flow</span>
+        <button class="options-refresh" onclick="loadOptions()">↻ Refresh</button>
+      </div>
+      <div id="optionsContent">
+        <div class="options-msg">Loading options data...</div>
+      </div>
+    </div>
+
     <div id="probCards">
       <div class="no-entry-state">
         <div class="big-icon">🎯</div>
@@ -1230,6 +1366,132 @@ let entryPrice   = null;
 let candles      = [];
 let clockTarget  = 10;
 let fetchTimer   = null;
+let lastSigLevel = '';
+let optionsTimer = null;
+
+// ── Voice Alerts ───────────────────────────────────────────────────────────
+let voiceEnabled   = false;
+let lastSpokenKey  = '';
+let lastSpokenTime = 0;
+const VOICE_GAP    = 90000;
+
+function toggleVoice() {
+  voiceEnabled = !voiceEnabled;
+  const btn = document.getElementById('voiceBtn');
+  btn.textContent = voiceEnabled ? '🔊 Voice ON' : '🔇 Voice';
+  btn.className = 'voice-btn' + (voiceEnabled ? ' on' : '');
+  if (voiceEnabled) speak('ScalpClock voice alerts activated. Watching ' + ticker + '.');
+}
+
+function speak(text) {
+  if (!voiceEnabled || !('speechSynthesis' in window)) return;
+  const now = Date.now();
+  if (text === lastSpokenKey && now - lastSpokenTime < VOICE_GAP) return;
+  lastSpokenKey  = text;
+  lastSpokenTime = now;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = 0.90; utt.pitch = 1.0; utt.volume = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const pick = voices.find(v => v.lang.startsWith('en') &&
+    (v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Alex') || v.name.includes('Karen')));
+  if (pick) utt.voice = pick;
+  window.speechSynthesis.speak(utt);
+}
+
+function maybeSpeak(sig, rsiVal, gainPct) {
+  const lvl = sig.level;
+  if (lvl === lastSigLevel) return;
+  lastSigLevel = lvl;
+  const g = gainPct !== null ? `You're ${gainPct >= 0 ? 'up' : 'down'} ${Math.abs(gainPct).toFixed(1)} percent. ` : '';
+  const scripts = {
+    'EXIT SIGNAL':         `ScalpClock alert. Exit signal. ${g}RSI at ${rsiVal.toFixed(0)}. Sell or scale out now.`,
+    'TAKE PROFIT':         `ScalpClock alert. Take profit. ${g}Don't give it back. Exit the trade.`,
+    'MOMENTUM FADING':     `ScalpClock. Momentum is fading. RSI ${rsiVal.toFixed(0)}. Consider scaling out.`,
+    'MOVE YOUR STOP':      `ScalpClock. Move your stop to protect profits. Momentum is decelerating.`,
+    'VOLUME DRYING UP':    `ScalpClock. Volume is drying up. The move may be over. Tighten your stop.`,
+    'DECELERATING':        `ScalpClock. Momentum decelerating. Watch RSI and volume for the next signal.`,
+    'HOLD — STRONG MOMENTUM': `ScalpClock. Strong momentum confirmed on ${ticker}. Rising price, rising volume. Stay in.`,
+    'HOLD — OVERSOLD BOUNCE': `ScalpClock. Oversold bounce in progress on ${ticker}. RSI ${rsiVal.toFixed(0)}. Room to run.`,
+  };
+  if (scripts[lvl]) speak(scripts[lvl]);
+}
+
+// ── Options Data ───────────────────────────────────────────────────────────
+async function loadOptions() {
+  const el = document.getElementById('optionsContent');
+  el.innerHTML = '<div class="options-msg">Loading...</div>';
+  try {
+    const res  = await fetch(`/api/options?symbol=${ticker}`);
+    const data = await res.json();
+    renderOptions(data);
+  } catch {
+    el.innerHTML = '<div class="options-msg">Options data unavailable</div>';
+  }
+}
+
+function renderOptions(d) {
+  const el = document.getElementById('optionsContent');
+  if (d.error || d.noData) {
+    el.innerHTML = `<div class="options-msg">${d.noData ? 'No options data — market may be closed' : 'Polygon key not configured'}</div>`;
+    return;
+  }
+  const { greeks, iv, ivRank, ivCrushWarning, callVolume, putVolume, callOI, putOI, pcRatio, unusualFlow } = d;
+
+  const fmtVol = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : String(v||0);
+  const thetaWarn = greeks?.theta && greeks.theta < -0.05;
+
+  el.innerHTML = `
+    <div class="greeks-grid">
+      <div class="greek-item">
+        <div class="greek-lbl">Δ Delta</div>
+        <div class="greek-val">${greeks?.delta ?? '—'}</div>
+      </div>
+      <div class="greek-item">
+        <div class="greek-lbl">γ Gamma</div>
+        <div class="greek-val">${greeks?.gamma ?? '—'}</div>
+      </div>
+      <div class="greek-item">
+        <div class="greek-lbl">θ Theta Burn</div>
+        <div class="greek-val ${thetaWarn ? 'bear' : ''}">${greeks?.theta ?? '—'}</div>
+      </div>
+      <div class="greek-item">
+        <div class="greek-lbl">ν Vega</div>
+        <div class="greek-val">${greeks?.vega ?? '—'}</div>
+      </div>
+    </div>
+
+    <div class="iv-row">
+      ${iv ? `<span class="iv-chip rank">IV ${iv}%</span>` : ''}
+      ${ivRank != null ? `<span class="iv-chip rank">IV Rank ${ivRank}</span>` : ''}
+      ${ivCrushWarning ? `<span class="iv-chip crush">⚡ IV CRUSH RISK</span>` : ''}
+      ${thetaWarn ? `<span class="iv-chip crush">🔥 THETA BURN</span>` : ''}
+    </div>
+
+    <div class="pcr-row">
+      <span class="pcr-label">Call Vol / OI</span>
+      <span class="pcr-val">${fmtVol(callVolume)} / ${fmtVol(callOI)}</span>
+    </div>
+    <div class="pcr-row">
+      <span class="pcr-label">Put Vol / OI</span>
+      <span class="pcr-val">${fmtVol(putVolume)} / ${fmtVol(putOI)}</span>
+    </div>
+    <div class="pcr-row" style="margin-bottom:10px">
+      <span class="pcr-label">Put/Call Ratio</span>
+      <span class="pcr-val" style="color:${pcRatio > 1 ? 'var(--bear)' : pcRatio < 0.7 ? 'var(--bull)' : '#fff'}">${pcRatio ?? '—'}</span>
+    </div>
+
+    ${unusualFlow?.length ? `
+    <div class="unusual-hdr">Unusual Flow</div>
+    ${unusualFlow.map(u => `
+      <div class="unusual-row">
+        <span class="uf-type ${u.type}">${u.type?.toUpperCase()}</span>
+        <span class="uf-strike">$${u.strike} ${u.expiry?.slice(5)}</span>
+        ${u.iv ? `<span style="color:var(--muted);font-size:9px">IV ${u.iv}%</span>` : ''}
+        <span class="uf-ratio">${u.ratio}x</span>
+      </div>`).join('')}
+    ` : '<div class="unusual-hdr">No unusual flow detected</div>'}`;
+}
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
@@ -1240,18 +1502,22 @@ window.addEventListener('DOMContentLoaded', () => {
     if ([...sel.options].some(o => o.value === ticker)) sel.value = ticker;
   }
   refresh();
-  fetchTimer = setInterval(refresh, 5000);
+  loadOptions();
+  fetchTimer   = setInterval(refresh, 5000);
+  optionsTimer = setInterval(loadOptions, 60000); // refresh options every 60s
 });
 
 function onTickerChange() {
   ticker = document.getElementById('tickerSel').value;
   entryPrice = null;
+  lastSigLevel = '';
   document.getElementById('entryInput').value = '';
   document.getElementById('gainPill').style.display = 'none';
   candles = [];
   updateTargetTabs();
   resetDisplay();
   refresh();
+  loadOptions();
 }
 
 function setEntry() {
@@ -1835,6 +2101,9 @@ function render() {
 
   // Emotional warning
   renderEmotionalWarning(gainPct, rsiVal, vel, atrVal);
+
+  // Voice alert
+  maybeSpeak(sig, rsiVal, gainPct);
 }
 
 function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {

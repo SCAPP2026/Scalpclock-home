@@ -144,6 +144,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
   .btn-close-trade{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:5px;border:1px solid rgba(255,59,70,.4);background:rgba(255,59,70,.08);color:#ff3b46;cursor:pointer;transition:.15s;white-space:nowrap;}
   .btn-close-trade:hover{background:rgba(255,59,70,.18);}
+  /* DAILY SCORECARD */
+  .scorecard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  @media(max-width:640px){.scorecard-grid{grid-template-columns:repeat(2,1fr);}}
+  .sc-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .sc-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t30);margin-bottom:6px;}
+  .sc-val{font-family:var(--disp);font-weight:700;font-size:1.4rem;color:var(--text);}
+  .sc-val.green{color:var(--green);}
+  .sc-val.red{color:#ff3b46;}
+  .sc-sub{font-size:.75rem;color:var(--t30);margin-top:3px;}
+  .grade-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-family:var(--mono);font-weight:700;font-size:1rem;letter-spacing:.1em;}
+  .grade-a{background:rgba(22,217,126,.15);color:var(--green);border:1px solid rgba(22,217,126,.3);}
+  .grade-b{background:rgba(91,156,246,.12);color:#5b9cf6;border:1px solid rgba(91,156,246,.3);}
+  .grade-c{background:rgba(245,166,35,.12);color:#f5a623;border:1px solid rgba(245,166,35,.3);}
+  .grade-d{background:rgba(255,59,70,.12);color:#ff3b46;border:1px solid rgba(255,59,70,.3);}
+  .sc-breakdown{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-top:4px;}
+  .sc-breakdown-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t30);margin-bottom:12px;}
+  .sc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.85rem;}
+  .sc-row:last-child{border-bottom:none;}
+  .sc-row-label{color:var(--t55);}
+  .sc-row-val{font-family:var(--mono);font-weight:700;}
+
   /* MODAL */
   .modal-overlay{position:fixed;inset:0;z-index:120;background:rgba(4,8,5,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;}
   .modal-card{background:var(--bg2,#0b110d);border:1px solid rgba(22,217,126,.25);border-radius:16px;padding:32px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.7);}
@@ -293,6 +314,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
 
+  <!-- DAILY SCORECARD -->
+  <div id="scorecardWrap" style="margin-top:32px;display:none">
+    <div class="section-title">Today's Scorecard</div>
+    <div id="scorecardGrid"></div>
+  </div>
+
   <!-- Log Trade Modal -->
   <div id="logModal" class="modal-overlay" style="display:none">
     <div class="modal-card">
@@ -436,6 +463,7 @@ async function loadClosedTrades() {
     document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
     document.getElementById('tAvgPnl').textContent = fmtPnl(totalPnl / trades.length);
     document.getElementById('tradeSummary').style.display = 'grid';
+    renderScorecard(trades);
     document.getElementById('tradeBody').innerHTML = trades.map(t => {
       const win = (t.pnl || 0) >= 0, dir = (t.direction || 'calls').toLowerCase();
       const date = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
@@ -575,6 +603,74 @@ function checkUpgradeReturn() {
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 6000);
   history.replaceState({}, '', '/dashboard');
+}
+
+function renderScorecard(closedTrades) {
+  const today = new Date().toISOString().slice(0, 10);
+  const todayTrades = closedTrades.filter(t => (t.closed_at || t.created_at || '').slice(0, 10) === today);
+  const wrap = document.getElementById('scorecardWrap');
+  if (!todayTrades.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  const wins   = todayTrades.filter(t => (t.pnl_pct || 0) > 0);
+  const losses = todayTrades.filter(t => (t.pnl_pct || 0) <= 0);
+  const winRate = todayTrades.length ? Math.round(wins.length / todayTrades.length * 100) : 0;
+  const totalPnl = todayTrades.reduce((s, t) => s + (t.pnl_pct || 0), 0);
+  const avgPnl   = todayTrades.length ? totalPnl / todayTrades.length : 0;
+  const best  = todayTrades.reduce((m, t) => (t.pnl_pct || 0) > (m.pnl_pct || 0) ? t : m, todayTrades[0]);
+  const worst = todayTrades.reduce((m, t) => (t.pnl_pct || 0) < (m.pnl_pct || 0) ? t : m, todayTrades[0]);
+
+  // Grade: A=winRate>=70 & totalPnl>0, B=winRate>=55, C=winRate>=40, D=below
+  let grade, gradeClass;
+  if (winRate >= 70 && totalPnl > 0) { grade = 'A'; gradeClass = 'grade-a'; }
+  else if (winRate >= 55)             { grade = 'B'; gradeClass = 'grade-b'; }
+  else if (winRate >= 40)             { grade = 'C'; gradeClass = 'grade-c'; }
+  else                                { grade = 'D'; gradeClass = 'grade-d'; }
+
+  const pnlColor = totalPnl >= 0 ? 'green' : 'red';
+  const fmt = v => `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`;
+
+  document.getElementById('scorecardGrid').innerHTML = `
+    <div class="scorecard-grid">
+      <div class="sc-card">
+        <div class="sc-label">Today's Grade</div>
+        <div class="sc-val"><span class="grade-badge ${gradeClass}">${grade}</span></div>
+        <div class="sc-sub">${todayTrades.length} trade${todayTrades.length !== 1 ? 's' : ''} today</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-label">Win Rate</div>
+        <div class="sc-val ${winRate >= 55 ? 'green' : winRate >= 40 ? '' : 'red'}">${winRate}%</div>
+        <div class="sc-sub">${wins.length}W / ${losses.length}L</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-label">Total P&L</div>
+        <div class="sc-val ${pnlColor}">${fmt(totalPnl)}</div>
+        <div class="sc-sub">Avg ${fmt(avgPnl)} per trade</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-label">Best Trade</div>
+        <div class="sc-val green">${fmt(best.pnl_pct || 0)}</div>
+        <div class="sc-sub">${best.symbol || '—'} ${best.direction || ''}</div>
+      </div>
+    </div>
+    <div class="sc-breakdown">
+      <div class="sc-breakdown-title">Trade Breakdown</div>
+      ${todayTrades.map(t => {
+        const pct  = t.pnl_pct || 0;
+        const col  = pct > 0 ? 'var(--green)' : '#ff3b46';
+        const time = t.closed_at ? new Date(t.closed_at).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) : '—';
+        return `<div class="sc-row">
+          <span class="sc-row-label">${t.symbol || '—'} · ${t.direction || '—'}</span>
+          <span style="color:var(--t30);font-size:.75rem">${time}</span>
+          <span class="sc-row-val" style="color:${col}">${fmt(pct)}</span>
+        </div>`;
+      }).join('')}
+      ${worst && worst !== best ? `
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04);font-size:.8rem;color:var(--t30)">
+        Worst: <span style="color:#ff3b46;font-weight:700">${fmt(worst.pnl_pct||0)}</span> on ${worst.symbol||'—'}
+        ${totalPnl < 0 ? ' — Tomorrow is a new session. Stay disciplined.' : ' — Still a winning day. Well done.'}
+      </div>` : ''}
+    </div>`;
 }
 
 async function signOut() {
