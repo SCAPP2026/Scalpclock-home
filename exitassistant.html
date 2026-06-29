@@ -793,6 +793,72 @@
     letter-spacing: 0.3px;
   }
 
+  /* ── TIME MACHINE ── */
+  .time-machine-wrap {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .time-machine-hdr {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tm-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tm-row:last-child { border-bottom: none; }
+  .tm-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    width: 52px;
+    flex-shrink: 0;
+  }
+  .tm-arrow { font-size: 10px; color: var(--border2); margin-right: 6px; }
+  .tm-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    width: 60px;
+    flex-shrink: 0;
+    transition: color 0.3s;
+  }
+  .tm-pct.up   { color: var(--bull); }
+  .tm-pct.dn   { color: var(--bear); }
+  .tm-pct.flat { color: var(--muted); }
+  .tm-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  .tm-bar-track {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 8px;
+  }
+  .tm-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .tm-note { font-size: 10px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+
   /* ── TRAILING STOP ── */
   .trailing-stop-wrap {
     padding: 14px 16px;
@@ -1076,6 +1142,15 @@
       </div>
     </div>
 
+    <!-- TIME MACHINE -->
+    <div class="time-machine-wrap" id="timeMachineWrap">
+      <div class="time-machine-hdr">⏳ Time Machine</div>
+      <div id="timeMachineRows">
+        <div style="font-size:11px;color:var(--muted);padding:4px 0">Set entry price to activate</div>
+      </div>
+      <div class="tm-note" id="tmNote"></div>
+    </div>
+
     <!-- TRAILING STOP -->
     <div class="trailing-stop-wrap" id="trailingStopWrap">
       <div class="trailing-stop-hdr">Live Trailing Stop</div>
@@ -1335,6 +1410,70 @@ function renderConfidence(score, rsiVal, vel, atrVal, vt) {
     `ATR $${atrVal.toFixed(3)}`,
   ];
   document.getElementById('confFactors').textContent = factors.join(' · ');
+}
+
+// ── Time Machine ──────────────────────────────────────────────────────────
+function renderTimeMachine(currentPrice, entryPrice, vel, atrVal) {
+  const container = document.getElementById('timeMachineRows');
+  const noteEl    = document.getElementById('tmNote');
+
+  const HORIZONS = [
+    { label: '30 sec', minutes: 0.5 },
+    { label: '1 min',  minutes: 1   },
+    { label: '5 min',  minutes: 5   },
+    { label: '10 min', minutes: 10  },
+    { label: '15 min', minutes: 15  },
+  ];
+
+  // Velocity decay: assume momentum fades 8% per minute for longer horizons
+  function projectedVel(minutes) {
+    const decay = Math.pow(0.92, minutes);
+    return vel * decay;
+  }
+
+  // Projected price after N minutes using decaying velocity
+  function projectedPrice(minutes) {
+    if (Math.abs(vel) < 0.0001) return currentPrice;
+    let price = currentPrice;
+    const steps = Math.max(1, Math.round(minutes * 2));
+    const stepMin = minutes / steps;
+    for (let i = 0; i < steps; i++) {
+      const v = vel * Math.pow(0.92, (i * stepMin));
+      price += v * stepMin;
+    }
+    return price;
+  }
+
+  const maxAbsPct = HORIZONS.reduce((m, h) => {
+    const pp = projectedPrice(h.minutes);
+    const pct = Math.abs((pp - currentPrice) / currentPrice * 100);
+    return Math.max(m, pct);
+  }, 0.01);
+
+  container.innerHTML = HORIZONS.map(h => {
+    const pp       = projectedPrice(h.minutes);
+    const chgPct   = (pp - currentPrice) / currentPrice * 100;
+    const fromEntry = entryPrice ? ((pp - entryPrice) / entryPrice * 100) : null;
+    const barPct   = Math.min(100, Math.abs(chgPct) / maxAbsPct * 100);
+    const cls      = Math.abs(chgPct) < 0.01 ? 'flat' : chgPct > 0 ? 'up' : 'dn';
+    const barColor = cls === 'up' ? 'var(--bull)' : cls === 'dn' ? 'var(--bear)' : 'var(--muted)';
+    const sign     = chgPct >= 0 ? '+' : '';
+    const entryStr = fromEntry !== null ? `  <span style="color:${fromEntry>=0?'var(--bull)':'var(--bear)'};font-size:9px">(${fromEntry>=0?'+':''}${fromEntry.toFixed(1)}% from entry)</span>` : '';
+
+    return `<div class="tm-row">
+  <span class="tm-time">${h.label}</span>
+  <span class="tm-arrow">→</span>
+  <span class="tm-pct ${cls}">${sign}${chgPct.toFixed(2)}%</span>
+  <div class="tm-bar-track"><div class="tm-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>
+  <span class="tm-price">$${pp.toFixed(2)}${entryStr}</span>
+</div>`;
+  }).join('');
+
+  if (Math.abs(vel) < 0.0001) {
+    noteEl.textContent = 'Flat momentum — projections unreliable';
+  } else {
+    noteEl.textContent = `Based on current $${Math.abs(vel).toFixed(3)}/min velocity with decay model`;
+  }
 }
 
 // ── Trailing Stop ──────────────────────────────────────────────────────────
@@ -1653,6 +1792,9 @@ function render() {
   // Confidence badge
   const conf = calcConfidence(rsiVal, vel, atrVal, vt, vtrend);
   renderConfidence(conf, rsiVal, vel, atrVal, vt);
+
+  // Time machine
+  renderTimeMachine(now, entryPrice, vel, atrVal);
 
   // Trailing stop
   renderTrailingStop(now, entryPrice, atrVal);
