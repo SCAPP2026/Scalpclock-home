@@ -732,6 +732,43 @@ footer {
 .tour-next:hover { background: #20e88a; }
 .btn-tour { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: var(--t55); font-size: .75rem; font-weight: 700; cursor: pointer; transition: .15s; display: flex; align-items: center; justify-content: center; margin-left: 6px; flex-shrink: 0; }
 .btn-tour:hover { border-color: var(--green); color: var(--green); }
+
+/* ── news feed ── */
+.news-section { padding: 64px 0 56px; border-top: 1px solid var(--line); }
+.news-feed-hdr { margin-bottom: 24px; }
+.news-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.news-pill {
+  font-family: var(--mono); font-size: .65rem; font-weight: 700; letter-spacing: .07em;
+  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--line);
+  color: var(--t55); background: transparent; cursor: pointer; transition: .15s;
+}
+.news-pill:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+.news-grid {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 14px;
+}
+@media (max-width: 680px) { .news-grid { grid-template-columns: 1fr; } }
+.news-card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 10px;
+  transition: .18s; text-decoration: none; color: var(--text);
+}
+.news-card:hover { border-color: rgba(120,200,160,.3); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.35); }
+.news-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.news-source {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .07em; padding: 2px 9px; border-radius: 4px;
+}
+.news-time { font-family: var(--mono); font-size: .65rem; color: var(--t30); margin-left: auto; }
+.news-title { font-size: .87rem; font-weight: 600; color: var(--text); line-height: 1.45; }
+.news-summary { font-size: .78rem; color: var(--t55); line-height: 1.55; }
+.news-tickers { display: flex; flex-wrap: wrap; gap: 4px; }
+.news-ticker {
+  font-family: var(--mono); font-size: .58rem; font-weight: 700;
+  padding: 1px 7px; border-radius: 4px;
+  background: var(--g-dim); color: var(--green); border: 1px solid rgba(22,217,126,.2);
+}
+.news-loading { text-align: center; padding: 52px 0; color: var(--t30); font-family: var(--mono); font-size: .78rem; grid-column: 1/-1; }
+.news-empty { color: var(--t30); font-family: var(--mono); font-size: .78rem; grid-column: 1/-1; text-align: center; padding: 36px 0; }
 </style>
 </head>
 <body>
@@ -753,6 +790,7 @@ footer {
       <a href="#signals">Live Signals</a>
       <a href="/scalpchart">Charts</a>
       <a href="/exitassistant">Exit Assistant</a>
+      <a href="#news">News</a>
       <a href="/learn">Learn</a>
       <a href="/faq">FAQ</a>
       <a href="/pricing">Pricing</a>
@@ -925,6 +963,29 @@ footer {
         <button class="btn-clear-history" onclick="clearHistory()">Clear</button>
       </div>
       <div id="historyList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET NEWS FEED -->
+<section class="news-section" id="news">
+  <div class="wrap">
+    <div class="eyebrow">Market Intelligence</div>
+    <div class="news-feed-hdr">
+      <h2 class="h2">Live <span class="alt">News Feed</span></h2>
+      <p class="lead">Financial news from 6 sources — color-coded and tagged in real time.</p>
+    </div>
+    <div class="news-filters" id="newsFilters">
+      <button class="news-pill" data-src="all"              onclick="filterNews('all')">ALL</button>
+      <button class="news-pill" data-src="benzinga"         onclick="filterNews('benzinga')" style="--nc:#f59e0b">BENZINGA</button>
+      <button class="news-pill" data-src="polygon"          onclick="filterNews('polygon')"  style="--nc:#a78bfa">POLYGON</button>
+      <button class="news-pill" data-src="finnhub"          onclick="filterNews('finnhub')"  style="--nc:#60a5fa">FINNHUB</button>
+      <button class="news-pill" data-src="fmp"              onclick="filterNews('fmp')"      style="--nc:#22d3ee">FMP</button>
+      <button class="news-pill" data-src="newsapi"          onclick="filterNews('newsapi')"  style="--nc:#f97316">NEWSAPI</button>
+      <button class="news-pill" data-src="tradingeconomics" onclick="filterNews('tradingeconomics')" style="--nc:#fb7185">TRADING ECO</button>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <div class="news-loading">Loading market news…</div>
     </div>
   </div>
 </section>
@@ -1679,6 +1740,102 @@ footer {
   if (!localStorage.getItem(TOUR_KEY)) {
     setTimeout(window.startTour, 900);
   }
+})();
+</script>
+<script>
+/* ── News Feed ── */
+(function () {
+  var _articles = [];
+  var _filter   = 'all';
+
+  var COLORS = {
+    benzinga:         '#f59e0b',
+    polygon:          '#a78bfa',
+    finnhub:          '#60a5fa',
+    fmp:              '#22d3ee',
+    newsapi:          '#f97316',
+    tradingeconomics: '#fb7185',
+    all:              'var(--green)',
+  };
+
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function ago(iso) {
+    var s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 60)    return 'just now';
+    if (s < 3600)  return Math.floor(s / 60) + 'm ago';
+    if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+    return Math.floor(s / 86400) + 'd ago';
+  }
+
+  function renderGrid() {
+    var grid = document.getElementById('newsGrid');
+    if (!grid) return;
+    var list = _filter === 'all' ? _articles : _articles.filter(function (a) { return a.source === _filter; });
+    if (!list.length) {
+      grid.innerHTML = '<div class="news-empty">No articles from this source yet — check back soon.</div>';
+      return;
+    }
+    grid.innerHTML = list.slice(0, 30).map(function (a) {
+      var c  = a.color || COLORS[a.source] || '#aaa';
+      var bg = c + '18';
+      var bd = c + '44';
+      var tix = (a.tickers || []).slice(0, 5)
+        .map(function (t) { return '<span class="news-ticker">' + esc(t) + '</span>'; }).join('');
+      var sum = (a.summary || '').slice(0, 130);
+      if (a.summary && a.summary.length > 130) sum += '…';
+      return '<a class="news-card" href="' + esc(a.url) + '" target="_blank" rel="noopener noreferrer">' +
+        '<div class="news-meta">' +
+          '<span class="news-source" style="background:' + bg + ';color:' + c + ';border:1px solid ' + bd + '">' +
+            esc(a.sourceLabel) +
+          '</span>' +
+          '<span class="news-time">' + ago(a.publishedAt) + '</span>' +
+        '</div>' +
+        '<div class="news-title">' + esc(a.title) + '</div>' +
+        (sum ? '<div class="news-summary">' + esc(sum) + '</div>' : '') +
+        (tix ? '<div class="news-tickers">' + tix + '</div>' : '') +
+      '</a>';
+    }).join('');
+  }
+
+  window.filterNews = function (src) {
+    _filter = src;
+    document.querySelectorAll('.news-pill').forEach(function (p) {
+      var match = p.dataset.src === src;
+      var c = COLORS[p.dataset.src] || 'var(--green)';
+      if (match) {
+        p.style.color        = c;
+        p.style.borderColor  = c;
+        p.style.background   = c + '18';
+      } else {
+        p.style.color        = '';
+        p.style.borderColor  = '';
+        p.style.background   = '';
+      }
+    });
+    renderGrid();
+  };
+
+  function load() {
+    fetch('/api/news')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        _articles = d.articles || [];
+        renderGrid();
+      })
+      .catch(function () {
+        var g = document.getElementById('newsGrid');
+        if (g) g.innerHTML = '<div class="news-empty">Unable to load news right now.</div>';
+      });
+  }
+
+  filterNews('all');
+  load();
+  setInterval(load, 300000);
 })();
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>

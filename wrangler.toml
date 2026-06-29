@@ -12,5 +12,12 @@ pages_build_output_dir = "."
 #   STRIPE_PRICE_PRO_ANNUAL   — price_... for $95.88/yr product (~$7.99/mo)
 #   STRIPE_PRICE_ELITE_MONTHLY — price_... (when Elite launches)
 #   STRIPE_PRICE_ELITE_ANNUAL  — price_... (when Elite launches)
+# News feeds (all optional — sources with no key are silently skipped):
+#   POLYGON_KEY  — api.polygon.io key (also used for news endpoint)
+#   FINNHUB_KEY  — finnhub.io key (free tier: 60 calls/min)
+#   FMP_KEY      — financialmodelingprep.com key (free tier: 250 req/day)
+#   BENZINGA_KEY — api.benzinga.com key (paid)
+#   NEWSAPI_KEY  — newsapi.org key (free dev / paid prod)
+#   TE_KEY       — api.tradingeconomics.com key (paid)
 # Never commit actual values to source control.
 
