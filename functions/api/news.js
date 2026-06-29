@@ -1,10 +1,6 @@
 const SOURCE_META = {
-  polygon:          { label: 'Polygon',     color: '#a78bfa' },
-  finnhub:          { label: 'Finnhub',     color: '#60a5fa' },
-  fmp:              { label: 'FMP',         color: '#22d3ee' },
-  benzinga:         { label: 'Benzinga',    color: '#f59e0b' },
-  newsapi:          { label: 'NewsAPI',     color: '#f97316' },
-  tradingeconomics: { label: 'Trading Eco', color: '#fb7185' },
+  polygon: { label: 'Massive',  color: '#a78bfa' },
+  finnhub: { label: 'Finnhub',  color: '#60a5fa' },
 };
 
 export async function onRequest(context) {
@@ -17,10 +13,6 @@ export async function onRequest(context) {
   const results = await Promise.allSettled([
     fetchPolygon(env.MASSIVE_API_KEY),
     fetchFinnhub(env.FINNHUB_KEY),
-    fetchFMP(env.FMP_KEY),
-    fetchBenzinga(env.BENZINGA_KEY),
-    fetchNewsAPI(env.NEWSAPI_KEY),
-    fetchTradingEconomics(env.TE_KEY),
   ]);
 
   const articles = [];
@@ -71,66 +63,5 @@ async function fetchFinnhub(key) {
     url: a.url,
     publishedAt: new Date(a.datetime * 1000).toISOString(),
     tickers: a.related ? a.related.split(',').map(s => s.trim()).filter(Boolean) : [],
-  }));
-}
-
-async function fetchFMP(key) {
-  if (!key) return [];
-  const tickers = 'SPY,QQQ,AAPL,NVDA,TSLA,MSFT,AMZN,META,AMD,GOOGL';
-  const r = await fetch(
-    `https://financialmodelingprep.com/api/v3/stock_news?tickers=${tickers}&limit=20&apikey=${key}`
-  );
-  const d = await r.json();
-  return (Array.isArray(d) ? d : []).map(a => norm('fmp', {
-    title: a.title,
-    summary: a.text,
-    url: a.url,
-    publishedAt: new Date(a.publishedDate).toISOString(),
-    tickers: a.symbol ? [a.symbol] : [],
-  }));
-}
-
-async function fetchBenzinga(key) {
-  if (!key) return [];
-  const r = await fetch(
-    `https://api.benzinga.com/api/v2/news?token=${key}&pagesize=20&displayOutput=abstract`
-  );
-  const d = await r.json();
-  const items = Array.isArray(d) ? d : (d.data || []);
-  return items.map(a => norm('benzinga', {
-    title: a.title,
-    summary: a.teaser,
-    url: a.url,
-    publishedAt: new Date(a.created).toISOString(),
-    tickers: (a.stocks || []).map(s => s.name).filter(Boolean),
-  }));
-}
-
-async function fetchNewsAPI(key) {
-  if (!key) return [];
-  const q = encodeURIComponent('stock market options trading SPY QQQ');
-  const r = await fetch(
-    `https://newsapi.org/v2/everything?q=${q}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${key}`
-  );
-  const d = await r.json();
-  return (d.articles || []).map(a => norm('newsapi', {
-    title: a.title,
-    summary: a.description,
-    url: a.url,
-    publishedAt: a.publishedAt,
-    tickers: [],
-  }));
-}
-
-async function fetchTradingEconomics(key) {
-  if (!key) return [];
-  const r = await fetch(`https://api.tradingeconomics.com/news?c=${key}&f=json`);
-  const d = await r.json();
-  return (Array.isArray(d) ? d : []).slice(0, 20).map(a => norm('tradingeconomics', {
-    title: a.title,
-    summary: a.description,
-    url: a.url,
-    publishedAt: new Date(a.date).toISOString(),
-    tickers: [],
   }));
 }
