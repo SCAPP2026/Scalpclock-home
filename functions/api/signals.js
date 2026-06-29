@@ -6,7 +6,7 @@ export async function onRequest(context) {
   const SYMBOLS = [
     'SPY','QQQ','IWM','AAPL','MSFT','AMZN','GOOGL','META',
     'NVDA','TSLA','AMD','NFLX','COIN','PLTR','SOFI','ARM',
-    'GLD','TLT','XLE','MSTR',
+    'GOLD','JPM','XOM','RIOT',
   ];
 
   const NAMES = {
@@ -15,8 +15,7 @@ export async function onRequest(context) {
     META:'Meta Platforms', NVDA:'Nvidia', TSLA:'Tesla',
     AMD:'Advanced Micro Devices', NFLX:'Netflix', COIN:'Coinbase',
     PLTR:'Palantir', SOFI:'SoFi Technologies', ARM:'Arm Holdings',
-    GLD:'SPDR Gold ETF', TLT:'20Y Treasury ETF', XLE:'Energy Select ETF',
-    MSTR:'MicroStrategy',
+    GOLD:'Barrick Gold', JPM:'JPMorgan Chase', XOM:'ExxonMobil', RIOT:'Riot Platforms',
   };
 
   const headers = {
@@ -36,24 +35,29 @@ export async function onRequest(context) {
   const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
   const todayStr = now.toISOString().slice(0, 10);
 
+  async function safeJson(res) {
+    if (!res.ok) return {};
+    try { return await res.json(); } catch { return {}; }
+  }
+
   async function fetchBars(symbol) {
     const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=200&feed=iex`;
     const res  = await fetch(url, { headers });
-    const data = await res.json();
+    const data = await safeJson(res);
     return data.bars || [];
   }
 
   async function fetchLatestBar(symbol) {
     const url  = `${BASE}/stocks/${symbol}/bars/latest?feed=iex`;
     const res  = await fetch(url, { headers });
-    const data = await res.json();
+    const data = await safeJson(res);
     return data.bar || null;
   }
 
   async function fetchPrevDayBar(symbol) {
     const url  = `${BASE}/stocks/${symbol}/bars?timeframe=1Day&start=${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()}&limit=2&feed=iex`;
     const res  = await fetch(url, { headers });
-    const data = await res.json();
+    const data = await safeJson(res);
     const bars = data.bars || [];
     return bars.length >= 2 ? bars[bars.length - 2].c : null;
   }
