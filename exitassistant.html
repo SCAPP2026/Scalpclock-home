@@ -1546,6 +1546,7 @@ let optionsTimer = null;
 let optContract = null; // { strike, expiry, type, entryPremium }
 let optPremiumTimer = null;
 let optCurrentPrice = null;
+let lastOptionsData  = null; // cached from loadOptions for delta/theta/IV
 
 // ── Voice Alerts ───────────────────────────────────────────────────────────
 let voiceEnabled   = false;
@@ -1618,6 +1619,7 @@ function setOptionContract() {
   optContract = { strike, expiry, type: optCallMode ? 'call' : 'put', entryPremium: entry || null };
   optCurrentPrice = null;
 
+  updateTargetTabs();
   document.getElementById('optClearBtn').style.display = '';
   document.getElementById('optStatusMsg').style.display = 'none';
   document.getElementById('optLiveDisplay').innerHTML = `
@@ -1636,6 +1638,7 @@ function clearOptionContract() {
   document.getElementById('optClearBtn').style.display = 'none';
   const display = document.getElementById('optLiveDisplay');
   display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>';
+  updateTargetTabs();
 }
 
 async function fetchOptionPremium() {
@@ -1712,6 +1715,7 @@ async function loadOptions() {
   try {
     const res  = await fetch(`/api/options?symbol=${ticker}`);
     const data = await res.json();
+    lastOptionsData = data;
     renderOptions(data);
   } catch {
     el.innerHTML = '<div class="options-msg">Options data unavailable</div>';
@@ -1830,11 +1834,13 @@ function setEntry() {
 }
 
 function updateTargetTabs() {
+  const optMode = !!(optContract && optContract.entryPremium);
+  const base    = optMode ? optContract.entryPremium : entryPrice;
   document.querySelectorAll('.t-tab').forEach(btn => {
     const pct = parseInt(btn.dataset.pct);
-    if (entryPrice) {
-      const target = entryPrice * (1 + pct / 100);
-      btn.textContent = `$${target.toFixed(2)}`;
+    if (base) {
+      const target = base * (1 + pct / 100);
+      btn.textContent = optMode ? `$${target.toFixed(2)} prem` : `$${target.toFixed(2)}`;
     } else {
       btn.textContent = `+${pct}%`;
     }
@@ -1937,8 +1943,27 @@ function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
   return { text: parts.join('. ') + '.', rec, recClass, recIcon, risk, riskLevel, riskColor };
 }
 
-function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
+function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isOptMode, optCon, optData) {
   const r = generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig);
+
+  // Options addendum
+  let optExtra = '';
+  if (isOptMode && optCon) {
+    const lines = [];
+    const g = optData?.greeks || {};
+    const daysLeft = optCon.expiry ? ((new Date(optCon.expiry) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+
+    if (g.delta != null)
+      lines.push(`<b>Delta ${g.delta.toFixed(2)}</b> — underlying moves $1, option moves ~$${Math.abs(g.delta).toFixed(2)}.`);
+    if (g.theta != null)
+      lines.push(`<b>Theta ${g.theta.toFixed(2)}</b> — losing ~$${Math.abs(g.theta * 100).toFixed(0)}/day per contract to time decay.`);
+    if (optData?.iv != null)
+      lines.push(`<b>IV ${optData.iv}%</b>${optData.ivCrushWarning ? ' — elevated, IV crush risk if event passes.' : ' — within normal range.'}`);
+    if (daysLeft !== null && daysLeft < 2)
+      lines.push(`<b style="color:var(--bear)">⏰ ${daysLeft < 1 ? '0DTE' : '1DTE'} — theta accelerates dramatically into close.</b>`);
+
+    if (lines.length) optExtra = `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;line-height:1.8">${lines.join(' ')}</div>`;
+  }
 
   // Risk meter
   document.getElementById('riskNeedle').style.left = Math.min(97, r.risk) + '%';
@@ -1947,7 +1972,7 @@ function renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig) {
   badge.style.color = r.riskColor;
 
   // Reason text
-  document.getElementById('aiReasonText').innerHTML = r.text;
+  document.getElementById('aiReasonText').innerHTML = r.text + optExtra;
 
   // Recommendation badge
   const recEl = document.getElementById('aiRecBadge');
@@ -2013,7 +2038,7 @@ function renderConfidence(score, rsiVal, vel, atrVal, vt) {
 }
 
 // ── Time Machine ──────────────────────────────────────────────────────────
-function renderTimeMachine(currentPrice, entryPrice, vel, atrVal) {
+function renderTimeMachine(currentPrice, basePx, vel, atrVal, isOptMode) {
   const container = document.getElementById('timeMachineRows');
   const noteEl    = document.getElementById('tmNote');
 
@@ -2025,13 +2050,6 @@ function renderTimeMachine(currentPrice, entryPrice, vel, atrVal) {
     { label: '15 min', minutes: 15  },
   ];
 
-  // Velocity decay: assume momentum fades 8% per minute for longer horizons
-  function projectedVel(minutes) {
-    const decay = Math.pow(0.92, minutes);
-    return vel * decay;
-  }
-
-  // Projected price after N minutes using decaying velocity
   function projectedPrice(minutes) {
     if (Math.abs(vel) < 0.0001) return currentPrice;
     let price = currentPrice;
@@ -2041,7 +2059,7 @@ function renderTimeMachine(currentPrice, entryPrice, vel, atrVal) {
       const v = vel * Math.pow(0.92, (i * stepMin));
       price += v * stepMin;
     }
-    return price;
+    return Math.max(0.01, price);
   }
 
   const maxAbsPct = HORIZONS.reduce((m, h) => {
@@ -2050,76 +2068,97 @@ function renderTimeMachine(currentPrice, entryPrice, vel, atrVal) {
     return Math.max(m, pct);
   }, 0.01);
 
+  const unit = isOptMode ? 'premium' : '';
+
   container.innerHTML = HORIZONS.map(h => {
-    const pp       = projectedPrice(h.minutes);
-    const chgPct   = (pp - currentPrice) / currentPrice * 100;
-    const fromEntry = entryPrice ? ((pp - entryPrice) / entryPrice * 100) : null;
-    const barPct   = Math.min(100, Math.abs(chgPct) / maxAbsPct * 100);
-    const cls      = Math.abs(chgPct) < 0.01 ? 'flat' : chgPct > 0 ? 'up' : 'dn';
-    const barColor = cls === 'up' ? 'var(--bull)' : cls === 'dn' ? 'var(--bear)' : 'var(--muted)';
-    const sign     = chgPct >= 0 ? '+' : '';
-    const entryStr = fromEntry !== null ? `  <span style="color:${fromEntry>=0?'var(--bull)':'var(--bear)'};font-size:9px">(${fromEntry>=0?'+':''}${fromEntry.toFixed(1)}% from entry)</span>` : '';
+    const pp        = projectedPrice(h.minutes);
+    const chgPct    = (pp - currentPrice) / currentPrice * 100;
+    const fromEntry = basePx ? ((pp - basePx) / basePx * 100) : null;
+    const barPct    = Math.min(100, Math.abs(chgPct) / maxAbsPct * 100);
+    const cls       = Math.abs(chgPct) < 0.01 ? 'flat' : chgPct > 0 ? 'up' : 'dn';
+    const barColor  = cls === 'up' ? 'var(--bull)' : cls === 'dn' ? 'var(--bear)' : 'var(--muted)';
+    const sign      = chgPct >= 0 ? '+' : '';
+    const plDollar  = isOptMode && fromEntry !== null ? ` · ${fromEntry >= 0 ? '+' : ''}$${((pp - basePx) * 100).toFixed(0)}/contract` : '';
+    const entryStr  = fromEntry !== null
+      ? `  <span style="color:${fromEntry>=0?'var(--bull)':'var(--bear)'};font-size:9px">(${fromEntry>=0?'+':''}${fromEntry.toFixed(1)}%${plDollar})</span>`
+      : '';
 
     return `<div class="tm-row">
   <span class="tm-time">${h.label}</span>
   <span class="tm-arrow">→</span>
   <span class="tm-pct ${cls}">${sign}${chgPct.toFixed(2)}%</span>
   <div class="tm-bar-track"><div class="tm-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>
-  <span class="tm-price">$${pp.toFixed(2)}${entryStr}</span>
+  <span class="tm-price">$${pp.toFixed(2)}${unit ? ' ' + unit : ''}${entryStr}</span>
 </div>`;
   }).join('');
 
   if (Math.abs(vel) < 0.0001) {
     noteEl.textContent = 'Flat momentum — projections unreliable';
   } else {
-    noteEl.textContent = `Based on current $${Math.abs(vel).toFixed(3)}/min velocity with decay model`;
+    noteEl.textContent = isOptMode
+      ? `Option premium projected via delta-adjusted velocity with decay model`
+      : `Based on current $${Math.abs(vel).toFixed(3)}/min velocity with decay model`;
   }
 }
 
 // ── Trailing Stop ──────────────────────────────────────────────────────────
-function renderTrailingStop(currentPrice, entryPrice, atrVal) {
-  const stop = currentPrice - atrVal * 1.5;
-  document.getElementById('tsCurrentPrice').textContent = `$${currentPrice.toFixed(2)}`;
+function renderTrailingStop(currentPrice, basePx, atrVal, isOptMode) {
+  let stop, noteText;
+
+  if (isOptMode) {
+    // Options: trail 22% below current premium (tighter than stock — options move fast)
+    stop     = currentPrice * 0.78;
+    noteText = `Stop is 22% below current premium ($${(currentPrice - stop).toFixed(2)})`;
+  } else {
+    stop     = currentPrice - (atrVal || 0.01) * 1.5;
+    noteText = `Stop distance: $${((atrVal || 0.01) * 1.5).toFixed(2)} (1.5× ATR)`;
+  }
+
+  document.getElementById('tsCurrentPrice').textContent =
+    isOptMode ? `$${currentPrice.toFixed(2)} premium` : `$${currentPrice.toFixed(2)}`;
   document.getElementById('tsStopPrice').textContent = `$${stop.toFixed(2)}`;
 
-  if (entryPrice) {
-    const lockPct = ((stop - entryPrice) / entryPrice * 100);
+  if (basePx) {
+    const lockPct = ((stop - basePx) / basePx * 100);
     const lockRow = document.getElementById('tsLockRow');
     lockRow.style.display = 'flex';
     const lockEl = document.getElementById('tsLockPct');
-    lockEl.textContent = `${lockPct >= 0 ? '+' : ''}${lockPct.toFixed(1)}%`;
+    lockEl.textContent = `${lockPct >= 0 ? '+' : ''}${lockPct.toFixed(1)}%${isOptMode ? ' on premium' : ''}`;
     lockEl.className = `ts-val ${lockPct >= 0 ? 'lock' : 'stop'}`;
     document.getElementById('tsNote').textContent =
-      lockPct >= 0
-        ? `Stop is ${(atrVal * 1.5).toFixed(2)} below current (1.5× ATR)`
-        : `Stop would lock in a loss — widen if trade still valid`;
+      lockPct >= 0 ? noteText : `Stop would lock in a loss — consider cutting or widening`;
   } else {
     document.getElementById('tsLockRow').style.display = 'none';
-    document.getElementById('tsNote').textContent = `Stop distance: $${(atrVal * 1.5).toFixed(2)} (1.5× ATR)`;
+    document.getElementById('tsNote').textContent = noteText;
   }
 }
 
 // ── Emotional Warning ──────────────────────────────────────────────────────
-function renderEmotionalWarning(gainPct, rsiVal, vel, atrVal) {
+function renderEmotionalWarning(gainPct, rsiVal, vel, atrVal, isOptMode) {
   const el = document.getElementById('emotionalWarn');
   if (gainPct === null) { el.style.display = 'none'; return; }
 
   const a = atrVal || 0.01;
+  // Options move 3-5× more than stocks — adjust thresholds accordingly
+  const greedThresh = isOptMode ? 50 : 20;
+  const greedSoft   = isOptMode ? 30 : 12;
+  const panicThresh = isOptMode ? -30 : -10;
+  const panicSoft   = isOptMode ? -15 : -5;
   let type = null, icon = '', title = '', msg = '';
 
-  if (gainPct >= 20 || (gainPct >= 12 && rsiVal >= 72)) {
+  if (gainPct >= greedThresh || (gainPct >= greedSoft && rsiVal >= 72)) {
     type = 'greed';
     icon = '🟡';
     title = 'GREED WARNING';
-    msg = gainPct >= 20
-      ? `+${gainPct.toFixed(1)}% is a strong trade. Greed can give it all back — take some profit.`
+    msg = gainPct >= greedThresh
+      ? `+${gainPct.toFixed(1)}% on this ${isOptMode ? 'option' : 'trade'}. Greed can give it all back — take some profit.`
       : `Up +${gainPct.toFixed(1)}% with RSI at ${rsiVal.toFixed(0)}. Don't let a winner turn into a loser.`;
-  } else if (gainPct <= -10 || (gainPct <= -5 && vel < -a * 0.35)) {
+  } else if (gainPct <= panicThresh || (gainPct <= panicSoft && vel < -a * 0.35)) {
     type = 'panic';
     icon = '🔴';
     title = 'PANIC WARNING';
-    msg = gainPct <= -10
-      ? `Down ${gainPct.toFixed(1)}% — don't panic-sell at the bottom. Wait for your stop or a bounce signal.`
+    msg = gainPct <= panicThresh
+      ? `Down ${gainPct.toFixed(1)}%${isOptMode ? ' on premium' : ''} — don't panic-sell at the bottom. Wait for your stop or a bounce signal.`
       : `Rapid drop of ${gainPct.toFixed(1)}%. Emotional exits rarely work — stick to your plan.`;
   }
 
@@ -2244,12 +2283,33 @@ function probability(targetPct, rsiVal, vel, atrVal, vt) {
 }
 
 // Exit recommendation engine
-function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal) {
+function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal, isOptMode, optCon, optData) {
   const a = atrVal || 0.01;
 
-  if (gainPct !== null && gainPct >= 25)
+  // Options-specific: theta burn warning (< 1 day to expiry)
+  if (isOptMode && optCon?.expiry) {
+    const daysLeft = (new Date(optCon.expiry) - new Date()) / (1000 * 60 * 60 * 24);
+    if (daysLeft < 1 && gainPct !== null && gainPct > 0) {
+      return { level:'THETA BURNING', color:'red', icon:'⏰',
+        msg: `Less than 1 day to expiry — theta is eroding your premium fast.`,
+        sub: `Take profit now. Every minute costs you on a 0DTE/1DTE option.` };
+    }
+    if (daysLeft < 1 && gainPct !== null && gainPct <= 0) {
+      return { level:'EXIT — TIME DECAY', color:'red', icon:'⏰',
+        msg: `Expiring today with a loss. Theta will take the rest — cut it now.`,
+        sub: `Time value goes to zero at expiry. No recovery possible after close.` };
+    }
+    // IV crush: elevated IV means option is expensive — if profitable, exit before crush
+    if (optData?.ivCrushWarning && gainPct !== null && gainPct > 10) {
+      return { level:'IV CRUSH RISK', color:'yellow', icon:'💥',
+        msg: `IV is elevated. If a catalyst hits, IV will collapse — so will your premium.`,
+        sub: `Lock in gains before the event. IV crush can wipe option value even if stock moves right.` };
+    }
+  }
+
+  if (gainPct !== null && gainPct >= (isOptMode ? 60 : 25))
     return { level:'TAKE PROFIT', color:'red', icon:'🔴',
-      msg: `+${gainPct.toFixed(1)}% locked and loaded. Close it — don't give it back.`,
+      msg: `+${gainPct.toFixed(1)}%${isOptMode ? ' on option premium' : ''} — close it. Don't let a winner turn loser.`,
       sub: 'Full or partial exit strongly recommended' };
 
   if (rsiVal >= 82)
@@ -2309,23 +2369,34 @@ function render() {
   const now   = last.close;
   const open  = bars[0].open;
 
-  // Header price
+  // Header price — underlying stock
   const dayPct = ((now - open) / open * 100).toFixed(2);
   document.getElementById('priceMain').textContent = `$${now.toFixed(2)}`;
   const dEl = document.getElementById('priceDelta');
   dEl.textContent = `${dayPct >= 0 ? '+' : ''}${dayPct}%`;
   dEl.className = 'price-delta ' + (dayPct >= 0 ? 'up' : 'dn');
 
-  // Metrics
+  // Metrics (from underlying — drives signal engine)
   const vel    = velocity(bars);
   const vtrend = velTrend(bars);
   const atrVal = atr(bars);
   const rsiVal = rsi(bars);
   const vt     = volTrend(bars);
 
-  // Gain from entry
+  // ── Options mode detection ──
+  const optMode = !!(optContract && optCurrentPrice != null && optContract.entryPremium);
+  const delta   = lastOptionsData?.greeks?.delta ?? null;
+
+  // Gain pill — options mode shows premium P&L; stock mode shows stock P&L
   let gainPct = null;
-  if (entryPrice) {
+  if (optMode) {
+    gainPct = (optCurrentPrice - optContract.entryPremium) / optContract.entryPremium * 100;
+    const plDollar = (optCurrentPrice - optContract.entryPremium) * 100;
+    const pill = document.getElementById('gainPill');
+    pill.style.display = 'inline-flex';
+    pill.textContent = `Option ${gainPct >= 0 ? '+' : ''}${gainPct.toFixed(1)}% · ${plDollar >= 0 ? '+' : ''}$${plDollar.toFixed(0)}/contract`;
+    pill.className = 'gain-pill' + (gainPct < 0 ? ' neg' : '');
+  } else if (entryPrice) {
     gainPct = (now - entryPrice) / entryPrice * 100;
     const pill = document.getElementById('gainPill');
     pill.style.display = 'inline-flex';
@@ -2361,8 +2432,8 @@ function render() {
   tEl.textContent = trendStr;
   tEl.className = 'stat-val ' + (trendStr.includes('↑') ? 'up' : trendStr.includes('↓') ? 'dn' : '');
 
-  // Exit signal
-  const sig = exitSignal(rsiVal, vel, vt, gainPct, vtrend, atrVal);
+  // Exit signal — options-aware
+  const sig = exitSignal(rsiVal, vel, vt, gainPct, vtrend, atrVal, optMode, optContract, lastOptionsData);
   const card = document.getElementById('exitCard');
   card.className = 'exit-card s-' + sig.color;
   document.getElementById('exitIcon').textContent = sig.icon;
@@ -2380,39 +2451,55 @@ function render() {
   document.getElementById('momDetail').innerHTML =
     `<b>${momStr}</b> · ${vel >= 0 ? '+' : ''}$${vel.toFixed(3)}/min · Vol ${vt >= 0 ? '+' : ''}${(vt*100).toFixed(0)}%`;
 
-  // Profit clock
-  renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig);
+  // Option velocity: delta-adjusted underlying velocity
+  const optVel = (optMode && delta) ? vel * Math.abs(delta) : null;
 
-  // Probability cards (needs entry)
-  if (entryPrice) renderProbCards(now, vel, atrVal, rsiVal, vt);
+  // Profit clock — options mode uses premium, stock mode uses underlying
+  if (optMode) {
+    renderClock(optCurrentPrice, optVel ?? vel * 0.4, vtrend, atrVal, rsiVal, gainPct, sig, optContract.entryPremium);
+  } else {
+    renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, entryPrice);
+  }
 
-  // AI Reason + Risk Meter
-  renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig);
+  // Probability cards (needs entry — stock mode only)
+  if (entryPrice && !optMode) renderProbCards(now, vel, atrVal, rsiVal, vt);
+
+  // AI Reason + Risk Meter — options-aware
+  renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, optMode, optContract, lastOptionsData);
 
   // Confidence badge
   const conf = calcConfidence(rsiVal, vel, atrVal, vt, vtrend);
   renderConfidence(conf, rsiVal, vel, atrVal, vt);
 
-  // Time machine
-  renderTimeMachine(now, entryPrice, vel, atrVal);
+  // Time machine — options mode uses delta-adjusted velocity
+  if (optMode) {
+    renderTimeMachine(optCurrentPrice, optContract.entryPremium, optVel ?? vel * 0.4, null, true);
+  } else {
+    renderTimeMachine(now, entryPrice, vel, atrVal, false);
+  }
 
-  // Trailing stop
-  renderTrailingStop(now, entryPrice, atrVal);
+  // Trailing stop — options mode uses % trail on premium
+  if (optMode) {
+    renderTrailingStop(optCurrentPrice, optContract.entryPremium, null, true);
+  } else {
+    renderTrailingStop(now, entryPrice, atrVal, false);
+  }
 
-  // Emotional warning
-  renderEmotionalWarning(gainPct, rsiVal, vel, atrVal);
+  // Emotional warning — options thresholds
+  renderEmotionalWarning(gainPct, rsiVal, vel, atrVal, optMode);
 
   // Voice alert
   maybeSpeak(sig, rsiVal, gainPct);
 }
 
-function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {
+function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx) {
   const CIRC = 678.58;
   const arc  = document.getElementById('clockArc');
   const glow = document.getElementById('arcGlow');
   const tEl  = document.getElementById('clockTime');
   const uEl  = document.getElementById('clockUnit');
   const sEl  = document.getElementById('clockSub');
+  const isOpt = !!(optContract && optCurrentPrice != null && optContract.entryPremium);
 
   // Arc color tracks signal state
   const arcColor = sig.color === 'green' ? 'var(--bull)'
@@ -2421,14 +2508,15 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {
   arc.style.stroke  = arcColor;
   glow.style.stroke = arcColor;
 
-  if (!entryPrice) {
+  const hasEntry = isOpt ? true : !!entryPrice;
+  if (!hasEntry) {
     arc.style.strokeDashoffset = CIRC;
     glow.style.strokeDashoffset = CIRC;
     glow.style.opacity = '0';
     tEl.textContent = '--:--';
     tEl.className   = 'clock-time';
     uEl.textContent = 'min · sec';
-    sEl.textContent = 'set entry to begin';
+    sEl.textContent = isOpt ? 'enter premium paid to begin' : 'set entry to begin';
     return;
   }
 
@@ -2438,33 +2526,32 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {
   glow.style.strokeDashoffset = offset;
   glow.style.opacity = progress > 0.05 ? '0.4' : '0';
 
-  const targetPx = entryPrice * (1 + clockTarget / 100);
+  const targetPx = basePx * (1 + clockTarget / 100);
+  const label    = isOpt ? 'premium' : '';
 
   if (gainPct >= clockTarget) {
-    // Target reached
     tEl.textContent = '✓';
     tEl.className   = 'clock-time green';
     uEl.textContent = `+${clockTarget}% TARGET REACHED`;
-    sEl.textContent = `exit at $${targetPx.toFixed(2)}`;
+    sEl.textContent = isOpt ? `exit at $${targetPx.toFixed(2)} premium` : `exit at $${targetPx.toFixed(2)}`;
     return;
   }
 
-  const eta = etaMinutes(now, entryPrice, clockTarget, vel);
+  const eta = etaMinutes(now, basePx, clockTarget, vel);
 
   if (eta === null || vel <= 0) {
     tEl.textContent = '↓';
     tEl.className   = 'clock-time red';
-    uEl.textContent = 'momentum reversed';
-    sEl.textContent = `target $${targetPx.toFixed(2)} (+${clockTarget}%)`;
+    uEl.textContent = isOpt ? 'premium losing ground' : 'momentum reversed';
+    sEl.textContent = `target $${targetPx.toFixed(2)} ${label} (+${clockTarget}%)`;
     return;
   }
 
   if (eta > 720) {
-    // More than 12 hours — not meaningful today
     tEl.textContent = '∞';
     tEl.className   = 'clock-time yellow';
     uEl.textContent = 'insufficient velocity';
-    sEl.textContent = `target $${targetPx.toFixed(2)} (+${clockTarget}%)`;
+    sEl.textContent = `target $${targetPx.toFixed(2)} ${label} (+${clockTarget}%)`;
     return;
   }
 
@@ -2475,7 +2562,7 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig) {
   tEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
   tEl.className   = 'clock-time ' + sig.color;
   uEl.textContent = 'estimated time remaining';
-  sEl.textContent = `→ $${targetPx.toFixed(2)}  (+${clockTarget}%)`;
+  sEl.textContent = `→ $${targetPx.toFixed(2)} ${label} (+${clockTarget}%)`;
 }
 
 function renderProbCards(now, vel, atrVal, rsiVal, vt) {
