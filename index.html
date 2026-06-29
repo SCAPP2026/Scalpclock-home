@@ -109,9 +109,15 @@ body::before {
 }
 .nav-cta:hover { background: #20e88a; transform: translateY(-1px); }
 @media (max-width: 720px) { .nav-links { display: none; } }
+@media (max-width: 520px) {
+  .nav-cta:not(.nav-cta-dash) { display: none; }
+  .nav-cta-dash { font-size: .8rem; padding: 7px 14px; }
+  .brand { font-size: 1.1rem; }
+}
 
 /* ── hero ── */
 .hero { position: relative; text-align: center; padding: 52px 0 28px; }
+@media (max-width: 480px) { .hero { padding: 32px 0 20px; } }
 .hero-art {
   display: block; width: min(76%, 840px); margin: 0 auto; border-radius: 18px;
   box-shadow: 0 36px 100px rgba(0,0,0,.65), 0 0 70px rgba(22,217,126,.10);
@@ -167,6 +173,7 @@ body::before {
 
 /* ── section base ── */
 section { position: relative; padding: 80px 0; }
+@media (max-width: 520px) { section { padding: 48px 0; } }
 .eyebrow {
   font-family: var(--mono); font-size: .72rem; letter-spacing: .24em;
   text-transform: uppercase; color: var(--green); margin-bottom: 12px;
@@ -609,6 +616,10 @@ section { position: relative; padding: 80px 0; }
   .acc-left { padding: 38px 28px; }
   .acc-right { border-left: none; border-top: 1px solid var(--line); }
 }
+@media (max-width: 480px) {
+  .acc-left { padding: 28px 20px; }
+  .acc-right { padding: 22px 20px; }
+}
 .acc-list { list-style: none; margin-top: 22px; display: flex; flex-direction: column; gap: 16px; }
 .acc-list li { display: flex; gap: 12px; align-items: flex-start; font-size: .97rem; color: var(--text); }
 .acc-list svg { width: 20px; height: 20px; flex: none; stroke: var(--green); fill: none; stroke-width: 2.2; margin-top: 2px; }
@@ -973,16 +984,12 @@ footer {
     <div class="eyebrow">Market Intelligence</div>
     <div class="news-feed-hdr">
       <h2 class="h2">Live <span class="alt">News Feed</span></h2>
-      <p class="lead">Financial news from 6 sources — color-coded and tagged in real time.</p>
+      <p class="lead">Live financial news from Massive + Finnhub — color-coded and tagged in real time.</p>
     </div>
     <div class="news-filters" id="newsFilters">
-      <button class="news-pill" data-src="all"              onclick="filterNews('all')">ALL</button>
-      <button class="news-pill" data-src="benzinga"         onclick="filterNews('benzinga')" style="--nc:#f59e0b">BENZINGA</button>
-      <button class="news-pill" data-src="polygon"          onclick="filterNews('polygon')"  style="--nc:#a78bfa">POLYGON</button>
-      <button class="news-pill" data-src="finnhub"          onclick="filterNews('finnhub')"  style="--nc:#60a5fa">FINNHUB</button>
-      <button class="news-pill" data-src="fmp"              onclick="filterNews('fmp')"      style="--nc:#22d3ee">FMP</button>
-      <button class="news-pill" data-src="newsapi"          onclick="filterNews('newsapi')"  style="--nc:#f97316">NEWSAPI</button>
-      <button class="news-pill" data-src="tradingeconomics" onclick="filterNews('tradingeconomics')" style="--nc:#fb7185">TRADING ECO</button>
+      <button class="news-pill" data-src="all"     onclick="filterNews('all')">ALL</button>
+      <button class="news-pill" data-src="polygon" onclick="filterNews('polygon')" style="--nc:#a78bfa">MASSIVE</button>
+      <button class="news-pill" data-src="finnhub" onclick="filterNews('finnhub')" style="--nc:#60a5fa">FINNHUB</button>
     </div>
     <div class="news-grid" id="newsGrid">
       <div class="news-loading">Loading market news…</div>
