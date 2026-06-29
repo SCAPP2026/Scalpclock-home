@@ -54,20 +54,30 @@ async function handleCheckout(env, request) {
     allow_promotion_codes:     'true',
   });
 
-  const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-    method: 'POST',
-    headers: {
-      Authorization:   `Bearer ${env.STRIPE_SECRET_KEY}`,
-      'Content-Type':  'application/x-www-form-urlencoded',
-    },
-    body: body.toString(),
-  });
+  let res;
+  try {
+    res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization:   `Bearer ${env.STRIPE_SECRET_KEY}`,
+        'Content-Type':  'application/x-www-form-urlencoded',
+      },
+      body: body.toString(),
+    });
+  } catch (fetchErr) {
+    return json({ error: `Stripe fetch failed: ${fetchErr.message}` }, 502);
+  }
 
-  const session = await res.json();
+  let session;
+  try {
+    session = await res.json();
+  } catch (parseErr) {
+    return json({ error: `Stripe response parse failed: ${parseErr.message}`, status: res.status }, 502);
+  }
 
   if (!res.ok) {
     console.error('Stripe error:', session.error);
-    return json({ error: session.error?.message || 'Stripe checkout failed' }, 502);
+    return json({ error: session.error?.message || 'Stripe checkout failed', stripe_status: res.status }, 502);
   }
 
   return json({ url: session.url }, 200);
