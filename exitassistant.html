@@ -1678,6 +1678,9 @@ function setOptionContract() {
   optContract = { strike, expiry, type: optCallMode ? 'call' : 'put', entryPremium: entry || null };
   optCurrentPrice = null;
 
+  // Persist so page reload restores everything
+  saveState();
+
   updateTargetTabs();
   document.getElementById('optClearBtn').style.display  = '';
   document.getElementById('logTradeBtn').style.display  = '';
@@ -1695,12 +1698,79 @@ function clearOptionContract() {
   optContract = null;
   optCurrentPrice = null;
   optContractGreeks = null;
+  lastContractData  = null;
   if (optPremiumTimer) { clearInterval(optPremiumTimer); optPremiumTimer = null; }
   document.getElementById('optClearBtn').style.display  = 'none';
   document.getElementById('logTradeBtn').style.display  = 'none';
   const display = document.getElementById('optLiveDisplay');
   display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>';
   updateTargetTabs();
+  clearState();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('sc_ea_state', JSON.stringify({
+      ticker,
+      entryPrice,
+      optStrike:   document.getElementById('optStrikeInput').value,
+      optExpiry:   document.getElementById('optExpiryInput').value,
+      optPremium:  document.getElementById('optEntryPremium').value,
+      optCallMode,
+      optContract,
+    }));
+  } catch (_) {}
+}
+
+function clearState() {
+  try { localStorage.removeItem('sc_ea_state'); } catch (_) {}
+}
+
+function restoreState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('sc_ea_state') || 'null');
+    if (!s) return;
+
+    // Restore ticker
+    if (s.ticker) {
+      ticker = s.ticker;
+      const sel = document.getElementById('tickerSel');
+      if ([...sel.options].some(o => o.value === s.ticker)) sel.value = s.ticker;
+    }
+
+    // Restore entry price
+    if (s.entryPrice) {
+      entryPrice = s.entryPrice;
+      document.getElementById('entryInput').value = s.entryPrice;
+      updateTargetTabs();
+    }
+
+    // Restore option form fields
+    if (s.optStrike)  document.getElementById('optStrikeInput').value  = s.optStrike;
+    if (s.optExpiry)  document.getElementById('optExpiryInput').value  = s.optExpiry;
+    if (s.optPremium) document.getElementById('optEntryPremium').value = s.optPremium;
+
+    if (s.optCallMode !== undefined) {
+      optCallMode = s.optCallMode;
+      const btn = document.getElementById('optTypeBtn');
+      btn.textContent = optCallMode ? 'CALL' : 'PUT';
+      btn.className = 'opt-type-btn ' + (optCallMode ? 'active-call' : 'active-put');
+    }
+
+    // Restore active contract (re-kicks the live fetch)
+    if (s.optContract) {
+      optContract = s.optContract;
+      document.getElementById('optClearBtn').style.display = '';
+      document.getElementById('logTradeBtn').style.display = '';
+      document.getElementById('optStatusMsg').style.display = 'none';
+      document.getElementById('optLiveDisplay').innerHTML = `
+        <span class="opt-ticker-label">${ticker} ${s.optContract.strike}${optCallMode ? 'C' : 'P'} ${(s.optContract.expiry || '').slice(5)}</span>
+        <span class="opt-status-msg" id="optStatusMsg">Reconnecting...</span>`;
+      if (optPremiumTimer) clearInterval(optPremiumTimer);
+      fetchOptionPremium();
+      optPremiumTimer = setInterval(fetchOptionPremium, 10000);
+    }
+  } catch (_) {}
 }
 
 async function fetchOptionPremium() {
@@ -1986,11 +2056,12 @@ window.addEventListener('DOMContentLoaded', () => {
   })();
   document.getElementById('optExpiryInput').value = nextFriday;
 
+  restoreState();
   refresh();
   loadOptions();
   checkEarnings();
   fetchTimer   = setInterval(refresh, 5000);
-  optionsTimer = setInterval(loadOptions, 60000);
+  optionsTimer = setInterval(refreshOptionsPanel, 60000);
   setInterval(checkEarnings, 3600000);
   startClockTick();
 });
@@ -2009,6 +2080,7 @@ function onTickerChange() {
   loadOptions();
   checkEarnings();
   if (optContract) clearOptionContract();
+  else clearState();
 }
 
 function setEntry() {
@@ -2016,6 +2088,7 @@ function setEntry() {
   if (!isNaN(v) && v > 0) {
     entryPrice = v;
     updateTargetTabs();
+    saveState();
     if (candles.length > 0) render();
   }
 }
