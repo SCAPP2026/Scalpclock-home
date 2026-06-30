@@ -1703,8 +1703,8 @@ function renderOptionPremium(d, entryPremium) {
   if (!display) return;
 
   if (d.error) {
-    const hint = d.apiStatus === 'NOT_AUTHORIZED'
-      ? 'API key not authorized for options data'
+    const hint = d.suggestion
+      ? `${d.error} — ${d.suggestion}`
       : `${d.error}${d.ticker ? ' · ' + d.ticker : ''}`;
     display.innerHTML = `<span class="opt-status-msg" id="optStatusMsg">${hint}</span>`;
     return;
@@ -1749,7 +1749,12 @@ function renderOptionPremium(d, entryPremium) {
   const bidAsk = (d.bid !== null && d.ask !== null)
     ? `<span class="opt-live-sub">Bid <b>$${d.bid.toFixed(2)}</b> / Ask <b>$${d.ask.toFixed(2)}</b></span>` : '';
 
-  const mktBadge = mktClosed ? `<span class="opt-status-msg" style="font-size:10px;margin-left:8px">Market closed · last price</span>` : '';
+  const sourceNote = d.source === 'cboe-delayed'
+    ? `<span class="opt-status-msg" style="font-size:10px;margin-left:8px">CBOE${d.dataAge ? ' · ' + d.dataAge + ' ago' : ' delayed'}</span>`
+    : '';
+  const mktBadge = mktClosed
+    ? `<span class="opt-status-msg" style="font-size:10px;margin-left:8px">market closed · last price</span>`
+    : sourceNote;
   display.innerHTML = `
     <span class="opt-ticker-label">${tickLabel}</span>
     <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
