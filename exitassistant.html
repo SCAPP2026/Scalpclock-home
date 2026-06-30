@@ -270,6 +270,18 @@
     transition: color 0.15s;
   }
   .btn-opt-clear:hover { color: var(--bear); border-color: var(--bear); }
+  .btn-log-trade {
+    background: rgba(22,217,126,.12);
+    color: var(--bull);
+    border: 1px solid rgba(22,217,126,.35);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: .15s;
+    white-space: nowrap;
+  }
+  .btn-log-trade:hover { background: rgba(22,217,126,.22); }
   .opt-live-display {
     display: flex;
     align-items: center;
@@ -1338,6 +1350,7 @@
     </div>
     <button class="btn-opt-set" onclick="setOptionContract()">Track</button>
     <button class="btn-opt-clear" id="optClearBtn" onclick="clearOptionContract()" style="display:none">✕ Clear</button>
+    <button class="btn-log-trade" id="logTradeBtn" onclick="logCurrentTrade()" style="display:none" title="Log this trade to your journal">📓 Log</button>
   </div>
   <div class="opt-live-display" id="optLiveDisplay">
     <span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>
@@ -1659,7 +1672,8 @@ function setOptionContract() {
   optCurrentPrice = null;
 
   updateTargetTabs();
-  document.getElementById('optClearBtn').style.display = '';
+  document.getElementById('optClearBtn').style.display  = '';
+  document.getElementById('logTradeBtn').style.display  = '';
   document.getElementById('optStatusMsg').style.display = 'none';
   document.getElementById('optLiveDisplay').innerHTML = `
     <span class="opt-ticker-label">${ticker} ${strike}${optCallMode ? 'C' : 'P'} ${expiry.slice(5)}</span>
@@ -1675,7 +1689,8 @@ function clearOptionContract() {
   optCurrentPrice = null;
   optContractGreeks = null;
   if (optPremiumTimer) { clearInterval(optPremiumTimer); optPremiumTimer = null; }
-  document.getElementById('optClearBtn').style.display = 'none';
+  document.getElementById('optClearBtn').style.display  = 'none';
+  document.getElementById('logTradeBtn').style.display  = 'none';
   const display = document.getElementById('optLiveDisplay');
   display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>';
   updateTargetTabs();
@@ -2407,6 +2422,21 @@ function etaMinutes(currentPrice, basePx, targetPct, vel) {
   const diff = targetPx - currentPrice;
   if (diff <= 0) return 0; // already there
   return diff / vel;
+}
+
+// ── Log Trade → Dashboard handoff ─────────────────────────────────────────
+function logCurrentTrade() {
+  const entry    = optContract?.entryPremium ?? optCurrentPrice ?? null;
+  const pending  = {
+    symbol:    ticker || '',
+    direction: optContract?.type === 'put' ? 'puts' : 'calls',
+    entry:     entry,
+    strike:    optContract?.strike ?? null,
+    expiry:    optContract?.expiry ?? null,
+    contracts: 1,
+  };
+  try { localStorage.setItem('sc_pending_trade', JSON.stringify(pending)); } catch(_) {}
+  window.open('/dashboard', '_blank');
 }
 
 // Probability model: conservative base × contextual adjusters

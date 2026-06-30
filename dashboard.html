@@ -167,13 +167,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
   /* MODAL */
   .modal-overlay{position:fixed;inset:0;z-index:120;background:rgba(4,8,5,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;}
-  .modal-card{background:var(--bg2,#0b110d);border:1px solid rgba(22,217,126,.25);border-radius:16px;padding:32px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.7);}
+  .modal-card{background:var(--bg2,#0b110d);border:1px solid rgba(22,217,126,.25);border-radius:16px;padding:32px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.7);}
   .modal-title{font-family:var(--disp);font-weight:700;font-size:1.35rem;margin-bottom:20px;}
   .modal-title span{color:var(--green);}
   .modal-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .modal-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
   .modal-label{font-size:.78rem;color:var(--t55);font-weight:500;}
-  .modal-input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:8px;padding:10px 13px;color:var(--text);font-family:var(--body);font-size:.93rem;outline:none;transition:.15s;}
+  .modal-label .optional{color:var(--t30);font-weight:400;}
+  .modal-input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:8px;padding:10px 13px;color:var(--text);font-family:var(--body);font-size:.93rem;outline:none;transition:.15s;width:100%;box-sizing:border-box;}
   .modal-input:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
+  .modal-textarea{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:8px;padding:10px 13px;color:var(--text);font-family:var(--body);font-size:.88rem;outline:none;transition:.15s;width:100%;box-sizing:border-box;resize:vertical;min-height:64px;}
+  .modal-textarea:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
+  .modal-section{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t30);margin:18px 0 10px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05);}
   .dir-toggle{display:flex;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
   .dir-btn{flex:1;padding:9px;font-family:var(--disp);font-weight:700;font-size:.9rem;background:transparent;border:none;color:var(--t55);cursor:pointer;transition:.15s;}
   .dir-btn.active.calls{background:rgba(22,217,126,.15);color:var(--green);}
@@ -182,6 +187,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .modal-msg{font-size:.78rem;padding:8px 12px;border-radius:6px;margin-bottom:12px;text-align:center;}
   .modal-msg.error{background:rgba(255,59,70,.1);color:#ff3b46;}
   .modal-msg.success{background:rgba(22,217,126,.1);color:var(--green);}
+  .modal-autofill{font-size:.72rem;color:var(--green);background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.2);border-radius:6px;padding:6px 10px;margin-bottom:16px;display:none;}
   .modal-actions{display:flex;gap:10px;margin-top:4px;}
   .btn-modal-submit{flex:1;font-family:var(--disp);font-weight:700;font-size:.95rem;padding:11px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
   .btn-modal-submit:hover{background:#20e88a;}
@@ -332,7 +338,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div id="openTradesWrap" class="open-trades-wrap" style="display:none">
     <div class="open-trades-head"><span class="open-dot"></span>Open Positions</div>
     <table class="trade-table" id="openTradeTable"><thead><tr>
-      <th>Symbol</th><th>Direction</th><th>Entry</th><th>Date</th><th>Action</th>
+      <th>Symbol</th><th>Contract</th><th>Entry</th><th>Contracts</th><th>Date</th><th>Action</th>
     </tr></thead><tbody id="openTradeBody"></tbody></table>
   </div>
 
@@ -347,7 +353,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <!-- Closed Trades -->
   <div class="trade-table-wrap">
     <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr>
-      <th>Symbol</th><th>Direction</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Date</th><th>Result</th>
+      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th>
     </tr></thead><tbody id="tradeBody"></tbody></table>
     <div class="trade-empty" id="tradeEmpty">
       <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
@@ -367,10 +373,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="modal-card">
       <div class="modal-title">Log <span>New Trade</span></div>
       <div id="logMsg"></div>
-      <div class="modal-field">
-        <label class="modal-label">Symbol</label>
-        <input class="modal-input" id="lt-symbol" type="text" maxlength="5" placeholder="e.g. SPY" style="text-transform:uppercase">
+      <div id="logAutofill" class="modal-autofill"></div>
+
+      <!-- Core -->
+      <div class="modal-field-row">
+        <div class="modal-field" style="margin:0">
+          <label class="modal-label">Symbol</label>
+          <input class="modal-input" id="lt-symbol" type="text" maxlength="6" placeholder="SPY" style="text-transform:uppercase">
+        </div>
+        <div class="modal-field" style="margin:0">
+          <label class="modal-label">Contracts</label>
+          <input class="modal-input" id="lt-contracts" type="number" min="1" step="1" value="1" placeholder="1">
+        </div>
       </div>
+
       <div class="modal-field">
         <label class="modal-label">Direction</label>
         <div class="dir-toggle">
@@ -378,11 +394,32 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
           <button class="dir-btn puts" id="lt-puts" onclick="setDir('puts')">📉 Puts</button>
         </div>
       </div>
+
       <div class="modal-field">
-        <label class="modal-label">Entry Price</label>
+        <label class="modal-label">Entry Premium <span class="optional">(per share)</span></label>
         <input class="modal-input" id="lt-entry" type="number" min="0.01" step="0.01" placeholder="e.g. 2.50">
       </div>
-      <p class="modal-note">Entry price = option premium per share. P&amp;L calculated when you close the trade.</p>
+
+      <!-- Options contract detail -->
+      <div class="modal-section">Option Contract <span class="optional" style="text-transform:none;letter-spacing:0">— optional</span></div>
+      <div class="modal-field-row">
+        <div class="modal-field" style="margin:0">
+          <label class="modal-label">Strike</label>
+          <input class="modal-input" id="lt-strike" type="number" min="0" step="0.5" placeholder="e.g. 745">
+        </div>
+        <div class="modal-field" style="margin:0">
+          <label class="modal-label">Expiry</label>
+          <input class="modal-input" id="lt-expiry" type="date">
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="modal-field">
+        <label class="modal-label">Notes <span class="optional">— why you entered</span></label>
+        <textarea class="modal-textarea" id="lt-notes" placeholder="e.g. RSI divergence at VWAP, momentum fading..."></textarea>
+      </div>
+
+      <p class="modal-note">P&amp;L = (exit − entry) × contracts × 100 shares. Calculated when you close.</p>
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeLogModal()">Cancel</button>
         <button class="btn-modal-submit" id="lt-btn" onclick="logTrade()">Log Entry</button>
@@ -395,13 +432,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="modal-card">
       <div class="modal-title">Close <span id="ct-title">Trade</span></div>
       <div id="closeMsg"></div>
-      <div class="modal-field">
-        <label class="modal-label">Exit Price</label>
-        <input class="modal-input" id="ct-exit" type="number" min="0.01" step="0.01" placeholder="e.g. 3.80">
+      <div id="ct-preview" style="font-size:.8rem;color:var(--t55);margin-bottom:14px;display:none">
+        P&amp;L preview: <span id="ct-pnl-preview" style="font-family:var(--mono);font-weight:700"></span>
       </div>
       <div class="modal-field">
-        <label class="modal-label">Actual P&amp;L ($) <span style="color:var(--t30);font-weight:400">— optional, overrides calc</span></label>
+        <label class="modal-label">Exit Premium <span class="optional">(per share)</span></label>
+        <input class="modal-input" id="ct-exit" type="number" min="0.01" step="0.01" placeholder="e.g. 3.80" oninput="previewPnl()">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Actual P&amp;L ($) <span class="optional">— overrides calc</span></label>
         <input class="modal-input" id="ct-pnl" type="number" step="0.01" placeholder="e.g. 320.00 or -150.00">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Exit Reason <span class="optional">— what triggered exit</span></label>
+        <textarea class="modal-textarea" id="ct-reason" placeholder="e.g. RSI hit 82, momentum fading signal, stop loss..." style="min-height:52px"></textarea>
       </div>
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeCloseModal()">Cancel</button>
@@ -473,14 +517,17 @@ async function loadOpenTrades() {
     if (!trades || trades.length === 0) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'block';
     document.getElementById('openTradeBody').innerHTML = trades.map(t => {
-      const dir = (t.direction || 'calls').toLowerCase();
-      const date = t.created_at ? new Date(t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+      const dir      = (t.direction || 'calls').toLowerCase();
+      const date     = t.created_at ? new Date(t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+      const contract = fmtContract(t);
+      const qty      = t.contracts || 1;
       return `<tr>
         <td><span class="t-sym">${t.symbol || '—'}</span></td>
-        <td><span class="t-dir ${dir}">${dir.toUpperCase()}</span></td>
+        <td><span class="t-dir ${dir}" title="${t.notes || ''}">${contract}</span></td>
         <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
+        <td><span class="t-price">${qty}x</span></td>
         <td><span class="t-date">${date}</span></td>
-        <td><button class="btn-close-trade" onclick="openCloseModal(${t.id},'${t.symbol}','${dir}',${t.entry_price})">Close</button></td>
+        <td><button class="btn-close-trade" onclick="openCloseModal(${t.id},'${t.symbol}','${dir}',${t.entry_price},${qty})">Close</button></td>
       </tr>`;
     }).join('');
   } catch(e) {}
@@ -507,15 +554,20 @@ async function loadClosedTrades() {
     document.getElementById('tradeSummary').style.display = 'grid';
     renderScorecard(trades);
     document.getElementById('tradeBody').innerHTML = trades.map(t => {
-      const win = (t.pnl || 0) >= 0, dir = (t.direction || 'calls').toLowerCase();
-      const date = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
-      const pnlPct = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + Number(t.pnl_pct).toFixed(1) + '%' : '';
-      return `<tr>
+      const win      = (t.pnl || 0) >= 0;
+      const dir      = (t.direction || 'calls').toLowerCase();
+      const date     = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+      const pnlPct   = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + Number(t.pnl_pct).toFixed(1) + '%' : '';
+      const contract = fmtContract(t);
+      const qty      = t.contracts || 1;
+      const noteTitle = [t.notes, t.exit_reason].filter(Boolean).join(' | Exit: ');
+      return `<tr title="${noteTitle}">
         <td><span class="t-sym">${t.symbol || '—'}</span></td>
-        <td><span class="t-dir ${dir}">${dir.toUpperCase()}</span></td>
+        <td><span class="t-dir ${dir}">${contract}</span></td>
         <td><span class="t-pnl ${win ? 'win' : 'loss'}">${fmtPnl(t.pnl || 0)}${pnlPct ? ' <small style="opacity:.6">' + pnlPct + '</small>' : ''}</span></td>
         <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
         <td><span class="t-price">${t.exit_price != null ? '$' + Number(t.exit_price).toFixed(2) : '—'}</span></td>
+        <td><span class="t-price">${qty}x</span></td>
         <td><span class="t-date">${date}</span></td>
         <td><span class="t-badge ${win ? 'win' : 'loss'}">${win ? 'WIN' : 'LOSS'}</span></td>
       </tr>`;
@@ -525,14 +577,48 @@ async function loadClosedTrades() {
   } catch(e) {}
 }
 
+/* ── Helpers ── */
+function fmtContract(t) {
+  const dir = (t.direction || 'calls').toLowerCase();
+  if (t.strike && t.expiry) {
+    const typeChar = dir === 'puts' ? 'P' : 'C';
+    const exp = t.expiry.slice(5); // MM-DD
+    return `$${Number(t.strike).toFixed(0)}${typeChar} ${exp}`;
+  }
+  return dir.toUpperCase();
+}
+
 /* ── Log Trade Modal ── */
 function openLogModal() {
-  document.getElementById('lt-symbol').value = '';
-  document.getElementById('lt-entry').value = '';
-  document.getElementById('logMsg').innerHTML = '';
+  document.getElementById('lt-symbol').value   = '';
+  document.getElementById('lt-entry').value    = '';
+  document.getElementById('lt-contracts').value = '1';
+  document.getElementById('lt-strike').value   = '';
+  document.getElementById('lt-expiry').value   = '';
+  document.getElementById('lt-notes').value    = '';
+  document.getElementById('logMsg').innerHTML  = '';
+  const af = document.getElementById('logAutofill');
+  af.style.display = 'none'; af.textContent = '';
   setDir('calls');
-  document.getElementById('lt-btn').disabled = false;
+  document.getElementById('lt-btn').disabled  = false;
   document.getElementById('lt-btn').textContent = 'Log Entry';
+
+  // Pre-fill from Exit Assistant if available
+  try {
+    const pending = JSON.parse(localStorage.getItem('sc_pending_trade') || 'null');
+    if (pending && pending.symbol) {
+      document.getElementById('lt-symbol').value   = pending.symbol || '';
+      document.getElementById('lt-entry').value    = pending.entry  || '';
+      document.getElementById('lt-strike').value   = pending.strike || '';
+      document.getElementById('lt-expiry').value   = pending.expiry || '';
+      document.getElementById('lt-contracts').value = pending.contracts || '1';
+      setDir(pending.direction || 'calls');
+      af.textContent = `Auto-filled from Exit Assistant: ${pending.symbol}${pending.strike ? ' $' + pending.strike : ''} ${pending.expiry || ''}`;
+      af.style.display = 'block';
+      localStorage.removeItem('sc_pending_trade');
+    }
+  } catch(_) {}
+
   document.getElementById('logModal').style.display = 'flex';
   setTimeout(() => document.getElementById('lt-symbol').focus(), 100);
 }
@@ -545,10 +631,15 @@ function setDir(dir) {
 }
 
 async function logTrade() {
-  const sym   = (document.getElementById('lt-symbol').value || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
-  const entry = parseFloat(document.getElementById('lt-entry').value);
-  if (!sym)              { showModal('logMsg', 'Enter a ticker symbol.', 'error'); return; }
-  if (isNaN(entry) || entry <= 0) { showModal('logMsg', 'Enter a valid entry price.', 'error'); return; }
+  const sym       = (document.getElementById('lt-symbol').value || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+  const entry     = parseFloat(document.getElementById('lt-entry').value);
+  const contracts = parseInt(document.getElementById('lt-contracts').value) || 1;
+  const strike    = parseFloat(document.getElementById('lt-strike').value) || null;
+  const expiry    = document.getElementById('lt-expiry').value || null;
+  const notes     = document.getElementById('lt-notes').value.trim() || null;
+
+  if (!sym)                       { showModal('logMsg', 'Enter a ticker symbol.', 'error'); return; }
+  if (isNaN(entry) || entry <= 0) { showModal('logMsg', 'Enter a valid entry premium.', 'error'); return; }
 
   const btn = document.getElementById('lt-btn');
   btn.disabled = true; btn.textContent = 'Logging...';
@@ -558,6 +649,10 @@ async function logTrade() {
     symbol:      sym,
     direction:   _logDir,
     entry_price: entry,
+    contracts,
+    strike,
+    expiry,
+    notes,
     status:      'open',
   });
 
@@ -571,37 +666,58 @@ async function logTrade() {
 }
 
 /* ── Close Trade Modal ── */
-function openCloseModal(id, symbol, dir, entryPrice) {
-  _tradeToClose = { id, symbol, dir, entry_price: entryPrice };
+function openCloseModal(id, symbol, dir, entryPrice, contracts) {
+  _tradeToClose = { id, symbol, dir, entry_price: entryPrice, contracts: contracts || 1 };
   document.getElementById('ct-title').textContent = symbol + ' ' + dir.toUpperCase();
-  document.getElementById('ct-exit').value = '';
-  document.getElementById('ct-pnl').value = '';
+  document.getElementById('ct-exit').value   = '';
+  document.getElementById('ct-pnl').value    = '';
+  document.getElementById('ct-reason').value = '';
   document.getElementById('closeMsg').innerHTML = '';
-  document.getElementById('ct-btn').disabled = false;
+  document.getElementById('ct-preview').style.display = 'none';
+  document.getElementById('ct-btn').disabled  = false;
   document.getElementById('ct-btn').textContent = 'Close Trade';
   document.getElementById('closeModal').style.display = 'flex';
   setTimeout(() => document.getElementById('ct-exit').focus(), 100);
 }
 function closeCloseModal() { document.getElementById('closeModal').style.display = 'none'; }
 
+function previewPnl() {
+  const t    = _tradeToClose;
+  if (!t) return;
+  const exit = parseFloat(document.getElementById('ct-exit').value);
+  if (isNaN(exit) || exit <= 0) { document.getElementById('ct-preview').style.display = 'none'; return; }
+  const pnl    = (exit - t.entry_price) * (t.contracts || 1) * 100;
+  const pnlPct = ((exit - t.entry_price) / t.entry_price * 100).toFixed(1);
+  const sign   = pnl >= 0 ? '+' : '';
+  const color  = pnl >= 0 ? 'var(--green)' : '#ff3b46';
+  document.getElementById('ct-pnl-preview').textContent = `${sign}$${Math.abs(pnl).toFixed(2)} (${sign}${pnlPct}%)`;
+  document.getElementById('ct-pnl-preview').style.color = color;
+  document.getElementById('ct-preview').style.display = 'block';
+}
+
 async function closeTrade() {
   const exit      = parseFloat(document.getElementById('ct-exit').value);
   const manualPnl = document.getElementById('ct-pnl').value.trim();
-  if (isNaN(exit) || exit <= 0) { showModal('closeMsg', 'Enter a valid exit price.', 'error'); return; }
+  const reason    = document.getElementById('ct-reason').value.trim() || null;
+  if (isNaN(exit) || exit <= 0) { showModal('closeMsg', 'Enter a valid exit premium.', 'error'); return; }
 
-  const t      = _tradeToClose;
-  const pnl    = manualPnl !== '' ? parseFloat(manualPnl) : parseFloat((exit - t.entry_price).toFixed(2));
-  const pnlPct = parseFloat(((exit - t.entry_price) / t.entry_price * 100).toFixed(2));
+  const t       = _tradeToClose;
+  const qty     = t.contracts || 1;
+  // P&L = premium change × contracts × 100 shares; manualPnl overrides
+  const pnl     = manualPnl !== '' ? parseFloat(manualPnl)
+                : parseFloat(((exit - t.entry_price) * qty * 100).toFixed(2));
+  const pnlPct  = parseFloat(((exit - t.entry_price) / t.entry_price * 100).toFixed(2));
 
   const btn = document.getElementById('ct-btn');
   btn.disabled = true; btn.textContent = 'Closing...';
 
   const { error } = await sb.from('trades').update({
-    exit_price: exit,
+    exit_price:  exit,
     pnl,
-    pnl_pct:    pnlPct,
-    status:     'closed',
-    closed_at:  new Date().toISOString(),
+    pnl_pct:     pnlPct,
+    exit_reason: reason,
+    status:      'closed',
+    closed_at:   new Date().toISOString(),
   }).eq('id', t.id).eq('user_id', _uid);
 
   if (error) {
