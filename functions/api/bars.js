@@ -28,17 +28,19 @@ export async function onRequest(context) {
     : rawSymbol.toUpperCase();
 
   try {
+    // sort=desc gives most recent bars first; we take the latest 100 then reverse
+    // so candles[] is always oldest→newest with current price at the end
     const stockUrl = 'https://data.alpaca.markets/v2/stocks/'
       + encodeURIComponent(stockSym)
       + '/bars'
       + `?timeframe=${encodeURIComponent(timeframe)}`
       + `&start=${encodeURIComponent(startISO)}`
-      + '&limit=100&feed=iex';
+      + '&limit=100&sort=desc&feed=iex';
 
     const res  = await fetch(stockUrl, { headers });
     const data = await res.json();
 
-    const candles = (data.bars ?? []).map(b => ({
+    const candles = (data.bars ?? []).reverse().map(b => ({
       time:   b.t,
       open:   b.o,
       high:   b.h,
