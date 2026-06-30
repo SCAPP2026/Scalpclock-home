@@ -53,7 +53,7 @@ export async function onRequest(context) {
       headers: {
         'Content-Type':                'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Cache-Control':               'no-store',
+        'Cache-Control':               'public, s-maxage=15, stale-while-revalidate=10',
       },
     });
   } catch (e) {

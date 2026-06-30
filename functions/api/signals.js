@@ -41,7 +41,7 @@ export async function onRequest(context) {
   }
 
   async function fetchBars(symbol) {
-    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=200&feed=iex`;
+    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=80&feed=iex`;
     const res  = await fetch(url, { headers });
     const data = await safeJson(res);
     return data.bars || [];
@@ -192,7 +192,7 @@ export async function onRequest(context) {
     headers: {
       'Content-Type':                'application/json',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control':               'no-store',
+      'Cache-Control':               'public, s-maxage=12, stale-while-revalidate=8',
     },
   });
 }

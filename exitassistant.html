@@ -13,9 +13,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ScalpClock">
 <link rel="apple-touch-icon" href="/hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1575,10 +1577,12 @@
 
 <script>
 (async function () {
+  const _authFallback = setTimeout(() => { document.body.style.visibility = 'visible'; }, 3000);
   const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const { data: { session } } = await _sb.auth.getSession();
+  clearTimeout(_authFallback);
   if (!session) { window.location.href = '/login?from=/exitassistant'; return; }
   document.body.style.visibility = 'visible';
 })();
@@ -1588,9 +1592,10 @@ let ticker       = 'SPY';
 let entryPrice   = null;
 let candles      = [];
 let clockTarget  = 10;
-let fetchTimer   = null;
-let lastSigLevel = '';
-let optionsTimer = null;
+let fetchTimer    = null;
+let lastSigLevel  = '';
+let optionsTimer  = null;
+let earningsTimer = null;
 
 // ── Option Premium Tracker State ────────────────────────────────────────────
 let optContract = null;       // { strike, expiry, type, entryPremium }
@@ -2062,10 +2067,23 @@ window.addEventListener('DOMContentLoaded', () => {
   refresh();
   loadOptions();
   checkEarnings();
-  fetchTimer   = setInterval(refresh, 5000);
-  optionsTimer = setInterval(refreshOptionsPanel, 60000);
-  setInterval(checkEarnings, 3600000);
+  fetchTimer    = setInterval(refresh, 5000);
+  optionsTimer  = setInterval(refreshOptionsPanel, 60000);
+  earningsTimer = setInterval(checkEarnings, 3600000);
   startClockTick();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearInterval(fetchTimer);
+      clearInterval(optionsTimer);
+      clearInterval(earningsTimer);
+    } else {
+      refresh();
+      fetchTimer    = setInterval(refresh, 5000);
+      optionsTimer  = setInterval(refreshOptionsPanel, 60000);
+      earningsTimer = setInterval(checkEarnings, 3600000);
+    }
+  });
 });
 
 function onTickerChange() {

@@ -127,7 +127,7 @@ function json(data, status = 200) {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': 'no-store',
+      'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
     },
   });
 }
