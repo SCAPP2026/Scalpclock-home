@@ -1517,8 +1517,8 @@
     <!-- OPTIONS PANEL -->
     <div class="options-wrap" id="optionsWrap">
       <div class="options-hdr">
-        <span class="options-title">Live Option Activity</span>
-        <button class="options-refresh" onclick="loadOptions()">↻ Refresh</button>
+        <span class="options-title" id="optionsPanelTitle">Live Option Activity</span>
+        <button class="options-refresh" onclick="refreshOptionsPanel()">↻ Refresh</button>
       </div>
       <div id="optionsContent">
         <div class="options-msg">Loading options data...</div>
@@ -1595,6 +1595,7 @@ let optContract = null;       // { strike, expiry, type, entryPremium }
 let optPremiumTimer = null;
 let optCurrentPrice = null;
 let optContractGreeks = null; // greeks from the specific tracked contract (option-price API)
+let lastContractData  = null; // raw API response for the tracked contract (CBOE)
 let lastOptionsData  = null;  // cached from loadOptions for aggregate delta/theta/IV
 
 // ── Voice Alerts ───────────────────────────────────────────────────────────
@@ -1709,6 +1710,7 @@ async function fetchOptionPremium() {
     const res  = await fetch(`/api/option-price?symbol=${ticker}&strike=${strike}&expiry=${expiry}&type=${type}`);
     const data = await res.json();
     renderOptionPremium(data, entryPremium);
+    renderOptionsPanel();
   } catch {
     const msgEl = document.getElementById('optStatusMsg');
     if (msgEl) msgEl.textContent = 'Premium fetch error — retrying...';
@@ -1738,6 +1740,7 @@ function renderOptionPremium(d, entryPremium) {
   }
 
   optCurrentPrice = price;
+  lastContractData = d;
   // Cache contract-specific greeks for direction-aware velocity
   optContractGreeks = { delta: d.delta, theta: d.theta, gamma: d.gamma, vega: d.vega };
 
@@ -1784,6 +1787,69 @@ function renderOptionPremium(d, entryPremium) {
     </div>
     ${plHTML}
     ${greeksHTML}`;
+}
+
+function refreshOptionsPanel() {
+  if (optContract) {
+    // Re-fetch the specific tracked contract
+    fetchOptionPremium();
+  } else {
+    loadOptions();
+  }
+}
+
+function renderOptionsPanel() {
+  const titleEl = document.getElementById('optionsPanelTitle');
+  if (optContract && lastContractData && !lastContractData.error) {
+    const d = lastContractData;
+    titleEl.textContent = 'Your Option — Live Data';
+    const el = document.getElementById('optionsContent');
+    const price = optCurrentPrice;
+    const entry = optContract.entryPremium;
+    const plDollar = entry ? (price - entry) * 100 : null;
+    const plPct    = entry ? (price - entry) / entry * 100 : null;
+    const neg      = plPct !== null && plPct < 0;
+    const mktClosed = d.marketStatus && d.marketStatus !== 'open';
+
+    const fmtVol = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : String(v||0);
+
+    el.innerHTML = `
+      ${plDollar !== null ? `
+      <div class="opt-pl-pill${neg ? ' neg' : ''}" style="margin-bottom:10px">
+        <span class="opt-pl-val">${plDollar >= 0 ? '+' : ''}$${plDollar.toFixed(0)}</span>
+        <span class="opt-pl-pct">${plPct >= 0 ? '+' : ''}${plPct.toFixed(1)}% / contract</span>
+      </div>` : ''}
+      <div class="pcr-row">
+        <span class="pcr-label">Current Price</span>
+        <span class="pcr-val">$${price.toFixed(2)}</span>
+      </div>
+      ${d.bid !== null && d.ask !== null ? `
+      <div class="pcr-row">
+        <span class="pcr-label">Bid / Ask</span>
+        <span class="pcr-val">$${d.bid.toFixed(2)} / $${d.ask.toFixed(2)}</span>
+      </div>` : ''}
+      ${entry ? `
+      <div class="pcr-row">
+        <span class="pcr-label">Your Entry</span>
+        <span class="pcr-val">$${entry.toFixed(2)}</span>
+      </div>` : ''}
+      <div class="greeks-grid" style="margin-top:10px">
+        ${d.delta !== null ? `<div class="greek-item"><div class="greek-lbl">Δ Move Rate</div><div class="greek-val">${Math.abs(d.delta).toFixed(2)}</div></div>` : ''}
+        ${d.gamma !== null ? `<div class="greek-item"><div class="greek-lbl">γ Speed Change</div><div class="greek-val">${d.gamma.toFixed(3)}</div></div>` : ''}
+        ${d.theta !== null ? `<div class="greek-item"><div class="greek-lbl">θ Daily Cost</div><div class="greek-val${d.theta < -0.05 ? ' bear' : ''}">${d.theta.toFixed(2)}</div></div>` : ''}
+        ${d.iv    !== null ? `<div class="greek-item"><div class="greek-lbl">ν Fear Meter</div><div class="greek-val">${d.iv}%</div></div>` : ''}
+      </div>
+      <div class="pcr-row" style="margin-top:8px">
+        <span class="pcr-label">Volume / OI</span>
+        <span class="pcr-val">${fmtVol(d.volume)} / ${fmtVol(d.openInterest)}</span>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">
+        ${mktClosed ? 'Market closed · last known price' : 'CBOE delayed'} ${d.dataAge ? '· ' + d.dataAge + ' ago' : ''}
+      </div>`;
+  } else {
+    titleEl.textContent = 'Live Option Activity';
+    if (lastOptionsData) renderOptions(lastOptionsData);
+  }
 }
 
 // ── Earnings Warning ───────────────────────────────────────────────────────
@@ -2694,8 +2760,15 @@ function render() {
     renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, entryPrice, isPut);
   }
 
-  // Probability cards (stock mode only — premium projection replaces this in opt mode)
-  if (entryPrice && !optMode) renderProbCards(now, vel, atrVal, rsiVal, vt);
+  // Probability cards — options mode uses premium as base
+  if (optMode) {
+    renderProbCards(optCurrentPrice, Math.abs(optVel ?? vel * contractDelta), atrVal, rsiVal, vt, true, optContract.entryPremium);
+  } else if (entryPrice) {
+    renderProbCards(now, vel, atrVal, rsiVal, vt, false, entryPrice);
+  }
+
+  // Options panel — show tracked contract data when available, else aggregate flow
+  renderOptionsPanel();
 
   // AI Reason + Risk Meter — direction-aware
   renderAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, optMode, optContract, lastOptionsData, isPut);
@@ -2900,15 +2973,18 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   }
 }
 
-function renderProbCards(now, vel, atrVal, rsiVal, vt) {
+function renderProbCards(now, vel, atrVal, rsiVal, vt, isOptMode, base) {
   const TARGETS = [10, 20, 30, 50];
   const container = document.getElementById('probCards');
+  const refBase = base ?? (isOptMode ? optContract?.entryPremium : entryPrice);
+  if (!refBase) return;
 
   container.innerHTML = TARGETS.map(pct => {
     const prob    = probability(pct, rsiVal, vel, atrVal, vt);
     const probPct = Math.round(prob * 100);
-    const eta     = etaMinutes(now, entryPrice, pct, vel);
-    const px      = (entryPrice * (1 + pct / 100)).toFixed(2);
+    const eta     = etaMinutes(now, refBase, pct, vel);
+    const px      = (refBase * (1 + pct / 100)).toFixed(2);
+    const dollarPnl = isOptMode ? `· <b>$${((px - refBase) * 100).toFixed(0)}/contract</b>` : '';
     const isActive = pct === clockTarget;
 
     const barColor = probPct >= 58 ? 'var(--bull)' : probPct >= 35 ? 'var(--warn)' : 'var(--bear)';
@@ -2923,13 +2999,17 @@ function renderProbCards(now, vel, atrVal, rsiVal, vt) {
       timeStr = h > 0 ? `~${h}h ${m}m` : `~${m} min`;
     }
 
+    const targetLabel = isOptMode
+      ? `+${pct}% → $${px} premium ${dollarPnl}`
+      : `+${pct}% → $${px}`;
+
     return `
 <div class="prob-card${isActive ? ' active' : ''}" data-pct="${pct}">
   <div class="prob-row">
-    <div class="prob-target" style="font-size:15px">$${px}</div>
+    <div class="prob-target" style="font-size:15px">+${pct}%</div>
     <div class="prob-pct" style="color:${pctColor}">${probPct}%</div>
   </div>
-  <div class="prob-target-price">+${pct}% target · <span style="color:${pctColor};font-weight:700">${probPct}% chance</span></div>
+  <div class="prob-target-price" style="font-size:10px">${targetLabel} · <span style="color:${pctColor};font-weight:700">${probPct}% chance</span></div>
   <div class="prob-bar-track">
     <div class="prob-bar-fill" style="width:${probPct}%;background:${barColor}"></div>
   </div>
