@@ -108,10 +108,43 @@ body::before {
   box-shadow: 0 0 20px rgba(22,217,126,.35); transition: .15s;
 }
 .nav-cta:hover { background: #20e88a; transform: translateY(-1px); }
-@media (max-width: 720px) { .nav-links { display: none; } }
-@media (max-width: 520px) {
+.nav-burger {
+  display: none;
+  background: none; border: none; color: var(--t80); cursor: pointer;
+  padding: 8px; border-radius: 8px; font-size: 1.5rem; line-height: 1;
+  transition: color .15s;
+}
+.nav-burger:hover { color: #fff; }
+.nav-drawer {
+  display: none; flex-direction: column;
+  position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(7,10,8,.97); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line); z-index: 59;
+  padding: 4px 0 20px;
+}
+.nav-drawer.open { display: flex; }
+.nav-drawer a {
+  font-family: var(--disp); font-weight: 600; font-size: 1.05rem;
+  color: var(--t80); padding: 16px 28px;
+  border-bottom: 1px solid var(--line); text-decoration: none;
+  transition: color .15s, background .15s;
+}
+.nav-drawer a:hover, .nav-drawer a:active { color: #fff; background: rgba(22,217,126,.07); }
+.nav-drawer .drawer-dash {
+  margin: 16px 20px 0; padding: 14px; border-radius: 9px;
+  background: rgba(22,217,126,.08); color: var(--green);
+  border: 1px solid rgba(22,217,126,.35);
+  font-weight: 700; font-family: var(--disp); text-align: center; font-size: 1rem;
+}
+.nav-drawer .drawer-dash:hover { background: rgba(22,217,126,.15); border-bottom: none; }
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .nav-burger { display: block; }
   .nav-cta:not(.nav-cta-dash) { display: none; }
   .nav-cta-dash { font-size: .8rem; padding: 7px 14px; }
+}
+@media (max-width: 520px) {
+  .nav-cta-dash { display: none; }
   .brand { font-size: 1.1rem; }
 }
 
@@ -809,7 +842,19 @@ footer {
     <button class="btn-tour" onclick="startTour()" title="Quick tour">?</button>
     <a class="nav-cta nav-cta-dash" href="/dashboard" style="background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
     <a class="nav-cta" href="#signals">See Live Signals</a>
+    <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
   </div>
+</div>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="#signals" onclick="closeDrawer()">Live Signals</a>
+  <a href="/scalpchart" onclick="closeDrawer()">Charts</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="#news" onclick="closeDrawer()">News</a>
+  <a href="/learn" onclick="closeDrawer()">Learn</a>
+  <a href="/faq" onclick="closeDrawer()">FAQ</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" class="drawer-dash" onclick="closeDrawer()">Dashboard →</a>
 </div>
 
 <div class="shell" id="top">
@@ -1178,6 +1223,28 @@ footer {
 <div id="tourOverlay" class="tour-overlay" style="display:none" role="dialog" aria-modal="true" aria-label="Quick tour"></div>
 
 </div><!-- .shell -->
+
+<script>
+/* ── Mobile nav drawer ── */
+function toggleDrawer() {
+  var d = document.getElementById('navDrawer');
+  var open = d.classList.toggle('open');
+  document.getElementById('navBurger').textContent = open ? '✕' : '☰';
+}
+function closeDrawer() {
+  var d = document.getElementById('navDrawer');
+  if (d) { d.classList.remove('open'); }
+  var b = document.getElementById('navBurger');
+  if (b) { b.textContent = '☰'; }
+}
+document.addEventListener('click', function(e) {
+  var d = document.getElementById('navDrawer');
+  var b = document.getElementById('navBurger');
+  if (d && d.classList.contains('open') && !d.contains(e.target) && !b.contains(e.target)) {
+    closeDrawer();
+  }
+});
+</script>
 
 <script>
 (function () {
