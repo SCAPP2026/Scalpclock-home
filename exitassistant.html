@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScalpClock · Exit Assistant — Profit Clock</title>
-<meta name="description" content="AI-powered exit signals. Know when to take profit, move your stop, or hold. Real-time RSI, velocity, and volume analysis.">
+<meta name="description" content="The simplest trading exit tool in the world. ScalpClock tells you exactly when to sell, when to hold, and when to protect your gains — in plain English.">
 <link rel="icon" href="hero.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#16d97e">
@@ -1415,7 +1415,7 @@
       <div class="exit-body">
         <div class="exit-level" id="exitLevel">WATCHING</div>
         <div class="exit-msg" id="exitMsg">Enter your entry price above to activate exit signals.</div>
-        <div class="exit-sub" id="exitSub">Live RSI · velocity · volume analysis · updates every 5s</div>
+        <div class="exit-sub" id="exitSub">Watching price, speed &amp; buyers in real time · updates every 5s</div>
       </div>
     </div>
 
@@ -1485,27 +1485,27 @@
   <!-- STATS STRIP -->
   <div class="stats-section">
     <div class="stat-item">
-      <div class="stat-lbl">Velocity</div>
+      <div class="stat-lbl">Speed</div>
       <div class="stat-val" id="sVel">—</div>
     </div>
     <div class="stat-item">
-      <div class="stat-lbl">RSI (14)</div>
+      <div class="stat-lbl">Buyer Strength</div>
       <div class="stat-val" id="sRSI">—</div>
     </div>
     <div class="stat-item">
-      <div class="stat-lbl">ATR (14)</div>
+      <div class="stat-lbl">Choppiness</div>
       <div class="stat-val" id="sATR">—</div>
     </div>
     <div class="stat-item">
-      <div class="stat-lbl">Volume</div>
+      <div class="stat-lbl">Activity</div>
       <div class="stat-val" id="sVol">—</div>
     </div>
     <div class="stat-item">
-      <div class="stat-lbl">Momentum</div>
+      <div class="stat-lbl">Trend Force</div>
       <div class="stat-val" id="sMom">—</div>
     </div>
     <div class="stat-item">
-      <div class="stat-lbl">Trend</div>
+      <div class="stat-lbl">Direction</div>
       <div class="stat-val" id="sTrend">—</div>
     </div>
   </div>
@@ -1517,7 +1517,7 @@
     <!-- OPTIONS PANEL -->
     <div class="options-wrap" id="optionsWrap">
       <div class="options-hdr">
-        <span class="options-title">Options Flow</span>
+        <span class="options-title">Live Option Activity</span>
         <button class="options-refresh" onclick="loadOptions()">↻ Refresh</button>
       </div>
       <div id="optionsContent">
@@ -1561,7 +1561,7 @@
     </div>
 
     <div class="momentum-wrap">
-      <div class="momentum-hdr">Momentum Meter</div>
+      <div class="momentum-hdr">How Strong Is The Move?</div>
       <div class="momentum-track">
         <div class="momentum-fill" id="momFill" style="width:0%;background:var(--muted)"></div>
       </div>
@@ -1632,20 +1632,26 @@ function maybeSpeak(sig, rsiVal, gainPct) {
   if (lvl === lastSigLevel) return;
   lastSigLevel = lvl;
   const g = gainPct !== null ? `You're ${gainPct >= 0 ? 'up' : 'down'} ${Math.abs(gainPct).toFixed(1)} percent. ` : '';
-  const scripts = {
-    'EXIT SIGNAL':            `ScalpClock alert. Exit signal. ${g}RSI at ${rsiVal.toFixed(0)}. Sell or scale out now.`,
-    'TAKE PROFIT':            `ScalpClock alert. Take profit. ${g}Don't give it back. Exit the trade.`,
-    'MOMENTUM FADING':        `ScalpClock. Momentum is fading. RSI ${rsiVal.toFixed(0)}. Consider scaling out.`,
-    'MOVE YOUR STOP':         `ScalpClock. Move your stop to protect profits. Momentum is decelerating.`,
-    'VOLUME DRYING UP':       `ScalpClock. Volume is drying up. The move may be over. Tighten your stop.`,
-    'DECELERATING':           `ScalpClock. Momentum decelerating. Watch RSI and volume for the next signal.`,
-    'HOLD — STRONG MOMENTUM': `ScalpClock. Strong momentum confirmed on ${ticker}. Rising price, rising volume. Stay in.`,
-    'HOLD — OVERSOLD BOUNCE': `ScalpClock. Oversold bounce in progress on ${ticker}. RSI ${rsiVal.toFixed(0)}. Room to run.`,
-    'THETA BURNING':          `ScalpClock alert. Theta is burning. Less than one day to expiry. Take your profit now before time decay takes it.`,
-    'EXIT — TIME DECAY':      `ScalpClock alert. Expiring today at a loss. Theta will take the rest. Cut the position now.`,
-    'IV CRUSH RISK':          `ScalpClock alert. IV crush risk detected. Implied volatility is elevated. Lock in your gains before the event passes.`,
-  };
-  if (scripts[lvl]) speak(scripts[lvl]);
+  // Match against plain-English level names (first word or two)
+  const speak_ = txt => speak(`ScalpClock. ${txt}`);
+  if (lvl.includes('Sell Now') || lvl.includes('Running Out'))
+    return speak_(`Alert! ${g}Sell now. The move is running out of gas.`);
+  if (lvl.includes('Cash Out'))
+    return speak_(`Alert! ${g}Cash out. That's a great trade. Don't give it back.`);
+  if (lvl.includes('TIME IS UP') || lvl.includes('OPTION EXPIRING'))
+    return speak_(`Alert! Your option expires today. Sell now before time takes the rest.`);
+  if (lvl.includes('LOCK IN'))
+    return speak_(`Alert! ${g}Lock in your gains now. Market fear is dropping fast.`);
+  if (lvl.includes('Running Out of Steam') || lvl.includes('Slowing'))
+    return speak_(`The move is slowing down. Consider selling some to lock in gains.`);
+  if (lvl.includes('Protect'))
+    return speak_(`${g}Move your stop up to protect your profits.`);
+  if (lvl.includes('Fewer People'))
+    return speak_(`Trading activity is drying up. Tighten your stop — the move may be fading.`);
+  if (lvl.includes('Strong Move'))
+    return speak_(`Strong move on ${ticker}. Price and activity both rising. Stay in.`);
+  if (lvl.includes('Oversold') || lvl.includes('Too High'))
+    return speak_(`${ticker} has big room to move. Hold your position.`);
 }
 
 // ── Option Premium Tracker ─────────────────────────────────────────────────
@@ -1847,19 +1853,19 @@ function renderOptions(d) {
   el.innerHTML = `
     <div class="greeks-grid">
       <div class="greek-item">
-        <div class="greek-lbl">Δ Delta</div>
+        <div class="greek-lbl">Δ Move Rate</div>
         <div class="greek-val">${greeks?.delta ?? '—'}</div>
       </div>
       <div class="greek-item">
-        <div class="greek-lbl">γ Gamma</div>
+        <div class="greek-lbl">γ Speed Change</div>
         <div class="greek-val">${greeks?.gamma ?? '—'}</div>
       </div>
       <div class="greek-item">
-        <div class="greek-lbl">θ Theta Burn</div>
+        <div class="greek-lbl">θ Daily Cost</div>
         <div class="greek-val ${thetaWarn ? 'bear' : ''}">${greeks?.theta ?? '—'}</div>
       </div>
       <div class="greek-item">
-        <div class="greek-lbl">ν Vega</div>
+        <div class="greek-lbl">ν Fear Meter</div>
         <div class="greek-val">${greeks?.vega ?? '—'}</div>
       </div>
     </div>
@@ -1979,85 +1985,83 @@ function generateAIReason(rsiVal, vel, atrVal, vt, vtrend, gainPct, sig, isPut) 
   const effRSI    = isPut ? (100 - rsiVal) : rsiVal;
   const effVTrend = isPut ? -vtrend : vtrend;
 
-  // RSI — interpreted from the option direction's perspective
+  // Buyer strength — explained in plain English from option direction's perspective
   if (isPut) {
-    // For puts: high RSI = overbought stock = potential reversal down = GOOD
-    if      (rsiVal >= 78) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} — deeply overbought</strong>. High probability of reversal down — <span style="color:var(--bull)">favorable for puts</span>`);
-    else if (rsiVal >= 68) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} is overbought</strong> — stock losing upside headroom, which benefits puts`);
-    else if (rsiVal >= 55) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)}</strong> is elevated — puts have moderate tailwind`);
-    else if (rsiVal >= 45) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)}</strong> is neutral — no strong directional edge`);
-    else if (rsiVal >= 35) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)}</strong> approaching oversold — bounce risk growing for put holders`);
-    else if (rsiVal >= 25) parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} is oversold</strong> — <span style="color:var(--bear)">reversal risk for your put</span>. Stock may bounce`);
-    else                   parts.push(`Stock RSI <strong>${rsiVal.toFixed(0)} severely oversold</strong> — <span style="color:var(--bear)">high bounce risk</span>. Consider protecting put gains`);
+    if      (rsiVal >= 78) parts.push(`🔥 <strong>Buyers are exhausted (${rsiVal.toFixed(0)}/100)</strong>. The stock has been pushed way too high. It almost always pulls back from here — <span style="color:var(--bull)">great news for your put</span>`);
+    else if (rsiVal >= 68) parts.push(`Buyers are getting tired (${rsiVal.toFixed(0)}/100). The stock is running out of upside room — works in your put's favor`);
+    else if (rsiVal >= 55) parts.push(`Buyers are somewhat active (${rsiVal.toFixed(0)}/100) — your put has a moderate edge`);
+    else if (rsiVal >= 45) parts.push(`Buyers and sellers are evenly matched (${rsiVal.toFixed(0)}/100) — no clear edge either way`);
+    else if (rsiVal >= 35) parts.push(`The stock is getting beaten down (${rsiVal.toFixed(0)}/100) — buyers may step in soon, which could hurt your put`);
+    else if (rsiVal >= 25) parts.push(`⚠️ The stock is very oversold (${rsiVal.toFixed(0)}/100) — <span style="color:var(--bear)">a bounce is likely coming</span>. That's bad for your put`);
+    else                   parts.push(`⚠️ The stock is extremely beaten down (${rsiVal.toFixed(0)}/100) — <span style="color:var(--bear)">a sharp bounce is very likely</span>. Consider protecting your put gains`);
   } else {
-    if      (rsiVal >= 78) parts.push(`RSI is <strong>deeply overbought at ${rsiVal.toFixed(0)}</strong> — sellers typically take control here`);
-    else if (rsiVal >= 68) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is overbought</strong> and losing headroom fast`);
-    else if (rsiVal >= 55) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is elevated with some room left before overbought`);
-    else if (rsiVal >= 45) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is neutral — no strong directional edge from momentum alone`);
-    else if (rsiVal >= 35) parts.push(`RSI at <strong>${rsiVal.toFixed(0)}</strong> is approaching oversold — upside room remains`);
-    else if (rsiVal >= 25) parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is oversold</strong> — bounce potential is high`);
-    else                   parts.push(`RSI at <strong>${rsiVal.toFixed(0)} is severely oversold</strong> — mean reversion likely`);
+    if      (rsiVal >= 78) parts.push(`🔥 <strong>Buyers are in total control (${rsiVal.toFixed(0)}/100)</strong>. The stock is being pushed up hard — but it may be getting too stretched`);
+    else if (rsiVal >= 68) parts.push(`Buyers are winning (${rsiVal.toFixed(0)}/100) but running out of room to push higher`);
+    else if (rsiVal >= 55) parts.push(`Buyers have the upper hand (${rsiVal.toFixed(0)}/100) with room to keep going`);
+    else if (rsiVal >= 45) parts.push(`Buyers and sellers are evenly matched (${rsiVal.toFixed(0)}/100) — no clear edge yet`);
+    else if (rsiVal >= 35) parts.push(`Sellers have been in control (${rsiVal.toFixed(0)}/100) but buyers could step in soon — potential upside setup`);
+    else if (rsiVal >= 25) parts.push(`💪 Sellers have pushed way too hard (${rsiVal.toFixed(0)}/100) — the stock is overdue for a bounce. Good setup for your call`);
+    else                   parts.push(`💪 The stock is very beaten down (${rsiVal.toFixed(0)}/100) — a strong bounce back up is likely. Your call setup looks great`);
   }
 
-  // Velocity — described relative to the option direction
+  // Speed — how fast the stock is moving in your favor
   const absVel = Math.abs(vel).toFixed(3);
   if (isPut) {
-    if      (vel < -a * 0.5)  parts.push(`stock is <strong>dropping hard at -$${absVel}/min</strong> — strong tailwind for your put`);
-    else if (vel < -a * 0.2)  parts.push(`stock has <strong>solid downward momentum</strong> at -$${absVel}/min — working in your put's favor`);
-    else if (vel < -0.001)    parts.push(`stock drifting down slowly — <strong>weak momentum</strong> for your put`);
-    else if (vel > a * 0.4)   parts.push(`stock is <strong>rising against your put</strong> at +$${absVel}/min — momentum has flipped bearish for puts`);
-    else if (vel > 0.001)     parts.push(`stock ticking up slightly — <strong>headwind for your put position</strong>`);
-    else                      parts.push(`<strong>stock is flat</strong> — theta decay is your biggest enemy right now`);
+    if      (vel < -a * 0.5)  parts.push(`📉 <strong>Stock dropping fast at $${absVel}/min</strong> — your put is making money right now`);
+    else if (vel < -a * 0.2)  parts.push(`Stock falling at $${absVel}/min — working in your put's favor`);
+    else if (vel < -0.001)    parts.push(`Stock drifting down slowly — your put is making small gains but the move is weak`);
+    else if (vel > a * 0.4)   parts.push(`⚠️ <strong>Stock going UP at $${absVel}/min</strong> — this is working against your put right now`);
+    else if (vel > 0.001)     parts.push(`Stock ticking up slightly — small headwind for your put`);
+    else                      parts.push(`Stock is barely moving — time is slowly eating your option's value`);
   } else {
-    if      (vel > a * 0.5)  parts.push(`price is <strong>accelerating strongly</strong> at $${absVel}/min`);
-    else if (vel > a * 0.2)  parts.push(`price has <strong>solid upward momentum</strong> at $${absVel}/min`);
-    else if (vel > 0.001)    parts.push(`price is drifting upward slowly — <strong>weak momentum</strong>`);
-    else if (vel < -a * 0.4) parts.push(`price is <strong>dropping hard</strong> at -$${absVel}/min — momentum has flipped`);
-    else if (vel < -0.001)   parts.push(`<strong>momentum has stalled</strong> and turned slightly negative`);
-    else                     parts.push(`<strong>price is flat</strong> — no directional momentum`);
+    if      (vel > a * 0.5)  parts.push(`📈 <strong>Stock charging up at $${absVel}/min</strong> — your call is making money right now`);
+    else if (vel > a * 0.2)  parts.push(`Stock climbing at $${absVel}/min — solid move in your favor`);
+    else if (vel > 0.001)    parts.push(`Stock drifting up slowly — your call is gaining but the move is weak`);
+    else if (vel < -a * 0.4) parts.push(`⚠️ <strong>Stock going DOWN at $${absVel}/min</strong> — this is working against your call right now`);
+    else if (vel < -0.001)   parts.push(`Stock ticking down slightly — small headwind for your call`);
+    else                     parts.push(`Stock is barely moving — no clear direction right now`);
   }
 
-  // Volume
-  if      (vt > 0.25)  parts.push(`<strong>volume surging ${(vt*100).toFixed(0)}% above average</strong> — confirming the move`);
-  else if (vt > 0.08)  parts.push(`volume picking up, adding conviction`);
-  else if (vt < -0.25) parts.push(`<strong>volume collapsing</strong> — institutional support is fading`);
-  else if (vt < -0.08) parts.push(`volume fading, weakening conviction`);
+  // Activity (volume)
+  if      (vt > 0.25)  parts.push(`👥 <strong>Lots of people are trading this right now (${(vt*100).toFixed(0)}% above normal)</strong> — that confirms the move is real`);
+  else if (vt > 0.08)  parts.push(`More people are jumping in — adds confidence to the move`);
+  else if (vt < -0.25) parts.push(`⚠️ <strong>Trading activity is drying up fast</strong> — fewer people are joining in. Moves with no activity tend to reverse`);
+  else if (vt < -0.08) parts.push(`Activity is slowing — the move has less backing behind it`);
 
-  // Velocity trend (direction-aware)
-  if      (effVTrend > a * 0.08)  parts.push(`${isPut ? 'downward' : 'upward'} momentum is <strong>building</strong>`);
-  else if (effVTrend < -a * 0.08) parts.push(`${isPut ? 'downward' : 'upward'} momentum is <strong>decelerating</strong> — a warning sign`);
+  // Acceleration (direction-aware)
+  if      (effVTrend > a * 0.08)  parts.push(`The ${isPut ? 'downward' : 'upward'} move is <strong>picking up speed</strong> — getting stronger`);
+  else if (effVTrend < -a * 0.08) parts.push(`The ${isPut ? 'downward' : 'upward'} move is <strong>losing speed</strong> — ⚠️ watch this`);
 
   // Gain context
   if (gainPct !== null) {
-    const label = isPut ? 'on put premium' : 'from entry';
-    if      (gainPct >= 25) parts.push(`premium is up <strong>+${gainPct.toFixed(1)}%</strong> — exceptional move, protect it`);
-    else if (gainPct >= 10) parts.push(`up <strong>+${gainPct.toFixed(1)}% ${label}</strong>`);
-    else if (gainPct >= 0)  parts.push(`currently up <strong>+${gainPct.toFixed(1)}% ${label}</strong>`);
-    else if (gainPct >= -5) parts.push(`position is <strong>down ${gainPct.toFixed(1)}%</strong> — within normal noise`);
-    else                    parts.push(`position is <strong>down ${gainPct.toFixed(1)}%</strong> — reassess your thesis`);
+    if      (gainPct >= 25) parts.push(`🏆 You're up <strong>+${gainPct.toFixed(1)}%</strong> — that's an excellent trade. Protect it`);
+    else if (gainPct >= 10) parts.push(`You're up <strong>+${gainPct.toFixed(1)}%</strong> — solid gain`);
+    else if (gainPct >= 0)  parts.push(`You're up <strong>+${gainPct.toFixed(1)}%</strong> so far`);
+    else if (gainPct >= -5) parts.push(`You're down <strong>${gainPct.toFixed(1)}%</strong> — small loss, still within normal range`);
+    else                    parts.push(`You're down <strong>${gainPct.toFixed(1)}%</strong> — consider if the original reason you entered still applies`);
   }
 
-  // Recommendation — direction-aware
+  // Recommendation — plain English
   let rec, recClass, recIcon;
-  const effHighRSI = effRSI >= 78; // high in effective space = near exhaustion
+  const effHighRSI = effRSI >= 78;
   const effLowRSI  = effRSI <= 35;
 
   if (gainPct !== null && gainPct >= 25) {
-    rec = 'SELL — TAKE PROFITS'; recClass = 'bear'; recIcon = '🔴';
+    rec = '🔴 Sell — Take the Win!'; recClass = 'bear'; recIcon = '🔴';
   } else if (effHighRSI || (gainPct !== null && gainPct >= 18 && effRSI >= 70)) {
-    rec = isPut ? 'PROTECT PUT GAINS' : 'SELL / SCALE OUT'; recClass = 'bear'; recIcon = '⚠️';
+    rec = isPut ? '⚠️ Protect Your Put Gains' : '⚠️ Sell or Sell Some'; recClass = 'bear'; recIcon = '⚠️';
   } else if (gainPct !== null && gainPct >= 10 && (effRSI >= 68 || effVTrend < -a * 0.05)) {
-    rec = 'SCALE OUT PARTIALLY'; recClass = 'warn'; recIcon = '⬇️';
+    rec = '⬇️ Sell Half, Keep Half'; recClass = 'warn'; recIcon = '⬇️';
   } else if (gainPct !== null && gainPct >= 6) {
-    rec = 'TRAIL YOUR STOP'; recClass = 'warn'; recIcon = '🛡';
+    rec = '🛡 Move Your Stop Up'; recClass = 'warn'; recIcon = '🛡';
   } else if (effLowRSI && effVel > 0) {
-    rec = isPut ? 'HOLD — REVERSAL SETUP' : 'HOLD — ROOM TO RUN'; recClass = 'bull'; recIcon = '🟢';
+    rec = isPut ? '🟢 Hold — Great Put Setup' : '🟢 Hold — Room to Run'; recClass = 'bull'; recIcon = '🟢';
   } else if (effVel > 0 && effRSI < 62) {
-    rec = 'HOLD POSITION'; recClass = 'bull'; recIcon = '🟢';
+    rec = '🟢 Keep Holding'; recClass = 'bull'; recIcon = '🟢';
   } else if (effVel <= 0 && gainPct !== null && gainPct > 0) {
-    rec = 'TIGHTEN YOUR STOP'; recClass = 'warn'; recIcon = '⏸';
+    rec = '⏸ Move Your Stop — Protect Gains'; recClass = 'warn'; recIcon = '⏸';
   } else {
-    rec = 'WAIT FOR SIGNAL'; recClass = 'info'; recIcon = '👁';
+    rec = '👁 Waiting for a Clear Signal'; recClass = 'info'; recIcon = '👁';
   }
 
   // Risk score — direction-aware (risk is high when trade going AGAINST your direction)
@@ -2490,95 +2494,95 @@ function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal, isOptMode, optC
   if (isOptMode && optCon?.expiry) {
     const daysLeft = (new Date(optCon.expiry) - new Date()) / (1000 * 60 * 60 * 24);
     if (daysLeft < 1 && gainPct !== null && gainPct > 0) {
-      return { level:'THETA BURNING', color:'red', icon:'⏰',
-        msg: `Less than 1 day to expiry — theta is eroding your premium fast.`,
-        sub: `Take profit now. Every minute costs on a 0DTE/1DTE ${dirStr}.` };
+      return { level:'⏰ TIME IS UP — SELL NOW', color:'red', icon:'⏰',
+        msg: `Your option expires today and you're up ${gainPct.toFixed(1)}%. Every minute you wait, time eats more of your profit.`,
+        sub: `Sell now and keep what you made. Don't let it expire worthless.` };
     }
     if (daysLeft < 1 && gainPct !== null && gainPct <= 0) {
-      return { level:'EXIT — TIME DECAY', color:'red', icon:'⏰',
-        msg: `Expiring today with a loss. Theta will take the rest — cut now.`,
-        sub: `Time value goes to zero at expiry. No recovery possible after close.` };
+      return { level:'⏰ OPTION EXPIRING — CUT IT', color:'red', icon:'⏰',
+        msg: `Your option expires today and it's at a loss. Time keeps eating the value — there's no way to recover after close.`,
+        sub: `Sell now to get back whatever is left. Don't let it go to zero.` };
     }
     if (optData?.ivCrushWarning && gainPct !== null && gainPct > 10) {
-      return { level:'IV CRUSH RISK', color:'yellow', icon:'💥',
-        msg: `IV is elevated. If the catalyst resolves, IV will collapse — so will your premium.`,
-        sub: `Lock in gains before the event. IV crush destroys option value even when direction is right.` };
+      return { level:'💥 LOCK IN GAINS NOW', color:'yellow', icon:'💥',
+        msg: `Market fear is very high right now. Once the news event passes, fear drops fast — and so does your option price, even if you're right on direction.`,
+        sub: `Grab your gains before the fear disappears. This is a great spot to sell.` };
     }
   }
 
   // ── Take profit — direction-agnostic (premium % gain) ──
   if (gainPct !== null && gainPct >= (isOptMode ? 60 : 25))
-    return { level:'TAKE PROFIT', color:'red', icon:'🔴',
-      msg: `+${gainPct.toFixed(1)}%${isOptMode ? ' on premium' : ''} — close it. Don't let a winner turn loser.`,
-      sub: 'Full or partial exit strongly recommended' };
+    return { level:'💰 Cash Out — Big Win!', color:'red', icon:'🔴',
+      msg: `You're up ${gainPct.toFixed(1)}%${isOptMode ? ' on your option' : ''}. That's a great trade. Close it now and lock in the win.`,
+      sub: `Big winners can flip fast. Take the money.` };
 
   // ── Exit signals — direction-aware via effVel/effRSI ──
   if (effRSI >= 82)
-    return { level:'EXIT SIGNAL', color:'red', icon:'🚨',
+    return { level:'🚨 Sell Now — Running Out of Gas', color:'red', icon:'🚨',
       msg: isPut
-        ? `Stock RSI ${rsiVal.toFixed(1)} — deeply oversold. Bounce reversal risk — your put may lose.`
-        : `RSI ${rsiVal.toFixed(1)} — extremely overbought. Exhaustion imminent — calls at risk.`,
-      sub: 'High reversal probability within 1–3 candles' };
+        ? `The stock has been falling hard and is now very beaten down. It's likely to bounce back up soon — which is bad for your put. Take profits now.`
+        : `Buyers have been pushing this stock really hard and it's exhausted. Sellers are about to take over. Don't get caught holding.`,
+      sub: `This usually flips direction within the next few minutes.` };
 
   if (effVel < -a * 0.35 && gainPct !== null && gainPct > 4)
-    return { level:'EXIT SIGNAL', color:'red', icon:'⚠️',
+    return { level:'🚨 Sell Now — Move Reversed', color:'red', icon:'⚠️',
       msg: isPut
-        ? `Stock rising against your put. Protect open gains — momentum flipped bullish.`
-        : `Price reversing on you. Protect open gains — momentum flipped bearish.`,
-      sub: 'Consider full or partial exit now' };
+        ? `The stock just flipped and started going UP — that works against your put. You still have gains. Protect them.`
+        : `The stock just flipped and started going DOWN — that works against your call. You still have gains. Protect them.`,
+      sub: `Sell now or at least move your stop up to protect what you've made.` };
 
-  // ── Momentum fading ──
+  // ── Caution signals ──
   if (effRSI >= 74)
-    return { level:'MOMENTUM FADING', color:'yellow', icon:'🟡',
+    return { level:'⚠️ Starting to Run Out of Steam', color:'yellow', icon:'🟡',
       msg: isPut
-        ? `Stock RSI ${rsiVal.toFixed(1)} — oversold territory. Bounce risk growing — edge shrinking for puts.`
-        : `RSI ${rsiVal.toFixed(1)} — overbought territory. Edge is shrinking for calls.`,
-      sub: 'Scale out or move stop to lock in gains' };
+        ? `The stock has dropped a lot. It's getting close to the point where buyers usually step in and push it back up. Your edge is shrinking.`
+        : `🔥 Buyers are taking control. Higher probability call setup — but the stock is getting stretched. The easy money may already be made.`,
+      sub: `Consider selling some or moving your stop to protect gains.` };
 
   if (gainPct !== null && gainPct >= 11 && effVTrend < -a * 0.08)
-    return { level:'MOVE YOUR STOP', color:'yellow', icon:'🛡',
-      msg: `+${gainPct.toFixed(1)}% on the trade and ${isPut ? 'downward' : 'upward'} momentum decelerating.`,
-      sub: 'Trail your stop to protect profits — don\'t hand them back' };
+    return { level:'🛡 Protect What You Made', color:'yellow', icon:'🛡',
+      msg: `You're up ${gainPct.toFixed(1)}% and the move is starting to slow down. This is a great spot to lock in some profits.`,
+      sub: `Move your stop up so even if it reverses, you keep most of your gains.` };
 
   if (vt < -0.28 && effVel < a * 0.2)
-    return { level:'VOLUME DRYING UP', color:'yellow', icon:'📉',
-      msg: `Volume collapsing as ${isPut ? 'decline' : 'advance'} stalls. Momentum may be over.`,
-      sub: 'Tighten your stop — risk/reward is shifting' };
+    return { level:'⚠️ Fewer People Trading — Move Fading', color:'yellow', icon:'📉',
+      msg: `The number of people buying and selling is dropping fast. When activity dries up like this, the move usually runs out of fuel.`,
+      sub: `Tighten your stop. The risk is rising.` };
 
   if (effVTrend < -a * 0.12)
-    return { level:'DECELERATING', color:'yellow', icon:'⏸',
-      msg: `${isPut ? 'Downward' : 'Upward'} momentum slowing over last 10 bars.`,
-      sub: 'Hold 2–3 more minutes and reassess' };
+    return { level:'⏸ Slowing Down', color:'yellow', icon:'⏸',
+      msg: `${isPut ? 'The downward move' : 'The upward move'} is losing speed over the last several minutes.`,
+      sub: `Hold a few more minutes and watch. If it keeps slowing, consider exiting.` };
 
   // ── Hold signals — direction-aware ──
   if (effRSI <= 35 && effVel > 0)
-    return { level: isPut ? 'HOLD — OVERBOUGHT REVERSAL' : 'HOLD — OVERSOLD BOUNCE', color:'green', icon:'🟢',
+    return { level: isPut ? '🟢 Stock Pushed Too High — Put Looks Great' : '🟢 Stock Way Oversold — Room to Bounce', color:'green', icon:'🟢',
       msg: isPut
-        ? `Stock RSI ${rsiVal.toFixed(1)} — overbought. Reversal down is high-probability. Put has room to run.`
-        : `RSI ${rsiVal.toFixed(1)} — strong rebound in progress. Room to run upward.`,
+        ? `The stock has been going up for a while and buyers are getting tired. Stocks that get pushed too high almost always pull back. Your put is well-positioned.`
+        : `The stock has been beaten down really hard. Buyers usually step in at these levels and push it back up. Your call has room to run.`,
       sub: isPut
-        ? 'Overbought stock tends to reverse — puts gain on the drop'
-        : 'Significant RSI headroom before overbought — stay in' };
+        ? `No reason to sell yet — stay in and let the pullback come to you.`
+        : `No reason to sell yet — the rebound has more room to go.` };
 
   if (effVel > a * 0.45 && vt > 0.05)
-    return { level:'HOLD — STRONG MOMENTUM', color:'green', icon:'🟢',
+    return { level:'🟢 Strong Move — Stay In!', color:'green', icon:'🟢',
       msg: isPut
-        ? `Stock falling hard on rising volume. Strong tailwind for your put.`
-        : `Rising price on rising volume. Momentum is confirmed.`,
-      sub: 'Conditions are favorable — no exit signal' };
+        ? `The stock is dropping fast and more people are joining in. Your put is working exactly as planned.`
+        : `The stock is climbing fast and more people are joining in. Strong moves on rising activity usually keep going.`,
+      sub: `Everything looks good. No reason to exit yet.` };
 
   if (effVel > 0 && effRSI < 62)
-    return { level:'HOLD', color:'green', icon:'🟢',
+    return { level:'🟢 Keep Holding', color:'green', icon:'🟢',
       msg: isPut
-        ? `Stock ${goodDir} (RSI ${rsiVal.toFixed(1)}) — put momentum intact. Hold 3–5 more minutes.`
-        : `RSI ${rsiVal.toFixed(1)} — momentum intact. Hold another 3–5 minutes.`,
+        ? `The stock is still moving in your favor. No warning signs yet.`
+        : `The stock is still moving in your favor. No warning signs yet.`,
       sub: isPut
-        ? `No exit signal — watch RSI if stock approaches oversold (≤30)`
-        : `No exit signal — monitor RSI approaching 70` };
+        ? `Watch for the stock to get very oversold — that's when to consider exiting.`
+        : `Watch for buyer strength to get very high — that's usually when to consider exiting.` };
 
-  return { level:'WATCHING', color:'yellow', icon:'👁',
-    msg: 'Neutral conditions. No clear edge in either direction.',
-    sub: 'Wait for RSI or velocity to give a clearer signal' };
+  return { level:'👁 Waiting for a Signal', color:'yellow', icon:'👁',
+    msg: `Nothing strong enough to act on right now. The market is neutral.`,
+    sub: `Stay patient. A clear move up or down will give you a better signal.` };
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────
@@ -2801,10 +2805,10 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
     tEl.style.fontSize = '22px';
     uEl.textContent = `$${now.toFixed(2)} · ${((now - candles[0].open) / candles[0].open * 100) >= 0 ? '+' : ''}${((now - candles[0].open) / candles[0].open * 100).toFixed(2)}%`;
     sEl.textContent = isOpt
-      ? (isPut ? 'put: stock must fall for premium to rise' : 'call: stock must rise for premium to rise')
+      ? (isPut ? 'Put: stock needs to drop for your option to gain' : 'Call: stock needs to go up for your option to gain')
       : isPut
-        ? 'put selected: set entry to track stock drop'
-        : 'set entry price to start clock';
+        ? 'Put selected — enter your price to start the clock'
+        : 'Enter your buy price to start the clock';
     pEl.textContent = '';
     pEl.className   = 'clock-pace';
     startClockTick();
@@ -2824,7 +2828,7 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
     tEl.className   = 'clock-time green';
     uEl.textContent = `${targetSign} TARGET REACHED`;
     sEl.textContent = `exit at $${targetPx.toFixed(2)}${label}`;
-    pEl.textContent = 'TARGET HIT';
+    pEl.textContent = '🎯 Goal Reached!';
     pEl.className   = 'clock-pace ahead';
     return;
   }
@@ -2842,12 +2846,12 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
     tEl.textContent = '↓';
     tEl.className   = 'clock-time red';
     uEl.textContent = isOpt
-      ? (isPut ? 'stock rising — put losing premium' : 'stock falling — call losing premium')
+      ? (isPut ? 'Stock going up — your put is losing value' : 'Stock going down — your call is losing value')
       : isStockPut
-        ? 'stock rising — working against your put'
-        : 'momentum reversed';
+        ? 'Stock going up — working against your put'
+        : 'Move reversed — going the wrong way';
     sEl.textContent = `target $${targetPx.toFixed(2)}${label} (${targetSign})`;
-    pEl.textContent = 'BEHIND';
+    pEl.textContent = 'Going the wrong way ↓';
     pEl.className   = 'clock-pace behind';
     return;
   }
@@ -2856,9 +2860,9 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
     _clockEtaSec = null;
     tEl.textContent = '∞';
     tEl.className   = 'clock-time yellow';
-    uEl.textContent = 'velocity too low';
+    uEl.textContent = 'Moving too slow to predict';
     sEl.textContent = `target $${targetPx.toFixed(2)}${label} (${targetSign})`;
-    pEl.textContent = 'SLOW PACE';
+    pEl.textContent = 'Too slow — be patient';
     pEl.className   = 'clock-pace behind';
     return;
   }
@@ -2873,7 +2877,7 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   const s = totalSec % 60;
   tEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
   tEl.className   = 'clock-time ' + sig.color;
-  uEl.textContent = 'estimated time remaining';
+  uEl.textContent = 'Time to reach your goal';
 
   // Theta cost note in options mode
   const theta = lastOptionsData?.greeks?.theta;
@@ -2885,13 +2889,13 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   const currentRate = velEff > 0 && basePx > 0 ? (velEff / basePx * 100) : 0;
   const paceRatio   = neededRate > 0 ? currentRate / neededRate : 0;
   if (paceRatio >= 1.15) {
-    pEl.textContent = 'AHEAD OF PACE';
+    pEl.textContent = 'Going faster than needed ✓';
     pEl.className   = 'clock-pace ahead';
   } else if (paceRatio >= 0.75) {
-    pEl.textContent = 'ON TRACK';
+    pEl.textContent = 'Right on track ✓';
     pEl.className   = 'clock-pace ontrack';
   } else {
-    pEl.textContent = 'BEHIND PACE';
+    pEl.textContent = 'Slower than needed — watch it';
     pEl.className   = 'clock-pace behind';
   }
 }

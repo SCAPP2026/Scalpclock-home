@@ -1046,7 +1046,7 @@ footer {
           </li>
           <li>
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><b>RSI(14), VWAP distance, and volume surge</b> — three independent signals cross-checked on every refresh.</span>
+            <span><b>Buyer strength, today's average price, and trading activity</b> — three things checked on every refresh so you always know who's winning.</span>
           </li>
           <li>
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1285,9 +1285,9 @@ footer {
     var vd = tk.vwapDist || 0;
     var vs = tk.volSurge || 1;
     var vwapCls  = Math.abs(vd) < 0.1 ? 'vwap-flat' : (vd > 0 ? 'vwap-up' : 'vwap-dn');
-    var vwapLbl  = Math.abs(vd) < 0.1 ? 'VWAP ≈0' : 'VWAP ' + (vd > 0 ? '+' : '') + vd.toFixed(1) + '%';
+    var vwapLbl  = Math.abs(vd) < 0.1 ? 'At avg price' : (vd > 0 ? 'Above avg +' : 'Below avg ') + Math.abs(vd).toFixed(1) + '%';
     var volCls   = vs >= 1.5 ? 'vol-surge' : 'vol-norm';
-    var volLbl   = 'VOL ×' + vs.toFixed(1);
+    var volLbl   = vs >= 1.5 ? 'High Activity ×' + vs.toFixed(1) : 'Activity ×' + vs.toFixed(1);
     return '<div class="c-indicators">' +
       '<span class="c-ind ' + vwapCls + '">' + vwapLbl + '</span>' +
       '<span class="c-ind ' + volCls  + '">' + volLbl  + '</span>' +
@@ -1378,11 +1378,11 @@ footer {
   }
 
   function sigFromRSI(rsi) {
-    if (rsi <= 20) return { tone: 'buy', signal: 'Buy Calls', conviction: 'HARD', explain: 'RSI ' + rsi.toFixed(1) + ' — extremely oversold. Strong call setup.' };
-    if (rsi <= 30) return { tone: 'buy', signal: 'Buy Calls', conviction: null,   explain: 'RSI ' + rsi.toFixed(1) + ' — oversold. Calls have the edge.' };
-    if (rsi >= 80) return { tone: 'sell', signal: 'Buy Puts',  conviction: 'HARD', explain: 'RSI ' + rsi.toFixed(1) + ' — extremely overbought. Strong put setup.' };
-    if (rsi >= 70) return { tone: 'sell', signal: 'Buy Puts',  conviction: null,   explain: 'RSI ' + rsi.toFixed(1) + ' — overbought. Puts have the edge.' };
-    return { tone: 'hold', signal: 'Hold', conviction: null, explain: 'RSI ' + rsi.toFixed(1) + ' — neutral zone. No edge right now.' };
+    if (rsi <= 20) return { tone: 'buy', signal: 'Buy Calls', conviction: 'HARD', explain: '🔥 Sellers pushed way too hard. Buyers are about to take over. Strong call setup.' };
+    if (rsi <= 30) return { tone: 'buy', signal: 'Buy Calls', conviction: null,   explain: '💪 Buyers are taking control. Higher probability call setup.' };
+    if (rsi >= 80) return { tone: 'sell', signal: 'Buy Puts',  conviction: 'HARD', explain: '🔥 Buyers are exhausted. The stock has been pushed too high. Strong put setup.' };
+    if (rsi >= 70) return { tone: 'sell', signal: 'Buy Puts',  conviction: null,   explain: '⚠️ Buyers are running out of steam. Puts have the edge.' };
+    return { tone: 'hold', signal: 'Hold', conviction: null, explain: 'Neither buyers nor sellers have the edge right now. Wait for a clearer signal.' };
   }
 
   // ── custom watchlist ───────────────────────────────────────────
@@ -1686,7 +1686,7 @@ footer {
     {
       icon: '📊',
       title: 'The <span class="alt">Opportunity Score</span>',
-      body: 'Every ticker gets a score from <b>0 to 100</b> based on three independent signals: RSI timing, VWAP distance, and volume surge. The board auto-sorts so the best setup is always at the top.'
+      body: 'Every ticker gets a score from <b>0 to 100</b> based on three things: how hard buyers are pushing, whether the price is above or below today\'s average, and how many people are trading right now. The board auto-sorts so the best setup is always at the top.'
     },
     {
       icon: '🎯',
