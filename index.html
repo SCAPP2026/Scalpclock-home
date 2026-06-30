@@ -514,6 +514,14 @@ section { position: relative; padding: 80px 0; }
 .c-name { font-size: .76rem; color: var(--t30); margin-top: 4px; }
 .c-price { font-family: var(--mono); font-weight: 700; font-size: 1.1rem; text-align: right; }
 .c-chg { font-family: var(--mono); font-size: .78rem; margin-top: 3px; text-align: right; }
+.c-live-row { display: flex; align-items: center; justify-content: flex-end; gap: 5px; margin-top: 4px; }
+.live-badge { font-family: var(--mono); font-size: .58rem; font-weight: 700; letter-spacing: .07em;
+  padding: 2px 6px; border-radius: 4px; }
+.live-badge--live    { background: rgba(22,217,126,.18); color: var(--green); }
+.live-badge--delayed { background: rgba(255,200,0,.14);  color: #ffc800; }
+.live-badge--stale   { background: rgba(255,140,0,.14);  color: #ff8c00; }
+.live-badge--error   { background: rgba(255,60,60,.14);  color: #ff5555; }
+.live-ts { font-family: var(--mono); font-size: .58rem; color: var(--t30); }
 
 /* SVG arc gauge */
 .gauge-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
@@ -1326,8 +1334,10 @@ footer {
         (!data.marketOpen ? '<div class="stale-banner">&#9679; Market closed — last session data</div>' : '') +
         '<div class="c-top">' +
           '<div><div class="c-sym">' + tk.symbol + '</div><div class="c-name">' + tk.name + '</div></div>' +
-          '<div><div class="c-price">' + fmt(tk.price) + '</div>' +
-          '<div class="c-chg" style="color:' + chgCol + '">' + (chgUp ? '+' : '') + tk.changePct + '%</div></div>' +
+          '<div><div class="c-price" data-live-price="' + tk.symbol + '">' + fmt(tk.price) + '</div>' +
+          '<div class="c-chg" style="color:' + chgCol + '">' + (chgUp ? '+' : '') + tk.changePct + '%</div>' +
+          '<div class="c-live-row"><span class="live-badge live-badge--stale" data-live-badge="' + tk.symbol + '">STALE</span>' +
+          '<span class="live-ts" data-live-ts="' + tk.symbol + '"></span></div></div>' +
         '</div>' +
         '<div class="c-priority">' +
           '<span class="priority-badge priority-' + tier.cls + '">' + tier.label + '</span>' +
@@ -1344,6 +1354,13 @@ footer {
         indicatorsHTML(tk) +
       '</div>';
     }).join('');
+
+    // Wire live prices for visible cards
+    if (window.MarketData) {
+      top10.forEach(function (tk) {
+        window.MarketData.subscribe(tk.symbol, null);
+      });
+    }
 
     trackHistory(data.tickers, data.marketOpen);
     if (customSyms.length > 0) refreshCustomTickers(data.marketOpen);
@@ -1846,6 +1863,10 @@ footer {
 })();
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+<script src="/market-data.js"></script>
+<footer style="text-align:center;padding:18px 16px 28px;font-family:var(--mono);font-size:.65rem;color:var(--t30);line-height:1.7;border-top:1px solid var(--line);">
+  Market data may be delayed. ScalpClock is for education and trade planning, not financial advice.
+</footer>
 </body>
 </html>
 
