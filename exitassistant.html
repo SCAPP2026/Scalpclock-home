@@ -2569,7 +2569,8 @@ function render() {
 
   // ── Options mode detection ──
   const optMode = !!(optContract && optCurrentPrice != null && optContract.entryPremium);
-  const isPut   = optMode && optContract?.type === 'put';
+  // isPut is direction-of-trade, NOT gated on live premium — applies even when market is closed
+  const isPut   = !!(optContract?.type === 'put');
   const dir     = isPut ? -1 : 1; // +1: calls profit on stock rising; -1: puts profit on stock falling
 
   // Contract delta: prefer specific contract's delta; fall back to aggregate ATM, then 0.40
@@ -2651,7 +2652,7 @@ function render() {
   if (optMode) {
     renderClock(optCurrentPrice, optVel ?? vel * contractDelta * dir, vtrend, atrVal, rsiVal, gainPct, sig, optContract.entryPremium, isPut);
   } else {
-    renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, entryPrice, false);
+    renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, entryPrice, isPut);
   }
 
   // Probability cards (stock mode only — premium projection replaces this in opt mode)
@@ -2717,6 +2718,25 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   const gEl   = document.getElementById('clockGain');
   const pEl   = document.getElementById('clockPace');
   const isOpt = !!(optContract && optCurrentPrice != null && optContract.entryPremium);
+  // isStockPut: tracking a put but no live premium yet — stock price is the signal
+  const isStockPut = isPut && !isOpt;
+
+  // ── Direction-normalized values ──
+  // gainEff: positive = trade winning (premium up for opts; stock DOWN from entry for puts; stock UP for calls)
+  const gainEff = isStockPut && basePx
+    ? (basePx - now) / basePx * 100
+    : gainPct;
+  // velEff: positive = trade moving in your favor
+  const velEff = isStockPut ? -vel : vel;
+  // targetPx: the price that means +clockTarget% gain
+  //   options: entry premium × (1 + clockTarget%)
+  //   calls/stock: entry price × (1 + clockTarget%)
+  //   puts/stock:  entry price × (1 − clockTarget%)  ← stock must FALL
+  const targetPx = isStockPut
+    ? basePx * (1 - clockTarget / 100)
+    : basePx * (1 + clockTarget / 100);
+  const label      = isOpt ? ' premium' : isStockPut ? ' stock target' : '';
+  const targetSign = isStockPut ? `-${clockTarget}%` : `+${clockTarget}%`;
 
   const arcColor = sig.color === 'green' ? 'var(--bull)'
                  : sig.color === 'red'   ? 'var(--bear)'
@@ -2725,10 +2745,11 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   glow.style.stroke = arcColor;
 
   // ── Gain display in clock center ──
-  if (gainPct !== null) {
-    const gSign = gainPct >= 0 ? '+' : '';
-    gEl.textContent = `${gSign}${gainPct.toFixed(1)}%${isOpt ? ' on premium' : ' from entry'}`;
-    gEl.className   = `clock-gain ${gainPct > 0.1 ? 'pos' : gainPct < -0.1 ? 'neg' : 'flat'}`;
+  if (gainEff !== null) {
+    const gSign = gainEff >= 0 ? '+' : '';
+    const gainLabel = isOpt ? ' on premium' : isStockPut ? ' put gain' : ' from entry';
+    gEl.textContent = `${gSign}${gainEff.toFixed(1)}%${gainLabel}`;
+    gEl.className   = `clock-gain ${gainEff > 0.1 ? 'pos' : gainEff < -0.1 ? 'neg' : 'flat'}`;
   } else {
     gEl.textContent = '';
     gEl.className   = 'clock-gain';
@@ -2746,7 +2767,9 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
     uEl.textContent = `$${now.toFixed(2)} · ${((now - candles[0].open) / candles[0].open * 100) >= 0 ? '+' : ''}${((now - candles[0].open) / candles[0].open * 100).toFixed(2)}%`;
     sEl.textContent = isOpt
       ? (isPut ? 'put: stock must fall for premium to rise' : 'call: stock must rise for premium to rise')
-      : 'set entry price to start clock';
+      : isPut
+        ? 'put selected: set entry to track stock drop'
+        : 'set entry price to start clock';
     pEl.textContent = '';
     pEl.className   = 'clock-pace';
     startClockTick();
@@ -2754,36 +2777,41 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   }
   tEl.style.fontSize = ''; // restore default
 
-  const progress = Math.min(1, Math.max(0, (gainPct ?? 0) / clockTarget));
+  const progress = Math.min(1, Math.max(0, (gainEff ?? 0) / clockTarget));
   const offset   = CIRC * (1 - progress);
   arc.style.strokeDashoffset  = offset;
   glow.style.strokeDashoffset = offset;
   glow.style.opacity = progress > 0.05 ? '0.4' : '0';
 
-  const targetPx = basePx * (1 + clockTarget / 100);
-  const label    = isOpt ? ' premium' : '';
-
-  if ((gainPct ?? 0) >= clockTarget) {
+  if ((gainEff ?? 0) >= clockTarget) {
     _clockEtaSec = null;
     tEl.textContent = '✓';
     tEl.className   = 'clock-time green';
-    uEl.textContent = `+${clockTarget}% TARGET REACHED`;
+    uEl.textContent = `${targetSign} TARGET REACHED`;
     sEl.textContent = `exit at $${targetPx.toFixed(2)}${label}`;
     pEl.textContent = 'TARGET HIT';
     pEl.className   = 'clock-pace ahead';
     return;
   }
 
-  const eta = etaMinutes(now, basePx, clockTarget, vel);
+  // ETA — direction-aware: velEff > 0 = trade advancing; diff = remaining distance
+  const eta = (() => {
+    if (velEff <= 0) return null;
+    const diff = isStockPut ? (now - targetPx) : (targetPx - now);
+    if (diff <= 0) return 0;
+    return diff / velEff;
+  })();
 
-  if (eta === null || vel <= 0) {
+  if (eta === null || velEff <= 0) {
     _clockEtaSec = null;
     tEl.textContent = '↓';
     tEl.className   = 'clock-time red';
     uEl.textContent = isOpt
       ? (isPut ? 'stock rising — put losing premium' : 'stock falling — call losing premium')
-      : 'momentum reversed';
-    sEl.textContent = `target $${targetPx.toFixed(2)}${label} (+${clockTarget}%)`;
+      : isStockPut
+        ? 'stock rising — working against your put'
+        : 'momentum reversed';
+    sEl.textContent = `target $${targetPx.toFixed(2)}${label} (${targetSign})`;
     pEl.textContent = 'BEHIND';
     pEl.className   = 'clock-pace behind';
     return;
@@ -2794,7 +2822,7 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
     tEl.textContent = '∞';
     tEl.className   = 'clock-time yellow';
     uEl.textContent = 'velocity too low';
-    sEl.textContent = `target $${targetPx.toFixed(2)}${label} (+${clockTarget}%)`;
+    sEl.textContent = `target $${targetPx.toFixed(2)}${label} (${targetSign})`;
     pEl.textContent = 'SLOW PACE';
     pEl.className   = 'clock-pace behind';
     return;
@@ -2815,11 +2843,11 @@ function renderClock(now, vel, vtrend, atrVal, rsiVal, gainPct, sig, basePx, isP
   // Theta cost note in options mode
   const theta = lastOptionsData?.greeks?.theta;
   const thetaCost = (isOpt && theta) ? ` · θ -$${Math.abs(theta * 100 * (eta / (24 * 60))).toFixed(2)}/contract` : '';
-  sEl.textContent = `→ $${targetPx.toFixed(2)}${label} (+${clockTarget}%)${thetaCost}`;
+  sEl.textContent = `→ $${targetPx.toFixed(2)}${label} (${targetSign})${thetaCost}`;
 
-  // Pace indicator — compare current gain rate to needed rate
-  const neededRate  = clockTarget / eta;        // % per minute needed
-  const currentRate = vel > 0 && basePx > 0 ? (vel / basePx * 100) : 0; // % per minute at current vel
+  // Pace indicator — compare current gain rate to needed rate (direction-normalized)
+  const neededRate  = clockTarget / eta;
+  const currentRate = velEff > 0 && basePx > 0 ? (velEff / basePx * 100) : 0;
   const paceRatio   = neededRate > 0 ? currentRate / neededRate : 0;
   if (paceRatio >= 1.15) {
     pEl.textContent = 'AHEAD OF PACE';
