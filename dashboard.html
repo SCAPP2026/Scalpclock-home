@@ -527,7 +527,7 @@ async function loadOpenTrades() {
         <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
         <td><span class="t-price">${qty}x</span></td>
         <td><span class="t-date">${date}</span></td>
-        <td><button class="btn-close-trade" onclick="openCloseModal(${t.id},'${t.symbol}','${dir}',${t.entry_price},${qty})">Close</button></td>
+        <td><button class="btn-close-trade" onclick="openCloseModal('${t.id}','${t.symbol}','${dir}',${t.entry_price},${qty})">Close</button></td>
       </tr>`;
     }).join('');
   } catch(e) {}
