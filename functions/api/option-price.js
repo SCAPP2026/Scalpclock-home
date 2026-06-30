@@ -24,7 +24,13 @@ export async function onRequest(context) {
     const res = await fetch(
       `https://api.polygon.io/v2/snapshot/locale/us/markets/options/${encodeURIComponent(optionTicker)}?apiKey=${KEY}`
     );
-    const data = await res.json();
+    const rawText = await res.text();
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (_) {
+      return json({ error: `Upstream returned non-JSON (HTTP ${res.status})`, ticker: optionTicker, raw: rawText.slice(0, 200) }, 502);
+    }
 
     if (!data.results) {
       const status = data.status || 'UNKNOWN';
