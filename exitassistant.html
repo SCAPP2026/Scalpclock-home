@@ -2443,9 +2443,9 @@ function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal, isOptMode, optC
   // effVel > 0  = trade moving in your favor (stock UP for calls, stock DOWN for puts)
   // effRSI high = instrument approaching exhaustion in your direction
   // effVTrend   = acceleration in your direction
-  const effVel    = (isOptMode && isPut) ? -vel      : vel;
-  const effRSI    = (isOptMode && isPut) ? (100 - rsiVal) : rsiVal;
-  const effVTrend = (isOptMode && isPut) ? -vtrendVal : vtrendVal;
+  const effVel    = isPut ? -vel      : vel;
+  const effRSI    = isPut ? (100 - rsiVal) : rsiVal;
+  const effVTrend = isPut ? -vtrendVal : vtrendVal;
 
   const dirStr    = isPut ? 'put' : 'call';
   const goodDir   = isPut ? 'falling' : 'rising';
