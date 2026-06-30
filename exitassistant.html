@@ -187,6 +187,7 @@
   }
   .price-delta.up { background: rgba(0,201,107,0.15); color: var(--bull); }
   .price-delta.dn { background: rgba(255,69,102,0.15); color: var(--bear); }
+  .price-stale { font-size:10px; color: var(--muted); margin-left:4px; }
 
   /* ── OPTION PREMIUM TRACKER ── */
   .opt-tracker-wrap {
@@ -1334,6 +1335,7 @@
   <div class="price-display">
     <div class="price-main" id="priceMain">—</div>
     <div class="price-delta up" id="priceDelta">—</div>
+    <span class="price-stale" id="priceStale" style="display:none">stale</span>
   </div>
 </header>
 
@@ -2488,16 +2490,44 @@ function renderEmotionalWarning(gainPct, rsiVal, vel, atrVal, isOptMode) {
 }
 
 // ── Fetch ──────────────────────────────────────────────────────────────────
+let _lastPriceUpdate = 0;
+
 async function refresh() {
   try {
     const res = await fetch(`/api/bars?symbol=${encodeURIComponent(ticker)}&tf=1Min`);
-    if (!res.ok) return;
+    if (!res.ok) {
+      markPriceStale();
+      return;
+    }
     const data = await res.json();
     if (data.candles && data.candles.length >= 5) {
       candles = data.candles;
+      _lastPriceUpdate = Date.now();
+      document.getElementById('priceStale').style.display = 'none';
       render();
+    } else {
+      // Bars empty (market closed / after-hours): try CBOE underlying as fallback price
+      if (optContract && lastContractData?.underlying) {
+        const px = lastContractData.underlying;
+        document.getElementById('priceMain').textContent = `$${px.toFixed(2)}`;
+        document.getElementById('priceDelta').textContent = 'delayed';
+        document.getElementById('priceDelta').className = 'price-delta';
+      }
+      markPriceStale();
     }
-  } catch (_) {}
+  } catch (_) {
+    markPriceStale();
+  }
+}
+
+function markPriceStale() {
+  const staleEl = document.getElementById('priceStale');
+  if (!staleEl) return;
+  const age = Math.round((Date.now() - _lastPriceUpdate) / 1000);
+  if (_lastPriceUpdate > 0 && age > 30) {
+    staleEl.style.display = 'inline';
+    staleEl.textContent = age > 120 ? `${Math.round(age/60)}m stale` : `${age}s stale`;
+  }
 }
 
 // ── Algorithms ──────────────────────────────────────────────────────────────
