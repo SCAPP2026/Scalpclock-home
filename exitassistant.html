@@ -2327,7 +2327,7 @@ function renderEmotionalWarning(gainPct, rsiVal, vel, atrVal, isOptMode) {
 // ── Fetch ──────────────────────────────────────────────────────────────────
 async function refresh() {
   try {
-    const res = await fetch(`/api/bars?symbol=${ticker}&tf=1Min`);
+    const res = await fetch(`/api/bars?symbol=${encodeURIComponent(ticker)}&tf=1Min`);
     if (!res.ok) return;
     const data = await res.json();
     if (data.candles && data.candles.length >= 5) {
