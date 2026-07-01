@@ -24,6 +24,7 @@
   :root {
     --bg:      #070b10;
     --surface: #0e1824;
+    --surface2: #111d2b;
     --border:  #1e2d42;
     --border2: #2a3d58;
     --text:    #dde8f5;
@@ -1251,6 +1252,252 @@
   .uf-strike { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #fff; }
   .uf-ratio { margin-left: auto; color: var(--warn); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
   .options-msg { font-size: 11px; color: var(--muted); text-align: center; padding: 12px 0; }
+
+  /* ═══ SCALPEXIT REDESIGN ═══ */
+
+  /* ── HEADER (minimal) ── */
+  header { display:flex; align-items:center; gap:14px; padding:11px 20px;
+    background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .logo { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:700;
+    color:var(--accent); letter-spacing:-0.5px; white-space:nowrap; flex-shrink:0; }
+  .logo span { color:var(--muted); font-weight:400; }
+  .back-link { display:inline-flex; align-items:center; gap:5px; font-size:11px;
+    color:var(--muted); text-decoration:none; padding:4px 8px; border:1px solid var(--border);
+    border-radius:5px; transition:color .15s; flex-shrink:0; }
+  .back-link:hover { color:var(--text); border-color:var(--border2); }
+  .hdr-right { margin-left:auto; display:flex; align-items:center; gap:14px; flex-shrink:0; }
+  .price-display { display:flex; align-items:baseline; gap:8px; }
+  .price-main { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:#fff; }
+  .price-delta { font-family:'JetBrains Mono',monospace; font-size:12px; padding:2px 8px; border-radius:4px; }
+  .price-delta.up { background:rgba(0,201,107,.15); color:var(--bull); }
+  .price-delta.dn { background:rgba(255,69,102,.15); color:var(--bear); }
+  .price-stale { font-size:10px; color:var(--muted); }
+
+  /* ── CONTAINER ── */
+  .se-container { max-width:700px; margin:0 auto; padding:24px 16px 64px;
+    display:flex; flex-direction:column; gap:16px; }
+
+  /* ── CARD BASE ── */
+  .se-card { background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:22px 24px; }
+  .card-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .card-icon { font-size:22px; flex-shrink:0; line-height:1; }
+  .card-title { font-weight:700; font-size:16px; color:#fff; flex:1; }
+  .card-sub { font-size:12px; color:var(--muted); }
+
+  /* ── FORM CARD ── */
+  .form-card { }
+  .form-grid { display:flex; flex-direction:column; gap:16px; }
+  .form-row { display:flex; gap:12px; flex-wrap:wrap; }
+  .field-group { display:flex; flex-direction:column; gap:6px; flex:1; min-width:120px; }
+  .field-group.full-width { flex:none; width:100%; min-width:100%; }
+  .field-label { font-size:11px; font-weight:700; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.8px; display:flex; align-items:center; gap:6px; }
+  .field-hint { font-size:10px; color:var(--border2); text-transform:none;
+    letter-spacing:0; font-weight:400; }
+
+  .se-select { background:var(--bg); border:1px solid var(--border2); border-radius:10px;
+    color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700;
+    padding:10px 14px; width:100%; outline:none; cursor:pointer; transition:border-color .2s; }
+  .se-select:focus { border-color:var(--accent); }
+  .se-input { background:var(--bg); border:1px solid var(--border2); border-radius:10px;
+    color:#fff; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600;
+    padding:10px 14px; width:100%; outline:none; transition:border-color .2s, box-shadow .2s; }
+  .se-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,212,170,.1); }
+  .se-input::placeholder { color:var(--border2); font-weight:400; }
+  .se-input-sm { background:var(--bg); border:1px solid var(--border2); border-radius:8px;
+    color:#fff; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600;
+    padding:8px 10px; outline:none; transition:border-color .2s; }
+  .se-input-sm:focus { border-color:var(--accent); }
+  .se-input-sm::placeholder { color:var(--border2); font-weight:400; }
+
+  /* Call/Put toggle */
+  .cp-toggle { display:flex; gap:8px; }
+  .cp-btn { flex:1; padding:10px 0; border-radius:10px; border:1px solid var(--border2);
+    background:var(--bg); color:var(--muted); font-weight:700; font-size:14px;
+    cursor:pointer; transition:all .15s; }
+  .cp-btn:hover { color:var(--text); border-color:var(--border2); }
+  .cp-btn.active { border-color:var(--accent); background:rgba(0,212,170,.12); color:var(--accent); }
+  .cp-btn.active-put { border-color:var(--bear); background:rgba(255,69,102,.12); color:var(--bear); }
+
+  /* Auto-fill */
+  .autofill-toggle { background:none; border:1px solid var(--border); border-radius:6px;
+    color:var(--muted); font-size:10px; font-weight:700; padding:3px 8px; cursor:pointer;
+    transition:all .15s; white-space:nowrap; }
+  .autofill-toggle:hover { color:var(--accent); border-color:var(--accent); }
+  .autofill-fields { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; padding:12px;
+    background:rgba(0,0,0,.2); border-radius:10px; border:1px solid var(--border); align-items:center; }
+  .btn-fetch { background:var(--accent); color:#000; border:none; border-radius:8px;
+    padding:8px 14px; font-weight:700; font-size:11px; cursor:pointer; white-space:nowrap;
+    transition:opacity .15s; }
+  .btn-fetch:hover { opacity:.85; }
+
+  /* Calculate CTA */
+  .calculate-btn { width:100%; padding:15px; margin-top:20px;
+    background:linear-gradient(135deg, var(--accent) 0%, #00b894 100%);
+    color:#000; border:none; border-radius:12px; font-family:'Space Grotesk',sans-serif;
+    font-weight:800; font-size:16px; cursor:pointer;
+    transition:opacity .15s, transform .1s; letter-spacing:.3px; }
+  .calculate-btn:hover { opacity:.92; }
+  .calculate-btn:active { transform:scale(0.99); }
+
+  /* ── GAIN PILL ── */
+  .gain-pill { display:none; align-items:center; gap:5px; padding:6px 14px; border-radius:20px;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700;
+    background:rgba(0,201,107,.12); color:var(--bull); border:1px solid rgba(0,201,107,.25); }
+  .gain-pill.neg { background:rgba(255,69,102,.12); color:var(--bear); border-color:rgba(255,69,102,.25); }
+
+  /* ── SAMPSONX SUMMARY ── */
+  .sx-summary-card { background:linear-gradient(135deg,#08121e,#111d2b);
+    border-color:rgba(0,212,170,.3); }
+  .sx-summary-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .sx-avatar { font-size:28px; line-height:1; }
+  .sx-name { font-size:17px; font-weight:800; color:var(--accent); }
+  .sx-badge { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    color:var(--muted); padding:3px 8px; border:1px solid var(--border2); border-radius:20px; }
+  .sx-summary-text { font-size:15px; line-height:1.75; color:var(--text); font-weight:500; }
+  .sx-summary-text strong { color:#fff; }
+
+  /* ── EXIT RECOMMENDATION ── */
+  .exit-rec-card { overflow:hidden; transition:border-color .4s, background .4s; }
+  .exit-rec-card.s-green { border-color:rgba(0,201,107,.5);
+    background:linear-gradient(135deg,var(--surface),rgba(0,201,107,.07)); }
+  .exit-rec-card.s-yellow { border-color:rgba(245,166,35,.5);
+    background:linear-gradient(135deg,var(--surface),rgba(245,166,35,.07)); }
+  .exit-rec-card.s-red { border-color:rgba(255,69,102,.5);
+    background:linear-gradient(135deg,var(--surface),rgba(255,69,102,.07)); }
+  .exit-dot { width:16px; height:16px; border-radius:50%; background:var(--muted);
+    flex-shrink:0; transition:background .4s; }
+  .s-green .exit-dot { background:var(--bull); box-shadow:0 0 16px rgba(0,201,107,.7);
+    animation:dotPulse 1.8s ease-in-out infinite; }
+  .s-yellow .exit-dot { background:var(--warn); box-shadow:0 0 16px rgba(245,166,35,.7);
+    animation:dotPulse 1.8s ease-in-out infinite; }
+  .s-red .exit-dot { background:var(--bear); box-shadow:0 0 16px rgba(255,69,102,.7);
+    animation:dotPulse 1.8s ease-in-out infinite; }
+  @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.75)} }
+  /* override old exit-level sizing */
+  .exit-rec-card .exit-level { font-size:20px; font-weight:800; letter-spacing:normal;
+    text-transform:none; color:var(--text); margin-bottom:10px; line-height:1.25; }
+  .exit-rec-card.s-green .exit-level { color:var(--bull); }
+  .exit-rec-card.s-yellow .exit-level { color:var(--warn); }
+  .exit-rec-card.s-red .exit-level { color:var(--bear); }
+  .exit-rec-card .exit-msg { font-size:14px; color:#fff; line-height:1.65; font-weight:500; }
+  .exit-rec-card .exit-sub { font-size:12px; color:var(--muted); margin-top:8px;
+    line-height:1.5; font-style:italic; }
+
+  /* ── CONFIDENCE CARD ── */
+  .conf-header-score { margin-left:auto; text-align:right; }
+  /* override old .confidence-num positioning */
+  .se-card .confidence-num { font-family:'JetBrains Mono',monospace; font-size:32px;
+    font-weight:700; line-height:1; transition:color .4s; }
+  .se-card .confidence-num.high { color:var(--bull); text-shadow:0 0 20px rgba(0,201,107,.4); }
+  .se-card .confidence-num.med  { color:var(--warn); text-shadow:0 0 20px rgba(245,166,35,.4); }
+  .se-card .confidence-num.low  { color:var(--bear); text-shadow:0 0 20px rgba(255,69,102,.4); }
+  .se-card .confidence-grade { font-size:9px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; margin-top:2px; display:block; }
+
+  /* ── PROFIT SUMMARY ── */
+  .profit-main-row { text-align:center; padding:16px 0 20px; }
+  .profit-main-label { font-size:10px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .profit-main-value { font-family:'JetBrains Mono',monospace; font-size:44px;
+    font-weight:800; line-height:1; color:#fff; transition:color .3s; }
+  .profit-main-pct { font-family:'JetBrains Mono',monospace; font-size:22px;
+    font-weight:700; margin-top:6px; color:var(--muted); transition:color .3s; }
+  .profit-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px;
+    border-top:1px solid var(--border); padding-top:16px; }
+  .profit-detail-item { background:var(--bg); border-radius:10px; padding:12px 14px; }
+  .profit-detail-label { font-size:10px; font-weight:600; letter-spacing:1px;
+    text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .profit-detail-value { font-family:'JetBrains Mono',monospace; font-size:15px;
+    font-weight:700; color:#fff; }
+
+  /* ── SUGGESTED EXIT LEVELS ── */
+  .exit-level-row { display:flex; align-items:center; gap:14px; padding:13px 0;
+    border-bottom:1px solid var(--border); }
+  .exit-level-row:last-child { border-bottom:none; }
+  .el-icon { font-size:22px; flex-shrink:0; line-height:1; }
+  .el-body { flex:1; min-width:0; }
+  .el-label { font-size:13px; font-weight:700; color:#fff; margin-bottom:3px; }
+  .el-desc { font-size:11px; color:var(--muted); line-height:1.4; }
+  .el-price { text-align:right; flex-shrink:0; font-family:'JetBrains Mono',monospace;
+    font-size:15px; font-weight:800; line-height:1.4; }
+  .el-price span { font-size:10px; font-weight:400; color:var(--muted); }
+
+  /* ── ADVANCED CARD ── */
+  .advanced-card { padding:0; }
+  .advanced-toggle { width:100%; display:flex; align-items:center; gap:10px;
+    padding:20px 24px; background:none; border:none; cursor:pointer; text-align:left; }
+  .advanced-toggle:hover { opacity:.8; }
+  .advanced-toggle-title { font-size:15px; font-weight:700; color:var(--text); flex:1; }
+  .advanced-arrow { font-size:16px; color:var(--muted); transition:transform .2s; }
+  #advancedContent { padding:0 24px 24px; display:flex; flex-direction:column; gap:0;
+    border-top:1px solid var(--border); }
+
+  /* stats strip inside advanced */
+  .adv-stats { display:flex; overflow-x:auto; border:1px solid var(--border);
+    border-radius:10px; margin:16px 0; background:var(--surface); }
+  .adv-stats .stat-item { padding:12px 16px; border-right:1px solid var(--border);
+    flex:1; min-width:72px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px; }
+  .adv-stats .stat-item:last-child { border-right:none; }
+
+  /* hide old layout wrappers */
+  .main { display:none !important; }
+  .opt-tracker-wrap { display:none !important; }
+
+  /* advanced sub-sections share some top margin */
+  .ai-reason-card { margin-top:16px; background:rgba(10,14,24,.8);
+    border:1px solid var(--border2); border-radius:12px; padding:14px 18px;
+    position:relative; overflow:hidden; }
+  .ai-reason-card::before { content:''; position:absolute; inset:0; border-radius:12px;
+    background:linear-gradient(135deg,rgba(0,212,170,.04) 0%,transparent 60%);
+    pointer-events:none; }
+  .clock-section { padding:20px 0; display:flex; flex-direction:column;
+    align-items:center; gap:16px; border-top:1px solid var(--border); }
+  .clock-section:first-child { border-top:none; }
+  .options-wrap { border-top:1px solid var(--border); padding:16px 0; }
+  .time-machine-wrap { border-top:1px solid var(--border); padding:16px 0 0; }
+  .trailing-stop-wrap { border-top:1px solid var(--border); padding:16px 0; }
+  .momentum-wrap { border-top:1px solid var(--border); padding:16px 0 0; margin-top:0; }
+  .prob-card { padding:14px; border:1px solid var(--border); border-radius:10px;
+    margin-bottom:8px; cursor:pointer; transition:background .15s; flex-shrink:0; }
+  .prob-card:hover { background:rgba(255,255,255,.02); }
+  .prob-card.active { background:rgba(0,212,170,.05); border-color:var(--accent); }
+  .sidebar-hdr { font-size:10px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; color:var(--muted); }
+
+  /* ── EMOTIONAL WARNING ── */
+  .emotional-warning { display:none; align-items:center; gap:12px; padding:14px 18px;
+    border-radius:12px; border:1px solid; animation:warnPulse 2.2s ease-in-out infinite; }
+  .emotional-warning.greed { background:rgba(245,166,35,.08); border-color:rgba(245,166,35,.45); }
+  .emotional-warning.panic { background:rgba(255,69,102,.08); border-color:rgba(255,69,102,.45); }
+  @keyframes warnPulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+  .warn-icon { font-size:24px; flex-shrink:0; }
+  .warn-title { font-size:10px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; margin-bottom:3px; }
+  .emotional-warning.greed .warn-title { color:var(--warn); }
+  .emotional-warning.panic .warn-title { color:var(--bear); }
+  .warn-msg { font-size:13px; color:#fff; line-height:1.5; font-weight:500; }
+
+  /* ── MOBILE ── */
+  @media (max-width:640px) {
+    .se-container { padding:16px 12px 60px; gap:12px; }
+    .se-card { padding:18px 16px; border-radius:14px; }
+    .card-title { font-size:15px; }
+    .profit-main-value { font-size:36px; }
+    .profit-main-pct { font-size:18px; }
+    .form-row { flex-direction:column; }
+    .cp-btn { font-size:13px; }
+    .calculate-btn { font-size:15px; padding:13px; }
+    .price-main { font-size:17px; }
+    .hdr-right { gap:8px; }
+    .ai-reason-text { font-size:12px; }
+    .tm-bar-track { display:none; }
+    .clock-svg { width:200px; height:200px; }
+    .clock-time { font-size:38px; }
+  }
+
 </style>
 </head>
 <body style="visibility:hidden">
@@ -1259,9 +1506,38 @@
 <header>
   <a class="back-link" href="/">← Home</a>
   <div class="logo">Scalp<span>exit</span></div>
+  <div class="hdr-right">
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <span class="live-text">LIVE</span>
+    </div>
+    <div class="price-display">
+      <div class="price-main" id="priceMain">—</div>
+      <div class="price-delta up" id="priceDelta">—</div>
+      <span class="price-stale" id="priceStale" style="display:none">stale</span>
+    </div>
+  </div>
+</header>
 
-  <div class="header-controls">
-    <select class="ticker-select" id="tickerSel" onchange="onTickerChange()">
+<!-- ══ MAIN CONTAINER ══ -->
+<div class="se-container">
+
+  <!-- FORM CARD -->
+  <div class="se-card form-card">
+    <div class="card-header">
+      <span class="card-icon">📋</span>
+      <div>
+        <div class="card-title">ScalpExit Calculator</div>
+        <div class="card-sub">Enter your trade — SampsonX handles the rest</div>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <!-- Row 1: Ticker + Direction -->
+      <div class="form-row">
+        <div class="field-group">
+          <label class="field-label">Ticker</label>
+          <select class="se-select" id="tickerSel" onchange="onTickerChange()">
       <optgroup label="── ETFs ──">
         <option>SPY</option>
         <option>QQQ</option>
@@ -1321,52 +1597,309 @@
         <option>GOLD</option>
       </optgroup>
     </select>
+        </div><!-- /field-group ticker -->
 
-    <div class="entry-group">
-      <span class="entry-label">Entry $</span>
-      <input class="entry-input" id="entryInput" type="number" step="0.01" min="0.01" placeholder="e.g. 582.00">
-      <button class="btn-set" onclick="setEntry()">Set</button>
+        <!-- Direction -->
+        <div class="field-group">
+          <label class="field-label">Direction</label>
+          <div class="cp-toggle">
+            <button class="cp-btn active" id="optCallBtn" onclick="setCallPut(true)">📈 CALL</button>
+            <button class="cp-btn" id="optPutBtn" onclick="setCallPut(false)">📉 PUT</button>
+          </div>
+        </div>
+      </div><!-- /form-row 1 -->
+
+      <!-- Entry Price -->
+      <div class="form-row">
+        <div class="field-group full-width">
+          <label class="field-label">Entry Price
+            <span class="field-hint">— what you paid (option premium or stock price)</span>
+          </label>
+          <input class="se-input" id="entryInput" type="number" step="0.01" min="0.01"
+            placeholder="e.g. 1.25">
+        </div>
+      </div>
+
+      <!-- Current Option Price + Auto-fill -->
+      <div class="form-row">
+        <div class="field-group full-width">
+          <label class="field-label">Current Option Price
+            <button class="autofill-toggle" onclick="toggleAutoFill()">⚡ Auto-fill</button>
+          </label>
+          <input class="se-input" id="currentPriceInput" type="number" step="0.01" min="0.01"
+            placeholder="Current price — or use Auto-fill for live data">
+          <div class="autofill-fields" id="autoFillFields" style="display:none">
+            <input class="se-input-sm" id="optStrikeInput" type="number" step="0.5" min="1" placeholder="Strike $">
+            <input class="se-input-sm" id="optExpiryInput" type="date" style="width:130px">
+            <button class="btn-fetch" onclick="fetchAutoFill()">Fetch Live Price</button>
+          </div>
+          <!-- hidden compat elements -->
+          <input id="optEntryPremium" type="number" style="display:none" step="0.01" min="0.01">
+          <button id="optTypeBtn" style="display:none" onclick="toggleOptType()">CALL</button>
+          <button id="optClearBtn" style="display:none" onclick="clearOptionContract()">✕</button>
+          <button id="logTradeBtn" style="display:none" onclick="logCurrentTrade()">📓 Log</button>
+          <div id="optLiveDisplay" style="margin-top:6px">
+            <span class="opt-status-msg" id="optStatusMsg"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contracts + Gain Pill -->
+      <div class="form-row">
+        <div class="field-group">
+          <label class="field-label">Contracts</label>
+          <input class="se-input" id="contractsInput" type="number" min="1" step="1" value="1">
+        </div>
+        <div class="field-group" style="justify-content:flex-end;padding-top:24px">
+          <div class="gain-pill" id="gainPill">—</div>
+        </div>
+      </div>
+    </div><!-- /form-grid -->
+
+    <button class="calculate-btn" onclick="calculateExit()">Calculate My Exit →</button>
+  </div><!-- /form-card -->
+
+  <!-- ════ RESULTS ════ -->
+  <div id="resultsSection" style="display:none">
+
+    <!-- SampsonX Summary -->
+    <div class="se-card sx-summary-card">
+      <div class="sx-summary-header">
+        <span class="sx-avatar">🤖</span>
+        <span class="sx-name">SampsonX</span>
+        <span class="sx-badge">AI EXIT COACH</span>
+      </div>
+      <div class="sx-summary-text" id="sampsonxSummary">Analyzing your trade...</div>
     </div>
 
-    <div class="gain-pill" id="gainPill">—</div>
-
-    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🔇 Voice</button>
-
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      <span class="live-text">LIVE</span>
+    <!-- 1. EXIT RECOMMENDATION -->
+    <div class="se-card exit-rec-card exit-card" id="exitCard">
+      <div class="card-header" style="margin-bottom:10px">
+        <div class="exit-dot" id="exitDotEl"></div>
+        <span class="card-title">Exit Recommendation</span>
+        <div id="exitIcon" style="display:none"></div>
+      </div>
+      <div class="exit-level" id="exitLevel">WATCHING</div>
+      <div class="exit-msg" id="exitMsg">Enter your trade above and tap Calculate to get your signal.</div>
+      <div class="exit-sub" id="exitSub"></div>
     </div>
-  </div>
 
-  <div class="price-display">
-    <div class="price-main" id="priceMain">—</div>
-    <div class="price-delta up" id="priceDelta">—</div>
-    <span class="price-stale" id="priceStale" style="display:none">stale</span>
-  </div>
-</header>
-
-<!-- OPTION PREMIUM TRACKER -->
-<div class="opt-tracker-wrap" id="optTrackerWrap">
-  <span class="opt-tracker-label">Option Contract</span>
-  <div class="opt-contract-row">
-    <button class="opt-type-btn active-call" id="optTypeBtn" onclick="toggleOptType()">CALL</button>
-    <input class="opt-input opt-input-strike" id="optStrikeInput" type="number" step="0.5" min="1" placeholder="Strike">
-    <input class="opt-input opt-input-expiry" id="optExpiryInput" type="date" title="Expiry date">
-    <div class="opt-entry-group">
-      <span class="opt-entry-label">Entry Premium $</span>
-      <input class="opt-input" id="optEntryPremium" type="number" step="0.01" min="0.01" placeholder="e.g. 1.25" style="width:80px">
+    <!-- 2. CONFIDENCE ANALYSIS -->
+    <div class="se-card" id="confidenceCard">
+      <div class="card-header">
+        <span class="card-icon">📊</span>
+        <span class="card-title">Confidence Analysis</span>
+        <div class="conf-header-score">
+          <div class="confidence-num" id="confNum">—</div>
+          <div class="confidence-grade" id="confGrade">CONFIDENCE</div>
+        </div>
+      </div>
+      <div class="confidence-bar-track">
+        <div class="confidence-bar-fill" id="confBar" style="width:0%;background:var(--muted)"></div>
+      </div>
+      <div id="confCategories"></div>
     </div>
-    <button class="btn-opt-set" onclick="setOptionContract()">Track</button>
-    <button class="btn-opt-clear" id="optClearBtn" onclick="clearOptionContract()" style="display:none">✕ Clear</button>
-    <button class="btn-log-trade" id="logTradeBtn" onclick="logCurrentTrade()" style="display:none" title="Log this trade to your journal">📓 Log</button>
-  </div>
-  <div class="opt-live-display" id="optLiveDisplay">
-    <span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>
-  </div>
-</div>
 
-<!-- MAIN -->
-<div class="main">
+    <!-- 3. PROFIT SUMMARY -->
+    <div class="se-card">
+      <div class="card-header">
+        <span class="card-icon">💰</span>
+        <span class="card-title">Profit Summary</span>
+      </div>
+      <div class="profit-main-row">
+        <div class="profit-main-label">Total P&amp;L</div>
+        <div class="profit-main-value" id="profitDollar">—</div>
+        <div class="profit-main-pct" id="profitPct">—</div>
+      </div>
+      <div class="profit-detail-grid">
+        <div class="profit-detail-item">
+          <div class="profit-detail-label">Cost Basis</div>
+          <div class="profit-detail-value" id="costBasis">—</div>
+        </div>
+        <div class="profit-detail-item">
+          <div class="profit-detail-label">Current Value</div>
+          <div class="profit-detail-value" id="positionValue">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SUGGESTED EXIT LEVELS -->
+    <div class="se-card">
+      <div class="card-header">
+        <span class="card-icon">🎯</span>
+        <span class="card-title">Suggested Exit Levels</span>
+      </div>
+      <div id="exitLevelsContent">
+        <div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">Set entry price to see exit levels</div>
+      </div>
+    </div>
+
+    <!-- Earnings Warning -->
+    <div class="emotional-warning" id="earningsWarn" style="display:none">
+      <div class="warn-icon">📅</div>
+      <div>
+        <div class="warn-title" style="color:#f5a623" id="earningsWarnTitle">EARNINGS ALERT</div>
+        <div class="warn-msg" id="earningsWarnMsg"></div>
+      </div>
+    </div>
+
+    <!-- Emotional Warning -->
+    <div class="emotional-warning" id="emotionalWarn">
+      <div class="warn-icon" id="warnIcon">⚠️</div>
+      <div>
+        <div class="warn-title" id="warnTitle">WARNING</div>
+        <div class="warn-msg" id="warnMsg"></div>
+      </div>
+    </div>
+
+    <!-- 5. ADVANCED -->
+    <div class="se-card advanced-card">
+      <button class="advanced-toggle" onclick="toggleAdvanced()">
+        <span class="card-icon">🔬</span>
+        <span class="advanced-toggle-title">Advanced Trade Analysis</span>
+        <span class="advanced-arrow" id="advancedArrow">▾</span>
+      </button>
+      <div id="advancedContent" style="display:none">
+
+        <div style="padding:12px 0 4px;display:flex;justify-content:flex-end">
+          <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🔇 Voice</button>
+        </div>
+
+        <!-- SampsonX Full Analysis -->
+        <div class="ai-reason-card" id="aiReasonCard">
+          <div class="risk-meter-wrap">
+            <div class="risk-meter-hdr">
+              <span class="risk-meter-title">Risk Meter</span>
+              <span class="risk-level-badge" id="riskLevelBadge">—</span>
+            </div>
+            <div class="risk-gauge-track">
+              <div class="risk-needle" id="riskNeedle" style="left:5%"></div>
+            </div>
+            <div class="risk-labels">
+              <span>LOW</span><span>MODERATE</span><span>HIGH</span><span>TAKE PROFITS</span>
+            </div>
+          </div>
+          <div class="ai-reason-hdr">
+            <div class="ai-reason-title">
+              <div class="ai-pulse"></div>
+              🤖 SampsonX — Full Analysis
+            </div>
+          </div>
+          <div class="ai-reason-text" id="aiReasonText">Waiting for data...</div>
+          <div class="ai-rec-row">
+            <span class="ai-rec-label">Recommendation</span>
+            <span class="ai-rec-badge info" id="aiRecBadge">—</span>
+          </div>
+        </div>
+
+        <!-- Stats Strip -->
+        <div class="adv-stats">
+          <div class="stat-item"><div class="stat-lbl">Speed</div><div class="stat-val" id="sVel">—</div></div>
+          <div class="stat-item"><div class="stat-lbl">Buyer Strength</div><div class="stat-val" id="sRSI">—</div></div>
+          <div class="stat-item"><div class="stat-lbl">Choppiness</div><div class="stat-val" id="sATR">—</div></div>
+          <div class="stat-item"><div class="stat-lbl">Activity</div><div class="stat-val" id="sVol">—</div></div>
+          <div class="stat-item"><div class="stat-lbl">Trend Force</div><div class="stat-val" id="sMom">—</div></div>
+          <div class="stat-item"><div class="stat-lbl">Direction</div><div class="stat-val" id="sTrend">—</div></div>
+        </div>
+
+        <!-- Live Option Activity -->
+        <div class="options-wrap" id="optionsWrap">
+          <div class="options-hdr">
+            <span class="options-title" id="optionsPanelTitle">Live Option Activity</span>
+            <button class="options-refresh" onclick="refreshOptionsPanel()">↻ Refresh</button>
+          </div>
+          <div id="optionsContent"><div class="options-msg">Loading...</div></div>
+        </div>
+
+        <!-- Profit Clock -->
+        <div class="clock-section">
+          <div class="section-label">Profit Clock — Time to Target</div>
+          <div class="clock-wrap">
+            <svg class="clock-svg" viewBox="0 0 250 250">
+              <defs>
+                <filter id="arcglow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="5" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <circle class="clock-track" cx="125" cy="125" r="108"/>
+              <circle id="arcGlow" cx="125" cy="125" r="108" fill="none" stroke="var(--bull)"
+                stroke-width="18" opacity="0" stroke-dasharray="678.58" stroke-dashoffset="678.58"
+                transform="rotate(-90 125 125)"
+                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .5s ease,opacity .5s ease;filter:blur(8px)"/>
+              <circle id="clockArc" cx="125" cy="125" r="108" fill="none" stroke="var(--bull)"
+                stroke-width="10" stroke-linecap="round" stroke-dasharray="678.58"
+                stroke-dashoffset="678.58" transform="rotate(-90 125 125)"
+                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .5s ease"/>
+            </svg>
+            <div class="clock-inner">
+              <div class="clock-gain" id="clockGain"></div>
+              <div class="clock-time" id="clockTime">--:--</div>
+              <div class="clock-unit" id="clockUnit">min · sec</div>
+              <div class="clock-sub" id="clockSub">set entry to begin</div>
+              <div class="clock-pace" id="clockPace"></div>
+            </div>
+          </div>
+          <div class="target-tabs" id="targetTabs">
+            <button class="t-tab active" data-pct="10" onclick="pickTarget(this)">+10%</button>
+            <button class="t-tab" data-pct="20" onclick="pickTarget(this)">+20%</button>
+            <button class="t-tab" data-pct="30" onclick="pickTarget(this)">+30%</button>
+            <button class="t-tab" data-pct="50" onclick="pickTarget(this)">+50%</button>
+          </div>
+        </div>
+
+        <!-- Probability Cards -->
+        <div class="sidebar-hdr" style="padding:16px 0 10px">Profit Targets</div>
+        <div id="probCards">
+          <div class="no-entry-state">
+            <div class="big-icon">🎯</div>
+            <h3>Set Your Entry Price</h3>
+            <p>Enter what you paid to see probability estimates for each profit target.</p>
+          </div>
+        </div>
+
+        <!-- Time Machine -->
+        <div class="time-machine-wrap" id="timeMachineWrap">
+          <div class="time-machine-hdr">⏳ Time Machine</div>
+          <div id="timeMachineRows">
+            <div style="font-size:11px;color:var(--muted);padding:4px 0">Set entry price to activate</div>
+          </div>
+          <div class="tm-note" id="tmNote"></div>
+        </div>
+
+        <!-- Trailing Stop -->
+        <div class="trailing-stop-wrap" id="trailingStopWrap">
+          <div class="trailing-stop-hdr">Live Trailing Stop</div>
+          <div class="ts-row"><span class="ts-label">Current</span><span class="ts-val" id="tsCurrentPrice">—</span></div>
+          <div class="ts-row"><span class="ts-label">Recommended Stop</span><span class="ts-val stop" id="tsStopPrice">—</span></div>
+          <div class="ts-row" id="tsLockRow" style="display:none">
+            <span class="ts-label">If triggered, locks in</span>
+            <span class="ts-val lock" id="tsLockPct">—</span>
+          </div>
+          <div class="ts-note" id="tsNote">Set entry price to activate</div>
+        </div>
+
+        <!-- Momentum -->
+        <div class="momentum-wrap">
+          <div class="momentum-hdr">How Strong Is The Move?</div>
+          <div class="momentum-track">
+            <div class="momentum-fill" id="momFill" style="width:0%;background:var(--muted)"></div>
+          </div>
+          <div class="momentum-detail" id="momDetail">Waiting for data...</div>
+        </div>
+
+      </div><!-- /advancedContent -->
+    </div><!-- /advanced-card -->
+
+  </div><!-- /resultsSection -->
+
+</div><!-- /se-container -->
+
+<!-- HIDDEN COMPAT: opt-tracker-wrap kept in DOM so existing JS doesn't throw -->
+<div id="optTrackerWrap" style="display:none"></div>
+
+<!-- OLD MAIN HIDDEN — content migrated to se-container above -->
+<div class="main" style="display:none">
 
   <!-- CLOCK -->
   <div class="clock-section">
@@ -1595,6 +2128,7 @@
 let ticker       = 'SPY';
 let entryPrice   = null;
 let candles      = [];
+let contracts    = 1;
 let clockTarget  = 10;
 let fetchTimer    = null;
 let lastSigLevel  = '';
@@ -1724,11 +2258,13 @@ function saveState() {
     localStorage.setItem('sc_ea_state', JSON.stringify({
       ticker,
       entryPrice,
-      optStrike:   document.getElementById('optStrikeInput').value,
-      optExpiry:   document.getElementById('optExpiryInput').value,
-      optPremium:  document.getElementById('optEntryPremium').value,
+      optStrike:        document.getElementById('optStrikeInput').value,
+      optExpiry:        document.getElementById('optExpiryInput').value,
+      optPremium:       document.getElementById('optEntryPremium').value,
       optCallMode,
       optContract,
+      contracts:        parseInt(document.getElementById('contractsInput')?.value) || 1,
+      currentPrice:     document.getElementById('currentPriceInput')?.value || '',
     }));
   } catch (_) {}
 }
@@ -1768,18 +2304,34 @@ function restoreState() {
       btn.className = 'opt-type-btn ' + (optCallMode ? 'active-call' : 'active-put');
     }
 
+    // Restore contracts
+    if (s.contracts) {
+      contracts = s.contracts;
+      const ci = document.getElementById('contractsInput');
+      if (ci) ci.value = contracts;
+    }
+
+    // Restore current price
+    if (s.currentPrice) {
+      const cpi = document.getElementById('currentPriceInput');
+      if (cpi) cpi.value = s.currentPrice;
+    }
+
     // Restore active contract (re-kicks the live fetch)
     if (s.optContract) {
       optContract = s.optContract;
       document.getElementById('optClearBtn').style.display = '';
       document.getElementById('logTradeBtn').style.display = '';
-      document.getElementById('optStatusMsg').style.display = 'none';
-      document.getElementById('optLiveDisplay').innerHTML = `
-        <span class="opt-ticker-label">${ticker} ${s.optContract.strike}${optCallMode ? 'C' : 'P'} ${(s.optContract.expiry || '').slice(5)}</span>
-        <span class="opt-status-msg" id="optStatusMsg">Reconnecting...</span>`;
+      document.getElementById('optLiveDisplay').innerHTML =
+        `<span class="opt-status-msg" id="optStatusMsg">Reconnecting to live feed...</span>`;
       if (optPremiumTimer) clearInterval(optPremiumTimer);
       fetchOptionPremium();
       optPremiumTimer = setInterval(fetchOptionPremium, 10000);
+    }
+
+    // Auto-show results if we restored entry data
+    if (s.entryPrice || s.optContract) {
+      document.getElementById('resultsSection').style.display = 'block';
     }
   } catch (_) {}
 }
@@ -1822,6 +2374,8 @@ function renderOptionPremium(d, entryPremium) {
 
   optCurrentPrice = price;
   lastContractData = d;
+  const _cpi = document.getElementById('currentPriceInput');
+  if (_cpi) _cpi.value = price.toFixed(2);
   // Cache contract-specific greeks for direction-aware velocity
   optContractGreeks = { delta: d.delta, theta: d.theta, gamma: d.gamma, vega: d.vega };
 
@@ -2926,7 +3480,7 @@ function render() {
   // Exit signal — direction-aware (puts invert velocity/RSI logic)
   const sig = exitSignal(rsiVal, vel, vt, gainPct, vtrend, atrVal, optMode, optContract, lastOptionsData, isPut);
   const card = document.getElementById('exitCard');
-  card.className = 'exit-card s-' + sig.color;
+  card.className = 'se-card exit-rec-card s-' + sig.color;
   document.getElementById('exitIcon').textContent = sig.icon;
   const lvEl = document.getElementById('exitLevel');
   lvEl.textContent = sig.level;
@@ -2990,6 +3544,16 @@ function render() {
 
   // Voice alert
   maybeSpeak(sig, rsiVal, gainPct);
+
+  // New card renders
+  renderProfitSummary(gainPct, optMode, isPut);
+  renderExitLevels(optMode, isPut);
+  renderSampsonXSummary(rsiVal, vel, atrVal, vt, gainPct, sig, isPut, optMode);
+
+  // Auto-show results when we have entry data
+  if (entryPrice || (optContract && optContract.entryPremium)) {
+    document.getElementById('resultsSection').style.display = 'block';
+  }
 }
 
 // ── Real-time clock tick state ─────────────────────────────────────────────
@@ -3242,6 +3806,234 @@ function resetDisplay() {
     document.getElementById(id).textContent = '—';
     document.getElementById(id).className = 'stat-val';
   });
+}
+
+// ── New UI helpers ──────────────────────────────────────────────────────────
+
+function setCallPut(isCall) {
+  optCallMode = isCall;
+  const cb = document.getElementById('optCallBtn');
+  const pb = document.getElementById('optPutBtn');
+  if (cb) { cb.className = 'cp-btn' + (isCall ? ' active' : ''); }
+  if (pb) { pb.className = 'cp-btn' + (!isCall ? ' active active-put' : ''); }
+  // keep legacy optTypeBtn in sync
+  const btn = document.getElementById('optTypeBtn');
+  if (btn) { btn.textContent = isCall ? 'CALL' : 'PUT'; btn.className = 'opt-type-btn ' + (isCall ? 'active-call' : 'active-put'); }
+}
+
+function toggleAutoFill() {
+  const el = document.getElementById('autoFillFields');
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'flex';
+  const btn = document.querySelector('.autofill-toggle');
+  if (btn) btn.textContent = open ? '⚡ Auto-fill' : '✕ Close';
+}
+
+function fetchAutoFill() {
+  // Sync entryInput → optEntryPremium then call setOptionContract
+  const ev = document.getElementById('entryInput')?.value;
+  if (ev) document.getElementById('optEntryPremium').value = ev;
+  setOptionContract();
+  const msg = document.getElementById('optStatusMsg');
+  if (msg) msg.textContent = 'Fetching live option price...';
+}
+
+function calculateExit() {
+  contracts = Math.max(1, parseInt(document.getElementById('contractsInput').value) || 1);
+
+  // Entry price — stock mode
+  const ev = parseFloat(document.getElementById('entryInput').value);
+  if (!isNaN(ev) && ev > 0) {
+    entryPrice = ev;
+    // If we have a tracked option contract, also sync entry premium
+    if (document.getElementById('optEntryPremium').value === '') {
+      document.getElementById('optEntryPremium').value = ev;
+    }
+  }
+
+  // Current price — manual override
+  const cv = parseFloat(document.getElementById('currentPriceInput').value);
+  if (!isNaN(cv) && cv > 0 && !optCurrentPrice) {
+    optCurrentPrice = cv;
+  }
+
+  // If strike + expiry set but option contract not yet set, auto-setup
+  const strike = document.getElementById('optStrikeInput').value;
+  const expiry = document.getElementById('optExpiryInput').value;
+  if (strike && expiry && !optContract) {
+    fetchAutoFill();
+  }
+
+  updateTargetTabs();
+  saveState();
+
+  // Show results
+  const rs = document.getElementById('resultsSection');
+  rs.style.display = 'block';
+  setTimeout(() => rs.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+
+  if (candles.length > 0) render();
+}
+
+function toggleAdvanced() {
+  const content = document.getElementById('advancedContent');
+  const arrow   = document.getElementById('advancedArrow');
+  if (!content) return;
+  const isOpen = content.style.display !== 'none';
+  content.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.textContent = isOpen ? '▾' : '▴';
+}
+
+// ── Profit Summary Card ─────────────────────────────────────────────────────
+function renderProfitSummary(gainPct, optMode, isPut) {
+  const pEl  = document.getElementById('profitDollar');
+  const pPct = document.getElementById('profitPct');
+  const cbEl = document.getElementById('costBasis');
+  const pvEl = document.getElementById('positionValue');
+  if (!pEl) return;
+
+  let currentVal = null, entryVal = null, plDollar = null, gPct = gainPct;
+
+  // Check manual current price input
+  const manualCv = parseFloat(document.getElementById('currentPriceInput')?.value);
+  const hasManual = !isNaN(manualCv) && manualCv > 0;
+
+  if (optMode && optCurrentPrice != null && optContract?.entryPremium) {
+    currentVal = optCurrentPrice;
+    entryVal   = optContract.entryPremium;
+    gPct       = (currentVal - entryVal) / entryVal * 100;
+    plDollar   = (currentVal - entryVal) * 100 * contracts;
+  } else if (hasManual && entryPrice) {
+    currentVal = manualCv;
+    entryVal   = entryPrice;
+    gPct       = (currentVal - entryVal) / entryVal * 100;
+    plDollar   = (currentVal - entryVal) * 100 * contracts;
+  } else if (entryPrice && candles.length > 0) {
+    const now  = candles[candles.length - 1].close;
+    currentVal = now;
+    entryVal   = entryPrice;
+    gPct       = (now - entryPrice) / entryPrice * 100;
+    plDollar   = (now - entryPrice) * contracts;
+  }
+
+  if (plDollar === null) return;
+
+  const pos   = plDollar >= 0;
+  const color = pos ? 'var(--bull)' : 'var(--bear)';
+  const sign  = plDollar >= 0 ? '+' : '';
+
+  pEl.textContent = `${sign}$${Math.abs(plDollar).toFixed(2)}`;
+  pEl.style.color = color;
+  pPct.textContent = `${gPct >= 0 ? '+' : ''}${gPct.toFixed(2)}%`;
+  pPct.style.color = color;
+
+  const isOpt = optMode || (hasManual && entryPrice);
+  const costBasisVal    = isOpt ? entryVal * 100 * contracts : entryVal * contracts;
+  const currentValueTotal = isOpt ? currentVal * 100 * contracts : currentVal * contracts;
+
+  cbEl.textContent = `$${costBasisVal.toFixed(2)}`;
+  pvEl.textContent = `$${currentValueTotal.toFixed(2)}`;
+  pvEl.style.color = color;
+}
+
+// ── Suggested Exit Levels ───────────────────────────────────────────────────
+function renderExitLevels(optMode, isPut) {
+  const el = document.getElementById('exitLevelsContent');
+  if (!el) return;
+
+  const manualCv = parseFloat(document.getElementById('currentPriceInput')?.value);
+  const hasManual = !isNaN(manualCv) && manualCv > 0;
+
+  const isOpt = optMode || (hasManual && entryPrice);
+  const base  = optMode ? optContract?.entryPremium : entryPrice;
+  if (!base) return;
+
+  const currentForETA = optMode ? (optCurrentPrice || base) : hasManual ? manualCv : (candles.length ? candles[candles.length-1].close : base);
+  const vel = candles.length >= 5 ? velocity(candles) : 0;
+
+  const levels = [
+    { label: 'Emergency Stop',    pct: isOpt ? -30 : -15, icon: '🛑', desc: 'Cut losses here — maximum pain point.' },
+    { label: 'Conservative Exit', pct: 10,                 icon: '🟢', desc: 'Lock in early — the safest choice every time.' },
+    { label: 'Recommended Exit',  pct: 25,                 icon: '⭐', desc: 'Where most strong moves run out of gas.' },
+    { label: 'Aggressive Target', pct: 50,                 icon: '🚀', desc: 'Only hold here if momentum is still very strong.' },
+  ];
+
+  el.innerHTML = levels.map(lvl => {
+    const targetPx = base * (1 + lvl.pct / 100);
+    const plPerContract = (targetPx - base) * (isOpt ? 100 : 1);
+    const isStop = lvl.pct < 0;
+    const color  = isStop ? 'var(--bear)' : lvl.pct >= 25 ? 'var(--bull)' : 'var(--warn)';
+    const sign   = lvl.pct >= 0 ? '+' : '';
+
+    let etaStr = '';
+    if (!isStop && vel > 0 && currentForETA < targetPx) {
+      const mins = (targetPx - currentForETA) / vel;
+      if (mins < 360) etaStr = mins < 60 ? `~${Math.round(mins)}m` : `~${Math.round(mins/60)}h`;
+    }
+
+    return `<div class="exit-level-row">
+      <div class="el-icon">${lvl.icon}</div>
+      <div class="el-body">
+        <div class="el-label">${lvl.label}</div>
+        <div class="el-desc">${lvl.desc}</div>
+      </div>
+      <div class="el-price" style="color:${color}">
+        $${targetPx.toFixed(2)}
+        <span>${sign}${lvl.pct}% · ${plPerContract >= 0 ? '+' : ''}$${Math.abs(plPerContract * contracts).toFixed(0)}${etaStr ? ' · ' + etaStr : ''}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── SampsonX Plain-English Summary ──────────────────────────────────────────
+function renderSampsonXSummary(rsiVal, vel, atrVal, vt, gainPct, sig, isPut, optMode) {
+  const el = document.getElementById('sampsonxSummary');
+  if (!el) return;
+
+  const a      = atrVal || 0.01;
+  const effVel = isPut ? -vel : vel;
+  const effRSI = isPut ? (100 - rsiVal) : rsiVal;
+  const typeStr = optMode ? 'option' : 'trade';
+  const parts  = [];
+
+  // P&L context
+  if (gainPct !== null) {
+    if      (gainPct >= 30) parts.push(`Your ${typeStr} is up <strong>+${gainPct.toFixed(0)}%</strong> — that's a big win.`);
+    else if (gainPct >= 10) parts.push(`Your ${typeStr} is up <strong>+${gainPct.toFixed(1)}%</strong>.`);
+    else if (gainPct >=  0) parts.push(`You're up <strong>+${gainPct.toFixed(1)}%</strong> so far.`);
+    else if (gainPct >= -8) parts.push(`You're currently down <strong>${gainPct.toFixed(1)}%</strong>.`);
+    else                    parts.push(`You're down <strong>${gainPct.toFixed(1)}%</strong> — that's a meaningful loss.`);
+  }
+
+  // Momentum
+  if      (effVel >  a * 0.45) parts.push(`Momentum is strong — price is moving fast in your favor.`);
+  else if (effVel >  a * 0.15) parts.push(`Momentum is positive and moving your way.`);
+  else if (effVel < -a * 0.35) parts.push(`Momentum has reversed and is now working against you.`);
+  else if (Math.abs(effVel)   < a * 0.05) parts.push(`Price is barely moving — momentum is flat.`);
+
+  // Volume
+  if      (vt >  0.25) parts.push(`Volume is elevated — a lot of traders are involved, which adds power to the move.`);
+  else if (vt < -0.25) parts.push(`Volume is drying up — fewer traders are active, which weakens the move.`);
+
+  // RSI context
+  if      (effRSI >= 76) parts.push(`Buyer strength is stretched (RSI ${rsiVal.toFixed(0)}) — the move may be running out of gas.`);
+  else if (effRSI <= 30) parts.push(`The setup still has plenty of room to run.`);
+
+  // Action recommendation
+  if (sig.color === 'red') {
+    parts.push(`<strong style="color:var(--bear)">SampsonX says: Exit now.</strong>`);
+  } else if (sig.color === 'yellow' && gainPct !== null && gainPct >= 8) {
+    parts.push(`<strong style="color:var(--warn)">Locking in partial profits now reduces risk while leaving room for more upside.</strong>`);
+  } else if (sig.color === 'yellow') {
+    parts.push(`<strong style="color:var(--warn)">Things are getting mixed — watch closely and tighten your stop.</strong>`);
+  } else if (sig.color === 'green') {
+    parts.push(`<strong style="color:var(--bull)">The setup still looks good — hold your position for now.</strong>`);
+  } else {
+    parts.push(`Waiting for a clearer signal before recommending action.`);
+  }
+
+  el.innerHTML = parts.join(' ');
 }
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
