@@ -677,6 +677,7 @@ let currentPrice = basePrice;
 let alertHistory = [];
 let detectedSet = new Set();
 let simInterval = null;
+let priceInterval = null;
 let liveCandle = null;
 let candleInterval = 5000;
 let selectedVisibleIdx = null; // index within the last-55 visible slice
@@ -745,6 +746,7 @@ async function loadTicker() {
   document.getElementById('pattern-overlays').innerHTML = '';
   document.getElementById('priceMain').textContent = 'Loading...';
   clearInterval(simInterval);
+  clearInterval(priceInterval);
 
   const fresh = await fetchRealCandles(ticker, currentTF);
   if (fresh && fresh.length > 0) {
@@ -759,6 +761,7 @@ async function loadTicker() {
   updatePrice(currentPrice, candles[0].open);
   runPatternDetection();
   startSimulation();
+  startPricePoller();
 }
 
 // ─── REAL DATA FETCH ─────────────────────────────────────────────
@@ -787,12 +790,29 @@ function startSimulation() {
     if (fresh && fresh.length > 0) {
       candles = fresh;
       currentPrice = candles[candles.length - 1].close;
-      updatePrice(currentPrice, candles[0].open);
       updateOHLC(candles[candles.length - 1]);
       runPatternDetection();
       drawChart();
     }
-  }, 15000); // refresh every 15 seconds
+  }, 15000); // refresh candle shapes every 15 seconds
+}
+
+// Separate fast-poll for live price — hits trades/latest, not bar close
+function startPricePoller() {
+  clearInterval(priceInterval);
+  async function fetchLivePrice() {
+    try {
+      const res  = await fetch(`/api/price?symbol=${ticker}`);
+      const data = await res.json();
+      if (data.price) {
+        currentPrice = data.price;
+        const open = candles.length ? candles[0].open : data.price;
+        updatePrice(data.price, open);
+      }
+    } catch (e) { /* silent — bar refresh still covers price */ }
+  }
+  fetchLivePrice(); // immediate tick
+  priceInterval = setInterval(fetchLivePrice, 5000);
 }
 
 // ─── PATTERN DETECTION ─────────────────────────────────────────
@@ -1220,6 +1240,16 @@ if (_savedTicker) {
 }
 resizeCanvases();
 loadTicker();
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    clearInterval(simInterval);
+    clearInterval(priceInterval);
+  } else {
+    startSimulation();
+    startPricePoller();
+  }
+});
 </script>
 <!-- AI Trade Coach slide-up panel -->
 <div class="coach-panel" id="coachPanel">
