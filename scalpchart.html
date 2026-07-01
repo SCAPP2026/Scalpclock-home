@@ -737,6 +737,7 @@ const TICKERS = {
 
 async function loadTicker() {
   ticker = document.getElementById('tickerInput').value.toUpperCase() || 'SPY';
+  localStorage.setItem('sc_chart_ticker', ticker);
   detectedSet.clear();
   alertHistory = [];
   document.getElementById('alert-feed').innerHTML = '';
@@ -782,8 +783,7 @@ async function fetchRealCandles(symbol, tf) {
 
 function startSimulation() {
   simInterval = setInterval(async () => {
-    const sym = document.getElementById('tickerInput').value.trim().toUpperCase() || 'SPY';
-    const fresh = await fetchRealCandles(sym, currentTF);
+    const fresh = await fetchRealCandles(ticker, currentTF);
     if (fresh && fresh.length > 0) {
       candles = fresh;
       currentPrice = candles[candles.length - 1].close;
@@ -1214,6 +1214,10 @@ document.addEventListener('click', (e) => {
 });
 
 // ─── INIT ───────────────────────────────────────────────────────
+const _savedTicker = localStorage.getItem('sc_chart_ticker');
+if (_savedTicker) {
+  document.getElementById('tickerInput').value = _savedTicker;
+}
 resizeCanvases();
 loadTicker();
 </script>
