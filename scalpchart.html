@@ -390,6 +390,52 @@
     flex-wrap: wrap;
   }
 
+  /* ── SampsonX Confidence Meter ── */
+  .sx-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none; transition: background .15s;
+  }
+  .sx-bar:hover { background: rgba(0,212,170,.05); }
+  .sx-label {
+    font-size: 9px; font-weight: 700; letter-spacing: .12em;
+    color: var(--accent); text-transform: uppercase; white-space: nowrap;
+  }
+  .sx-track {
+    flex: 1; height: 5px; background: rgba(255,255,255,.08); border-radius: 3px; overflow: hidden;
+  }
+  .sx-fill { height: 100%; border-radius: 3px; transition: width .7s ease, background .7s ease; }
+  .sx-pct {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+    min-width: 38px; text-align: right;
+  }
+  .sx-dir {
+    font-size: 9px; font-weight: 700; letter-spacing: .07em;
+    padding: 2px 9px; border-radius: 20px; white-space: nowrap;
+  }
+  .sx-dir.bull { background: rgba(0,212,170,.15); color: var(--bull); }
+  .sx-dir.bear { background: rgba(255,69,102,.12); color: var(--bear); }
+  .sx-dir.neut { background: rgba(255,255,255,.06); color: var(--muted); }
+  .sx-arrow { font-size: 10px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+  .sx-arrow.open { transform: rotate(180deg); }
+  .sx-expand {
+    display: none; padding: 10px 16px 14px;
+    background: rgba(0,212,170,.02); border-bottom: 1px solid var(--border);
+  }
+  .sx-expand.open { display: block; }
+  .sx-why {
+    font-size: 9px; color: var(--muted); letter-spacing: .07em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .sx-reason {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 11px; color: var(--text); padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04); line-height: 1.5;
+  }
+  .sx-reason:last-child { border-bottom: none; }
+  .sx-reason-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+
   /* Volume bar below chart */
   canvas#vol {
     width: 100%;
@@ -496,6 +542,15 @@
     <div class="price-change up" id="priceChange">—</div>
   </div>
 </header>
+
+<div class="sx-bar" id="sxBar" onclick="toggleSampsonX()">
+  <div class="sx-label">SampsonX</div>
+  <div class="sx-track"><div class="sx-fill" id="sxFill" style="width:0%"></div></div>
+  <div class="sx-pct" id="sxPct" style="color:var(--muted)">—</div>
+  <div class="sx-dir neut" id="sxDir">LOADING</div>
+  <div class="sx-arrow" id="sxArrow">▾</div>
+</div>
+<div class="sx-expand" id="sxExpand"></div>
 
 <div class="tf-bar">
   <button class="tf-btn active" onclick="setTF(this,'1m')">1m</button>
@@ -815,6 +870,128 @@ function startPricePoller() {
   priceInterval = setInterval(fetchLivePrice, 5000);
 }
 
+// ─── SAMPSONX CONFIDENCE METER ─────────────────────────────────
+function calcChartConfidence(candles) {
+  if (!candles || candles.length < 10) return { score: 50, direction: 'NEUTRAL', reasons: [] };
+  const n = candles.length;
+  const last = candles[n - 1];
+  const closes = candles.map(c => c.close);
+  let score = 50, bullPts = 0, bearPts = 0;
+  const reasons = [];
+
+  // RSI (14-period)
+  const period = Math.min(14, n - 1);
+  let gains = 0, losses = 0;
+  for (let i = n - period; i < n; i++) {
+    const d = closes[i] - closes[i - 1];
+    if (d > 0) gains += d; else losses -= d;
+  }
+  const avgG = gains / period, avgL = losses / period;
+  const rsiVal = avgL === 0 ? 100 : 100 - 100 / (1 + avgG / avgL);
+  if (rsiVal <= 30) {
+    score += 18; bullPts += 2;
+    reasons.push({ icon: '✅', text: `RSI ${rsiVal.toFixed(0)} — deeply oversold. Buyers historically step in strong at these levels.` });
+  } else if (rsiVal <= 45) {
+    score += 9; bullPts++;
+    reasons.push({ icon: '✅', text: `RSI ${rsiVal.toFixed(0)} — below neutral. Slight edge to buyers right now.` });
+  } else if (rsiVal >= 70) {
+    score += 18; bearPts += 2;
+    reasons.push({ icon: '🔴', text: `RSI ${rsiVal.toFixed(0)} — overbought. Sellers typically take over from here.` });
+  } else if (rsiVal >= 55) {
+    score += 9; bearPts++;
+    reasons.push({ icon: '⚠️', text: `RSI ${rsiVal.toFixed(0)} — above neutral. Market leaning bearish.` });
+  } else {
+    reasons.push({ icon: '➖', text: `RSI ${rsiVal.toFixed(0)} — neutral zone. No strong edge in either direction yet.` });
+  }
+
+  // Volume surge vs 20-bar avg
+  const recentVols = candles.slice(-20).map(c => c.volume);
+  const avgVol = recentVols.slice(0, -1).reduce((a, b) => a + b, 0) / (recentVols.length - 1);
+  const volRatio = last.volume / (avgVol || 1);
+  const isGreenCandle = last.close >= last.open;
+  if (volRatio >= 2.0) {
+    score += 15; isGreenCandle ? bullPts++ : bearPts++;
+    reasons.push({ icon: '✅', text: `Volume ${volRatio.toFixed(1)}× above average — ${isGreenCandle ? 'heavy buying' : 'heavy selling'} with real conviction behind it.` });
+  } else if (volRatio >= 1.4) {
+    score += 8;
+    reasons.push({ icon: '✅', text: `Volume ${volRatio.toFixed(1)}× above average — above-normal activity supporting this move.` });
+  } else if (volRatio < 0.65) {
+    score -= 8;
+    reasons.push({ icon: '⚠️', text: `Volume only ${volRatio.toFixed(1)}× average — thin participation. Low-volume moves tend to reverse quickly.` });
+  } else {
+    reasons.push({ icon: '➖', text: `Volume ${volRatio.toFixed(1)}× average — normal trading activity.` });
+  }
+
+  // Candle streak
+  let bullStreak = 0, bearStreak = 0;
+  for (let i = n - 1; i >= Math.max(0, n - 7); i--) {
+    if (candles[i].close > candles[i].open) bullStreak++; else break;
+  }
+  for (let i = n - 1; i >= Math.max(0, n - 7); i--) {
+    if (candles[i].close < candles[i].open) bearStreak++; else break;
+  }
+  if (bullStreak >= 3) {
+    score += 10; bullPts++;
+    reasons.push({ icon: '✅', text: `${bullStreak} green candles in a row — buyers in control, momentum is building.` });
+  } else if (bearStreak >= 3) {
+    score += 10; bearPts++;
+    reasons.push({ icon: '🔴', text: `${bearStreak} red candles in a row — sellers in control, downward momentum building.` });
+  }
+
+  // Body vs wick quality
+  const body = Math.abs(last.close - last.open);
+  const range = last.high - last.low || 0.0001;
+  const bodyRatio = body / range;
+  const upperWick = last.high - Math.max(last.close, last.open);
+  const lowerWick = Math.min(last.close, last.open) - last.low;
+  if (bodyRatio > 0.72) {
+    score += 8; isGreenCandle ? bullPts++ : bearPts++;
+    reasons.push({ icon: '✅', text: `Strong ${isGreenCandle ? 'green' : 'red'} candle — ${(bodyRatio * 100).toFixed(0)}% body, minimal wicks. ${isGreenCandle ? 'Buyers' : 'Sellers'} dominated from open to close.` });
+  } else if (upperWick > body * 1.8) {
+    score -= 6;
+    reasons.push({ icon: '⚠️', text: `Long upper wick — sellers pushed price back down after a rally. Possible rejection at this level.` });
+  } else if (lowerWick > body * 1.8) {
+    score -= 4; bullPts++;
+    reasons.push({ icon: '⚠️', text: `Long lower wick — buyers absorbed selling and pushed back. Potential reversal or support zone.` });
+  }
+
+  // 5-bar momentum
+  const fiveBack = closes[Math.max(0, n - 6)];
+  const momentum = closes[n - 1] - fiveBack;
+  const avgRange = candles.slice(-10).reduce((s, c) => s + (c.high - c.low), 0) / 10;
+  if (Math.abs(momentum) > avgRange * 0.75) {
+    score += 7; momentum > 0 ? bullPts++ : bearPts++;
+    reasons.push({ icon: '✅', text: `Price moved ${momentum > 0 ? '+' : ''}$${momentum.toFixed(2)} over the last 5 candles — strong directional momentum.` });
+  }
+
+  const direction = bullPts > bearPts ? 'BULLISH' : bearPts > bullPts ? 'BEARISH' : 'NEUTRAL';
+  return { score: Math.round(Math.max(30, Math.min(96, score))), direction, reasons };
+}
+
+function updateSampsonX() {
+  if (!candles || candles.length < 5) return;
+  const { score, direction, reasons } = calcChartConfidence(candles);
+  const color = score >= 70 ? '#00d4aa' : score >= 50 ? '#f5a623' : '#ff4566';
+  document.getElementById('sxFill').style.width = score + '%';
+  document.getElementById('sxFill').style.background = color;
+  const pctEl = document.getElementById('sxPct');
+  pctEl.textContent = score + '%';
+  pctEl.style.color = color;
+  const dirEl = document.getElementById('sxDir');
+  dirEl.textContent = direction;
+  dirEl.className = 'sx-dir ' + (direction === 'BULLISH' ? 'bull' : direction === 'BEARISH' ? 'bear' : 'neut');
+  document.getElementById('sxExpand').innerHTML =
+    `<div class="sx-why">Why ${score}% — ${direction}</div>` +
+    reasons.map(r => `<div class="sx-reason"><div class="sx-reason-icon">${r.icon}</div><div>${r.text}</div></div>`).join('');
+}
+
+function toggleSampsonX() {
+  const ex = document.getElementById('sxExpand');
+  const ar = document.getElementById('sxArrow');
+  const open = ex.classList.toggle('open');
+  ar.classList.toggle('open', open);
+}
+
 // ─── PATTERN DETECTION ─────────────────────────────────────────
 function runPatternDetection() {
   const forming = [];
@@ -829,6 +1006,7 @@ function runPatternDetection() {
     }
   });
   renderFormingBadges(forming);
+  updateSampsonX();
 }
 
 function renderFormingBadges(forming) {

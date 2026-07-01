@@ -763,66 +763,70 @@
   .no-entry-state p { font-size: 11px; color: var(--muted); line-height: 1.6; max-width: 200px; }
 
   /* ── CONFIDENCE BADGE ── */
+  /* ── EXIT CONFIDENCE BREAKDOWN ── */
   .confidence-card {
     margin-top: 10px;
     background: rgba(14,20,32,0.6);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
+    padding: 16px 18px;
   }
-  .confidence-score-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
-    min-width: 64px;
+  .confidence-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .confidence-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
   }
   .confidence-num {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 38px;
-    font-weight: 700;
-    line-height: 1;
-    color: #fff;
-    transition: color 0.4s;
+    font-size: 28px; font-weight: 700; line-height: 1; transition: color 0.4s;
   }
   .confidence-num.high { color: var(--bull); text-shadow: 0 0 20px rgba(0,201,107,0.4); }
   .confidence-num.med  { color: var(--warn); text-shadow: 0 0 20px rgba(245,166,35,0.4); }
   .confidence-num.low  { color: var(--bear); text-shadow: 0 0 20px rgba(255,69,102,0.4); }
   .confidence-grade {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 3px;
+    font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px;
   }
   .confidence-grade.high { color: var(--bull); }
   .confidence-grade.med  { color: var(--warn); }
   .confidence-grade.low  { color: var(--bear); }
-  .confidence-body { flex: 1; min-width: 0; }
-  .confidence-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
+  /* overall bar */
   .confidence-bar-track {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 6px;
+    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 16px;
   }
   .confidence-bar-fill {
-    height: 100%;
-    border-radius: 3px;
+    height: 100%; border-radius: 3px;
     transition: width 0.7s cubic-bezier(0.4,0,0.2,1), background 0.4s;
   }
-  .confidence-factors { font-size: 10px; color: var(--muted); line-height: 1.5; }
+  /* category rows */
+  .conf-category { margin-bottom: 12px; }
+  .conf-category:last-child { margin-bottom: 0; }
+  .conf-cat-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
+  }
+  .conf-cat-name {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; color: var(--text);
+  }
+  .conf-cat-icon { font-size: 13px; }
+  .conf-cat-pct {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+  }
+  .conf-cat-bar-track {
+    height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden;
+  }
+  .conf-cat-bar-fill {
+    height: 100%; border-radius: 2px; transition: width .6s ease, background .4s;
+  }
+  .conf-cat-reason {
+    font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.4;
+  }
+  /* legacy compat */
+  .confidence-score-wrap { display: none; }
+  .confidence-body { display: none; }
+  .confidence-factors { display: none; }
 
   /* ── EMOTIONAL WARNING ── */
   .emotional-warning {
@@ -1423,19 +1427,19 @@
       </div>
     </div>
 
-    <!-- CONFIDENCE BADGE -->
+    <!-- EXIT CONFIDENCE BREAKDOWN -->
     <div class="confidence-card" id="confidenceCard">
-      <div class="confidence-score-wrap">
-        <div class="confidence-num" id="confNum">—</div>
-        <div class="confidence-grade" id="confGrade">CONFIDENCE</div>
-      </div>
-      <div class="confidence-body">
-        <div class="confidence-label">Trade Confidence</div>
-        <div class="confidence-bar-track">
-          <div class="confidence-bar-fill" id="confBar" style="width:0%;background:var(--muted)"></div>
+      <div class="confidence-header">
+        <div class="confidence-label">Exit Confidence</div>
+        <div style="text-align:right">
+          <div class="confidence-num" id="confNum">—</div>
+          <div class="confidence-grade" id="confGrade">CONFIDENCE</div>
         </div>
-        <div class="confidence-factors" id="confFactors">Waiting for data...</div>
       </div>
+      <div class="confidence-bar-track">
+        <div class="confidence-bar-fill" id="confBar" style="width:0%;background:var(--muted)"></div>
+      </div>
+      <div id="confCategories"></div>
     </div>
 
     <!-- EARNINGS WARNING -->
@@ -2327,12 +2331,12 @@ function calcConfidence(rsiVal, vel, atrVal, vt, vtrend) {
   return Math.min(97, Math.max(3, Math.round(score)));
 }
 
-function renderConfidence(score, rsiVal, vel, atrVal, vt) {
+function renderConfidence(score, rsiVal, vel, atrVal, vt, sig, gainPct, isPut) {
   const grade = score >= 72 ? 'HIGH' : score >= 48 ? 'MODERATE' : 'LOW';
   const cls   = score >= 72 ? 'high' : score >= 48 ? 'med' : 'low';
   const color = score >= 72 ? 'var(--bull)' : score >= 48 ? 'var(--warn)' : 'var(--bear)';
 
-  document.getElementById('confNum').textContent = score;
+  document.getElementById('confNum').textContent = score + '%';
   document.getElementById('confNum').className = `confidence-num ${cls}`;
   document.getElementById('confGrade').textContent = grade;
   document.getElementById('confGrade').className = `confidence-grade ${cls}`;
@@ -2340,13 +2344,82 @@ function renderConfidence(score, rsiVal, vel, atrVal, vt) {
   document.getElementById('confBar').style.background = color;
 
   const a = atrVal || 0.01;
-  const factors = [
-    `RSI ${rsiVal.toFixed(0)}`,
-    vel > a * 0.25 ? 'Vel ↑' : vel < 0 ? 'Vel ↓' : 'Vel →',
-    vt > 0.08 ? 'Vol ↑' : vt < -0.10 ? 'Vol ↓' : 'Vol →',
-    `ATR $${atrVal.toFixed(3)}`,
-  ];
-  document.getElementById('confFactors').textContent = factors.join(' · ');
+  const effRSI = isPut ? (100 - rsiVal) : rsiVal;
+  const effVel = isPut ? -vel : vel;
+
+  // Build per-category scores (0–100) with plain-English explanations
+  const categories = [];
+
+  // 1. Momentum (RSI + velocity)
+  let momScore = 50;
+  let momReason = '';
+  if (effRSI <= 28)      { momScore = 88; momReason = `RSI ${rsiVal.toFixed(0)} — price is deeply oversold. Buyers tend to come in strong at this level.`; }
+  else if (effRSI <= 42) { momScore = 70; momReason = `RSI ${rsiVal.toFixed(0)} — price is oversold. The move in your favor still has room.`; }
+  else if (effRSI >= 72) { momScore = 82; momReason = `RSI ${rsiVal.toFixed(0)} — price is very overbought. It's likely running out of gas.`; }
+  else if (effRSI >= 58) { momScore = 62; momReason = `RSI ${rsiVal.toFixed(0)} — price is above the midline. The move may be slowing down.`; }
+  else                   { momScore = 45; momReason = `RSI ${rsiVal.toFixed(0)} — price is in the middle. No clear edge in either direction right now.`; }
+  categories.push({ icon: '📈', name: 'Momentum', score: momScore, reason: momReason });
+
+  // 2. Volume (how many people are trading)
+  let volScore = 50, volReason = '';
+  if (vt > 0.40)       { volScore = 90; volReason = `Volume is ${(vt*100).toFixed(0)}% above normal — a lot of traders are jumping in. This adds power to the move.`; }
+  else if (vt > 0.15)  { volScore = 72; volReason = `Volume is above average — more traders than usual are active. Good sign the move is real.`; }
+  else if (vt > -0.10) { volScore = 50; volReason = `Volume is normal — nothing unusual. The move is happening but not with a huge crowd behind it.`; }
+  else if (vt > -0.30) { volScore = 35; volReason = `Volume is below average — fewer traders are active. Low-volume moves can reverse suddenly.`; }
+  else                 { volScore = 20; volReason = `Volume is very low — almost nobody is trading right now. Be careful, this move may not last.`; }
+  categories.push({ icon: '👥', name: 'Volume', score: volScore, reason: volReason });
+
+  // 3. Trend Strength (velocity)
+  let trendScore = 50, trendReason = '';
+  if (effVel > a * 0.55)        { trendScore = 88; trendReason = `Price is moving fast in your direction — strong trend, stay in.`; }
+  else if (effVel > a * 0.20)   { trendScore = 68; trendReason = `Price is moving steadily your way — trend is intact, no red flags yet.`; }
+  else if (Math.abs(effVel) < a * 0.05) { trendScore = 38; trendReason = `Price is barely moving — the trend may be pausing or stalling out.`; }
+  else if (effVel < -a * 0.20)  { trendScore = 20; trendReason = `Price is moving against you — the trend has reversed. Time to protect yourself.`; }
+  else                           { trendScore = 45; trendReason = `Price is moving slightly against you — watch closely, could be a brief pullback.`; }
+  categories.push({ icon: '🎯', name: 'Trend Strength', score: trendScore, reason: trendReason });
+
+  // 4. Profit / Risk position
+  let profitScore = 50, profitReason = '';
+  if (gainPct === null || gainPct === undefined) {
+    profitScore = 50; profitReason = `Enter your entry price above to see your profit/risk position.`;
+  } else if (gainPct >= 25) {
+    profitScore = 92; profitReason = `You're up ${gainPct.toFixed(0)}% — excellent profit. Start thinking about protecting these gains.`;
+  } else if (gainPct >= 12) {
+    profitScore = 75; profitReason = `You're up ${gainPct.toFixed(0)}% — solid gain. Consider moving your stop up to lock some in.`;
+  } else if (gainPct >= 3) {
+    profitScore = 58; profitReason = `You're up ${gainPct.toFixed(0)}% — small profit. Hold unless other signals say exit.`;
+  } else if (gainPct >= -5) {
+    profitScore = 45; profitReason = `Near breakeven — no big profit or loss yet. Stay patient and watch the signals.`;
+  } else if (gainPct >= -15) {
+    profitScore = 28; profitReason = `Down ${Math.abs(gainPct).toFixed(0)}% — getting into stop loss territory. Protect your capital.`;
+  } else {
+    profitScore = 12; profitReason = `Down ${Math.abs(gainPct).toFixed(0)}% — significant loss. Consider exiting to stop further damage.`;
+  }
+  categories.push({ icon: '💰', name: 'Profit / Risk', score: profitScore, reason: profitReason });
+
+  // 5. Overall Signal (from the exit engine)
+  let sigScore = 50, sigReason = '';
+  if (sig) {
+    if (sig.color === 'red')    { sigScore = 85; sigReason = `Exit signal is active — the system sees enough warning signs to recommend exiting now.`; }
+    else if (sig.color === 'yellow') { sigScore = 55; sigReason = `Caution signal — not a full exit yet, but things are getting less favorable. Watch closely.`; }
+    else                             { sigScore = 30; sigReason = `Hold signal — everything still looks good. No reason to exit yet, let the trade work.`; }
+  }
+  categories.push({ icon: '🚦', name: 'Exit Signal', score: sigScore, reason: sigReason });
+
+  // Render category rows
+  document.getElementById('confCategories').innerHTML = categories.map(cat => {
+    const catColor = cat.score >= 70 ? 'var(--bull)' : cat.score >= 45 ? 'var(--warn)' : 'var(--bear)';
+    return `<div class="conf-category">
+      <div class="conf-cat-header">
+        <div class="conf-cat-name"><span class="conf-cat-icon">${cat.icon}</span>${cat.name}</div>
+        <div class="conf-cat-pct" style="color:${catColor}">${cat.score}%</div>
+      </div>
+      <div class="conf-cat-bar-track">
+        <div class="conf-cat-bar-fill" style="width:${cat.score}%;background:${catColor}"></div>
+      </div>
+      <div class="conf-cat-reason">${cat.reason}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── Time Machine ──────────────────────────────────────────────────────────
@@ -2896,7 +2969,7 @@ function render() {
 
   // Confidence badge
   const conf = calcConfidence(rsiVal, vel, atrVal, vt, vtrend);
-  renderConfidence(conf, rsiVal, vel, atrVal, vt);
+  renderConfidence(conf, rsiVal, vel, atrVal, vt, sig, gainPct, isPut);
 
   // Time machine — passes direction metadata for dual-price display
   if (optMode) {
