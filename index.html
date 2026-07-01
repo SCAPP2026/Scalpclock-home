@@ -140,11 +140,9 @@ body::before {
 @media (max-width: 720px) {
   .nav-links { display: none; }
   .nav-burger { display: block; }
-  .nav-cta:not(.nav-cta-dash) { display: none; }
-  .nav-cta-dash { font-size: .8rem; padding: 7px 14px; }
+  .nav-cta { display: none; }
 }
 @media (max-width: 520px) {
-  .nav-cta-dash { display: none; }
   .brand { font-size: 1.1rem; }
 }
 
@@ -832,30 +830,26 @@ footer {
       Scalp<em>Clock</em>
     </a>
     <div class="nav-links">
-      <a href="#signals">Live Signals</a>
-      <a href="/scalpchart">Charts</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/scalpchart">Live Charts</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="#news">News</a>
-      <a href="/learn">Learn</a>
-      <a href="/faq">FAQ</a>
+      <a href="/learn">Learning</a>
+      <a href="/faq">Broker Guide</a>
       <a href="/pricing">Pricing</a>
     </div>
     <button class="btn-tour" onclick="startTour()" title="Quick tour">?</button>
-    <a class="nav-cta nav-cta-dash" href="/dashboard" style="background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);margin-right:8px;">Dashboard</a>
-    <a class="nav-cta" href="#signals">See Live Signals</a>
+    <a class="nav-cta" href="/login">Get Started</a>
     <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
   </div>
 </div>
 
 <div class="nav-drawer" id="navDrawer">
-  <a href="#signals" onclick="closeDrawer()">Live Signals</a>
-  <a href="/scalpchart" onclick="closeDrawer()">Charts</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/scalpchart" onclick="closeDrawer()">Live Charts</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
-  <a href="#news" onclick="closeDrawer()">News</a>
-  <a href="/learn" onclick="closeDrawer()">Learn</a>
-  <a href="/faq" onclick="closeDrawer()">FAQ</a>
+  <a href="/learn" onclick="closeDrawer()">Learning</a>
+  <a href="/faq" onclick="closeDrawer()">Broker Guide</a>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
-  <a href="/dashboard" class="drawer-dash" onclick="closeDrawer()">Dashboard →</a>
 </div>
 
 <div class="shell" id="top">

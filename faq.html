@@ -50,7 +50,13 @@ a{color:inherit;text-decoration:none;}
 .nav-links a.active{color:var(--green);}
 .nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
 .nav-cta:hover{background:#20e88a;}
-@media(max-width:720px){.nav-links{display:none;}}
+.nav-burger{display:none;background:none;border:none;color:var(--t55);cursor:pointer;padding:8px;border-radius:8px;font-size:1.5rem;line-height:1;transition:color .15s;}
+.nav-burger:hover{color:#fff;}
+.nav-drawer{display:none;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1a2b22;z-index:59;padding:4px 0 20px;}
+.nav-drawer.open{display:flex;}
+.nav-drawer a{font-family:var(--disp);font-weight:600;font-size:1.05rem;color:#8899b0;padding:16px 28px;border-bottom:1px solid #1a2b22;text-decoration:none;transition:color .15s,background .15s;}
+.nav-drawer a:hover,.nav-drawer a:active{color:#fff;background:rgba(22,217,126,.07);}
+@media(max-width:720px){.nav-links{display:none;}.nav-burger{display:block;}.nav-cta{display:none;}}
 
 /* PAGE */
 .page-hero{text-align:center;padding:72px 24px 48px;position:relative;z-index:1;}
@@ -102,16 +108,25 @@ a{color:inherit;text-decoration:none;}
       Scalp<em>Clock</em>
     </a>
     <div class="nav-links">
-      <a href="/#signals">Live Signals</a>
-      <a href="/scalpchart">Charts</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/scalpchart">Live Charts</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="/learn">Learn</a>
-      <a href="/faq" class="active">FAQ</a>
+      <a href="/learn">Learning</a>
+      <a href="/faq" class="active">Broker Guide</a>
       <a href="/pricing">Pricing</a>
     </div>
     <a class="nav-cta" href="/login">Get Started</a>
+    <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
   </div>
 </nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/scalpchart" onclick="closeDrawer()">Live Charts</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/learn" onclick="closeDrawer()">Learning</a>
+  <a href="/faq" onclick="closeDrawer()">Broker Guide</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+</div>
 
 <div class="page-hero">
   <h1>Frequently <em>Asked</em> Questions</h1>
@@ -217,6 +232,11 @@ function toggle(btn) {
   document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
+</script>
+<script>
+function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
+function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
+document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 <p style="text-align:center;padding:24px 20px 40px;font-size:11px;color:#3a4f6a;line-height:1.7">&copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
