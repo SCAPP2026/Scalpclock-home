@@ -102,7 +102,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   border:1px solid var(--line);border-radius:var(--r);padding:32px;text-align:center;}
 .upgrade h2{font-family:var(--disp);font-weight:700;font-size:1.5rem;margin-bottom:8px;}
 .upgrade h2 span{color:var(--green);}
-.upgrade p{color:var(--t55);font-size:.9rem;margin-bottom:20px;}
+.upgrade p{color:var(--t55);font-size:.9rem;margin-bottom:16px;}
+.upgrade-toggle{display:inline-flex;align-items:center;gap:10px;margin-bottom:20px;
+  background:var(--bg);border:1px solid var(--line);border-radius:30px;padding:4px 6px;}
+.upgrade-toggle button{font-family:var(--disp);font-weight:600;font-size:.8rem;padding:6px 16px;
+  border-radius:24px;border:none;cursor:pointer;transition:.15s;
+  background:transparent;color:var(--t55);}
+.upgrade-toggle button.active{background:var(--green);color:#04150d;}
+.upgrade-save{display:inline-block;font-size:.72rem;font-weight:700;font-family:var(--mono);
+  color:var(--green);background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.25);
+  border-radius:20px;padding:2px 9px;margin-left:6px;letter-spacing:.04em;}
 .btn-upgrade{font-family:var(--disp);font-weight:700;font-size:1rem;padding:12px 28px;
   border-radius:10px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
 .btn-upgrade:hover{background:#20e88a;transform:translateY(-1px);}
@@ -456,7 +465,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
-    <p>Get premium signals, priority alerts, and advanced chart features.</p>
+    <p>Unlimited real-time signals, options recommendations, confidence scoring, and push alerts.</p>
+    <div class="upgrade-toggle">
+      <button id="toggleMonthly" class="active" onclick="setBilling('monthly')">Monthly</button>
+      <button id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
+    </div>
+    <br>
     <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Upgrade to Pro — $9.99/mo</button>
   </div>
 
@@ -736,23 +750,37 @@ function showModal(elId, msg, type) {
   document.getElementById(elId).innerHTML = `<div class="modal-msg ${type}">${msg}</div>`;
 }
 
+let _billing = 'monthly';
+
+function setBilling(mode) {
+  _billing = mode;
+  document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
+  document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
+  const btn = document.getElementById('upgradeBtn');
+  btn.textContent = mode === 'annual' ? 'Upgrade to Pro — $7.99/mo' : 'Upgrade to Pro — $9.99/mo';
+}
+
 async function startCheckout() {
   const btn = document.getElementById('upgradeBtn');
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const res = await fetch('/api/stripe-checkout', { method: 'POST' });
+    const res = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tier: 'pro', billing: _billing }),
+    });
     const data = await res.json();
     if (data.url) {
       window.location.href = data.url;
     } else {
       btn.disabled = false;
-      btn.textContent = 'Upgrade to Pro — $9.99/mo';
+      setBilling(_billing);
       alert(data.error || 'Could not start checkout. Please try again.');
     }
   } catch (e) {
     btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro — $9.99/mo';
+    setBilling(_billing);
   }
 }
 
