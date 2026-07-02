@@ -12,7 +12,6 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS });
   }
-
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
@@ -27,9 +26,15 @@ export async function onRequest(context) {
 
 async function stripeGet(path, env) {
   const res  = await fetch(`https://api.stripe.com/v1${path}`, {
-    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
+    headers: {
+      Authorization:    `Bearer ${env.STRIPE_SECRET_KEY}`,
+      'Stripe-Version': '2023-10-16',
+    },
   });
-  const data = await res.json();
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch { data = { _raw: text }; }
+  console.log(`Stripe GET ${path} → ${res.status}:`, JSON.stringify(data));
   return { ok: res.ok, status: res.status, data };
 }
 
@@ -37,7 +42,7 @@ async function handleValidatePromo(env, request) {
   let code, userId;
   try {
     ({ code, userId } = await request.json());
-  } catch (e) {
+  } catch {
     return json({ valid: false, error: 'Invalid request body' }, 400);
   }
 
@@ -47,7 +52,7 @@ async function handleValidatePromo(env, request) {
 
   const normalizedCode = code.trim().toUpperCase();
 
-  // Check Supabase: has this user already redeemed?
+  // ── Supabase: block repeat redemption ───────────────────────────────────
   if (userId && env.SUPABASE_SERVICE_KEY) {
     try {
       const sbRes  = await fetch(
@@ -61,76 +66,85 @@ async function handleValidatePromo(env, request) {
         }
       );
       const sbData = await sbRes.json();
-      console.log('Supabase result:', JSON.stringify(sbData));
-
+      console.log('Supabase promo_redeemed:', JSON.stringify(sbData));
       if (sbRes.ok && sbData?.[0]?.promo_redeemed === true) {
-        return json({
-          valid: false,
-          error: 'You have already redeemed your free month.',
-          alreadyRedeemed: true,
-        });
+        return json({ valid: false, error: 'You have already redeemed your free month.', alreadyRedeemed: true });
       }
     } catch (e) {
-      console.error('Supabase check failed:', e.message);
+      console.error('Supabase check error:', e.message);
     }
   }
 
-  // 1. Look up the promotion code
-  const promoLookup = await stripeGet(
-    `/promotion_codes?code=${encodeURIComponent(normalizedCode)}&active=true&limit=1`,
+  // ── Step 1: list promotion codes by code string ─────────────────────────
+  const listResult = await stripeGet(
+    `/promotion_codes?code=${encodeURIComponent(normalizedCode)}&limit=5`,
     env
   );
-  console.log('Stripe promo lookup status:', promoLookup.status, 'data:', JSON.stringify(promoLookup.data));
 
-  if (!promoLookup.ok) {
-    return json({ valid: false, error: 'Could not reach Stripe. Try again.' }, 502);
+  if (!listResult.ok) {
+    return json({ valid: false, error: `Stripe error ${listResult.status}. Please try again.` }, 502);
   }
 
-  const promoList = promoLookup.data?.data;
+  const promoList = listResult.data?.data;
   if (!Array.isArray(promoList) || promoList.length === 0) {
-    return json({ valid: false, error: 'Invalid or expired promotion code.' });
+    return json({ valid: false, error: 'Promotion code not found.' });
   }
 
-  const promo = promoList[0];
-  console.log('Promo object:', JSON.stringify(promo));
+  // Find an active one (don't filter at API level so we can give a better error if inactive)
+  const promo = promoList.find(p => p.active !== false) ?? promoList[0];
+  console.log('Selected promo:', JSON.stringify(promo));
 
-  // 2. Resolve coupon — may be a full object or just an ID string
+  if (!promo.active) {
+    return json({ valid: false, error: 'This promotion code has expired or is no longer active.' });
+  }
+
+  // ── Step 2: fetch promo by ID with coupon expanded ───────────────────────
+  // (list endpoint may omit the coupon object in newer API versions)
+  const detailResult = await stripeGet(
+    `/promotion_codes/${promo.id}?expand[]=coupon`,
+    env
+  );
+
+  const detail = detailResult.ok ? detailResult.data : promo;
+  console.log('Promo detail:', JSON.stringify(detail));
+
+  // ── Step 3: resolve the coupon / discount descriptor ────────────────────
   let coupon = null;
-  if (promo.coupon && typeof promo.coupon === 'object') {
-    coupon = promo.coupon;
-    console.log('Coupon already expanded:', JSON.stringify(coupon));
-  } else if (typeof promo.coupon === 'string') {
-    // Stripe returned just the coupon ID — fetch it explicitly
-    const couponLookup = await stripeGet(`/coupons/${promo.coupon}`, env);
-    console.log('Coupon fetch status:', couponLookup.status, 'data:', JSON.stringify(couponLookup.data));
-    if (couponLookup.ok) coupon = couponLookup.data;
+
+  if (detail.coupon && typeof detail.coupon === 'object') {
+    coupon = detail.coupon;
+    console.log('Coupon from detail.coupon:', JSON.stringify(coupon));
+  } else if (typeof detail.coupon === 'string') {
+    const cr = await stripeGet(`/coupons/${detail.coupon}`, env);
+    if (cr.ok) { coupon = cr.data; console.log('Coupon fetched by ID:', JSON.stringify(coupon)); }
   }
 
-  if (!coupon || typeof coupon !== 'object') {
-    console.error('Could not resolve coupon for promo:', promo.id, 'coupon field:', promo.coupon);
+  // Newer Stripe format: discount info may live under detail.promotion
+  if (!coupon && detail.promotion && typeof detail.promotion === 'object') {
+    coupon = detail.promotion;
+    console.log('Using detail.promotion as coupon:', JSON.stringify(coupon));
+  }
+
+  // ── Step 4: if still no coupon object, try fetching the coupon list ─────
+  if (!coupon) {
+    console.warn('Could not resolve coupon. Promo detail keys:', Object.keys(detail));
     return json({
       valid: false,
-      error: 'Promotion code is not valid. Please contact support.',
-      _debug: {
-        promoId:    promo.id,
-        promoCode:  promo.code,
-        couponRaw:  promo.coupon,
-        couponType: typeof promo.coupon,
-        promoKeys:  Object.keys(promo),
-      },
+      error: 'Could not retrieve discount details. Please contact support.',
+      _debug: { promoId: promo.id, detailKeys: Object.keys(detail), promotionField: detail.promotion },
     });
   }
 
-  // 3. Build response fields
+  // ── Step 5: build response ───────────────────────────────────────────────
   const percentOff     = coupon.percent_off       ?? null;
   const amountOff      = coupon.amount_off        ?? null;
   const duration       = coupon.duration          ?? null;
   const durationMonths = coupon.duration_in_months ?? null;
-  const maxRedemptions = promo.max_redemptions    ?? null;
-  const redeemedCount  = promo.times_redeemed     ?? 0;
-  const expiresAt      = promo.expires_at         ?? null;
+  const maxRedemptions = promo.max_redemptions    ?? detail.max_redemptions ?? null;
+  const redeemedCount  = promo.times_redeemed     ?? detail.times_redeemed  ?? 0;
+  const expiresAt      = promo.expires_at         ?? detail.expires_at      ?? null;
 
-  let discountText = '';
+  let discountText = 'Discount applied';
   if (percentOff === 100 && duration === 'once') {
     discountText = 'First month FREE';
   } else if (percentOff) {
