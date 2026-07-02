@@ -522,6 +522,43 @@
     color: var(--muted);
     text-align: center;
   }
+
+  @media(max-width:720px) {
+    header {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+    }
+    .logo { font-size: 13px; }
+    header > a { display: none !important; }
+    .ticker-bar { flex: 1 1 100%; order: 3; }
+    .price-display { margin-left: auto; }
+    .price-main { font-size: 16px; }
+    .price-change { font-size: 11px; }
+
+    .main { flex-direction: column; overflow: visible; }
+    .sidebar {
+      width: 100%;
+      min-width: unset;
+      border-left: none;
+      border-top: 1px solid var(--border);
+      max-height: 220px;
+    }
+
+    .ohlcv { grid-template-columns: repeat(3, 1fr); }
+    .sx-label { display: none; }
+
+    canvas#chart { min-height: 240px; }
+    canvas#vol { height: 44px; }
+
+    .tf-btn { padding: 4px 7px; font-size: 11px; }
+  }
+
+  @media(max-width:420px) {
+    .ohlcv { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 6px 10px; }
+    .ohlcv-val { font-size: 11px; }
+    .price-display { display: none; }
+  }
 </style>
 </head>
 <body>
