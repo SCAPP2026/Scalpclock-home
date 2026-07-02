@@ -38,7 +38,7 @@ a{color:var(--green);text-decoration:none;}
 
 /* NAV */
 .nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
-.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1140px;margin:0 auto;padding:0 24px;}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1140px;margin:0 auto;padding:0 24px;}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:1.32rem;letter-spacing:.02em;color:var(--text);text-decoration:none;}
 .nav-links{display:flex;align-items:center;gap:6px;}
 .nav-links a{font-size:.875rem;color:var(--t80);padding:7px 13px;border-radius:8px;transition:color .15s,background .15s;}
@@ -47,7 +47,7 @@ a{color:var(--green);text-decoration:none;}
 .nav-cta:hover{background:#12c470!important;}
 .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
 .ham span{display:block;width:22px;height:2px;background:var(--t80);border-radius:2px;transition:.2s;}
-.nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer{display:none;position:fixed;top:80px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
 .nav-drawer.open{transform:translateX(0);}
 .nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);}
 .nav-drawer a:last-child{border-bottom:none;}
@@ -219,7 +219,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <nav class="nav">
   <div class="nav-in">
     <a class="brand" href="/">
-      <img src="hero.png" alt="ScalpClock" style="height:52px;width:auto;display:block;">
+      <img src="hero.png" alt="ScalpClock" style="height:72px;width:auto;display:block;">
     </a>
     <nav class="nav-links">
       <a href="/scalpchart.html">ScalpCharts</a>
