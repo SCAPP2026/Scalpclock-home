@@ -523,6 +523,75 @@
     text-align: center;
   }
 
+  /* ─── COACH PANEL SECTIONS ─── */
+  .coach-section-head{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px;display:flex;align-items:center;gap:8px;}
+  .coach-section-head::after{content:'';flex:1;height:1px;background:var(--border);}
+  .coach-notes{display:flex;flex-direction:column;gap:6px;}
+  .coach-note-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;line-height:1.5;color:var(--text);}
+  .coach-tip-box{background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.65;color:var(--text);}
+  .trade-score-box{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin:4px 0;}
+  .trade-score-num{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;line-height:1;flex-shrink:0;}
+  .trade-score-reasons{display:flex;flex-direction:column;gap:4px;flex:1;}
+  .score-reason-item{font-size:11px;line-height:1.5;color:var(--text);}
+  .watch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0;}
+  .watch-card{border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+  .watch-card.bull{border-color:rgba(0,201,107,.3);background:rgba(0,201,107,.04);}
+  .watch-card.bear{border-color:rgba(255,69,102,.3);background:rgba(255,69,102,.04);}
+  .watch-arrow{font-size:18px;margin-bottom:4px;}
+  .watch-price{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;}
+  .watch-desc{font-size:10px;color:var(--muted);line-height:1.5;}
+  .ai-sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px;}
+  .ai-sum-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:8px 10px;}
+  .ai-sum-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;}
+  .ai-sum-val{font-size:12px;font-weight:700;color:var(--text);}
+  .ai-sum-val.bull{color:var(--bull);}
+  .ai-sum-val.bear{color:var(--bear);}
+  .ai-sum-val.warn{color:var(--warn);}
+  .ai-action-box{background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+  .ai-action-label{font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-weight:700;}
+  .ai-action-text{font-size:12px;color:var(--text);line-height:1.55;}
+  .ai-disclaimer{font-size:10px;color:var(--muted);text-align:center;font-style:italic;margin-top:6px;}
+  /* Confidence bars */
+  .conf-cats{display:flex;flex-direction:column;gap:8px;padding:4px 0;}
+  .conf-row{display:flex;align-items:center;gap:10px;}
+  .conf-name{font-size:10px;color:var(--muted);min-width:130px;flex-shrink:0;}
+  .conf-track{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+  .conf-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+  .conf-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);min-width:30px;text-align:right;}
+  .conf-grade-line{display:flex;align-items:center;justify-content:space-between;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px;}
+  .conf-grade-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+  .conf-grade-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;}
+  /* Pattern Intelligence sidebar */
+  .pat-intel-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px;}
+  .pat-intel-row:last-child{border-bottom:none;}
+  .pat-intel-key{color:var(--muted);}
+  .pat-intel-val{font-family:'JetBrains Mono',monospace;font-weight:600;text-align:right;max-width:55%;}
+  .pat-conditions{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04);}
+  .pat-cond-title{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+  .pat-cond-item{font-size:11px;color:var(--text);padding:2px 0;line-height:1.5;}
+  /* Learn Mode */
+  .learn-btn{background:rgba(91,156,246,.1);border:1px solid rgba(91,156,246,.3);color:#5b9cf6;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.15s;}
+  .learn-btn:hover{background:rgba(91,156,246,.18);}
+  .learn-btn.active{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--warn);}
+  .learn-mode-bar{display:none;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(245,166,35,.07);border-bottom:1px solid rgba(245,166,35,.3);font-size:12px;color:var(--warn);}
+  .learn-mode-bar.active{display:flex;}
+  .learn-score-display{font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .learn-exit-btn{background:none;border:1px solid rgba(245,166,35,.4);color:var(--warn);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:inherit;}
+  .learn-guess-section{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:12px;padding:14px 16px;margin-bottom:4px;}
+  .learn-q{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+  .learn-hint{font-size:10px;color:var(--muted);margin-bottom:12px;}
+  .learn-btns{display:flex;gap:8px;}
+  .learn-guess-btn{flex:1;padding:10px 4px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);cursor:pointer;font-size:12px;font-weight:700;transition:.15s;font-family:inherit;line-height:1.4;}
+  .learn-guess-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(0,212,170,.08);}
+  .learn-guess-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .learn-result{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.5;}
+  .learn-result.show{display:block;}
+  .learn-result.correct{background:rgba(0,201,107,.1);color:var(--bull);border:1px solid rgba(0,201,107,.3);}
+  .learn-result.wrong{background:rgba(255,69,102,.08);color:var(--bear);border:1px solid rgba(255,69,102,.25);}
+  .learn-result.neutral{background:rgba(245,166,35,.08);color:var(--warn);border:1px solid rgba(245,166,35,.25);}
+  .learn-next-btn{display:none;margin-top:8px;padding:8px 20px;border-radius:8px;background:var(--accent);color:#000;border:none;font-weight:700;font-size:12px;cursor:pointer;width:100%;font-family:inherit;}
+  .learn-next-btn.show{display:block;}
+
   @media(max-width:720px) {
     header {
       flex-wrap: wrap;
@@ -595,6 +664,15 @@
   <button class="tf-btn" onclick="setTF(this,'15m')">15m</button>
   <div class="separator"></div>
   <button class="tf-btn active" style="pointer-events:none;color:var(--text);border:none;" id="tfLabel">Candlestick</button>
+  <div style="flex:1"></div>
+  <button class="learn-btn" id="learnModeBtn" onclick="toggleLearnMode()">📚 Learn Mode</button>
+</div>
+<div class="learn-mode-bar" id="learnModeBar">
+  <span>📚 <strong>Learning Mode</strong> — Tap the last candle, predict what happens next</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="learn-score-display" id="learnScoreDisplay">Score: 0 / 0</span>
+    <button class="learn-exit-btn" onclick="exitLearnMode()">Exit</button>
+  </div>
 </div>
 
 <div class="ohlcv">
@@ -761,6 +839,19 @@ const PATTERNS = {
   }
 };
 
+// ─── PATTERN META (Intelligence Panel) ─────────────────────────
+const PATTERN_META = {
+  'Bullish Morning Star':   { typicalMove:'+1.2%', avgCandles:4, conditions:['After a downtrend','High volume on 3rd candle','Closes above 50% of 1st candle'] },
+  'Bearish Evening Star':   { typicalMove:'-1.1%', avgCandles:4, conditions:['After an uptrend','High volume on 3rd candle','Closes below 50% of 1st candle'] },
+  'Bullish Engulfing':      { typicalMove:'+0.74%',avgCandles:3, conditions:['Trending market','High volume','Above VWAP'] },
+  'Bearish Engulfing':      { typicalMove:'-0.68%',avgCandles:3, conditions:['Trending market','High volume','Below VWAP'] },
+  'Doji':                   { typicalMove:'±0.3%', avgCandles:2, conditions:['After a strong trend','At key support/resistance','Before major news event'] },
+  'Hammer':                 { typicalMove:'+0.9%', avgCandles:2, conditions:['After a downtrend','At support levels','Above-average volume on the hammer'] },
+  'Shooting Star':          { typicalMove:'-0.8%', avgCandles:2, conditions:['After an uptrend','At resistance levels','Volume confirms the reversal'] },
+  'Three White Soldiers':   { typicalMove:'+1.8%', avgCandles:5, conditions:['Each candle opens within prior body','Volume growing each session','Low volatility environment'] },
+  'Three Black Crows':      { typicalMove:'-1.7%', avgCandles:5, conditions:['Each candle opens within prior body','Volume growing each session','Breaking below support'] },
+};
+
 // ─── STATE ─────────────────────────────────────────────────────
 let candles = [];
 let ticker = 'AAPL';
@@ -772,7 +863,13 @@ let simInterval = null;
 let priceInterval = null;
 let liveCandle = null;
 let candleInterval = 5000;
-let selectedVisibleIdx = null; // index within the last-55 visible slice
+let selectedVisibleIdx = null;
+// Learn Mode
+let learnMode = false;
+let learnModeIdx = 0;
+let learnCorrect = 0;
+let learnTotal = 0;
+let learnAnswered = false;
 
 // ─── CHART SETUP ───────────────────────────────────────────────
 const chartCanvas = document.getElementById('chart');
@@ -909,14 +1006,13 @@ function startPricePoller() {
 
 // ─── SAMPSONX CONFIDENCE METER ─────────────────────────────────
 function calcChartConfidence(candles) {
-  if (!candles || candles.length < 10) return { score: 50, direction: 'NEUTRAL', reasons: [] };
+  if (!candles || candles.length < 10) return { score: 50, direction: 'NEUTRAL', cats: [], grade: 'C' };
   const n = candles.length;
   const last = candles[n - 1];
   const closes = candles.map(c => c.close);
-  let score = 50, bullPts = 0, bearPts = 0;
-  const reasons = [];
+  const isGreen = last.close >= last.open;
 
-  // RSI (14-period)
+  // RSI Category
   const period = Math.min(14, n - 1);
   let gains = 0, losses = 0;
   for (let i = n - period; i < n; i++) {
@@ -925,41 +1021,17 @@ function calcChartConfidence(candles) {
   }
   const avgG = gains / period, avgL = losses / period;
   const rsiVal = avgL === 0 ? 100 : 100 - 100 / (1 + avgG / avgL);
-  if (rsiVal <= 30) {
-    score += 18; bullPts += 2;
-    reasons.push({ icon: '✅', text: `RSI ${rsiVal.toFixed(0)} — deeply oversold. Buyers historically step in strong at these levels.` });
-  } else if (rsiVal <= 45) {
-    score += 9; bullPts++;
-    reasons.push({ icon: '✅', text: `RSI ${rsiVal.toFixed(0)} — below neutral. Slight edge to buyers right now.` });
-  } else if (rsiVal >= 70) {
-    score += 18; bearPts += 2;
-    reasons.push({ icon: '🔴', text: `RSI ${rsiVal.toFixed(0)} — overbought. Sellers typically take over from here.` });
-  } else if (rsiVal >= 55) {
-    score += 9; bearPts++;
-    reasons.push({ icon: '⚠️', text: `RSI ${rsiVal.toFixed(0)} — above neutral. Market leaning bearish.` });
-  } else {
-    reasons.push({ icon: '➖', text: `RSI ${rsiVal.toFixed(0)} — neutral zone. No strong edge in either direction yet.` });
-  }
+  const rsiScore = isGreen
+    ? (rsiVal < 30 ? 92 : rsiVal < 50 ? 72 : rsiVal < 65 ? 50 : rsiVal < 75 ? 32 : 18)
+    : (rsiVal > 70 ? 92 : rsiVal > 50 ? 72 : rsiVal > 35 ? 50 : rsiVal > 25 ? 32 : 18);
 
-  // Volume surge vs 20-bar avg
+  // Volume Category
   const recentVols = candles.slice(-20).map(c => c.volume);
   const avgVol = recentVols.slice(0, -1).reduce((a, b) => a + b, 0) / (recentVols.length - 1);
   const volRatio = last.volume / (avgVol || 1);
-  const isGreenCandle = last.close >= last.open;
-  if (volRatio >= 2.0) {
-    score += 15; isGreenCandle ? bullPts++ : bearPts++;
-    reasons.push({ icon: '✅', text: `Volume ${volRatio.toFixed(1)}× above average — ${isGreenCandle ? 'heavy buying' : 'heavy selling'} with real conviction behind it.` });
-  } else if (volRatio >= 1.4) {
-    score += 8;
-    reasons.push({ icon: '✅', text: `Volume ${volRatio.toFixed(1)}× above average — above-normal activity supporting this move.` });
-  } else if (volRatio < 0.65) {
-    score -= 8;
-    reasons.push({ icon: '⚠️', text: `Volume only ${volRatio.toFixed(1)}× average — thin participation. Low-volume moves tend to reverse quickly.` });
-  } else {
-    reasons.push({ icon: '➖', text: `Volume ${volRatio.toFixed(1)}× average — normal trading activity.` });
-  }
+  const volScore = volRatio >= 2 ? 92 : volRatio >= 1.4 ? 74 : volRatio >= 0.8 ? 52 : volRatio >= 0.5 ? 34 : 18;
 
-  // Candle streak
+  // Trend Category (streak)
   let bullStreak = 0, bearStreak = 0;
   for (let i = n - 1; i >= Math.max(0, n - 7); i--) {
     if (candles[i].close > candles[i].open) bullStreak++; else break;
@@ -967,48 +1039,48 @@ function calcChartConfidence(candles) {
   for (let i = n - 1; i >= Math.max(0, n - 7); i--) {
     if (candles[i].close < candles[i].open) bearStreak++; else break;
   }
-  if (bullStreak >= 3) {
-    score += 10; bullPts++;
-    reasons.push({ icon: '✅', text: `${bullStreak} green candles in a row — buyers in control, momentum is building.` });
-  } else if (bearStreak >= 3) {
-    score += 10; bearPts++;
-    reasons.push({ icon: '🔴', text: `${bearStreak} red candles in a row — sellers in control, downward momentum building.` });
-  }
+  const streak = isGreen ? bullStreak : bearStreak;
+  const trendScore = streak >= 4 ? 92 : streak >= 2 ? 75 : streak >= 1 ? 58 : 35;
 
-  // Body vs wick quality
+  // Candle Quality Category
   const body = Math.abs(last.close - last.open);
   const range = last.high - last.low || 0.0001;
   const bodyRatio = body / range;
-  const upperWick = last.high - Math.max(last.close, last.open);
-  const lowerWick = Math.min(last.close, last.open) - last.low;
-  if (bodyRatio > 0.72) {
-    score += 8; isGreenCandle ? bullPts++ : bearPts++;
-    reasons.push({ icon: '✅', text: `Strong ${isGreenCandle ? 'green' : 'red'} candle — ${(bodyRatio * 100).toFixed(0)}% body, minimal wicks. ${isGreenCandle ? 'Buyers' : 'Sellers'} dominated from open to close.` });
-  } else if (upperWick > body * 1.8) {
-    score -= 6;
-    reasons.push({ icon: '⚠️', text: `Long upper wick — sellers pushed price back down after a rally. Possible rejection at this level.` });
-  } else if (lowerWick > body * 1.8) {
-    score -= 4; bullPts++;
-    reasons.push({ icon: '⚠️', text: `Long lower wick — buyers absorbed selling and pushed back. Potential reversal or support zone.` });
-  }
+  const upperW = last.high - Math.max(last.close, last.open);
+  const lowerW = Math.min(last.close, last.open) - last.low;
+  let candleScore = bodyRatio > 0.7 ? 88 : bodyRatio > 0.5 ? 72 : bodyRatio > 0.3 ? 55 : 30;
+  if (isGreen && upperW > body * 2) candleScore -= 22;
+  if (!isGreen && lowerW > body * 2) candleScore -= 22;
+  candleScore = Math.max(14, Math.min(92, candleScore));
 
-  // 5-bar momentum
+  // Price Momentum Category (5-bar)
   const fiveBack = closes[Math.max(0, n - 6)];
   const momentum = closes[n - 1] - fiveBack;
   const avgRange = candles.slice(-10).reduce((s, c) => s + (c.high - c.low), 0) / 10;
-  if (Math.abs(momentum) > avgRange * 0.75) {
-    score += 7; momentum > 0 ? bullPts++ : bearPts++;
-    reasons.push({ icon: '✅', text: `Price moved ${momentum > 0 ? '+' : ''}$${momentum.toFixed(2)} over the last 5 candles — strong directional momentum.` });
-  }
+  const momScore = Math.abs(momentum) > avgRange * 0.75
+    ? (momentum > 0 ? (isGreen ? 82 : 22) : (isGreen ? 22 : 82))
+    : 50;
 
-  const direction = bullPts > bearPts ? 'BULLISH' : bearPts > bullPts ? 'BEARISH' : 'NEUTRAL';
-  return { score: Math.round(Math.max(30, Math.min(96, score))), direction, reasons };
+  const cats = [
+    { name: 'RSI / Momentum',   score: rsiScore    },
+    { name: 'Volume Surge',     score: volScore    },
+    { name: 'Trend Alignment',  score: trendScore  },
+    { name: 'Candle Quality',   score: candleScore },
+    { name: 'Price Momentum',   score: momScore    },
+  ];
+  const overall = Math.round(cats.reduce((s, c) => s + c.score, 0) / cats.length);
+  const score = Math.round(Math.max(30, Math.min(96, overall)));
+  const grade = score >= 82 ? 'A+' : score >= 72 ? 'A' : score >= 62 ? 'B+' : score >= 52 ? 'B' : score >= 42 ? 'C' : 'D';
+  const direction = isGreen ? 'BULLISH' : 'BEARISH';
+  return { score, direction, cats, grade };
 }
 
 function updateSampsonX() {
   if (!candles || candles.length < 5) return;
-  const { score, direction, reasons } = calcChartConfidence(candles);
-  const color = score >= 70 ? '#00d4aa' : score >= 50 ? '#f5a623' : '#ff4566';
+  const { score, direction, cats, grade } = calcChartConfidence(candles);
+  const color = score >= 70 ? '#00c96b' : score >= 50 ? '#f5a623' : '#ff4566';
+  const barC  = (s) => s >= 70 ? 'var(--bull)' : s >= 50 ? 'var(--accent)' : s >= 35 ? 'var(--warn)' : 'var(--bear)';
+  const gradeC = (g) => g.startsWith('A') ? 'var(--bull)' : g.startsWith('B') ? 'var(--accent)' : g === 'C' ? 'var(--warn)' : 'var(--bear)';
   document.getElementById('sxFill').style.width = score + '%';
   document.getElementById('sxFill').style.background = color;
   const pctEl = document.getElementById('sxPct');
@@ -1018,8 +1090,18 @@ function updateSampsonX() {
   dirEl.textContent = direction;
   dirEl.className = 'sx-dir ' + (direction === 'BULLISH' ? 'bull' : direction === 'BEARISH' ? 'bear' : 'neut');
   document.getElementById('sxExpand').innerHTML =
-    `<div class="sx-why">Why ${score}% — ${direction}</div>` +
-    reasons.map(r => `<div class="sx-reason"><div class="sx-reason-icon">${r.icon}</div><div>${r.text}</div></div>`).join('');
+    `<div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Market Confidence Breakdown</div>
+     <div class="conf-cats">
+       ${cats.map(c => `<div class="conf-row">
+         <div class="conf-name">${c.name}</div>
+         <div class="conf-track"><div class="conf-fill" style="width:${c.score}%;background:${barC(c.score)}"></div></div>
+         <div class="conf-pct">${c.score}%</div>
+       </div>`).join('')}
+     </div>
+     <div class="conf-grade-line">
+       <span class="conf-grade-label">Overall Market Grade</span>
+       <span class="conf-grade-val" style="color:${gradeC(grade)}">${grade}</span>
+     </div>`;
 }
 
 function toggleSampsonX() {
@@ -1088,21 +1170,24 @@ function fireAlert(name, pat) {
 }
 
 function showPatternInfo(name, pat) {
+  const meta = PATTERN_META[name] || {};
+  const typeLabel = pat.type === 'bull' ? 'Bullish' : pat.type === 'bear' ? 'Bearish' : 'Neutral';
+  const typeColor = pat.type === 'bull' ? 'var(--bull)' : pat.type === 'bear' ? 'var(--bear)' : 'var(--warn)';
+  const condHtml = meta.conditions ? `
+    <div class="pat-conditions">
+      <div class="pat-cond-title">Best Market Conditions</div>
+      ${meta.conditions.map(c => `<div class="pat-cond-item">✓ ${c}</div>`).join('')}
+    </div>` : '';
+
   document.getElementById('patternInfo').innerHTML = `
-    <div class="pattern-info-title">${name}</div>
-    <div class="pattern-info-text">${pat.desc}</div>
-    <div class="pattern-info-stat">
-      <span class="stat-label">Historical Reliability</span>
-      <span class="stat-val ${pat.type}">${pat.reliability}</span>
-    </div>
-    <div class="pattern-info-stat">
-      <span class="stat-label">Signal Type</span>
-      <span class="stat-val ${pat.type}">${pat.signal}</span>
-    </div>
-    <div class="pattern-info-stat">
-      <span class="stat-label">Candles Involved</span>
-      <span class="stat-val">${pat.candles}</span>
-    </div>
+    <div class="pattern-info-title" style="font-size:13px;margin-bottom:4px">${name}</div>
+    <div style="margin-bottom:10px"><span style="font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;background:${typeColor}22;color:${typeColor};border:1px solid ${typeColor}44">${typeLabel} ${pat.signal}</span></div>
+    <div class="pattern-info-text" style="margin-bottom:10px">${pat.desc}</div>
+    <div class="pat-intel-row"><span class="pat-intel-key">Historical Win Rate</span><span class="pat-intel-val" style="color:${typeColor}">${pat.reliability}</span></div>
+    <div class="pat-intel-row"><span class="pat-intel-key">Candles Required</span><span class="pat-intel-val">${pat.candles}</span></div>
+    ${meta.typicalMove ? `<div class="pat-intel-row"><span class="pat-intel-key">Typical Move</span><span class="pat-intel-val" style="color:${typeColor}">${meta.typicalMove}</span></div>` : ''}
+    ${meta.avgCandles ? `<div class="pat-intel-row"><span class="pat-intel-key">Avg Time Until Move</span><span class="pat-intel-val">${meta.avgCandles} candles</span></div>` : ''}
+    ${condHtml}
   `;
 }
 
@@ -1112,7 +1197,9 @@ function drawChart() {
   if (W === 0 || H === 0) return;
   ctx.clearRect(0, 0, W, H);
 
-  const visible = candles.slice(-55);
+  const visible = learnMode
+    ? candles.slice(Math.max(0, learnModeIdx - 54), learnModeIdx + 1)
+    : candles.slice(-55);
   const n = visible.length;
   if (!n) return;
 
@@ -1168,7 +1255,7 @@ function drawChart() {
     }
 
     // Highlight last few candles if pattern detected
-    const isHighlighted = checkCandleHighlight(i, n);
+    const isHighlighted = checkCandleHighlight(i, n, visible);
     if (isHighlighted) {
       ctx.save();
       ctx.shadowColor = isHighlighted === 'bull' ? '#00c96b' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623';
@@ -1225,13 +1312,10 @@ function drawChart() {
   drawVolume(visible);
 }
 
-function checkCandleHighlight(i, n) {
-  // Check if pattern detected and highlight recent candles
-  const recent = candles.slice(-55);
-  const c = recent;
+function checkCandleHighlight(i, n, visible) {
   const patterns = Object.entries(PATTERNS);
   for (const [name, pat] of patterns) {
-    if (pat.detect(c) && i >= n - pat.candles) {
+    if (pat.detect(visible) && i >= n - pat.candles) {
       return pat.type;
     }
   }
@@ -1284,6 +1368,153 @@ function setTF(btn, tf) {
 }
 
 // ─── AI TRADE COACH ────────────────────────────────────────────
+
+function _candleMetrics(candle, idx, visible) {
+  const isBull = candle.close >= candle.open;
+  const body   = Math.abs(candle.close - candle.open);
+  const range  = candle.high - candle.low || 0.001;
+  const bPct   = body / range;
+  const upperW = candle.high - Math.max(candle.open, candle.close);
+  const lowerW = Math.min(candle.open, candle.close) - candle.low;
+  const prior  = visible.slice(Math.max(0, idx - 20), idx);
+  const avgVol = prior.length ? prior.reduce((s, c) => s + c.volume, 0) / prior.length : candle.volume;
+  const volR   = candle.volume / (avgVol || 1);
+  let streak = 0;
+  for (let i = idx - 1; i >= 0; i--) {
+    if (isBull ? visible[i].close >= visible[i].open : visible[i].close < visible[i].open) streak++;
+    else break;
+  }
+  return { isBull, body, range, bPct, upperW, lowerW, volR, streak };
+}
+
+function calcConfidenceBreakdown(candle, idx, visible) {
+  const { isBull, body, range, bPct, upperW, lowerW, volR, streak } = _candleMetrics(candle, idx, visible);
+  let patScore = bPct > 0.7 ? 90 : bPct > 0.5 ? 74 : bPct > 0.3 ? 57 : 30;
+  if (isBull && upperW > body * 2) patScore -= 22;
+  if (!isBull && lowerW > body * 2) patScore -= 22;
+  patScore = Math.max(14, Math.min(94, patScore));
+  const volScore = volR >= 2 ? 92 : volR >= 1.4 ? 74 : volR >= 0.8 ? 52 : volR >= 0.5 ? 34 : 18;
+  const trendScore = streak >= 4 ? 92 : streak >= 2 ? 75 : streak >= 1 ? 58 : 35;
+  const slice10 = visible.slice(Math.max(0, idx - 10), idx);
+  const hi10 = slice10.length ? Math.max(...slice10.map(c => c.high)) : candle.high;
+  const lo10 = slice10.length ? Math.min(...slice10.map(c => c.low))  : candle.low;
+  const rDist = (hi10 - candle.close) / (range * 5 + 0.001);
+  const sDist = (candle.close - lo10) / (range * 5 + 0.001);
+  const srScore = Math.max(15, Math.min(88, Math.round(
+    isBull ? 40 + Math.min(42, rDist * 28) + Math.min(12, sDist * 4)
+           : 40 + Math.min(42, sDist * 28) + Math.min(12, rDist * 4)
+  )));
+  const closes = visible.map(c => c.close);
+  const p = Math.min(14, idx);
+  let g = 0, l = 0;
+  const cl = closes.slice(Math.max(0, idx - p), idx + 1);
+  for (let i = 1; i < cl.length; i++) { const d = cl[i]-cl[i-1]; if (d>0) g+=d; else l-=d; }
+  const aG = g / Math.max(1, cl.length-1), aL = l / Math.max(1, cl.length-1);
+  const rsi = aL === 0 ? 100 : 100 - 100/(1+aG/aL);
+  const momScore = isBull
+    ? (rsi<30?90:rsi<50?70:rsi<65?52:rsi<75?36:20)
+    : (rsi>70?90:rsi>50?70:rsi>35?52:rsi>25?36:20);
+  const cats = [
+    { name:'Pattern Strength',     score:patScore   },
+    { name:'Volume Confirmation',  score:volScore   },
+    { name:'Trend Alignment',      score:trendScore },
+    { name:'Support / Resistance', score:srScore    },
+    { name:'Momentum',             score:momScore   },
+  ];
+  const overall = Math.round(cats.reduce((s,c)=>s+c.score,0)/cats.length);
+  const grade = overall>=85?'A+':overall>=75?'A':overall>=65?'B+':overall>=55?'B':overall>=45?'C':'D';
+  return { cats, overall, grade };
+}
+
+function buildTraderNotes(candle, idx, visible) {
+  const { isBull, body, range, bPct, upperW, lowerW, volR, streak } = _candleMetrics(candle, idx, visible);
+  const notes = [];
+  if (bPct > 0.65) notes.push({ ok:true,  text:`Strong ${isBull?'bullish':'bearish'} body (${(bPct*100).toFixed(0)}% of range)` });
+  else if (bPct < 0.15) notes.push({ ok:false, text:`Weak body — indecision, market is undecided` });
+  if (lowerW > body * 1.5) notes.push({ ok:true,  text:`Long lower wick — buyers defended lower prices` });
+  if (upperW > body * 1.5) notes.push({ ok:false, text:`Long upper wick — sellers rejected the rally` });
+  if (isBull && upperW < body * 0.25) notes.push({ ok:true, text:`Clean close near the highs — buyers held control` });
+  if (!isBull && lowerW < body * 0.25) notes.push({ ok:true, text:`Clean close near the lows — sellers held control` });
+  if (volR >= 1.5) notes.push({ ok:true,  text:`Above-average volume — ${volR.toFixed(1)}× normal confirms the move` });
+  else if (volR < 0.65) notes.push({ ok:false, text:`Low volume — weak participation, treat with caution` });
+  else notes.push({ ok:null, text:`Average volume — normal trading activity` });
+  if (streak >= 2) notes.push({ ok:isBull, text:`${streak+1} ${isBull?'bullish':'bearish'} candles in a row — momentum building` });
+  else if (streak === 0 && idx > 0) {
+    const prev = visible[idx-1];
+    if ((isBull && prev.close<prev.open)||(!isBull && prev.close>=prev.open))
+      notes.push({ ok:null, text:`Direction flip from last candle — wait for confirmation` });
+  }
+  return notes;
+}
+
+function buildSampsonXTip(candle, idx, visible) {
+  const { isBull, body, range, bPct, upperW, lowerW, volR, streak } = _candleMetrics(candle, idx, visible);
+  if (bPct < 0.12) return `This candle is a Doji — the market is completely undecided. SampsonX says: wait. Trading indecision is one of the most common beginner mistakes. The next candle has to show a winner before you put money down.`;
+  if (upperW > body * 2 && isBull) return `Bullish candle, but that upper wick is a problem. Sellers rejected the rally and pushed price back down. SampsonX flags this as a "rejection candle." Even though it closed higher, the wick means resistance above is serious. Watch the next candle closely.`;
+  if (lowerW > body * 2 && !isBull) return `Bearish candle with a bullish wick at the bottom. Buyers stepped in and pushed back — but sellers still won the round. SampsonX calls this a battle zone. If buyers can push above this candle's high on the next bar, bears may be losing their grip.`;
+  if (isBull && volR >= 1.5 && bPct > 0.55) return `Strong body + above-average volume. SampsonX calls this a conviction candle — the move has real fuel behind it. Professional traders watch for the next candle to confirm: a close above this high makes the bullish case much stronger.`;
+  if (!isBull && volR >= 1.5 && bPct > 0.55) return `Heavy red candle with volume backing it up. SampsonX says: this is what a real selloff looks like. Don't try to catch this falling knife — wait for sellers to exhaust themselves first. Look for a small green candle on low volume before considering the long side.`;
+  if (streak >= 2 && isBull) return `${streak+1} green candles in a row. SampsonX sees building momentum — trends tend to continue until they don't. Watch the volume on each new candle: if it starts shrinking while price moves up, the rally may be running out of fuel soon.`;
+  if (streak >= 2 && !isBull) return `${streak+1} red candles in a row. SampsonX says sellers are in firm control. Fighting this trend is one of the most expensive beginner mistakes. Wait for a small green relief candle before even thinking about the long side.`;
+  if (volR < 0.5) return `Low volume candle. SampsonX flags this: almost nobody participated in this ${isBull?'bullish':'bearish'} move. Low-volume moves are the easiest to fake and the first to reverse. "Low volume = low trust" is a rule experienced traders live by.`;
+  return `Moderate ${isBull?'bullish':'bearish'} candle. SampsonX sees a slight directional edge but no strong conviction signal. The best setups build on each other — let the next candle confirm the direction before acting. One candle tells a story; two candles tell the truth.`;
+}
+
+function calcTradeScore(candle, idx, visible) {
+  const { isBull, body, range, bPct, upperW, lowerW, volR, streak } = _candleMetrics(candle, idx, visible);
+  let score = 50;
+  const reasons = [];
+  if (bPct > 0.65) { score+=18; reasons.push({pos:true,  text:'Strong candle body'}); }
+  else if (bPct > 0.4) { score+=9;  reasons.push({pos:true,  text:'Decent candle body'}); }
+  else               { score-=5;  reasons.push({pos:false, text:'Weak candle body'}); }
+  if (isBull && upperW > body*2) { score-=14; reasons.push({pos:false, text:'Bearish rejection wick'}); }
+  if (!isBull && lowerW > body*2) { score-=14; reasons.push({pos:false, text:'Bullish reversal wick'}); }
+  if (isBull && upperW < body*0.2) { score+=6; reasons.push({pos:true, text:'Clean close at highs'}); }
+  if (!isBull && lowerW < body*0.2) { score+=6; reasons.push({pos:true, text:'Clean close at lows'}); }
+  if (volR >= 1.5) { score+=12; reasons.push({pos:true,  text:'Above-average volume'}); }
+  else if (volR < 0.6) { score-=10; reasons.push({pos:false, text:'Below-average volume'}); }
+  if (streak >= 3) { score+=10; reasons.push({pos:true, text:`Strong trend (${streak+1} in a row)`}); }
+  else if (streak >= 1) { score+=5; reasons.push({pos:true, text:`Trend aligned (${streak+1} candles)`}); }
+  const ap = Object.entries(PATTERNS).find(([,p])=>p.detect(visible.slice(0,idx+1)));
+  if (ap) { score+=8; reasons.push({pos:true, text:ap[0]+' pattern'}); }
+  if (bPct < 0.1) { score-=12; reasons.push({pos:false, text:'Indecision (Doji)'}); }
+  score = Math.round(Math.max(20, Math.min(97, score)));
+  const grade = score>=90?'A+':score>=80?'A':score>=70?'B+':score>=60?'B':score>=50?'C':'D';
+  const color = score>=75?'var(--bull)':score>=55?'var(--accent)':score>=40?'var(--warn)':'var(--bear)';
+  return { score, grade, color, reasons: reasons.slice(0,5) };
+}
+
+function calcWatchLevels(candle) {
+  const buf = (candle.high - candle.low) * 0.12;
+  return {
+    bull: { price:'$'+(candle.high+buf).toFixed(2), desc:'Bullish continuation probability increases' },
+    bear: { price:'$'+(candle.low -buf).toFixed(2), desc:'Bearish setup / bullish setup weakens'      },
+  };
+}
+
+function buildAISummary(candle, idx, visible) {
+  const { isBull, bPct, volR, streak } = _candleMetrics(candle, idx, visible);
+  const trend = streak>=2?(isBull?'Bullish':'Bearish'):bPct>0.3?(isBull?'Bullish':'Bearish'):'Neutral';
+  const trendCls = trend==='Bullish'?'bull':trend==='Bearish'?'bear':'';
+  const mom = streak>=3?'Increasing':streak>=1?'Building':bPct<0.15?'None':'Moderate';
+  const vol = volR>=1.5?'Strong':volR>=0.8?'Average':'Weak';
+  const volCls = volR>=1.5?'bull':volR<0.6?'bear':'';
+  const ap = Object.entries(PATTERNS).find(([,p])=>p.detect(visible.slice(0,idx+1)));
+  const pat = ap ? ap[0] : 'None detected';
+  const risk = bPct<0.2?'High':volR<0.6?'Moderate':isBull&&bPct>0.3?'Moderate':'Low';
+  const riskCls = risk==='High'?'bear':risk==='Moderate'?'warn':'bull';
+  const reward = streak>=2&&bPct>0.5?'Strong':bPct>0.3&&volR>=1.0?'Good':'Moderate';
+  const buf = (candle.high-candle.low)*0.12;
+  const bullLvl = '$'+(candle.high+buf).toFixed(2);
+  const bearLvl = '$'+(candle.low-buf).toFixed(2);
+  let action;
+  if (bPct<0.12) action=`Wait for the next candle to show a clear direction before considering a trade.`;
+  else if (isBull&&bPct>0.5&&volR>=1.2) action=`If the next candle closes above ${bullLvl}, bullish probability increases. Watch for confirmation.`;
+  else if (!isBull&&bPct>0.5&&volR>=1.2) action=`If the next candle closes below ${bearLvl}, bearish probability increases. Watch for continuation.`;
+  else if (isBull) action=`Wait for confirmation above ${bullLvl} before entering. Let the next candle confirm.`;
+  else action=`Watch for a break below ${bearLvl} to confirm. One candle is not a trend.`;
+  return { trend, trendCls, mom, vol, volCls, pat, risk, riskCls, reward, action };
+}
 
 function analyzeCandle(candle, idx, visible) {
   const isBull  = candle.close >= candle.open;
@@ -1391,7 +1622,9 @@ function analyzeCandle(candle, idx, visible) {
 function onCandleClick(clientX, clientY) {
   const rect  = chartCanvas.getBoundingClientRect();
   const x     = (clientX - rect.left) * (chartCanvas.width / rect.width);
-  const visible = candles.slice(-55);
+  const visible = learnMode
+    ? candles.slice(Math.max(0, learnModeIdx - 54), learnModeIdx + 1)
+    : candles.slice(-55);
   const n     = visible.length;
   if (!n) return;
 
@@ -1406,30 +1639,113 @@ function onCandleClick(clientX, clientY) {
   selectedVisibleIdx = idx;
   drawChart();
   showCoach(visible[idx], idx, visible);
+
+  // In learn mode, clicking the last candle activates the guess flow
+  if (learnMode && idx === n - 1 && !learnAnswered) {
+    const el = document.getElementById('learnGuessSection');
+    if (el) { el.style.display = 'block'; }
+  }
 }
 
 function showCoach(candle, idx, visible) {
   const isBull = candle.close >= candle.open;
-  const lines  = analyzeCandle(candle, idx, visible);
 
   const badge = document.getElementById('coachBadge');
   badge.textContent = isBull ? '▲ BULLISH' : '▼ BEARISH';
   badge.className = 'coach-candle-badge ' + (isBull ? 'bull' : 'bear');
 
-  const avgVol = visible.slice(Math.max(0, idx - 20), idx);
+  const volFmt = v => v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;
   document.getElementById('coachOHLC').innerHTML =
     `<span>O</span> <b>$${candle.open.toFixed(2)}</b>
      <span>H</span> <b style="color:var(--bull)">$${candle.high.toFixed(2)}</b>
      <span>L</span> <b style="color:var(--bear)">$${candle.low.toFixed(2)}</b>
      <span>C</span> <b>$${candle.close.toFixed(2)}</b>
-     <span>Vol</span> <b>${candle.volume >= 1e6 ? (candle.volume/1e6).toFixed(1)+'M' : candle.volume >= 1e3 ? (candle.volume/1e3).toFixed(0)+'K' : candle.volume}</b>`;
+     <span>Vol</span> <b>${volFmt(candle.volume)}</b>`;
 
-  document.getElementById('coachLines').innerHTML = lines.map(l =>
-    `<div class="coach-line${l.highlight ? ' highlight' : ''}">
-      <span class="coach-icon">${l.icon}</span>
-      <span class="coach-text">${l.text}</span>
-    </div>`
-  ).join('');
+  const storyLines  = analyzeCandle(candle, idx, visible);
+  const notes       = buildTraderNotes(candle, idx, visible);
+  const tip         = buildSampsonXTip(candle, idx, visible);
+  const conf        = calcConfidenceBreakdown(candle, idx, visible);
+  const ts          = calcTradeScore(candle, idx, visible);
+  const wl          = calcWatchLevels(candle);
+  const sum         = buildAISummary(candle, idx, visible);
+
+  const barC   = s => s>=70?'var(--bull)':s>=50?'var(--accent)':s>=35?'var(--warn)':'var(--bear)';
+  const gradeC = g => g.startsWith('A')?'var(--bull)':g.startsWith('B')?'var(--accent)':g==='C'?'var(--warn)':'var(--bear)';
+
+  const noteIcon = n => n.ok===true?'✅':n.ok===false?'⚠️':'📌';
+
+  const isLastCandle = idx === visible.length - 1;
+  const learnSection = (learnMode && isLastCandle) ? `
+    <div class="learn-guess-section" id="learnGuessSection" style="${learnAnswered?'':''}">
+      <div class="learn-q">📚 What do you think happens next?</div>
+      <div class="learn-hint">Based on this candle's story — take your best read.</div>
+      <div class="learn-btns">
+        <button class="learn-guess-btn" onclick="learnGuess('up')">📈<br>Goes Up</button>
+        <button class="learn-guess-btn" onclick="learnGuess('down')">📉<br>Goes Down</button>
+        <button class="learn-guess-btn" onclick="learnGuess('side')">➡️<br>Sideways</button>
+      </div>
+      <div class="learn-result" id="learnResult"></div>
+      <button class="learn-next-btn" id="learnNextBtn" onclick="learnRevealNext()">▶ Reveal Next Candle</button>
+    </div>` : '';
+
+  document.getElementById('coachContent').innerHTML = `
+    ${learnSection}
+
+    <div class="coach-section-head">Market Story</div>
+    <div class="coach-lines">
+      ${storyLines.map(l=>`<div class="coach-line${l.highlight?' highlight':''}"><span class="coach-icon">${l.icon}</span><span class="coach-text">${l.text}</span></div>`).join('')}
+    </div>
+
+    <div class="coach-section-head">What Professional Traders Notice</div>
+    <div class="coach-notes">
+      ${notes.map(n=>`<div class="coach-note-item"><span style="flex-shrink:0">${noteIcon(n)}</span><span>${n.text}</span></div>`).join('')}
+    </div>
+
+    <div class="coach-section-head">SampsonX</div>
+    <div class="coach-tip-box">${tip}</div>
+
+    <div class="coach-section-head">Confidence Breakdown</div>
+    <div class="conf-cats">
+      ${conf.cats.map(c=>`<div class="conf-row"><div class="conf-name">${c.name}</div><div class="conf-track"><div class="conf-fill" style="width:${c.score}%;background:${barC(c.score)}"></div></div><div class="conf-pct">${c.score}%</div></div>`).join('')}
+      <div class="conf-grade-line">
+        <span class="conf-grade-label">Overall Grade</span>
+        <span class="conf-grade-val" style="color:${gradeC(conf.grade)}">${conf.grade}</span>
+      </div>
+    </div>
+
+    <div class="coach-section-head">Trade Quality Score</div>
+    <div class="trade-score-box">
+      <div class="trade-score-num" style="color:${ts.color}">${ts.score}</div>
+      <div style="flex:1">
+        <div style="margin-bottom:7px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;background:${ts.color}22;color:${ts.color};border:1px solid ${ts.color}44">Grade ${ts.grade}</span></div>
+        <div class="trade-score-reasons">
+          ${ts.reasons.map(r=>`<div class="score-reason-item">${r.pos?'✅':'⚠️'} ${r.text}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="coach-section-head">What To Watch Next</div>
+    <div class="watch-grid">
+      <div class="watch-card bull"><div class="watch-arrow">📈</div><div class="watch-price">${wl.bull.price}</div><div class="watch-desc">If price closes above<br>${wl.bull.desc}</div></div>
+      <div class="watch-card bear"><div class="watch-arrow">📉</div><div class="watch-price">${wl.bear.price}</div><div class="watch-desc">If price closes below<br>${wl.bear.desc}</div></div>
+    </div>
+
+    <div class="coach-section-head">SampsonX Trade Summary</div>
+    <div class="ai-sum-grid">
+      <div class="ai-sum-item"><div class="ai-sum-label">Trend</div><div class="ai-sum-val ${sum.trendCls}">${sum.trend}</div></div>
+      <div class="ai-sum-item"><div class="ai-sum-label">Momentum</div><div class="ai-sum-val">${sum.mom}</div></div>
+      <div class="ai-sum-item"><div class="ai-sum-label">Volume</div><div class="ai-sum-val ${sum.volCls}">${sum.vol}</div></div>
+      <div class="ai-sum-item"><div class="ai-sum-label">Pattern</div><div class="ai-sum-val" style="font-size:10px">${sum.pat}</div></div>
+      <div class="ai-sum-item"><div class="ai-sum-label">Risk</div><div class="ai-sum-val ${sum.riskCls}">${sum.risk}</div></div>
+      <div class="ai-sum-item"><div class="ai-sum-label">Reward</div><div class="ai-sum-val ${sum.reward==='Strong'?'bull':''}">${sum.reward}</div></div>
+    </div>
+    <div class="ai-action-box">
+      <div class="ai-action-label">Suggested Action</div>
+      <div class="ai-action-text">${sum.action}</div>
+    </div>
+    <div class="ai-disclaimer">📚 Educational only — not financial advice. Options trading carries substantial risk of loss.</div>
+  `;
 
   document.getElementById('coachPanel').classList.add('open');
 }
@@ -1438,6 +1754,90 @@ function closeCoach() {
   document.getElementById('coachPanel').classList.remove('open');
   selectedVisibleIdx = null;
   drawChart();
+}
+
+// ─── HISTORICAL LEARNING MODE ──────────────────────────────────
+function toggleLearnMode() {
+  learnMode ? exitLearnMode() : enterLearnMode();
+}
+
+function enterLearnMode() {
+  if (candles.length < 12) { alert('Load a chart first — need at least 12 candles for Learning Mode.'); return; }
+  learnMode = true;
+  learnModeIdx = Math.max(10, candles.length - 15);
+  learnCorrect = 0;
+  learnTotal = 0;
+  learnAnswered = false;
+  document.getElementById('learnModeBtn').classList.add('active');
+  document.getElementById('learnModeBtn').textContent = '📚 Learning...';
+  document.getElementById('learnModeBar').classList.add('active');
+  updateLearnScore();
+  drawChart();
+  // Auto-show coach for the last visible candle
+  const vis = candles.slice(Math.max(0, learnModeIdx - 54), learnModeIdx + 1);
+  selectedVisibleIdx = vis.length - 1;
+  showCoach(vis[vis.length - 1], vis.length - 1, vis);
+}
+
+function exitLearnMode() {
+  learnMode = false;
+  learnAnswered = false;
+  document.getElementById('learnModeBtn').classList.remove('active');
+  document.getElementById('learnModeBtn').textContent = '📚 Learn Mode';
+  document.getElementById('learnModeBar').classList.remove('active');
+  closeCoach();
+  drawChart();
+}
+
+function updateLearnScore() {
+  document.getElementById('learnScoreDisplay').textContent =
+    `Score: ${learnCorrect} / ${learnTotal}` + (learnTotal > 0 ? ` (${Math.round(learnCorrect/learnTotal*100)}%)` : '');
+}
+
+function learnGuess(direction) {
+  if (learnAnswered) return;
+  if (learnModeIdx >= candles.length - 1) {
+    const res = document.getElementById('learnResult');
+    if (res) { res.innerHTML = `You've analyzed all available candles. Well done!`; res.className='learn-result show neutral'; }
+    return;
+  }
+  learnAnswered = true;
+  learnTotal++;
+
+  const curr = candles[learnModeIdx];
+  const next = candles[learnModeIdx + 1];
+  const move = next.close - curr.close;
+  const threshold = (curr.high - curr.low) * 0.3;
+  const actual = Math.abs(move) < threshold ? 'side' : move > 0 ? 'up' : 'down';
+  const correct = direction === actual;
+  if (correct) learnCorrect++;
+  updateLearnScore();
+
+  document.querySelectorAll('.learn-guess-btn').forEach(b => b.disabled = true);
+
+  const labels = { up:'📈 Goes Up', down:'📉 Goes Down', side:'➡️ Sideways' };
+  const moveStr = (move > 0 ? '+' : '') + '$' + move.toFixed(2);
+  const res = document.getElementById('learnResult');
+  if (!res) return;
+  if (correct) {
+    res.innerHTML = `✅ <strong>Correct!</strong> The next candle ${actual==='up'?'moved up':actual==='down'?'moved down':'stayed sideways'} (${moveStr}). Good read.`;
+    res.className = 'learn-result show correct';
+  } else {
+    res.innerHTML = `❌ <strong>Not quite.</strong> You guessed "${labels[direction]}" but the candle ${actual==='up'?'went up':actual==='down'?'went down':'went sideways'} (${moveStr}). Keep studying — price action takes time to learn.`;
+    res.className = 'learn-result show wrong';
+  }
+  const nb = document.getElementById('learnNextBtn');
+  if (nb) nb.className = 'learn-next-btn show';
+}
+
+function learnRevealNext() {
+  if (learnModeIdx >= candles.length - 1) { exitLearnMode(); return; }
+  learnModeIdx++;
+  learnAnswered = false;
+  drawChart();
+  const vis = candles.slice(Math.max(0, learnModeIdx - 54), learnModeIdx + 1);
+  selectedVisibleIdx = vis.length - 1;
+  showCoach(vis[vis.length - 1], vis.length - 1, vis);
 }
 
 // Close coach when tapping outside
@@ -1471,7 +1871,7 @@ document.addEventListener('visibilitychange', () => {
   <div class="coach-handle"></div>
   <div class="coach-header">
     <div>
-      <div class="coach-title">🤖 SampsonX</div>
+      <div class="coach-title">🤖 SampsonX Coach</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <span class="coach-candle-badge" id="coachBadge">—</span>
@@ -1479,8 +1879,8 @@ document.addEventListener('visibilitychange', () => {
     </div>
   </div>
   <div class="coach-ohlc" id="coachOHLC"></div>
-  <div class="coach-lines" id="coachLines"></div>
-  <div class="coach-tip">Tap any candle to re-analyze · Tap outside to close</div>
+  <div id="coachContent"></div>
+  <div class="coach-tip" style="margin-top:14px">Tap any candle to re-analyze · Tap outside to close</div>
 </div>
 
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
