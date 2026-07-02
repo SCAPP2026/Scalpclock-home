@@ -46,6 +46,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
 .b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
 .b-mark svg{width:18px;height:18px;}
+.nav-page-links{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;}
+.nav-page-links a{font-size:.85rem;color:var(--t55);padding:6px 12px;border-radius:8px;text-decoration:none;transition:color .15s,background .15s;}
+.nav-page-links a:hover{color:var(--text);background:rgba(22,217,126,.07);}
+@media(max-width:600px){.nav-page-links{display:none;}}
 .nav-right{display:flex;align-items:center;gap:12px;}
 .nav-email{font-size:.82rem;color:var(--t55);font-family:var(--mono);}
 .btn-signout{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:7px 16px;
@@ -259,6 +263,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <span class="brand-motto">The Time To Profit Is Now</span>
       </div>
     </a>
+    <div class="nav-page-links">
+      <a href="/scalpchart.html">ScalpCharts</a>
+      <a href="/exitassistant.html">Exit Assistant</a>
+      <a href="/pricing.html">Pricing</a>
+    </div>
     <div class="nav-right">
       <span class="nav-email" id="userEmail">Loading...</span>
       <button class="btn-signout" onclick="signOut()">Sign Out</button>

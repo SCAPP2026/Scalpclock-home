@@ -646,6 +646,23 @@
     .ohlcv-val { font-size: 11px; }
     .price-display { display: none; }
   }
+
+  /* ── NAV DRAWER ── */
+  .ham-btn{background:none;border:1px solid rgba(120,200,160,.18);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .ham-btn span{display:block;width:18px;height:2px;background:#c8d4e8;border-radius:2px;transition:.2s;}
+  .sc-overlay{display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+  .sc-overlay.open{display:block;}
+  .sc-drawer{position:fixed;top:0;right:0;bottom:0;width:270px;background:rgba(7,10,8,.98);backdrop-filter:blur(20px);border-left:1px solid rgba(22,217,126,.15);z-index:99;display:flex;flex-direction:column;padding:0;transform:translateX(100%);transition:transform .25s ease;}
+  .sc-drawer.open{transform:translateX(0);}
+  .sc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid rgba(22,217,126,.1);}
+  .sc-drawer-head span{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;color:#eef3f0;letter-spacing:.04em;}
+  .sc-drawer-head button{background:none;border:none;color:#c8d4e8;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+  .sc-drawer-links{display:flex;flex-direction:column;gap:2px;padding:12px;}
+  .sc-drawer-links a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:1.05rem;color:rgba(238,243,240,.7);text-decoration:none;transition:background .15s,color .15s;border:1px solid transparent;}
+  .sc-drawer-links a:hover{color:#eef3f0;background:rgba(22,217,126,.08);border-color:rgba(22,217,126,.15);}
+  .sc-drawer-links a.sc-active{color:#16d97e;}
+  .sc-drawer-links .sc-cta{margin-top:12px;background:#16d97e;color:#070a08;font-weight:700;justify-content:center;border-color:transparent;}
+  .sc-drawer-links .sc-cta:hover{background:#12c470;color:#070a08;}
 </style>
 </head>
 <body>
@@ -677,7 +694,26 @@
     <div class="price-main" id="priceMain">—</div>
     <div class="price-change up" id="priceChange">—</div>
   </div>
+  <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
+<div class="sc-drawer" id="scDrawer">
+  <div class="sc-drawer-head">
+    <span>NAVIGATE</span>
+    <button onclick="closeSCNav()">✕</button>
+  </div>
+  <div class="sc-drawer-links">
+    <a href="/">🏠 Home</a>
+    <a href="/scalpchart.html" class="sc-active">📊 ScalpCharts</a>
+    <a href="/exitassistant.html">🚪 Exit Assistant</a>
+    <a href="/pricing.html">💳 Pricing</a>
+    <a href="/dashboard.html">⚙️ Dashboard</a>
+    <a href="/signup.html" class="sc-cta">Start Free →</a>
+  </div>
+</div>
 
 <div class="sx-bar" id="sxBar" onclick="toggleSampsonX()">
   <div class="sx-label">SampsonX</div>
@@ -1913,7 +1949,12 @@ document.addEventListener('visibilitychange', () => {
   <div class="coach-tip" style="margin-top:14px">Tap any candle to re-analyze · Tap outside to close</div>
 </div>
 
-<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+<script>
+function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
+function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">
   &copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.<br>
   For informational purposes only. Not financial advice. Options trading carries substantial risk of loss.
