@@ -31,12 +31,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
   background-size:auto,48px 48px,48px 48px;}
 .box{position:relative;z-index:1;width:100%;max-width:420px;}
-.brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:32px;
-  font-family:var(--disp);font-weight:700;font-size:1.6rem;letter-spacing:.02em;text-decoration:none;color:var(--text);}
-.b-mark{width:36px;height:36px;border-radius:9px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);
-  border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;}
-.b-mark svg{width:20px;height:20px;}
-.brand em{color:var(--green);font-style:normal;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;justify-content:center;margin-bottom:32px;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.45rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px;
   box-shadow:0 24px 64px rgba(0,0,0,.5);}
 .tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:1px solid var(--line);}
@@ -65,14 +66,17 @@ input::placeholder{color:var(--t30);}
 <body>
 <div class="box">
   <a class="brand" href="/">
-    <span class="b-mark">
+    <div class="b-mark">
       <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
         <circle cx="9" cy="9" r="7"/>
         <line x1="9" y1="9" x2="9" y2="4.5"/>
         <line x1="9" y1="9" x2="12.5" y2="9"/>
       </svg>
-    </span>
-    Scalp<em>Clock</em>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">Scalp<em>Clock</em></span>
+      <span class="brand-motto">The Time To Profit Is Now</span>
+    </div>
   </a>
 
   <div class="card">
