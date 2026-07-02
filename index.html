@@ -150,8 +150,11 @@ body::before {
 .hero { position: relative; text-align: center; padding: 52px 0 28px; }
 @media (max-width: 480px) { .hero { padding: 32px 0 20px; } }
 .hero-art {
-  display: block; width: min(55%, 460px); margin: 0 auto; border-radius: 20px;
-  box-shadow: 0 24px 80px rgba(0,0,0,.70), 0 0 60px rgba(22,217,126,.12);
+  display: block; width: min(55%, 460px); margin: 0 auto;
+  mix-blend-mode: screen;
+  filter: brightness(1.08) contrast(1.04) saturate(1.1);
+  -webkit-mask-image: radial-gradient(ellipse 82% 82% at 50% 50%, black 45%, transparent 100%);
+  mask-image: radial-gradient(ellipse 82% 82% at 50% 50%, black 45%, transparent 100%);
   animation: floaty 8s ease-in-out infinite; will-change: transform;
 }
 @media (max-width: 720px) { .hero-art { width: 72%; } }
