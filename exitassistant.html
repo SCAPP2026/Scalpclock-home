@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="/hero.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 
@@ -60,15 +60,32 @@
   }
 
   .logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: -0.5px;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
     flex-shrink: 0;
   }
-  .logo span { color: var(--muted); font-weight: 400; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: radial-gradient(circle at 50% 40%, #1a2b22, #070a08);
+    border: 1px solid rgba(22,217,126,.55);
+    box-shadow: 0 0 16px rgba(22,217,126,.30);
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .logo-mark svg { width: 16px; height: 16px; }
+  .logo-text { display: flex; flex-direction: column; gap: 1px; }
+  .logo-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 1.1rem;
+    letter-spacing: .02em; color: #eef3f0; line-height: 1;
+  }
+  .logo-name em { color: #16d97e; font-style: normal; }
+  .logo-motto {
+    font-size: .58rem; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: #16d97e; opacity: .8; white-space: nowrap;
+  }
 
   .back-link {
     display: inline-flex;
@@ -1566,7 +1583,19 @@
 <!-- HEADER -->
 <header>
   <a class="back-link" href="/">← Home</a>
-  <div class="logo">Scalp<span>exit</span></div>
+  <a class="logo" href="/">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="9" cy="9" r="7"/>
+        <line x1="9" y1="9" x2="9" y2="4.5"/>
+        <line x1="9" y1="9" x2="12.5" y2="9"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-name">Scalp<em>Exit</em></span>
+      <span class="logo-motto">The Time To Profit Is Now</span>
+    </div>
+  </a>
   <div class="hdr-right">
     <div class="live-badge">
       <div class="live-dot"></div>
