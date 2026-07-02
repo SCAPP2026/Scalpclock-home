@@ -265,6 +265,19 @@ a{color:inherit;text-decoration:none;}
         </ul>
         <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 7-Day Free Trial</button>
         <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 7 days · Cancel anytime</p>
+        <!-- PROMO CODE -->
+        <div style="margin-top:12px;text-align:center;">
+          <button onclick="togglePromo()" style="background:none;border:none;color:var(--t55);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
+        </div>
+        <div id="promoBox" style="display:none;margin-top:10px;">
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="promoCode" placeholder="ENTER CODE" maxlength="32"
+              style="flex:1;background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font-size:.85rem;outline:none;font-family:var(--body);text-transform:uppercase;letter-spacing:.06em;">
+            <button id="promoApplyBtn" onclick="applyPromo()"
+              style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:9px 16px;border-radius:8px;background:rgba(22,217,126,.12);border:1px solid rgba(22,217,126,.3);color:var(--green);cursor:pointer;white-space:nowrap;">Apply</button>
+          </div>
+          <div id="promoMsg" style="display:none;margin-top:8px;font-size:.8rem;padding:8px 12px;border-radius:7px;"></div>
+        </div>
         <div class="waitlist-toast toast-pro" id="proToast" style="margin-top:10px;"></div>
       </div>
 
@@ -325,14 +338,67 @@ a{color:inherit;text-decoration:none;}
 <p class="footer-note">Pro trial requires a card · no charge for 7 days · cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a></p>
 <p class="footer-note" style="margin-top:10px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-let annual = false;
+const _sb = supabase.createClient(
+  'https://fnuqxiflqqejjttxymbz.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY'
+);
+
+let annual  = false;
+let _promoId = null;
 
 function toggleBilling() {
   annual = !annual;
   document.getElementById('billingToggle').classList.toggle('annual', annual);
   document.getElementById('proPrice').textContent = annual ? '$7.99' : '$9.99';
   document.getElementById('proLabel').textContent = annual ? '/month, billed annually' : '/month';
+}
+
+function togglePromo() {
+  const box = document.getElementById('promoBox');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display === 'block') setTimeout(() => document.getElementById('promoCode').focus(), 50);
+}
+
+async function applyPromo() {
+  const code = (document.getElementById('promoCode').value || '').trim().toUpperCase();
+  if (!code) return;
+  const btn = document.getElementById('promoApplyBtn');
+  const msg = document.getElementById('promoMsg');
+  btn.textContent = '…';
+  btn.disabled    = true;
+  msg.style.display = 'none';
+
+  let userId = null;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    userId = session?.user?.id || null;
+  } catch(_) {}
+
+  try {
+    const res  = await fetch('/api/stripe/validate-promo', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ code, userId }),
+    });
+    const data = await res.json();
+    if (data.valid) {
+      _promoId = data.promoId;
+      msg.textContent = `✓ ${data.discountText} applied — you're set!`;
+      msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);';
+      document.getElementById('proBtn').textContent = 'Claim Free Month';
+    } else {
+      _promoId = null;
+      msg.textContent = data.error || 'Invalid or expired code.';
+      msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(255,59,70,.08);border:1px solid rgba(255,59,70,.3);color:#ff3b46;';
+    }
+  } catch(_) {
+    msg.textContent = 'Could not validate — please try again.';
+    msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(255,59,70,.08);border:1px solid rgba(255,59,70,.3);color:#ff3b46;';
+  }
+  btn.textContent = 'Apply';
+  btn.disabled    = false;
 }
 
 async function startCheckout(isTrial) {
@@ -343,15 +409,25 @@ async function startCheckout(isTrial) {
   btn.textContent = 'Redirecting…';
   toast.style.display = 'none';
 
+  let userId = null;
   try {
+    const { data: { session } } = await _sb.auth.getSession();
+    userId = session?.user?.id || null;
+  } catch(_) {}
+
+  try {
+    const body = {
+      tier:    'pro',
+      billing: annual ? 'annual' : 'monthly',
+      trial:   isTrial === true && !_promoId,
+    };
+    if (_promoId) body.promoId = _promoId;
+    if (userId)   body.userId  = userId;
+
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        tier:    'pro',
-        billing: annual ? 'annual' : 'monthly',
-        trial:   isTrial === true,
-      }),
+      body:    JSON.stringify(body),
     });
     const data = await res.json();
     if (data.url) {
@@ -360,7 +436,7 @@ async function startCheckout(isTrial) {
       throw new Error(data.error || 'No checkout URL returned');
     }
   } catch (err) {
-    toast.textContent       = 'Something went wrong — please try again.';
+    toast.textContent       = err.message || 'Something went wrong — please try again.';
     toast.style.display     = 'block';
     toast.style.background  = 'rgba(255,59,70,.08)';
     toast.style.borderColor = 'rgba(255,59,70,.3)';

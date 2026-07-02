@@ -1,3 +1,5 @@
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+
 export async function onRequest(context) {
   const { env, request } = context;
 
@@ -30,6 +32,27 @@ export async function onRequest(context) {
         session.customer_email,
         session.subscription
       );
+
+      // If a promo discount was applied, mark the user's account so they can't reuse it
+      const userId    = session.client_reference_id;
+      const hasPromo  = Array.isArray(session.discounts) && session.discounts.length > 0;
+      if (hasPromo && userId && env.SUPABASE_SERVICE_KEY) {
+        try {
+          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+            method:  'PATCH',
+            headers: {
+              apikey:          env.SUPABASE_SERVICE_KEY,
+              Authorization:   `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+              'Content-Type':  'application/json',
+              Prefer:          'return=minimal',
+            },
+            body: JSON.stringify({ promo_redeemed: true }),
+          });
+          console.log('promo_redeemed set for user:', userId);
+        } catch (e) {
+          console.error('Failed to set promo_redeemed:', e.message);
+        }
+      }
       break;
     }
 

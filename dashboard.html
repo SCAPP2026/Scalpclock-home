@@ -495,6 +495,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <br>
     <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Start 7-Day Free Trial</button>
     <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Then $9.99/mo · Cancel anytime</p>
+    <!-- PROMO CODE -->
+    <div style="margin-top:14px;">
+      <button onclick="toggleDashPromo()" style="background:none;border:none;color:var(--t55);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
+    </div>
+    <div id="dashPromoBox" style="display:none;margin-top:10px;max-width:340px;margin-left:auto;margin-right:auto;">
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="dashPromoCode" placeholder="ENTER CODE" maxlength="32"
+          style="flex:1;background:rgba(7,10,8,.8);border:1px solid rgba(120,200,160,.2);border-radius:8px;padding:9px 12px;color:var(--text);font-size:.85rem;outline:none;font-family:var(--body);text-transform:uppercase;letter-spacing:.06em;">
+        <button id="dashPromoApplyBtn" onclick="applyDashPromo()"
+          style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:9px 16px;border-radius:8px;background:rgba(22,217,126,.12);border:1px solid rgba(22,217,126,.3);color:var(--green);cursor:pointer;white-space:nowrap;">Apply</button>
+      </div>
+      <div id="dashPromoMsg" style="display:none;margin-top:8px;font-size:.8rem;padding:8px 12px;border-radius:7px;"></div>
+    </div>
   </div>
 
 </div>
@@ -774,13 +787,54 @@ function showModal(elId, msg, type) {
 }
 
 let _billing = 'monthly';
+let _promoId  = null;
 
 function setBilling(mode) {
   _billing = mode;
   document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
   document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
   const btn = document.getElementById('upgradeBtn');
-  btn.textContent = 'Start 7-Day Free Trial';
+  btn.textContent = _promoId ? 'Claim Free Month' : 'Start 7-Day Free Trial';
+}
+
+function toggleDashPromo() {
+  const box = document.getElementById('dashPromoBox');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display === 'block') setTimeout(() => document.getElementById('dashPromoCode').focus(), 50);
+}
+
+async function applyDashPromo() {
+  const code = (document.getElementById('dashPromoCode').value || '').trim().toUpperCase();
+  if (!code) return;
+  const btn = document.getElementById('dashPromoApplyBtn');
+  const msg = document.getElementById('dashPromoMsg');
+  btn.textContent = '…';
+  btn.disabled    = true;
+  msg.style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/stripe/validate-promo', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ code, userId: _uid }),
+    });
+    const data = await res.json();
+    if (data.valid) {
+      _promoId = data.promoId;
+      msg.textContent = `✓ ${data.discountText} applied — you're set!`;
+      msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);';
+      document.getElementById('upgradeBtn').textContent = 'Claim Free Month';
+    } else {
+      _promoId = null;
+      msg.textContent = data.error || 'Invalid or expired code.';
+      msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(255,59,70,.08);border:1px solid rgba(255,59,70,.3);color:#ff3b46;';
+    }
+  } catch(_) {
+    msg.textContent = 'Could not validate — please try again.';
+    msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(255,59,70,.08);border:1px solid rgba(255,59,70,.3);color:#ff3b46;';
+  }
+  btn.textContent = 'Apply';
+  btn.disabled    = false;
 }
 
 async function startCheckout() {
@@ -789,10 +843,18 @@ async function startCheckout() {
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
+    const body = {
+      tier:    'pro',
+      billing: _billing,
+      trial:   !_promoId,
+    };
+    if (_promoId) body.promoId = _promoId;
+    if (_uid)     body.userId  = _uid;
+
     const res = await fetch('/api/stripe/checkout', {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tier: 'pro', billing: _billing, trial: true }),
+      body:    JSON.stringify(body),
     });
     const data = await res.json();
     if (data.url) {
