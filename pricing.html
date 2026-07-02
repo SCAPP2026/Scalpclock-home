@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalpClock · Pricing — Free, Pro & Elite</title>
-<meta name="description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing. Go Elite for unusual flow, earnings mode and priority alerts.">
+<title>ScalpClock · Pricing — Free, Free Account & Pro</title>
+<meta name="description" content="Start free with delayed signals. Create a free account to save watchlists and track progress. Upgrade to Pro for real-time AI signals, exact entry prices, and every tool that makes money.">
 <link rel="icon" href="hero.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#16d97e">
@@ -22,11 +22,11 @@
   --bg:#070a08;--bg2:#0b110d;
   --panel:rgba(14,22,16,.85);
   --line:rgba(120,200,160,.13);
-  --green:#16d97e;--g-dim:rgba(22,217,126,.12);
-  --gold:#f5a623;--gold-dim:rgba(245,166,35,.12);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.10);
+  --gold:#f5a623;
   --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
   --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
-  --max:1100px;--r:14px;
+  --max:1140px;--r:16px;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
@@ -53,67 +53,102 @@ a{color:inherit;text-decoration:none;}
 .nav-cta:hover{background:#20e88a;}
 @media(max-width:720px){.nav-links{display:none;}}
 
-/* HERO */
+/* PAGE HERO */
 .page-hero{text-align:center;padding:72px 24px 40px;position:relative;z-index:1;}
-.page-hero h1{font-family:var(--disp);font-size:clamp(2rem,5vw,3.2rem);font-weight:700;line-height:1.1;margin-bottom:16px;}
+.page-hero h1{font-family:var(--disp);font-size:clamp(2rem,5vw,3.4rem);font-weight:700;line-height:1.1;margin-bottom:16px;}
 .page-hero h1 em{color:var(--green);font-style:normal;}
-.page-hero p{color:var(--t80);font-size:clamp(15px,2vw,18px);max-width:520px;margin:0 auto;}
+.page-hero p{color:var(--t80);font-size:clamp(15px,2vw,18px);max-width:560px;margin:0 auto;}
 
-/* TOGGLE */
+/* BILLING TOGGLE */
 .billing-toggle{display:flex;align-items:center;gap:12px;justify-content:center;margin:32px 0 0;font-size:.9rem;color:var(--t55);}
 .toggle-pill{position:relative;width:48px;height:26px;background:var(--g-dim);border:1px solid rgba(22,217,126,.3);border-radius:13px;cursor:pointer;transition:.2s;}
 .toggle-pill::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--green);border-radius:50%;transition:.2s;}
 .toggle-pill.annual::after{transform:translateX(22px);}
 .save-badge{background:var(--g-dim);color:var(--green);border:1px solid rgba(22,217,126,.3);padding:2px 8px;border-radius:20px;font-size:.75rem;font-weight:600;}
 
-/* CARDS */
-.plans{position:relative;z-index:1;padding:40px 0 80px;}
+/* PLAN CARDS */
+.plans{position:relative;z-index:1;padding:40px 0 64px;}
 .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
-@media(max-width:900px){.plans-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto;}}
-.plan-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;gap:0;transition:.2s;}
-.plan-card:hover{border-color:rgba(120,200,160,.3);}
-.plan-card.featured{border-color:var(--green);box-shadow:0 0 40px rgba(22,217,126,.15);position:relative;}
-.plan-card.elite{border-color:var(--gold);box-shadow:0 0 40px rgba(245,166,35,.1);}
-.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.06em;padding:4px 14px;border-radius:20px;white-space:nowrap;}
-.plan-badge.pro{background:var(--green);color:#04150d;}
-.plan-badge.elite{background:var(--gold);color:#1a0d00;}
-.plan-name{font-family:var(--disp);font-weight:700;font-size:1.4rem;margin-bottom:6px;}
-.plan-name.elite{color:var(--gold);}
-.plan-price{margin-bottom:6px;}
-.plan-price .amount{font-family:var(--disp);font-size:2.6rem;font-weight:700;line-height:1;}
-.plan-price .per{color:var(--t55);font-size:.85rem;margin-left:4px;}
-.plan-desc{color:var(--t55);font-size:.85rem;margin-bottom:28px;min-height:36px;}
+@media(max-width:960px){.plans-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto;}}
+
+.plan-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;transition:.2s;position:relative;}
+.plan-card:hover{border-color:rgba(120,200,160,.28);}
+.plan-card.featured{border-color:var(--green);box-shadow:0 0 50px rgba(22,217,126,.18);}
+
+.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.07em;padding:4px 16px;border-radius:20px;white-space:nowrap;background:var(--green);color:#04150d;}
+
+.plan-tier{font-family:var(--disp);font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t30);margin-bottom:8px;}
+.plan-name{font-family:var(--disp);font-weight:700;font-size:1.55rem;margin-bottom:4px;}
+.plan-price{margin-bottom:4px;}
+.plan-price .amount{font-family:var(--disp);font-size:2.8rem;font-weight:700;line-height:1;}
+.plan-price .per{color:var(--t55);font-size:.82rem;margin-left:4px;}
+.plan-desc{color:var(--t55);font-size:.85rem;margin-bottom:26px;min-height:40px;line-height:1.5;}
 .plan-divider{border:none;border-top:1px solid var(--line);margin-bottom:22px;}
-.feature-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px;flex:1;}
-.feature-list li{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--t80);}
-.feature-list li .ic{flex-shrink:0;width:18px;height:18px;margin-top:1px;}
+
+.feature-group-label{font-family:var(--disp);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);margin:20px 0 10px;}
+.feature-group-label:first-of-type{margin-top:0;}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;flex:1;}
+.feature-list li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--t80);line-height:1.4;}
+.feature-list li .ic{flex-shrink:0;width:16px;height:16px;margin-top:2px;}
 .ic-yes{color:var(--green);}
 .ic-no{color:var(--t30);}
-.ic-gold{color:var(--gold);}
-.plan-cta{width:100%;font-family:var(--disp);font-weight:700;font-size:1rem;padding:14px;border-radius:11px;border:none;cursor:pointer;transition:.15s;display:block;text-align:center;}
+.ic-lock{color:var(--t30);}
+li.locked-feat{color:var(--t30);}
+li.locked-feat .lock-txt{font-size:.78rem;}
+
+.plan-cta{width:100%;font-family:var(--disp);font-weight:700;font-size:1.05rem;padding:14px;border-radius:11px;border:none;cursor:pointer;transition:.15s;display:block;text-align:center;margin-top:auto;}
+.cta-visitor{background:transparent;border:1px solid var(--line);color:var(--t55);}
+.cta-visitor:hover{border-color:rgba(120,200,160,.3);color:var(--t80);}
 .cta-free{background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);}
 .cta-free:hover{background:var(--g-dim);}
-.cta-pro{background:var(--green);color:#04150d;box-shadow:0 0 24px rgba(22,217,126,.3);}
+.cta-pro{background:var(--green);color:#04150d;box-shadow:0 0 28px rgba(22,217,126,.3);}
 .cta-pro:hover{background:#20e88a;transform:translateY(-1px);}
-.cta-elite{background:var(--gold);color:#1a0d00;box-shadow:0 0 24px rgba(245,166,35,.25);}
-.cta-elite:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
-/* WAITLIST FORM */
-.waitlist-wrap{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
-.waitlist-wrap input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:9px;padding:11px 14px;color:var(--text);font-family:var(--body);font-size:.9rem;outline:none;transition:.15s;width:100%;}
-.waitlist-wrap input:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
-.waitlist-wrap input::placeholder{color:var(--t30);}
-.waitlist-toast{font-size:.82rem;padding:10px 14px;border-radius:8px;text-align:center;display:none;}
-.toast-pro{background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);}
-.toast-elite{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--gold);}
+.pro-toast{font-size:.82rem;padding:10px 14px;border-radius:8px;text-align:center;display:none;margin-top:10px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);}
 
-/* FOOTER NOTE */
+/* USER JOURNEY */
+.journey{position:relative;z-index:1;padding:0 0 72px;}
+.journey-inner{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;}
+.journey-step{text-align:center;padding:28px 20px;flex:1;min-width:180px;max-width:240px;}
+.journey-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;font-size:1.3rem;}
+.ji-visitor{background:rgba(120,200,160,.08);border:1px solid var(--line);}
+.ji-free{background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.25);}
+.ji-pro{background:var(--green);border:1px solid var(--green);}
+.ji-pro svg{color:#04150d;}
+.journey-step h3{font-family:var(--disp);font-weight:700;font-size:1.1rem;margin-bottom:6px;}
+.journey-step p{font-size:.82rem;color:var(--t55);line-height:1.5;}
+.journey-arrow{color:var(--t30);font-size:1.6rem;padding:0 4px;flex-shrink:0;}
+@media(max-width:640px){.journey-arrow{display:none;}.journey-inner{gap:8px;}}
+
+/* COMPARE TABLE */
+.compare{position:relative;z-index:1;padding:0 0 80px;}
+.compare h2{font-family:var(--disp);font-weight:700;font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:8px;}
+.compare h2 em{color:var(--green);font-style:normal;}
+.compare-sub{color:var(--t55);margin-bottom:36px;font-size:.95rem;}
+.compare-table{width:100%;border-collapse:collapse;font-size:.875rem;}
+.compare-table th{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:14px 16px;text-align:center;border-bottom:1px solid var(--line);color:var(--t55);}
+.compare-table th:first-child{text-align:left;color:var(--t80);}
+.compare-table th.col-pro{color:var(--green);}
+.compare-table td{padding:11px 16px;border-bottom:1px solid rgba(120,200,160,.06);text-align:center;color:var(--t80);}
+.compare-table td:first-child{text-align:left;color:var(--t55);font-size:.82rem;}
+.compare-table tr:hover td{background:rgba(22,217,126,.02);}
+.compare-table .section-row td{font-family:var(--disp);font-weight:700;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);padding-top:22px;padding-bottom:8px;border-bottom:none;}
+.ic-tbl-yes{color:var(--green);}
+.ic-tbl-no{color:var(--t30);}
+.partial{color:var(--gold);font-size:.75rem;font-weight:600;}
+@media(max-width:680px){
+  .compare-table th:nth-child(2),.compare-table td:nth-child(2){display:none;}
+  .compare-table th,.compare-table td{padding:10px 10px;}
+}
+
+/* FOOTER */
 .footer-note{text-align:center;color:var(--t30);font-size:.82rem;padding:0 24px 60px;position:relative;z-index:1;}
 .footer-note a{color:var(--green);}
-
-/* FAQ STRIP */
-.compare-note{position:relative;z-index:1;text-align:center;padding:0 24px 24px;}
+.compare-note{position:relative;z-index:1;text-align:center;padding:0 24px 28px;}
 .compare-note a{color:var(--green);font-size:.9rem;}
+
+/* SVGs */
+svg.ic-yes,svg.ic-no,svg.ic-lock{display:inline-block;}
 </style>
 </head>
 <body>
@@ -123,9 +158,7 @@ a{color:inherit;text-decoration:none;}
     <a class="brand" href="/">
       <span class="b-mark">
         <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
-          <circle cx="9" cy="9" r="7"/>
-          <line x1="9" y1="9" x2="9" y2="4.5"/>
-          <line x1="9" y1="9" x2="12.5" y2="9"/>
+          <circle cx="9" cy="9" r="7"/><line x1="9" y1="9" x2="9" y2="4.5"/><line x1="9" y1="9" x2="12.5" y2="9"/>
         </svg>
       </span>
       Scalp<em>Clock</em>
@@ -143,8 +176,8 @@ a{color:inherit;text-decoration:none;}
 </nav>
 
 <div class="page-hero">
-  <h1>Simple, <em>Transparent</em> Pricing</h1>
-  <p>Start free and experience the platform. Upgrade when you're ready to trade with real-time edge.</p>
+  <h1>The right tools for <em>every stage</em> of your journey</h1>
+  <p>Browse free. Create an account to save your progress. Upgrade to Pro when you're ready for real-time edge.</p>
   <div class="billing-toggle">
     <span>Monthly</span>
     <div class="toggle-pill" id="billingToggle" onclick="toggleBilling()"></div>
@@ -152,139 +185,173 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
+<!-- PLAN CARDS -->
 <section class="plans">
   <div class="wrap">
     <div class="plans-grid">
 
-      <!-- FREE -->
+      <!-- VISITOR -->
       <div class="plan-card">
-        <div class="plan-name">Free</div>
+        <div class="plan-tier">Tier 1</div>
+        <div class="plan-name">Visitor</div>
         <div class="plan-price"><span class="amount">$0</span></div>
-        <div class="plan-desc">Experience ScalpClock before you commit.</div>
+        <div class="plan-desc">No account required. Explore the platform freely with delayed data.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            4 delayed signals per day
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Market news feed
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Watchlist (15-min delayed data)
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            2 AI explanations per day
-          </li>
-          <li>
-            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
-            <span style="color:var(--t30)">Real-time signals</span>
-          </li>
-          <li>
-            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
-            <span style="color:var(--t30)">Push notifications</span>
-          </li>
-          <li>
-            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
-            <span style="color:var(--t30)">Options recommendations</span>
-          </li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Live market overview &amp; news</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Market sentiment gauge</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Delayed data (15–20 min)</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Charts with basic indicators</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Full Learning Center</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Basic Exit Calculator</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Economic calendar &amp; broker guide</li>
+          <li class="locked-feat"><svg class="ic ic-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="10" height="8" rx="1.5"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span class="lock-txt">No saved watchlist</span></li>
+          <li class="locked-feat"><svg class="ic ic-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="10" height="8" rx="1.5"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span class="lock-txt">No signal details</span></li>
         </ul>
-        <a class="plan-cta cta-free" href="/login">Get Started Free</a>
+        <a class="plan-cta cta-visitor" href="/">Explore Now</a>
+      </div>
+
+      <!-- FREE ACCOUNT -->
+      <div class="plan-card featured">
+        <div class="plan-badge">FREE ACCOUNT</div>
+        <div class="plan-tier">Tier 2</div>
+        <div class="plan-name">Free Account</div>
+        <div class="plan-price"><span class="amount">$0</span></div>
+        <div class="plan-desc">Create a free account. Build habits, track progress, and see signal directions.</div>
+        <hr class="plan-divider">
+        <ul class="feature-list">
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Everything in Visitor</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Saved watchlist (up to 5 stocks)</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Signal direction &amp; confidence meter</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> XP system, streaks &amp; badges</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Learning progress tracking</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Paper trading journal</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Daily market recap email</li>
+          <li class="locked-feat"><svg class="ic ic-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="10" height="8" rx="1.5"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span class="lock-txt">🔒 Entry / stop / target hidden</span></li>
+          <li class="locked-feat"><svg class="ic ic-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="10" height="8" rx="1.5"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span class="lock-txt">🔒 No real-time data or alerts</span></li>
+        </ul>
+        <a class="plan-cta cta-free" href="/login">Create Free Account</a>
       </div>
 
       <!-- PRO -->
-      <div class="plan-card featured">
-        <div class="plan-badge pro">MOST POPULAR</div>
+      <div class="plan-card">
+        <div class="plan-tier">Tier 3</div>
         <div class="plan-name">Pro</div>
         <div class="plan-price">
           <span class="amount" id="proPrice">$9.99</span>
           <span class="per" id="proLabel">/month</span>
         </div>
-        <div class="plan-desc">Everything you need to trade with real-time edge.</div>
+        <div class="plan-desc">Every tool that directly improves your trading decisions. Real-time, AI-powered, actionable.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Unlimited real-time signals
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Buy/Sell notifications
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Confidence score
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Push notifications
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Options entry/exit recommendations
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            News catalyst integration
-          </li>
-          <li>
-            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Full watchlist + mobile access
-          </li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Everything in Free Account</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Real-time AI signals + exact entry/stop/target</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> AI Confidence Score &amp; options play</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Exit Assistant Pro (live tracking, dynamic stops)</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Unlimited watchlist</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Push / SMS / Discord / Webhook alerts</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Pro charting (AI overlays, patterns, real-time)</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> ScalpClock Academy + AI Coach</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg> Premium analytics &amp; trade journal</li>
         </ul>
-        <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Get Pro</button>
-        <div class="waitlist-toast toast-pro" id="proToast" style="margin-top:10px;"></div>
+        <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Get Pro — Unlock Everything</button>
+        <div class="pro-toast" id="proToast"></div>
       </div>
 
-      <!-- ELITE -->
-      <div class="plan-card elite">
-        <div class="plan-badge elite">ELITE</div>
-        <div class="plan-name elite">Elite</div>
-        <div class="plan-price">
-          <span class="amount" style="font-size:1.8rem;color:var(--gold)">Coming Soon</span>
-        </div>
-        <div class="plan-desc">Everything in Pro, plus the deepest market intelligence we offer.</div>
-        <hr class="plan-divider">
-        <ul class="feature-list">
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Everything in Pro
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Live unusual options flow
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Advanced scanner
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Earnings mode
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            AI trade explanations
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Priority alerts
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Premium support
-          </li>
-        </ul>
-        <div class="waitlist-wrap" id="eliteForm">
-          <input type="email" id="eliteEmail" placeholder="your@email.com">
-          <button class="plan-cta cta-elite" onclick="joinWaitlist('elite')">Join Elite Waitlist</button>
-          <div class="waitlist-toast toast-elite" id="eliteToast">You're on the Elite list! We'll reach out first.</div>
-        </div>
-      </div>
+    </div>
+  </div>
+</section>
 
+<!-- USER JOURNEY -->
+<section class="journey">
+  <div class="wrap">
+    <div class="journey-inner">
+      <div class="journey-step">
+        <div class="journey-icon ji-visitor">👀</div>
+        <h3>Visitor</h3>
+        <p>Explore charts, delayed signals, and the full Learning Center. No signup needed.</p>
+      </div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step">
+        <div class="journey-icon ji-free">✦</div>
+        <h3>Free Account</h3>
+        <p>Save watchlists, track XP &amp; streaks, see signal direction, and build daily habits.</p>
+      </div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step">
+        <div class="journey-icon ji-pro">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3>Pro</h3>
+        <p>Unlock live AI signals, exact entry/stop/target, Exit Assistant Pro, alerts, and more.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE COMPARISON TABLE -->
+<section class="compare">
+  <div class="wrap">
+    <h2>Full <em>Feature Comparison</em></h2>
+    <p class="compare-sub">See exactly what each tier includes so you can choose the right plan.</p>
+    <div style="overflow-x:auto;">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:46%">Feature</th>
+          <th>Visitor</th>
+          <th>Free Account</th>
+          <th class="col-pro">Pro</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- SIGNALS -->
+        <tr class="section-row"><td colspan="4">AI Signals</td></tr>
+        <tr><td>Market overview &amp; sentiment</td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Signal direction (buy/sell)</td><td><span class="partial">Delayed</span></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Confidence meter</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Entry price / Stop loss / Target</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Options contract &amp; strike</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Real-time data</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>AI confidence scoring</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+
+        <!-- CHARTS -->
+        <tr class="section-row"><td colspan="4">Charts</td></tr>
+        <tr><td>View charts, change timeframes, zoom/pan</td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Basic indicators (EMA, SMA, RSI, MACD)</td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Real-time chart data</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>AI overlays &amp; pattern recognition</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Saved layouts &amp; multi-chart view</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+
+        <!-- EXIT ASSISTANT -->
+        <tr class="section-row"><td colspan="4">Exit Assistant</td></tr>
+        <tr><td>Basic P&amp;L calculator</td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Live trade monitoring</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>AI exit recommendations</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Smart trailing stops &amp; scaling</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Greeks, IV crush &amp; theta decay analysis</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+
+        <!-- LEARNING -->
+        <tr class="section-row"><td colspan="4">Learning Center</td></tr>
+        <tr><td>Beginner lessons, glossary, guides</td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Progress tracking, XP &amp; streaks</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>ScalpClock Academy (daily lessons + AI coach)</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Replay challenges &amp; pattern drills</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+
+        <!-- ALERTS -->
+        <tr class="section-row"><td colspan="4">Alerts &amp; Notifications</td></tr>
+        <tr><td>Daily market recap email</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Push / SMS / Discord / Webhook alerts</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Instant trade signal alerts</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+
+        <!-- ANALYTICS -->
+        <tr class="section-row"><td colspan="4">Analytics &amp; Trade Journal</td></tr>
+        <tr><td>Watchlist</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><span class="partial">5 stocks</span></td><td><span style="color:var(--green);font-size:.78rem;font-weight:600;">Unlimited</span></td></tr>
+        <tr><td>Paper trading journal</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Premium trade journal (auto import, AI coaching)</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+        <tr><td>Premium analytics (breadth, heatmaps, flow)</td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-no" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></td><td><svg class="ic-tbl-yes" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#16d97e" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg></td></tr>
+      </tbody>
+    </table>
     </div>
   </div>
 </section>
@@ -293,7 +360,8 @@ a{color:inherit;text-decoration:none;}
   <a href="/faq">Have questions? Read the FAQ →</a>
 </div>
 
-<p class="footer-note">No credit card required for free tier. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a></p>
+<p class="footer-note">No credit card required for Free or Free Account tiers. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a></p>
+<p class="footer-note" style="margin-top:10px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
 <script>
 let annual = false;
@@ -308,10 +376,9 @@ function toggleBilling() {
 async function startCheckout() {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
-  btn.disabled   = true;
+  btn.disabled    = true;
   btn.textContent = 'Redirecting…';
   toast.style.display = 'none';
-
   try {
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',
@@ -319,34 +386,17 @@ async function startCheckout() {
       body:    JSON.stringify({ tier: 'pro', billing: annual ? 'annual' : 'monthly' }),
     });
     const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      throw new Error(data.error || 'No checkout URL returned');
-    }
+    if (data.url) { window.location.href = data.url; }
+    else { throw new Error(data.error || 'No checkout URL'); }
   } catch (err) {
-    toast.textContent    = 'Something went wrong — please try again.';
-    toast.style.display  = 'block';
-    toast.style.background = 'rgba(255,59,70,.08)';
-    toast.style.borderColor = 'rgba(255,59,70,.3)';
-    toast.style.color = '#ff3b46';
+    toast.textContent   = 'Something went wrong — please try again.';
+    toast.style.display = 'block';
+    toast.style.background   = 'rgba(255,59,70,.08)';
+    toast.style.borderColor  = 'rgba(255,59,70,.3)';
+    toast.style.color        = '#ff3b46';
     btn.disabled    = false;
-    btn.textContent = 'Get Pro';
+    btn.textContent = 'Get Pro — Unlock Everything';
   }
-}
-
-function joinWaitlist(tier) {
-  const emailEl = document.getElementById(tier + 'Email');
-  const toast   = document.getElementById(tier + 'Toast');
-  const email   = emailEl.value.trim();
-  if (!email || !email.includes('@')) {
-    emailEl.style.borderColor = 'rgba(255,59,70,.5)';
-    emailEl.focus();
-    return;
-  }
-  emailEl.style.borderColor = '';
-  toast.style.display = 'block';
-  emailEl.disabled = true;
 }
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>

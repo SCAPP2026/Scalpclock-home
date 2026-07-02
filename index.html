@@ -565,6 +565,34 @@ section { position: relative; padding: 80px 0; }
 .c-ind.vwap-flat{ background: rgba(205,211,210,.08); color: var(--t30); }
 .c-ind.vol-norm { background: rgba(205,211,210,.08); color: var(--t30); }
 .c-ind.vol-surge{ background: rgba(255,122,26,.12);  color: var(--orange); }
+
+/* ── signal card pro lock ── */
+.c-locked {
+  position: relative; margin-top: 0;
+  border-top: 1px solid rgba(255,255,255,.06); padding-top: 13px;
+  border-radius: 0 0 8px 8px; overflow: hidden; min-height: 68px;
+}
+.c-locked-blur {
+  font-size: .83rem; color: var(--t55); line-height: 1.5;
+  filter: blur(4px); user-select: none; pointer-events: none;
+}
+.c-locked-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; background: rgba(7,10,8,.58); backdrop-filter: blur(2px);
+}
+.c-lock-icon { font-size: .9rem; line-height: 1; }
+.c-lock-lbl {
+  font-family: var(--mono); font-size: .58rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--t30);
+}
+.c-lock-cta {
+  font-family: var(--disp); font-weight: 700; font-size: .78rem;
+  padding: 4px 14px; border-radius: 6px; margin-top: 3px;
+  background: var(--green); color: #04150d; text-decoration: none;
+  transition: background .15s; white-space: nowrap;
+}
+.c-lock-cta:hover { background: #20e88a; }
 .c-priority { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .priority-score { font-family: var(--mono); font-size: .65rem; color: var(--t30); }
 .priority-badge {
@@ -1189,6 +1217,7 @@ footer {
 
 <script>
 (function () {
+  var SC_TIER = window.SC_TIER || 'visitor'; // 'visitor' | 'free' | 'pro'
   var SYMS = ['SPY','QQQ','IWM','AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA','AMD','NFLX','COIN','PLTR','SOFI','ARM','GLD','TLT','XLE','MSTR'];
   var board       = document.getElementById('board');
   var marketState = document.getElementById('marketState');
@@ -1289,6 +1318,7 @@ footer {
 
   /* ── confluence indicator badges ── */
   function indicatorsHTML(tk) {
+    if (SC_TIER !== 'pro') return '';
     if (tk.vwapDist == null && tk.volSurge == null) return '';
     var vd = tk.vwapDist || 0;
     var vs = tk.volSurge || 1;
@@ -1350,8 +1380,16 @@ footer {
             '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="c-explain">' + tk.explain + '</div>' +
-        indicatorsHTML(tk) +
+        (SC_TIER === 'pro'
+          ? '<div class="c-explain">' + tk.explain + '</div>' + indicatorsHTML(tk)
+          : '<div class="c-locked">' +
+            '<div class="c-locked-blur">' + tk.explain + '</div>' +
+            '<div class="c-locked-overlay">' +
+            '<span class="c-lock-icon">🔒</span>' +
+            '<div class="c-lock-lbl">Pro Signal Insight</div>' +
+            '<a class="c-lock-cta" href="/pricing">Upgrade to Pro</a>' +
+            '</div></div>'
+        ) +
       '</div>';
     }).join('');
 
@@ -1451,7 +1489,16 @@ footer {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="c-explain">' + tk.explain + '</div>';
+      (SC_TIER === 'pro'
+        ? '<div class="c-explain">' + tk.explain + '</div>'
+        : '<div class="c-locked">' +
+          '<div class="c-locked-blur">' + tk.explain + '</div>' +
+          '<div class="c-locked-overlay">' +
+          '<span class="c-lock-icon">🔒</span>' +
+          '<div class="c-lock-lbl">Pro Signal Insight</div>' +
+          '<a class="c-lock-cta" href="/pricing">Upgrade to Pro</a>' +
+          '</div></div>'
+      );
   }
 
   function buildCustomTicker(sym, candles) {
