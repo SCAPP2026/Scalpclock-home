@@ -25,6 +25,14 @@ export async function onRequest(context) {
   }
 }
 
+async function stripeGet(path, env) {
+  const res  = await fetch(`https://api.stripe.com/v1${path}`, {
+    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
+  });
+  const data = await res.json();
+  return { ok: res.ok, status: res.status, data };
+}
+
 async function handleValidatePromo(env, request) {
   let code, userId;
   try {
@@ -42,7 +50,7 @@ async function handleValidatePromo(env, request) {
   // Check Supabase: has this user already redeemed?
   if (userId && env.SUPABASE_SERVICE_KEY) {
     try {
-      const sbRes = await fetch(
+      const sbRes  = await fetch(
         `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=promo_redeemed`,
         {
           headers: {
@@ -53,7 +61,7 @@ async function handleValidatePromo(env, request) {
         }
       );
       const sbData = await sbRes.json();
-      console.log('Supabase promo_redeemed check:', JSON.stringify(sbData));
+      console.log('Supabase result:', JSON.stringify(sbData));
 
       if (sbRes.ok && sbData?.[0]?.promo_redeemed === true) {
         return json({
@@ -67,55 +75,50 @@ async function handleValidatePromo(env, request) {
     }
   }
 
-  // Validate with Stripe — force coupon expansion so we get the full object
-  const stripeUrl =
-    `https://api.stripe.com/v1/promotion_codes` +
-    `?code=${encodeURIComponent(normalizedCode)}` +
-    `&active=true&limit=1` +
-    `&expand[]=data.coupon`;
+  // 1. Look up the promotion code
+  const promoLookup = await stripeGet(
+    `/promotion_codes?code=${encodeURIComponent(normalizedCode)}&active=true&limit=1`,
+    env
+  );
+  console.log('Stripe promo lookup status:', promoLookup.status, 'data:', JSON.stringify(promoLookup.data));
 
-  const stripeRes = await fetch(stripeUrl, {
-    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
-  });
-
-  const stripeData = await stripeRes.json();
-  console.log('Stripe status:', stripeRes.status, 'body:', JSON.stringify(stripeData));
-
-  if (!stripeRes.ok) {
-    console.error('Stripe error:', stripeData?.error);
-    return json({ valid: false, error: 'Could not validate code. Please try again.' }, 502);
+  if (!promoLookup.ok) {
+    return json({ valid: false, error: 'Could not reach Stripe. Try again.' }, 502);
   }
 
-  const list = stripeData?.data;
-  if (!Array.isArray(list) || list.length === 0) {
+  const promoList = promoLookup.data?.data;
+  if (!Array.isArray(promoList) || promoList.length === 0) {
     return json({ valid: false, error: 'Invalid or expired promotion code.' });
   }
 
-  const promo = list[0];
+  const promo = promoList[0];
   console.log('Promo object:', JSON.stringify(promo));
 
-  if (!promo || !promo.id) {
-    return json({ valid: false, error: 'Invalid or expired promotion code.' });
+  // 2. Resolve coupon — may be a full object or just an ID string
+  let coupon = null;
+  if (promo.coupon && typeof promo.coupon === 'object') {
+    coupon = promo.coupon;
+    console.log('Coupon already expanded:', JSON.stringify(coupon));
+  } else if (typeof promo.coupon === 'string') {
+    // Stripe returned just the coupon ID — fetch it explicitly
+    const couponLookup = await stripeGet(`/coupons/${promo.coupon}`, env);
+    console.log('Coupon fetch status:', couponLookup.status, 'data:', JSON.stringify(couponLookup.data));
+    if (couponLookup.ok) coupon = couponLookup.data;
   }
 
-  // coupon may be a full object or just an ID string if expansion failed
-  const coupon = promo.coupon && typeof promo.coupon === 'object' ? promo.coupon : null;
-  console.log('Coupon object:', JSON.stringify(coupon));
-
-  if (!coupon) {
-    return json({
-      valid: false,
-      error: 'Promotion code could not be verified. Please contact support.',
-    });
+  if (!coupon || typeof coupon !== 'object') {
+    console.error('Could not resolve coupon for promo:', promo.id, 'coupon field:', promo.coupon);
+    return json({ valid: false, error: 'Promotion code is not valid. Please contact support.' });
   }
 
-  const percentOff      = coupon.percent_off      ?? null;
-  const amountOff       = coupon.amount_off       ?? null;
-  const duration        = coupon.duration         ?? null;
-  const durationMonths  = coupon.duration_in_months ?? null;
-  const maxRedemptions  = promo.max_redemptions   ?? null;
-  const redeemedCount   = promo.times_redeemed    ?? 0;
-  const expiresAt       = promo.expires_at        ?? null;
+  // 3. Build response fields
+  const percentOff     = coupon.percent_off       ?? null;
+  const amountOff      = coupon.amount_off        ?? null;
+  const duration       = coupon.duration          ?? null;
+  const durationMonths = coupon.duration_in_months ?? null;
+  const maxRedemptions = promo.max_redemptions    ?? null;
+  const redeemedCount  = promo.times_redeemed     ?? 0;
+  const expiresAt      = promo.expires_at         ?? null;
 
   let discountText = '';
   if (percentOff === 100 && duration === 'once') {
