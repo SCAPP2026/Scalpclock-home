@@ -150,15 +150,12 @@ body::before {
 .hero { position: relative; text-align: center; padding: 52px 0 28px; }
 @media (max-width: 480px) { .hero { padding: 32px 0 20px; } }
 .hero-art {
-  display: block; width: min(55%, 460px); margin: 0 auto;
-  mix-blend-mode: screen;
-  filter: brightness(1.08) contrast(1.04) saturate(1.1);
-  -webkit-mask-image: radial-gradient(ellipse 82% 82% at 50% 50%, black 45%, transparent 100%);
-  mask-image: radial-gradient(ellipse 82% 82% at 50% 50%, black 45%, transparent 100%);
+  display: block; width: min(36%, 268px); margin: 0 auto; border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.70), 0 0 60px rgba(22,217,126,.12);
   animation: floaty 8s ease-in-out infinite; will-change: transform;
 }
-@media (max-width: 720px) { .hero-art { width: 72%; } }
-@media (max-width: 420px) { .hero-art { width: 82%; } }
+@media (max-width: 720px) { .hero-art { width: 52%; } }
+@media (max-width: 420px) { .hero-art { width: 66%; } }
 @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 .hero-sub {
   max-width: 640px; margin: 26px auto 0;
@@ -860,7 +857,7 @@ footer {
 <!-- HERO -->
 <header class="hero">
   <div class="wrap">
-    <img class="hero-art" src="hero.png" alt="ScalpClock. Options. Speed. Edge." fetchpriority="high" width="640" height="640">
+    <img class="hero-art" src="hero.png" alt="ScalpClock. Options. Speed. Edge." fetchpriority="high" width="853" height="1844">
     <p class="hero-sub">ScalpClock reads the live market and tells you the higher-odds move. <b>When to buy calls, when to buy puts</b>, across 20 tickers — SPY, QQQ, NVDA, TSLA, AAPL and more. RSI, VWAP, and volume confluence in plain English.</p>
     <div class="hero-ctas">
       <a class="btn btn-green" href="#signals">See Live Signals</a>
