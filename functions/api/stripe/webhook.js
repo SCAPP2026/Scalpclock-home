@@ -20,21 +20,53 @@ export async function onRequest(context) {
   const event = JSON.parse(body);
 
   switch (event.type) {
+
     case 'checkout.session.completed': {
       const session = event.data.object;
-      console.log('New subscription:', session.customer_email, session.subscription);
+      const isTrial = session.subscription
+        && session.metadata?.trial_type === '7_day_free';
+      console.log(
+        isTrial ? 'Trial started:' : 'New subscription:',
+        session.customer_email,
+        session.subscription
+      );
       break;
     }
+
+    case 'customer.subscription.trial_will_end': {
+      // Fires 3 days before trial ends — good hook for a reminder email
+      const sub = event.data.object;
+      console.log(
+        'Trial ending soon for customer:',
+        sub.customer,
+        'trial ends:',
+        new Date(sub.trial_end * 1000).toISOString()
+      );
+      break;
+    }
+
+    case 'customer.subscription.updated': {
+      const sub = event.data.object;
+      const wasTrialing = event.data.previous_attributes?.status === 'trialing';
+      const nowActive   = sub.status === 'active';
+      if (wasTrialing && nowActive) {
+        console.log('Trial converted to paid subscription:', sub.id, sub.customer);
+      }
+      break;
+    }
+
     case 'customer.subscription.deleted': {
       const sub = event.data.object;
       console.log('Subscription cancelled:', sub.id, sub.customer);
       break;
     }
+
     case 'invoice.payment_failed': {
       const inv = event.data.object;
       console.log('Payment failed:', inv.customer_email, inv.id);
       break;
     }
+
   }
 
   return new Response(JSON.stringify({ received: true }), {
@@ -48,15 +80,15 @@ async function verifyStripeSignature(payload, sigHeader, secret) {
   const timestamp = parts.t;
   if (!timestamp || sigs.length === 0) return false;
 
-  const encoder   = new TextEncoder();
-  const key       = await crypto.subtle.importKey(
+  const encoder  = new TextEncoder();
+  const key      = await crypto.subtle.importKey(
     'raw', encoder.encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false, ['sign']
   );
 
-  const signed    = await crypto.subtle.sign('HMAC', key, encoder.encode(`${timestamp}.${payload}`));
-  const expected  = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('');
+  const signed   = await crypto.subtle.sign('HMAC', key, encoder.encode(`${timestamp}.${payload}`));
+  const expected = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('');
 
   return sigs.some(s => s === expected);
 }

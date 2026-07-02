@@ -24,9 +24,9 @@ export async function onRequest(context) {
 }
 
 async function handleCheckout(env, request) {
-  let tier, billing;
+  let tier, billing, trial;
   try {
-    ({ tier, billing } = await request.json());
+    ({ tier, billing, trial } = await request.json());
   } catch {
     return json({ error: 'Invalid JSON body' }, 400);
   }
@@ -43,26 +43,37 @@ async function handleCheckout(env, request) {
     return json({ error: `No price configured for ${tier}/${billing}` }, 400);
   }
 
+  const isTrialSession = trial === true && tier === 'pro';
   const origin = new URL(request.url).origin;
 
-  const body = new URLSearchParams({
+  const params = new URLSearchParams({
     'line_items[0][price]':    priceId,
     'line_items[0][quantity]': '1',
     mode:                      'subscription',
-    success_url:               `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+    success_url:               `${origin}/success?session_id={CHECKOUT_SESSION_ID}${isTrialSession ? '&trial=1' : ''}`,
     cancel_url:                `${origin}/pricing`,
     allow_promotion_codes:     'true',
   });
+
+  if (isTrialSession) {
+    // 7-day free trial — card captured but not charged until trial ends
+    params.set('subscription_data[trial_period_days]', '7');
+    params.set('subscription_data[trial_settings][end_behavior][missing_payment_method]', 'cancel');
+    params.set('payment_method_collection', 'always');
+    // Pass Trial Offer ID as metadata so it appears in the Stripe dashboard
+    params.set('subscription_data[metadata][trial_offer_id]', env.STRIPE_TRIAL_OFFER_ID || 'to_1TooZ2IpxBaK009pQPsWGEe4');
+    params.set('subscription_data[metadata][trial_type]', '7_day_free');
+  }
 
   let res;
   try {
     res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        Authorization:   `Bearer ${env.STRIPE_SECRET_KEY}`,
-        'Content-Type':  'application/x-www-form-urlencoded',
+        Authorization:  `Bearer ${env.STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: body.toString(),
+      body: params.toString(),
     });
   } catch (fetchErr) {
     return json({ error: `Stripe fetch failed: ${fetchErr.message}` }, 502);

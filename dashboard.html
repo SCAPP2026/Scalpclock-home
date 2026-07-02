@@ -484,12 +484,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
     <p>Unlimited real-time signals, options recommendations, confidence scoring, and push alerts.</p>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);border-radius:10px;margin-bottom:16px;">
+      <span style="font-size:1rem;">🎁</span>
+      <span style="font-size:.82rem;color:var(--text);font-weight:500;"><strong style="color:var(--green);">FREE 7-Day Trial</strong> — Cancel anytime. Won't be charged until day 8.</span>
+    </div>
     <div class="upgrade-toggle">
       <button id="toggleMonthly" class="active" onclick="setBilling('monthly')">Monthly</button>
       <button id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
     </div>
     <br>
-    <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Upgrade to Pro — $9.99/mo</button>
+    <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Start 7-Day Free Trial</button>
+    <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Then $9.99/mo · Cancel anytime</p>
   </div>
 
 </div>
@@ -775,25 +780,26 @@ function setBilling(mode) {
   document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
   document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
   const btn = document.getElementById('upgradeBtn');
-  btn.textContent = mode === 'annual' ? 'Upgrade to Pro — $7.99/mo' : 'Upgrade to Pro — $9.99/mo';
+  btn.textContent = 'Start 7-Day Free Trial';
 }
 
 async function startCheckout() {
   const btn = document.getElementById('upgradeBtn');
+  const original = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
     const res = await fetch('/api/stripe/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tier: 'pro', billing: _billing }),
+      body: JSON.stringify({ tier: 'pro', billing: _billing, trial: true }),
     });
     const data = await res.json();
     if (data.url) {
       window.location.href = data.url;
     } else {
       btn.disabled = false;
-      setBilling(_billing);
+      btn.textContent = original;
       alert(data.error || 'Could not start checkout. Please try again.');
     }
   } catch (e) {

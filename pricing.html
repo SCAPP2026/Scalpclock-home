@@ -166,6 +166,10 @@ a{color:inherit;text-decoration:none;}
 <div class="page-hero">
   <h1>Simple, <em>Transparent</em> Pricing</h1>
   <p>Start free and experience the platform. Upgrade when you're ready to trade with real-time edge.</p>
+  <div style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:12px 22px;background:rgba(22,217,126,.07);border:1px solid rgba(22,217,126,.25);border-radius:12px;">
+    <span style="font-size:1.3rem;">🎁</span>
+    <span style="font-size:.9rem;color:var(--text);font-weight:500;">Start your <strong style="color:var(--green);">FREE 7-Day Trial</strong>. Cancel anytime during the trial and you won't be charged.</span>
+  </div>
   <div class="billing-toggle">
     <span>Monthly</span>
     <div class="toggle-pill" id="billingToggle" onclick="toggleBilling()"></div>
@@ -224,7 +228,10 @@ a{color:inherit;text-decoration:none;}
           <span class="amount" id="proPrice">$9.99</span>
           <span class="per" id="proLabel">/month</span>
         </div>
-        <div class="plan-desc">Everything you need to trade with real-time edge.</div>
+        <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);border-radius:20px;margin-bottom:10px;">
+          <span style="font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:.04em;">🎁 7-DAY FREE TRIAL</span>
+        </div>
+        <div class="plan-desc">Everything you need to trade with real-time edge. Try free for 7 days.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
           <li>
@@ -256,7 +263,8 @@ a{color:inherit;text-decoration:none;}
             Full watchlist + mobile access
           </li>
         </ul>
-        <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Get Pro</button>
+        <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 7-Day Free Trial</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 7 days · Cancel anytime</p>
         <div class="waitlist-toast toast-pro" id="proToast" style="margin-top:10px;"></div>
       </div>
 
@@ -314,7 +322,7 @@ a{color:inherit;text-decoration:none;}
   <a href="/faq">Have questions? Read the FAQ →</a>
 </div>
 
-<p class="footer-note">No credit card required for free tier. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a></p>
+<p class="footer-note">Pro trial requires a card · no charge for 7 days · cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a></p>
 <p class="footer-note" style="margin-top:10px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
 <script>
@@ -327,10 +335,11 @@ function toggleBilling() {
   document.getElementById('proLabel').textContent = annual ? '/month, billed annually' : '/month';
 }
 
-async function startCheckout() {
+async function startCheckout(isTrial) {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
-  btn.disabled   = true;
+  const originalText = btn.textContent;
+  btn.disabled    = true;
   btn.textContent = 'Redirecting…';
   toast.style.display = 'none';
 
@@ -338,7 +347,11 @@ async function startCheckout() {
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ tier: 'pro', billing: annual ? 'annual' : 'monthly' }),
+      body:    JSON.stringify({
+        tier:    'pro',
+        billing: annual ? 'annual' : 'monthly',
+        trial:   isTrial === true,
+      }),
     });
     const data = await res.json();
     if (data.url) {
@@ -347,13 +360,13 @@ async function startCheckout() {
       throw new Error(data.error || 'No checkout URL returned');
     }
   } catch (err) {
-    toast.textContent    = 'Something went wrong — please try again.';
-    toast.style.display  = 'block';
-    toast.style.background = 'rgba(255,59,70,.08)';
+    toast.textContent       = 'Something went wrong — please try again.';
+    toast.style.display     = 'block';
+    toast.style.background  = 'rgba(255,59,70,.08)';
     toast.style.borderColor = 'rgba(255,59,70,.3)';
-    toast.style.color = '#ff3b46';
+    toast.style.color       = '#ff3b46';
     btn.disabled    = false;
-    btn.textContent = 'Get Pro';
+    btn.textContent = originalText;
   }
 }
 
