@@ -20,7 +20,7 @@ export async function onRequest(context) {
   try {
     return await handleValidatePromo(env, request);
   } catch (e) {
-    console.error('validate-promo fatal:', e);
+    console.error('validate-promo fatal:', e.message, e.stack);
     return json({ valid: false, error: `Internal error: ${e.message}` }, 500);
   }
 }
@@ -37,7 +37,9 @@ async function handleValidatePromo(env, request) {
     return json({ valid: false, error: 'No code provided' }, 400);
   }
 
-  // Check if this user already redeemed a promo
+  const normalizedCode = code.trim().toUpperCase();
+
+  // Check Supabase: has this user already redeemed?
   if (userId && env.SUPABASE_SERVICE_KEY) {
     try {
       const sbRes = await fetch(
@@ -50,61 +52,96 @@ async function handleValidatePromo(env, request) {
           },
         }
       );
-      if (sbRes.ok) {
-        const rows = await sbRes.json();
-        if (rows?.[0]?.promo_redeemed === true) {
-          return json({
-            valid: false,
-            error: 'You have already redeemed your free month.',
-            alreadyRedeemed: true,
-          });
-        }
+      const sbData = await sbRes.json();
+      console.log('Supabase promo_redeemed check:', JSON.stringify(sbData));
+
+      if (sbRes.ok && sbData?.[0]?.promo_redeemed === true) {
+        return json({
+          valid: false,
+          error: 'You have already redeemed your free month.',
+          alreadyRedeemed: true,
+        });
       }
     } catch (e) {
-      console.error('Supabase promo check failed:', e.message);
+      console.error('Supabase check failed:', e.message);
     }
   }
 
-  // Validate the code with Stripe
-  const stripeRes = await fetch(
-    `https://api.stripe.com/v1/promotion_codes?code=${encodeURIComponent(code.trim().toUpperCase())}&active=true&limit=1`,
-    { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } }
-  );
+  // Validate with Stripe — force coupon expansion so we get the full object
+  const stripeUrl =
+    `https://api.stripe.com/v1/promotion_codes` +
+    `?code=${encodeURIComponent(normalizedCode)}` +
+    `&active=true&limit=1` +
+    `&expand[]=data.coupon`;
 
-  const data = await stripeRes.json();
+  const stripeRes = await fetch(stripeUrl, {
+    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
+  });
+
+  const stripeData = await stripeRes.json();
+  console.log('Stripe status:', stripeRes.status, 'body:', JSON.stringify(stripeData));
 
   if (!stripeRes.ok) {
-    console.error('Stripe promo lookup error:', data.error);
+    console.error('Stripe error:', stripeData?.error);
     return json({ valid: false, error: 'Could not validate code. Please try again.' }, 502);
   }
 
-  const promo = data.data?.[0];
-
-  if (!promo) {
+  const list = stripeData?.data;
+  if (!Array.isArray(list) || list.length === 0) {
     return json({ valid: false, error: 'Invalid or expired promotion code.' });
   }
 
-  const coupon = promo.coupon;
+  const promo = list[0];
+  console.log('Promo object:', JSON.stringify(promo));
+
+  if (!promo || !promo.id) {
+    return json({ valid: false, error: 'Invalid or expired promotion code.' });
+  }
+
+  // coupon may be a full object or just an ID string if expansion failed
+  const coupon = promo.coupon && typeof promo.coupon === 'object' ? promo.coupon : null;
+  console.log('Coupon object:', JSON.stringify(coupon));
+
+  if (!coupon) {
+    return json({
+      valid: false,
+      error: 'Promotion code could not be verified. Please contact support.',
+    });
+  }
+
+  const percentOff      = coupon.percent_off      ?? null;
+  const amountOff       = coupon.amount_off       ?? null;
+  const duration        = coupon.duration         ?? null;
+  const durationMonths  = coupon.duration_in_months ?? null;
+  const maxRedemptions  = promo.max_redemptions   ?? null;
+  const redeemedCount   = promo.times_redeemed    ?? 0;
+  const expiresAt       = promo.expires_at        ?? null;
+
   let discountText = '';
-  if (coupon.percent_off === 100 && coupon.duration === 'once') {
+  if (percentOff === 100 && duration === 'once') {
     discountText = 'First month FREE';
-  } else if (coupon.percent_off) {
-    discountText = `${coupon.percent_off}% off`;
-    if (coupon.duration === 'once')            discountText += ' your first month';
-    else if (coupon.duration === 'repeating')  discountText += ` for ${coupon.duration_in_months} months`;
-    else                                       discountText += ' forever';
-  } else if (coupon.amount_off) {
-    discountText = `$${(coupon.amount_off / 100).toFixed(2)} off`;
-    if (coupon.duration === 'once') discountText += ' your first month';
+  } else if (percentOff) {
+    discountText = `${percentOff}% off`;
+    if (duration === 'once')            discountText += ' your first month';
+    else if (duration === 'repeating')  discountText += ` for ${durationMonths} months`;
+    else                                discountText += ' forever';
+  } else if (amountOff) {
+    discountText = `$${(amountOff / 100).toFixed(2)} off`;
+    if (duration === 'once') discountText += ' your first month';
   }
 
   return json({
-    valid:       true,
-    promoId:     promo.id,
+    valid:          true,
+    promoId:        promo.id,
+    code:           promo.code,
     discountText,
-    percentOff:  coupon.percent_off || null,
-    amountOff:   coupon.amount_off  || null,
-    duration:    coupon.duration,
+    percentOff,
+    amountOff,
+    duration,
+    durationMonths,
+    maxRedemptions,
+    redeemedCount,
+    expiresAt,
   });
 }
 
