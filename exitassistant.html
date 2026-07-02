@@ -1375,12 +1375,8 @@
   .s-red .exit-dot { background:var(--bear); box-shadow:0 0 16px rgba(255,69,102,.7);
     animation:dotPulse 1.8s ease-in-out infinite; }
   @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.75)} }
-  /* override old exit-level sizing */
-  .exit-rec-card .exit-level { font-size:20px; font-weight:800; letter-spacing:normal;
-    text-transform:none; color:var(--text); margin-bottom:10px; line-height:1.25; }
-  .exit-rec-card.s-green .exit-level { color:var(--bull); }
-  .exit-rec-card.s-yellow .exit-level { color:var(--warn); }
-  .exit-rec-card.s-red .exit-level { color:var(--bear); }
+  /* exit-level now renders as exit-action-badge — keep legacy rule for hidden old element */
+  .exit-rec-card .exit-level { font-size:12px; font-weight:700; display:none; }
   .exit-rec-card .exit-msg { font-size:14px; color:#fff; line-height:1.65; font-weight:500; }
   .exit-rec-card .exit-sub { font-size:12px; color:var(--muted); margin-top:8px;
     line-height:1.5; font-style:italic; }
@@ -1480,13 +1476,76 @@
   .emotional-warning.panic .warn-title { color:var(--bear); }
   .warn-msg { font-size:13px; color:#fff; line-height:1.5; font-weight:500; }
 
+  /* ── LIVE FETCH BUTTON (inline in field-label) ── */
+  .btn-live-fetch { background:none; border:1px solid var(--accent); border-radius:6px;
+    color:var(--accent); font-size:10px; font-weight:700; padding:3px 9px; cursor:pointer;
+    transition:all .15s; white-space:nowrap; letter-spacing:.5px; }
+  .btn-live-fetch:hover { background:rgba(0,212,170,.12); }
+  .btn-live-fetch.loading { opacity:.6; pointer-events:none; }
+
+  /* ── EXIT ACTION BADGE ── */
+  .exit-action-badge { display:inline-flex; align-items:center; justify-content:center;
+    padding:10px 24px; border-radius:10px; font-size:24px; font-weight:900;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;
+    font-family:'JetBrains Mono',monospace; width:100%; }
+  .s-green .exit-action-badge { background:rgba(0,201,107,.15); color:var(--bull);
+    border:2px solid rgba(0,201,107,.45); }
+  .s-yellow .exit-action-badge { background:rgba(245,166,35,.15); color:var(--warn);
+    border:2px solid rgba(245,166,35,.45); }
+  .s-red .exit-action-badge { background:rgba(255,69,102,.15); color:var(--bear);
+    border:2px solid rgba(255,69,102,.45); text-shadow:0 0 20px rgba(255,69,102,.4);
+    animation:exitNowPulse 1.2s ease-in-out infinite; }
+  @keyframes exitNowPulse { 0%,100%{opacity:1}50%{opacity:.7} }
+
+  /* ── PROFIT HERO (big P&L display) ── */
+  .profit-hero { text-align:center; padding:18px 0 16px; }
+  .profit-hero-value { font-family:'JetBrains Mono',monospace; font-size:48px;
+    font-weight:800; line-height:1; color:#fff; transition:color .3s; }
+  .profit-hero-pct { font-family:'JetBrains Mono',monospace; font-size:22px;
+    font-weight:700; margin-top:8px; color:var(--muted); transition:color .3s; }
+
+  /* ── PROFIT DETAIL GRID (2×2) ── */
+  .profit-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    border-top:1px solid var(--border); padding-top:14px; margin-top:4px; }
+  .profit-detail-item { background:var(--bg); border-radius:10px; padding:12px 14px; }
+  .profit-detail-label { font-size:10px; font-weight:600; letter-spacing:1px;
+    text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .profit-detail-value { font-family:'JetBrains Mono',monospace; font-size:14px;
+    font-weight:700; color:#fff; }
+
+  /* ── MAX LOSS WARNING ── */
+  .max-loss-warn { display:flex; align-items:flex-start; gap:10px; margin-top:14px;
+    padding:12px 16px; background:rgba(245,166,35,.08); border:1px solid rgba(245,166,35,.3);
+    border-radius:10px; font-size:13px; line-height:1.55; }
+  .max-loss-icon { font-size:18px; flex-shrink:0; line-height:1.4; }
+  .max-loss-text strong { color:var(--bear); }
+
+  /* ── OPTIONS ALERTS CARD ── */
+  .opts-warn-item { display:flex; align-items:flex-start; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--border); }
+  .opts-warn-item:last-child { border-bottom:none; }
+  .opts-warn-icon { font-size:20px; flex-shrink:0; line-height:1.3; }
+  .opts-warn-body { flex:1; }
+  .opts-warn-hdr { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+  .opts-warn-name { font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:1px; }
+  .opts-warn-severity { padding:2px 8px; border-radius:10px; font-size:9px;
+    font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+  .sev-high { background:rgba(255,69,102,.15); color:var(--bear);
+    border:1px solid rgba(255,69,102,.3); }
+  .sev-med  { background:rgba(245,166,35,.15); color:var(--warn);
+    border:1px solid rgba(245,166,35,.3); }
+  .sev-low  { background:rgba(91,156,246,.1); color:var(--info);
+    border:1px solid rgba(91,156,246,.2); }
+  .opts-warn-msg { font-size:13px; color:var(--text); line-height:1.55; }
+
   /* ── MOBILE ── */
   @media (max-width:640px) {
     .se-container { padding:16px 12px 60px; gap:12px; }
     .se-card { padding:18px 16px; border-radius:14px; }
     .card-title { font-size:15px; }
-    .profit-main-value { font-size:36px; }
-    .profit-main-pct { font-size:18px; }
+    .profit-hero-value { font-size:36px; }
+    .profit-hero-pct { font-size:18px; }
     .form-row { flex-direction:column; }
     .cp-btn { font-size:13px; }
     .calculate-btn { font-size:15px; padding:13px; }
@@ -1496,6 +1555,8 @@
     .tm-bar-track { display:none; }
     .clock-svg { width:200px; height:200px; }
     .clock-time { font-size:38px; }
+    .exit-action-badge { font-size:18px; }
+    .profit-detail-grid { grid-template-columns:1fr 1fr; gap:8px; }
   }
 
 </style>
@@ -1536,7 +1597,7 @@
       <!-- Row 1: Ticker + Direction -->
       <div class="form-row">
         <div class="field-group">
-          <label class="field-label">Ticker</label>
+          <label class="field-label">📌 Ticker</label>
           <select class="se-select" id="tickerSel" onchange="onTickerChange()">
       <optgroup label="── ETFs ──">
         <option>SPY</option>
@@ -1601,7 +1662,7 @@
 
         <!-- Direction -->
         <div class="field-group">
-          <label class="field-label">Direction</label>
+          <label class="field-label">📊 Call or Put</label>
           <div class="cp-toggle">
             <button class="cp-btn active" id="optCallBtn" onclick="setCallPut(true)">📈 CALL</button>
             <button class="cp-btn" id="optPutBtn" onclick="setCallPut(false)">📉 PUT</button>
@@ -1609,54 +1670,62 @@
         </div>
       </div><!-- /form-row 1 -->
 
-      <!-- Entry Price -->
+      <!-- Row 2: Strike + Expiry -->
+      <div class="form-row">
+        <div class="field-group">
+          <label class="field-label">💲 Strike Price <span class="field-hint">optional</span></label>
+          <input class="se-input" id="optStrikeInput" type="number" step="0.5" min="1"
+            placeholder="e.g. 580">
+        </div>
+        <div class="field-group">
+          <label class="field-label">📅 Expiration Date <span class="field-hint">optional</span></label>
+          <input class="se-input" id="optExpiryInput" type="date">
+        </div>
+      </div><!-- /form-row 2 -->
+
+      <!-- Row 3: Entry Premium -->
       <div class="form-row">
         <div class="field-group full-width">
-          <label class="field-label">Entry Price
-            <span class="field-hint">— what you paid (option premium or stock price)</span>
+          <label class="field-label">💰 Entry Premium
+            <span class="field-hint">— what you paid per share (×100 per contract)</span>
           </label>
           <input class="se-input" id="entryInput" type="number" step="0.01" min="0.01"
-            placeholder="e.g. 1.25">
+            placeholder="e.g. 1.25  →  $125 per contract">
         </div>
-      </div>
+      </div><!-- /form-row 3 -->
 
-      <!-- Current Option Price + Auto-fill -->
+      <!-- Row 4: Current Premium + Live fetch -->
       <div class="form-row">
         <div class="field-group full-width">
-          <label class="field-label">Current Option Price
-            <button class="autofill-toggle" onclick="toggleAutoFill()">⚡ Auto-fill</button>
+          <label class="field-label">📈 Current Premium
+            <button class="btn-live-fetch" id="liveFetchBtn" onclick="fetchLivePremium()">⚡ Get Live Price</button>
           </label>
           <input class="se-input" id="currentPriceInput" type="number" step="0.01" min="0.01"
-            placeholder="Current price — or use Auto-fill for live data">
-          <div class="autofill-fields" id="autoFillFields" style="display:none">
-            <input class="se-input-sm" id="optStrikeInput" type="number" step="0.5" min="1" placeholder="Strike $">
-            <input class="se-input-sm" id="optExpiryInput" type="date" style="width:130px">
-            <button class="btn-fetch" onclick="fetchAutoFill()">Fetch Live Price</button>
+            placeholder="Current option price — or click ⚡ if strike & expiry are set">
+          <div id="optLiveDisplay" style="margin-top:6px">
+            <span class="opt-status-msg" id="optStatusMsg"></span>
           </div>
           <!-- hidden compat elements -->
           <input id="optEntryPremium" type="number" style="display:none" step="0.01" min="0.01">
           <button id="optTypeBtn" style="display:none" onclick="toggleOptType()">CALL</button>
           <button id="optClearBtn" style="display:none" onclick="clearOptionContract()">✕</button>
           <button id="logTradeBtn" style="display:none" onclick="logCurrentTrade()">📓 Log</button>
-          <div id="optLiveDisplay" style="margin-top:6px">
-            <span class="opt-status-msg" id="optStatusMsg"></span>
-          </div>
         </div>
-      </div>
+      </div><!-- /form-row 4 -->
 
-      <!-- Contracts + Gain Pill -->
+      <!-- Row 5: Contracts + Gain Pill -->
       <div class="form-row">
         <div class="field-group">
-          <label class="field-label">Contracts</label>
+          <label class="field-label">📦 Number of Contracts</label>
           <input class="se-input" id="contractsInput" type="number" min="1" step="1" value="1">
         </div>
-        <div class="field-group" style="justify-content:flex-end;padding-top:24px">
-          <div class="gain-pill" id="gainPill">—</div>
+        <div class="field-group" style="justify-content:flex-end;padding-top:28px">
+          <div class="gain-pill" id="gainPill"></div>
         </div>
-      </div>
+      </div><!-- /form-row 5 -->
     </div><!-- /form-grid -->
 
-    <button class="calculate-btn" onclick="calculateExit()">Calculate My Exit →</button>
+    <button class="calculate-btn" onclick="calculateExit()">📊 Track My Trade</button>
   </div><!-- /form-card -->
 
   <!-- ════ RESULTS ════ -->
@@ -1679,8 +1748,8 @@
         <span class="card-title">Exit Recommendation</span>
         <div id="exitIcon" style="display:none"></div>
       </div>
-      <div class="exit-level" id="exitLevel">WATCHING</div>
-      <div class="exit-msg" id="exitMsg">Enter your trade above and tap Calculate to get your signal.</div>
+      <div class="exit-action-badge" id="exitLevel">TRACKING</div>
+      <div class="exit-msg" id="exitMsg">Enter your trade above and tap Track to get your signal.</div>
       <div class="exit-sub" id="exitSub"></div>
     </div>
 
@@ -1701,29 +1770,53 @@
     </div>
 
     <!-- 3. PROFIT SUMMARY -->
-    <div class="se-card">
+    <div class="se-card" id="profitCard">
       <div class="card-header">
         <span class="card-icon">💰</span>
         <span class="card-title">Profit Summary</span>
       </div>
-      <div class="profit-main-row">
-        <div class="profit-main-label">Total P&amp;L</div>
-        <div class="profit-main-value" id="profitDollar">—</div>
-        <div class="profit-main-pct" id="profitPct">—</div>
+      <!-- Hero: Total P&L -->
+      <div class="profit-hero">
+        <div class="profit-hero-value" id="profitDollar">—</div>
+        <div class="profit-hero-pct" id="profitPct">—</div>
       </div>
+      <!-- 4-item detail grid -->
       <div class="profit-detail-grid">
         <div class="profit-detail-item">
-          <div class="profit-detail-label">Cost Basis</div>
+          <div class="profit-detail-label">Entry Premium</div>
           <div class="profit-detail-value" id="costBasis">—</div>
         </div>
         <div class="profit-detail-item">
-          <div class="profit-detail-label">Current Value</div>
+          <div class="profit-detail-label">Current Premium</div>
           <div class="profit-detail-value" id="positionValue">—</div>
         </div>
+        <div class="profit-detail-item">
+          <div class="profit-detail-label">P&amp;L per Contract</div>
+          <div class="profit-detail-value" id="plPerContractEl">—</div>
+        </div>
+        <div class="profit-detail-item">
+          <div class="profit-detail-label">Total Contracts</div>
+          <div class="profit-detail-value" id="contractsDisplay">—</div>
+        </div>
+      </div>
+      <!-- Max Loss / Stop Warning -->
+      <div class="max-loss-warn" id="maxLossWarn" style="display:none">
+        <span class="max-loss-icon">⚠️</span>
+        <div class="max-loss-text" id="maxLossText"></div>
       </div>
     </div>
 
-    <!-- 4. SUGGESTED EXIT LEVELS -->
+    <!-- 4. OPTIONS ALERTS (hidden until warnings exist) -->
+    <div class="se-card" id="optsAlertsCard" style="display:none">
+      <div class="card-header">
+        <span class="card-icon">⚠️</span>
+        <span class="card-title">Options Alerts</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:auto">SampsonX is watching these risks</span>
+      </div>
+      <div id="optsAlertsList"></div>
+    </div>
+
+    <!-- 5. SUGGESTED EXIT LEVELS -->
     <div class="se-card">
       <div class="card-header">
         <span class="card-icon">🎯</span>
@@ -2298,10 +2391,7 @@ function restoreState() {
     if (s.optPremium) document.getElementById('optEntryPremium').value = s.optPremium;
 
     if (s.optCallMode !== undefined) {
-      optCallMode = s.optCallMode;
-      const btn = document.getElementById('optTypeBtn');
-      btn.textContent = optCallMode ? 'CALL' : 'PUT';
-      btn.className = 'opt-type-btn ' + (optCallMode ? 'active-call' : 'active-put');
+      setCallPut(s.optCallMode);
     }
 
     // Restore contracts
@@ -2901,64 +2991,83 @@ function renderConfidence(score, rsiVal, vel, atrVal, vt, sig, gainPct, isPut) {
   const effRSI = isPut ? (100 - rsiVal) : rsiVal;
   const effVel = isPut ? -vel : vel;
 
-  // Build per-category scores (0–100) with plain-English explanations
+  // Build per-category scores (0–100) — user-requested 6 categories
   const categories = [];
 
-  // 1. Momentum (RSI + velocity)
-  let momScore = 50;
-  let momReason = '';
-  if (effRSI <= 28)      { momScore = 88; momReason = `RSI ${rsiVal.toFixed(0)} — price is deeply oversold. Buyers tend to come in strong at this level.`; }
-  else if (effRSI <= 42) { momScore = 70; momReason = `RSI ${rsiVal.toFixed(0)} — price is oversold. The move in your favor still has room.`; }
-  else if (effRSI >= 72) { momScore = 82; momReason = `RSI ${rsiVal.toFixed(0)} — price is very overbought. It's likely running out of gas.`; }
-  else if (effRSI >= 58) { momScore = 62; momReason = `RSI ${rsiVal.toFixed(0)} — price is above the midline. The move may be slowing down.`; }
-  else                   { momScore = 45; momReason = `RSI ${rsiVal.toFixed(0)} — price is in the middle. No clear edge in either direction right now.`; }
-  categories.push({ icon: '📈', name: 'Momentum', score: momScore, reason: momReason });
+  // 1. Momentum Strength (velocity vs ATR)
+  let momScore = 50, momReason = '';
+  if (effVel > a * 0.55)        { momScore = 90; momReason = `Price is moving fast in your direction — momentum is very strong. Good time to hold.`; }
+  else if (effVel > a * 0.20)   { momScore = 70; momReason = `Price is moving steadily your way — momentum is intact and working in your favor.`; }
+  else if (Math.abs(effVel) < a * 0.05) { momScore = 35; momReason = `Price is barely moving — momentum has stalled. Be patient or consider trimming.`; }
+  else if (effVel < -a * 0.20)  { momScore = 15; momReason = `Momentum has reversed — price is now moving against your position. High risk.`; }
+  else                           { momScore = 48; momReason = `Momentum is mixed — slight move against you but not a clear reversal yet.`; }
+  categories.push({ icon: '📈', name: 'Momentum Strength', score: momScore, reason: momReason });
 
-  // 2. Volume (how many people are trading)
+  // 2. Volume Confirmation (how many traders are involved)
   let volScore = 50, volReason = '';
-  if (vt > 0.40)       { volScore = 90; volReason = `Volume is ${(vt*100).toFixed(0)}% above normal — a lot of traders are jumping in. This adds power to the move.`; }
-  else if (vt > 0.15)  { volScore = 72; volReason = `Volume is above average — more traders than usual are active. Good sign the move is real.`; }
-  else if (vt > -0.10) { volScore = 50; volReason = `Volume is normal — nothing unusual. The move is happening but not with a huge crowd behind it.`; }
-  else if (vt > -0.30) { volScore = 35; volReason = `Volume is below average — fewer traders are active. Low-volume moves can reverse suddenly.`; }
-  else                 { volScore = 20; volReason = `Volume is very low — almost nobody is trading right now. Be careful, this move may not last.`; }
-  categories.push({ icon: '👥', name: 'Volume', score: volScore, reason: volReason });
+  if (vt > 0.40)       { volScore = 92; volReason = `Volume is ${(vt*100).toFixed(0)}% above normal — high conviction move. More traders = more power behind the trend.`; }
+  else if (vt > 0.15)  { volScore = 72; volReason = `Volume is above average — the move has solid participation. Good sign it's real, not a head fake.`; }
+  else if (vt > -0.10) { volScore = 50; volReason = `Volume is normal. The move is happening, just not with an unusually large crowd behind it.`; }
+  else if (vt > -0.30) { volScore = 32; volReason = `Volume is drying up — fewer traders active. Low-volume moves are less reliable and can reverse suddenly.`; }
+  else                 { volScore = 15; volReason = `Volume is very low — almost nobody is trading right now. Be very careful. Moves without volume usually don't last.`; }
+  categories.push({ icon: '👥', name: 'Volume Confirmation', score: volScore, reason: volReason });
 
-  // 3. Trend Strength (velocity)
+  // 3. RSI Risk (direction-flipped for puts: high RSI = stock overbought = good for puts)
+  let rsiScore = 50, rsiReason = '';
+  if (effRSI <= 25)      { rsiScore = 88; rsiReason = `RSI ${rsiVal.toFixed(0)} — deeply in your favor. ${isPut ? 'Stock is way overbought, due for a pullback.' : 'Stock is deeply oversold, due for a bounce.'}`;  }
+  else if (effRSI <= 40) { rsiScore = 70; rsiReason = `RSI ${rsiVal.toFixed(0)} — RSI is in your favor with room to run. Setup still looks healthy.`; }
+  else if (effRSI <= 60) { rsiScore = 50; rsiReason = `RSI ${rsiVal.toFixed(0)} — neutral zone. No extreme readings. Momentum could go either way.`; }
+  else if (effRSI <= 74) { rsiScore = 32; rsiReason = `RSI ${rsiVal.toFixed(0)} — ${isPut ? 'stock is getting oversold — pullback risk for your put.' : 'stock is getting overbought — reversal risk for your call.'} Start watching your exit.`; }
+  else                   { rsiScore = 12; rsiReason = `RSI ${rsiVal.toFixed(0)} — extreme reading. ${isPut ? 'Stock is deeply oversold — bounce risk is very high.' : 'Stock is deeply overbought — reversal risk is very high.'} Exit signal is likely.`; }
+  categories.push({ icon: '📊', name: 'RSI Risk', score: rsiScore, reason: rsiReason });
+
+  // 4. Trend Alignment (is price moving the right way for your trade?)
   let trendScore = 50, trendReason = '';
-  if (effVel > a * 0.55)        { trendScore = 88; trendReason = `Price is moving fast in your direction — strong trend, stay in.`; }
-  else if (effVel > a * 0.20)   { trendScore = 68; trendReason = `Price is moving steadily your way — trend is intact, no red flags yet.`; }
-  else if (Math.abs(effVel) < a * 0.05) { trendScore = 38; trendReason = `Price is barely moving — the trend may be pausing or stalling out.`; }
-  else if (effVel < -a * 0.20)  { trendScore = 20; trendReason = `Price is moving against you — the trend has reversed. Time to protect yourself.`; }
-  else                           { trendScore = 45; trendReason = `Price is moving slightly against you — watch closely, could be a brief pullback.`; }
-  categories.push({ icon: '🎯', name: 'Trend Strength', score: trendScore, reason: trendReason });
+  const goodDir = isPut ? 'falling' : 'rising';
+  const badDir  = isPut ? 'rising'  : 'falling';
+  if (effVel > a * 0.35 && effRSI < 68)   { trendScore = 88; trendReason = `Trend is fully aligned — stock is ${goodDir} and RSI confirms there's still room to run.`; }
+  else if (effVel > 0 && effRSI < 62)      { trendScore = 65; trendReason = `Trend is aligned — stock is ${goodDir}. RSI not stretched yet. Hold your position.`; }
+  else if (effVel > 0 && effRSI >= 68)     { trendScore = 45; trendReason = `Trend is moving your way but RSI is stretched. The move may be running out of steam soon.`; }
+  else if (Math.abs(effVel) < a * 0.05)    { trendScore = 38; trendReason = `Trend is stalling — price movement has nearly stopped. Wait for direction to clarify.`; }
+  else                                      { trendScore = 18; trendReason = `Trend has turned against you — stock is ${badDir}, which hurts your ${isPut ? 'put' : 'call'} position.`; }
+  categories.push({ icon: '🎯', name: 'Trend Alignment', score: trendScore, reason: trendReason });
 
-  // 4. Profit / Risk position
-  let profitScore = 50, profitReason = '';
-  if (gainPct === null || gainPct === undefined) {
-    profitScore = 50; profitReason = `Enter your entry price above to see your profit/risk position.`;
-  } else if (gainPct >= 25) {
-    profitScore = 92; profitReason = `You're up ${gainPct.toFixed(0)}% — excellent profit. Start thinking about protecting these gains.`;
-  } else if (gainPct >= 12) {
-    profitScore = 75; profitReason = `You're up ${gainPct.toFixed(0)}% — solid gain. Consider moving your stop up to lock some in.`;
-  } else if (gainPct >= 3) {
-    profitScore = 58; profitReason = `You're up ${gainPct.toFixed(0)}% — small profit. Hold unless other signals say exit.`;
-  } else if (gainPct >= -5) {
-    profitScore = 45; profitReason = `Near breakeven — no big profit or loss yet. Stay patient and watch the signals.`;
-  } else if (gainPct >= -15) {
-    profitScore = 28; profitReason = `Down ${Math.abs(gainPct).toFixed(0)}% — getting into stop loss territory. Protect your capital.`;
+  // 5. Time Decay Risk (theta / DTE — options only)
+  let decayScore = 50, decayReason = '';
+  if (optContract?.expiry) {
+    const daysLeft = Math.max(0, (new Date(optContract.expiry) - new Date()) / (1000 * 60 * 60 * 24));
+    const theta = lastOptionsData?.greeks?.theta;
+    const thetaCost = theta ? Math.abs(theta * 100) : null;
+    if (daysLeft < 1) {
+      decayScore = 5; decayReason = `⚠️ 0DTE — your option expires TODAY. Time decay is devastating right now. Every hour costs you money even if the stock moves in your favor.`;
+    } else if (daysLeft < 3) {
+      decayScore = 15; decayReason = `${daysLeft.toFixed(0)} days left — time decay is accelerating rapidly. Theta risk is very high. Strong moves needed to stay profitable.`;
+    } else if (daysLeft < 7) {
+      decayScore = 35; decayReason = `${daysLeft.toFixed(0)} days left — time decay is significant${thetaCost ? ` (~$${thetaCost.toFixed(0)}/day per contract)` : ''}. The move needs to happen soon.`;
+    } else if (daysLeft < 21) {
+      decayScore = 60; decayReason = `${daysLeft.toFixed(0)} days left — some time decay but still manageable${thetaCost ? ` (~$${thetaCost.toFixed(0)}/day per contract)` : ''}. You have time to let the trade develop.`;
+    } else {
+      decayScore = 82; decayReason = `${daysLeft.toFixed(0)} days left — time decay is low risk. You have plenty of runway for the trade to work.`;
+    }
   } else {
-    profitScore = 12; profitReason = `Down ${Math.abs(gainPct).toFixed(0)}% — significant loss. Consider exiting to stop further damage.`;
+    decayScore = 70; decayReason = `Add your expiration date to see time decay risk. Stock-mode tracking has no theta.`;
   }
-  categories.push({ icon: '💰', name: 'Profit / Risk', score: profitScore, reason: profitReason });
+  categories.push({ icon: '⏳', name: 'Time Decay Risk', score: decayScore, reason: decayReason });
 
-  // 5. Overall Signal (from the exit engine)
+  // 6. Overall Exit Confidence (from the exit signal engine)
   let sigScore = 50, sigReason = '';
   if (sig) {
-    if (sig.color === 'red')    { sigScore = 85; sigReason = `Exit signal is active — the system sees enough warning signs to recommend exiting now.`; }
-    else if (sig.color === 'yellow') { sigScore = 55; sigReason = `Caution signal — not a full exit yet, but things are getting less favorable. Watch closely.`; }
-    else                             { sigScore = 30; sigReason = `Hold signal — everything still looks good. No reason to exit yet, let the trade work.`; }
+    if (sig.level === 'EXIT NOW' || sig.level === 'TAKE PROFIT') {
+      sigScore = 92; sigReason = `SampsonX says <strong>${sig.level}</strong> — the system sees strong evidence that it's time to act. Don't second-guess it.`;
+    } else if (sig.level === 'TRIM 50%') {
+      sigScore = 75; sigReason = `SampsonX says <strong>TRIM 50%</strong> — substantial warning signs. Take half off the table and protect your gains.`;
+    } else if (sig.level === 'TRIM 25%' || sig.level === 'MOVE STOP UP') {
+      sigScore = 60; sigReason = `SampsonX says <strong>${sig.level}</strong> — caution signals are building. Not a full exit yet, but protect yourself.`;
+    } else {
+      sigScore = 28; sigReason = `SampsonX says <strong>HOLD</strong> — conditions still favor your trade. No reason to exit yet.`;
+    }
   }
-  categories.push({ icon: '🚦', name: 'Exit Signal', score: sigScore, reason: sigReason });
+  categories.push({ icon: '🚦', name: 'Overall Exit Confidence', score: sigScore, reason: sigReason });
 
   // Render category rows
   document.getElementById('confCategories').innerHTML = categories.map(cat => {
@@ -3304,99 +3413,104 @@ function exitSignal(rsiVal, vel, vt, gainPct, vtrendVal, atrVal, isOptMode, optC
   const goodDir   = isPut ? 'falling' : 'rising';
   const badDir    = isPut ? 'rising'  : 'falling';
 
-  // ── Options-specific: theta / IV signals (direction-agnostic — premium erodes either way) ──
+  // ── Options-specific: theta / IV signals ──
   if (isOptMode && optCon?.expiry) {
     const daysLeft = (new Date(optCon.expiry) - new Date()) / (1000 * 60 * 60 * 24);
     if (daysLeft < 1 && gainPct !== null && gainPct > 0) {
-      return { level:'⏰ TIME IS UP — SELL NOW', color:'red', icon:'⏰',
-        msg: `Your option expires today and you're up ${gainPct.toFixed(1)}%. Every minute you wait, time eats more of your profit.`,
-        sub: `Sell now and keep what you made. Don't let it expire worthless.` };
+      return { level:'EXIT NOW', color:'red', icon:'⏰',
+        msg: `Your option expires TODAY and you're up ${gainPct.toFixed(1)}%. Every minute you hold, time eats more of your profit. This is not a debate.`,
+        sub: `Sell now and keep what you made. Options expiring today can go to zero fast.` };
     }
     if (daysLeft < 1 && gainPct !== null && gainPct <= 0) {
-      return { level:'⏰ OPTION EXPIRING — CUT IT', color:'red', icon:'⏰',
-        msg: `Your option expires today and it's at a loss. Time keeps eating the value — there's no way to recover after close.`,
-        sub: `Sell now to get back whatever is left. Don't let it go to zero.` };
+      return { level:'EXIT NOW', color:'red', icon:'⏰',
+        msg: `Your option expires TODAY and it's at a loss. Sell now to recover whatever is left. There is no tomorrow for this contract.`,
+        sub: `Even a small recovery beats zero. Don't let time take the rest.` };
     }
     if (optData?.ivCrushWarning && gainPct !== null && gainPct > 10) {
-      return { level:'💥 LOCK IN GAINS NOW', color:'yellow', icon:'💥',
-        msg: `Market fear is very high right now. Once the news event passes, fear drops fast — and so does your option price, even if you're right on direction.`,
-        sub: `Grab your gains before the fear disappears. This is a great spot to sell.` };
+      return { level:'TRIM 50%', color:'yellow', icon:'💥',
+        msg: `You're up ${gainPct.toFixed(1)}% but volatility is elevated. Once the news event passes, IV can collapse and pull your option price down — even if direction is correct.`,
+        sub: `Take half off the table now. Protect your gains against IV crush.` };
     }
   }
 
   // ── Take profit — direction-agnostic (premium % gain) ──
-  if (gainPct !== null && gainPct >= (isOptMode ? 60 : 25))
-    return { level:'💰 Cash Out — Big Win!', color:'red', icon:'🔴',
-      msg: `You're up ${gainPct.toFixed(1)}%${isOptMode ? ' on your option' : ''}. That's a great trade. Close it now and lock in the win.`,
-      sub: `Big winners can flip fast. Take the money.` };
+  if (gainPct !== null && gainPct >= (isOptMode ? 75 : 30))
+    return { level:'TAKE PROFIT', color:'red', icon:'🏆',
+      msg: `You're up ${gainPct.toFixed(1)}%${isOptMode ? ' on your option premium' : ''}. That's an outstanding trade. Close it now and lock in the full win.`,
+      sub: `Big winners can reverse instantly. The discipline to take profit is what separates pros from amateurs.` };
+
+  if (gainPct !== null && gainPct >= (isOptMode ? 40 : 18) && effRSI >= 68)
+    return { level:'TRIM 50%', color:'yellow', icon:'✂️',
+      msg: `You're up ${gainPct.toFixed(1)}% and signals are starting to stretch. ${isPut ? 'The stock is getting very oversold — buyers will step in.' : 'Buyers are getting exhausted — sellers are about to take over.'} Sell half here.`,
+      sub: `Locking in 50% now means you still win even if the trade reverses completely.` };
 
   // ── Exit signals — direction-aware via effVel/effRSI ──
   if (effRSI >= 82)
-    return { level:'🚨 Sell Now — Running Out of Gas', color:'red', icon:'🚨',
+    return { level:'EXIT NOW', color:'red', icon:'🚨',
       msg: isPut
-        ? `The stock has been falling hard and is now very beaten down. It's likely to bounce back up soon — which is bad for your put. Take profits now.`
-        : `Buyers have been pushing this stock really hard and it's exhausted. Sellers are about to take over. Don't get caught holding.`,
-      sub: `This usually flips direction within the next few minutes.` };
+        ? `The stock is extremely oversold — it's likely to snap back UP, which is bad for your put. Get out now while you still have value.`
+        : `Buyers have pushed this stock to extremes. It's exhausted. Sellers are about to take control. Exit before the reversal hits.`,
+      sub: `Reversals from these extremes are fast and painful. Don't wait for confirmation.` };
 
   if (effVel < -a * 0.35 && gainPct !== null && gainPct > 4)
-    return { level:'🚨 Sell Now — Move Reversed', color:'red', icon:'⚠️',
+    return { level:'EXIT NOW', color:'red', icon:'⚠️',
       msg: isPut
-        ? `The stock just flipped and started going UP — that works against your put. You still have gains. Protect them.`
-        : `The stock just flipped and started going DOWN — that works against your call. You still have gains. Protect them.`,
-      sub: `Sell now or at least move your stop up to protect what you've made.` };
+        ? `The stock just reversed and is moving UP — directly against your put. You still have gains. Protect them NOW.`
+        : `The stock just reversed and is moving DOWN — directly against your call. You still have gains. Protect them NOW.`,
+      sub: `Don't let a winning trade turn into a loss. Exit or at minimum move your stop up immediately.` };
 
   // ── Caution signals ──
   if (effRSI >= 74)
-    return { level:'⚠️ Starting to Run Out of Steam', color:'yellow', icon:'🟡',
+    return { level:'TRIM 25%', color:'yellow', icon:'✂️',
       msg: isPut
-        ? `The stock has dropped a lot. It's getting close to the point where buyers usually step in and push it back up. Your edge is shrinking.`
-        : `🔥 Buyers are taking control. Higher probability call setup — but the stock is getting stretched. The easy money may already be made.`,
-      sub: `Consider selling some or moving your stop to protect gains.` };
+        ? `The stock has been falling hard and is getting very stretched. Buyers tend to step in at these levels. Start taking some money off the table.`
+        : `The stock is getting overbought. Momentum is still there but the easy gains may be behind you. Trim your position a bit.`,
+      sub: `Selling 25% now protects profits while keeping exposure if the move continues.` };
 
   if (gainPct !== null && gainPct >= 11 && effVTrend < -a * 0.08)
-    return { level:'🛡 Protect What You Made', color:'yellow', icon:'🛡',
-      msg: `You're up ${gainPct.toFixed(1)}% and the move is starting to slow down. This is a great spot to lock in some profits.`,
-      sub: `Move your stop up so even if it reverses, you keep most of your gains.` };
+    return { level:'MOVE STOP UP', color:'yellow', icon:'🛡',
+      msg: `You're up ${gainPct.toFixed(1)}% and the pace of the move is slowing down. The trend is still in your favor but momentum is fading.`,
+      sub: `Move your stop up to lock in at least half of your current gain. Let the trade work but protect yourself.` };
 
   if (vt < -0.28 && effVel < a * 0.2)
-    return { level:'⚠️ Fewer People Trading — Move Fading', color:'yellow', icon:'📉',
-      msg: `The number of people buying and selling is dropping fast. When activity dries up like this, the move usually runs out of fuel.`,
-      sub: `Tighten your stop. The risk is rising.` };
+    return { level:'TRIM 25%', color:'yellow', icon:'📉',
+      msg: `Trading activity is dropping fast. Low-volume moves are unreliable and tend to reverse without warning. Start reducing your position.`,
+      sub: `Take 25% off the table. If volume keeps dropping, take more.` };
 
   if (effVTrend < -a * 0.12)
-    return { level:'⏸ Slowing Down', color:'yellow', icon:'⏸',
-      msg: `${isPut ? 'The downward move' : 'The upward move'} is losing speed over the last several minutes.`,
-      sub: `Hold a few more minutes and watch. If it keeps slowing, consider exiting.` };
+    return { level:'MOVE STOP UP', color:'yellow', icon:'⏸',
+      msg: `${isPut ? 'The downward move' : 'The upward move'} is losing momentum over the last several minutes. This could be a pause or an early reversal signal.`,
+      sub: `Move your stop to protect at least breakeven. Watch for the next 1–2 minutes to confirm direction.` };
 
   // ── Hold signals — direction-aware ──
   if (effRSI <= 35 && effVel > 0)
-    return { level: isPut ? '🟢 Stock Pushed Too High — Put Looks Great' : '🟢 Stock Way Oversold — Room to Bounce', color:'green', icon:'🟢',
+    return { level:'HOLD', color:'green', icon:'💪',
       msg: isPut
-        ? `The stock has been going up for a while and buyers are getting tired. Stocks that get pushed too high almost always pull back. Your put is well-positioned.`
-        : `The stock has been beaten down really hard. Buyers usually step in at these levels and push it back up. Your call has room to run.`,
+        ? `The stock has been pushed very high and buyers are getting tired. A pullback is likely — your put is well-positioned. Stay in.`
+        : `The stock was beaten down hard and buyers are stepping in. Your call has room to run. Stay in.`,
       sub: isPut
-        ? `No reason to sell yet — stay in and let the pullback come to you.`
-        : `No reason to sell yet — the rebound has more room to go.` };
+        ? `No reason to exit yet. Let the pullback play out.`
+        : `No reason to exit yet. The bounce has more room to go.` };
 
   if (effVel > a * 0.45 && vt > 0.05)
-    return { level:'🟢 Strong Move — Stay In!', color:'green', icon:'🟢',
+    return { level:'HOLD', color:'green', icon:'💚',
       msg: isPut
-        ? `The stock is dropping fast and more people are joining in. Your put is working exactly as planned.`
-        : `The stock is climbing fast and more people are joining in. Strong moves on rising activity usually keep going.`,
-      sub: `Everything looks good. No reason to exit yet.` };
+        ? `The stock is dropping fast and volume is rising. Your put is working exactly as planned. Don't cut it short.`
+        : `The stock is climbing fast and more traders are joining in. Strong momentum on rising volume usually keeps going.`,
+      sub: `Everything looks good. Hold your position and let it run.` };
 
   if (effVel > 0 && effRSI < 62)
-    return { level:'🟢 Keep Holding', color:'green', icon:'🟢',
+    return { level:'HOLD', color:'green', icon:'✅',
       msg: isPut
-        ? `The stock is still moving in your favor. No warning signs yet.`
-        : `The stock is still moving in your favor. No warning signs yet.`,
+        ? `The stock is still moving in your direction. No warning signs yet. Your put is intact.`
+        : `The stock is still moving in your direction. No warning signs yet. Your call is intact.`,
       sub: isPut
-        ? `Watch for the stock to get very oversold — that's when to consider exiting.`
-        : `Watch for buyer strength to get very high — that's usually when to consider exiting.` };
+        ? `Watch for RSI to get very oversold — that's usually the exit signal for a put.`
+        : `Watch for RSI to get very overbought — that's usually the exit signal for a call.` };
 
-  return { level:'👁 Waiting for a Signal', color:'yellow', icon:'👁',
-    msg: `Nothing strong enough to act on right now. The market is neutral.`,
-    sub: `Stay patient. A clear move up or down will give you a better signal.` };
+  return { level:'HOLD', color:'yellow', icon:'👁',
+    msg: `Market is neutral right now — no strong signal in either direction.`,
+    sub: `Stay patient. A clear breakout or breakdown will give you a better signal.` };
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────
@@ -3484,7 +3598,7 @@ function render() {
   document.getElementById('exitIcon').textContent = sig.icon;
   const lvEl = document.getElementById('exitLevel');
   lvEl.textContent = sig.level;
-  lvEl.className = 'exit-level ' + sig.color;
+  lvEl.className = 'exit-action-badge';
   document.getElementById('exitMsg').textContent = sig.msg;
   document.getElementById('exitSub').textContent = sig.sub;
 
@@ -3549,6 +3663,7 @@ function render() {
   renderProfitSummary(gainPct, optMode, isPut);
   renderExitLevels(optMode, isPut);
   renderSampsonXSummary(rsiVal, vel, atrVal, vt, gainPct, sig, isPut, optMode);
+  renderOptionsWarnings(rsiVal, vel, atrVal, vt, optMode, isPut);
 
   // Auto-show results when we have entry data
   if (entryPrice || (optContract && optContract.entryPremium)) {
@@ -3810,6 +3925,101 @@ function resetDisplay() {
 
 // ── New UI helpers ──────────────────────────────────────────────────────────
 
+// ── Live Premium fetch (alias used by new ⚡ button) ──────────────────────
+function fetchLivePremium() {
+  const btn = document.getElementById('liveFetchBtn');
+  const strike = document.getElementById('optStrikeInput')?.value;
+  const expiry = document.getElementById('optExpiryInput')?.value;
+  if (!strike || !expiry) {
+    const msg = document.getElementById('optStatusMsg');
+    if (msg) msg.textContent = 'Enter strike and expiry date first, then click ⚡ Get Live Price.';
+    return;
+  }
+  if (btn) { btn.textContent = '⏳ Fetching...'; btn.classList.add('loading'); }
+  fetchAutoFill();
+  setTimeout(() => {
+    if (btn) { btn.textContent = '⚡ Get Live Price'; btn.classList.remove('loading'); }
+  }, 3000);
+}
+
+// ── Options Alerts (time decay, expiry risk, IV, volume, earnings) ─────────
+function renderOptionsWarnings(rsiVal, vel, atrVal, vt, optMode, isPut) {
+  const card = document.getElementById('optsAlertsCard');
+  const list = document.getElementById('optsAlertsList');
+  if (!card || !list) return;
+
+  const warnings = [];
+  const a = atrVal || 0.01;
+
+  // 1. Time Decay Risk
+  if (optContract?.expiry) {
+    const daysLeft = Math.max(0, (new Date(optContract.expiry) - new Date()) / (1000 * 60 * 60 * 24));
+    const theta    = lastOptionsData?.greeks?.theta;
+    const thetaCost = theta ? Math.abs(theta * 100) : null;
+    if (daysLeft < 1) {
+      warnings.push({ icon:'⏰', name:'Time Decay Risk', sev:'sev-high', sevLabel:'CRITICAL',
+        msg:`0DTE — your option expires TODAY. Theta is accelerating dramatically into close. Even small moves in your favor may not offset the decay. Get out while value remains.` });
+    } else if (daysLeft < 3) {
+      warnings.push({ icon:'⏳', name:'Time Decay Risk', sev:'sev-high', sevLabel:'HIGH',
+        msg:`${daysLeft.toFixed(0)} day${daysLeft < 1.5 ? '' : 's'} left — theta is eating your premium fast${thetaCost ? ` (~$${thetaCost.toFixed(0)}/day per contract)` : ''}. The stock needs to move soon.` });
+    } else if (daysLeft < 7) {
+      warnings.push({ icon:'⏳', name:'Time Decay Risk', sev:'sev-med', sevLabel:'ELEVATED',
+        msg:`${Math.ceil(daysLeft)} days left — time decay is meaningful${thetaCost ? ` (~$${thetaCost.toFixed(0)}/day per contract)` : ''}. Each day you hold without movement, premium erodes.` });
+    }
+  }
+
+  // 2. Expiration Risk
+  if (optContract?.expiry) {
+    const daysLeft = Math.max(0, (new Date(optContract.expiry) - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysLeft < 1) {
+      warnings.push({ icon:'📅', name:'Expiration Risk', sev:'sev-high', sevLabel:'CRITICAL',
+        msg:`This contract expires today. An option that expires worthless becomes $0 — a 100% loss. Consider selling now to recover any remaining value.` });
+    } else if (daysLeft < 5) {
+      warnings.push({ icon:'📅', name:'Expiration Risk', sev:'sev-med', sevLabel:'MONITOR',
+        msg:`${Math.ceil(daysLeft)} day${daysLeft < 1.5 ? '' : 's'} to expiry. As expiration approaches, out-of-the-money options can lose value very quickly. Monitor closely.` });
+    }
+  }
+
+  // 3. Volume / Spread Warning (low volume = wide spreads = bad fills)
+  if (vt < -0.35) {
+    warnings.push({ icon:'📊', name:'Low Volume Warning', sev:'sev-med', sevLabel:'CAUTION',
+      msg:`Volume is well below average. Low volume means wide bid-ask spreads and poor fills. You may not get the price you expect when you sell. Consider using limit orders.` });
+  }
+
+  // 4. High IV Warning
+  if (lastOptionsData?.iv != null && lastOptionsData.iv > 80) {
+    warnings.push({ icon:'🔥', name:'High Volatility Warning', sev:'sev-med', sevLabel:'CAUTION',
+      msg:`Implied Volatility is ${lastOptionsData.iv.toFixed(0)}% — very elevated. High IV means you paid a premium for volatility. If the event passes or fear drops, IV can collapse rapidly (IV crush), dragging your option price down even if direction is correct.` });
+  } else if (lastOptionsData?.ivCrushWarning) {
+    warnings.push({ icon:'💥', name:'IV Crush Risk', sev:'sev-high', sevLabel:'HIGH',
+      msg:`IV crush warning active — a market event is inflating option prices right now. Once it passes, volatility can collapse suddenly. Lock in gains before the fear premium disappears.` });
+  }
+
+  // 5. Earnings Warning
+  if (lastOptionsData?.hasEarnings || (optMode && vt > 0.8 && Math.abs(vel) < a * 0.1)) {
+    warnings.push({ icon:'📣', name:'Earnings / Event Risk', sev:'sev-med', sevLabel:'WATCH',
+      msg:`Potential earnings or major news event detected. Options can make huge moves — but they can also collapse after the event (IV crush). Have a plan before the announcement.` });
+  }
+
+  if (warnings.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+  list.innerHTML = warnings.map(w => `
+    <div class="opts-warn-item">
+      <span class="opts-warn-icon">${w.icon}</span>
+      <div class="opts-warn-body">
+        <div class="opts-warn-hdr">
+          <span class="opts-warn-name">${w.name}</span>
+          <span class="opts-warn-severity ${w.sev}">${w.sevLabel}</span>
+        </div>
+        <div class="opts-warn-msg">${w.msg}</div>
+      </div>
+    </div>`).join('');
+}
+
 function setCallPut(isCall) {
   optCallMode = isCall;
   const cb = document.getElementById('optCallBtn');
@@ -3842,33 +4052,36 @@ function fetchAutoFill() {
 function calculateExit() {
   contracts = Math.max(1, parseInt(document.getElementById('contractsInput').value) || 1);
 
-  // Entry price — stock mode
+  // Entry premium
   const ev = parseFloat(document.getElementById('entryInput').value);
   if (!isNaN(ev) && ev > 0) {
     entryPrice = ev;
-    // If we have a tracked option contract, also sync entry premium
-    if (document.getElementById('optEntryPremium').value === '') {
-      document.getElementById('optEntryPremium').value = ev;
-    }
+    // Sync to legacy optEntryPremium field
+    const opEl = document.getElementById('optEntryPremium');
+    if (opEl && opEl.value === '') opEl.value = ev;
   }
 
-  // Current price — manual override
+  // Current premium — manual input
   const cv = parseFloat(document.getElementById('currentPriceInput').value);
   if (!isNaN(cv) && cv > 0 && !optCurrentPrice) {
     optCurrentPrice = cv;
   }
 
-  // If strike + expiry set but option contract not yet set, auto-setup
-  const strike = document.getElementById('optStrikeInput').value;
-  const expiry = document.getElementById('optExpiryInput').value;
-  if (strike && expiry && !optContract) {
-    fetchAutoFill();
+  // Strike + Expiry now always visible — auto-setup option contract
+  const strike = document.getElementById('optStrikeInput')?.value;
+  const expiry = document.getElementById('optExpiryInput')?.value;
+  if (strike && expiry) {
+    // Always re-sync entry premium before setting contract
+    const opEl = document.getElementById('optEntryPremium');
+    if (opEl && entryPrice > 0) opEl.value = entryPrice;
+    if (!optContract || optContract.strike !== parseFloat(strike) || optContract.expiry !== expiry) {
+      setOptionContract();
+    }
   }
 
   updateTargetTabs();
   saveState();
 
-  // Show results
   const rs = document.getElementById('resultsSection');
   rs.style.display = 'block';
   setTimeout(() => rs.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
@@ -3887,16 +4100,19 @@ function toggleAdvanced() {
 
 // ── Profit Summary Card ─────────────────────────────────────────────────────
 function renderProfitSummary(gainPct, optMode, isPut) {
-  const pEl  = document.getElementById('profitDollar');
-  const pPct = document.getElementById('profitPct');
-  const cbEl = document.getElementById('costBasis');
-  const pvEl = document.getElementById('positionValue');
+  const pEl    = document.getElementById('profitDollar');
+  const pPct   = document.getElementById('profitPct');
+  const cbEl   = document.getElementById('costBasis');
+  const pvEl   = document.getElementById('positionValue');
+  const plPerC = document.getElementById('plPerContractEl');
+  const ctEl   = document.getElementById('contractsDisplay');
+  const mlWarn = document.getElementById('maxLossWarn');
+  const mlText = document.getElementById('maxLossText');
   if (!pEl) return;
 
   let currentVal = null, entryVal = null, plDollar = null, gPct = gainPct;
 
-  // Check manual current price input
-  const manualCv = parseFloat(document.getElementById('currentPriceInput')?.value);
+  const manualCv  = parseFloat(document.getElementById('currentPriceInput')?.value);
   const hasManual = !isNaN(manualCv) && manualCv > 0;
 
   if (optMode && optCurrentPrice != null && optContract?.entryPremium) {
@@ -3919,22 +4135,42 @@ function renderProfitSummary(gainPct, optMode, isPut) {
 
   if (plDollar === null) return;
 
-  const pos   = plDollar >= 0;
-  const color = pos ? 'var(--bull)' : 'var(--bear)';
-  const sign  = plDollar >= 0 ? '+' : '';
+  const isOpt  = optMode || (hasManual && entryPrice);
+  const pos    = plDollar >= 0;
+  const color  = pos ? 'var(--bull)' : 'var(--bear)';
+  const sign   = plDollar >= 0 ? '+' : '';
 
-  pEl.textContent = `${sign}$${Math.abs(plDollar).toFixed(2)}`;
-  pEl.style.color = color;
-  pPct.textContent = `${gPct >= 0 ? '+' : ''}${gPct.toFixed(2)}%`;
+  // Hero: Total P&L
+  pEl.textContent  = `${sign}$${Math.abs(plDollar).toFixed(2)}`;
+  pEl.style.color  = color;
+  pPct.textContent = `${gPct >= 0 ? '+' : ''}${gPct.toFixed(1)}%`;
   pPct.style.color = color;
 
-  const isOpt = optMode || (hasManual && entryPrice);
-  const costBasisVal    = isOpt ? entryVal * 100 * contracts : entryVal * contracts;
-  const currentValueTotal = isOpt ? currentVal * 100 * contracts : currentVal * contracts;
-
-  cbEl.textContent = `$${costBasisVal.toFixed(2)}`;
-  pvEl.textContent = `$${currentValueTotal.toFixed(2)}`;
+  // Grid: Entry Premium / Current Premium / P&L per Contract / Contracts
+  cbEl.textContent = entryVal   != null ? `$${entryVal.toFixed(2)}` : '—';
+  pvEl.textContent = currentVal != null ? `$${currentVal.toFixed(2)}` : '—';
   pvEl.style.color = color;
+
+  const plPerContract = isOpt
+    ? (currentVal - entryVal) * 100
+    : (currentVal - entryVal);
+  if (plPerC) {
+    plPerC.textContent = `${plPerContract >= 0 ? '+' : ''}$${Math.abs(plPerContract).toFixed(2)}`;
+    plPerC.style.color = color;
+  }
+  if (ctEl) ctEl.textContent = `${contracts} contract${contracts !== 1 ? 's' : ''}`;
+
+  // Max Loss Warning — show the 30% stop-loss level in dollar terms
+  if (mlWarn && mlText && entryVal != null && isOpt) {
+    const stopPremium  = entryVal * 0.30;            // stop at 70% loss
+    const lossPerC     = (stopPremium - entryVal) * 100;  // negative number
+    const totalLoss    = lossPerC * contracts;
+    const stopPct      = -70;
+    mlWarn.style.display = 'flex';
+    mlText.innerHTML = `<strong>Stop loss guide:</strong> If premium drops to $${stopPremium.toFixed(2)} (−70%), that's <strong>$${Math.abs(lossPerC).toFixed(0)} loss per contract</strong> · $${Math.abs(totalLoss).toFixed(0)} total on ${contracts} contract${contracts !== 1 ? 's' : ''}. Exit before this level if the trade moves against you.`;
+  } else if (mlWarn) {
+    mlWarn.style.display = 'none';
+  }
 }
 
 // ── Suggested Exit Levels ───────────────────────────────────────────────────
@@ -3942,7 +4178,7 @@ function renderExitLevels(optMode, isPut) {
   const el = document.getElementById('exitLevelsContent');
   if (!el) return;
 
-  const manualCv = parseFloat(document.getElementById('currentPriceInput')?.value);
+  const manualCv  = parseFloat(document.getElementById('currentPriceInput')?.value);
   const hasManual = !isNaN(manualCv) && manualCv > 0;
 
   const isOpt = optMode || (hasManual && entryPrice);
@@ -3950,37 +4186,57 @@ function renderExitLevels(optMode, isPut) {
   if (!base) return;
 
   const currentForETA = optMode ? (optCurrentPrice || base) : hasManual ? manualCv : (candles.length ? candles[candles.length-1].close : base);
-  const vel = candles.length >= 5 ? velocity(candles) : 0;
+  const rawVel = candles.length >= 5 ? velocity(candles) : 0;
+  // For puts: premium increases when stock falls, so premium velocity = -stock velocity × delta
+  // For a simplified ETA, treat premium gain direction correctly:
+  // optMode: premium going UP is a win for both calls and puts (premium is what we track)
+  // stock-mode put: stock going DOWN is a win — vel < 0 means winning
+  const effVel = (isOpt || !isPut) ? rawVel : -rawVel;
 
   const levels = [
-    { label: 'Emergency Stop',    pct: isOpt ? -30 : -15, icon: '🛑', desc: 'Cut losses here — maximum pain point.' },
-    { label: 'Conservative Exit', pct: 10,                 icon: '🟢', desc: 'Lock in early — the safest choice every time.' },
-    { label: 'Recommended Exit',  pct: 25,                 icon: '⭐', desc: 'Where most strong moves run out of gas.' },
-    { label: 'Aggressive Target', pct: 50,                 icon: '🚀', desc: 'Only hold here if momentum is still very strong.' },
+    { label: 'Emergency Stop',    pct: isOpt ? -70 : -20, icon: '🛑',
+      action: 'EXIT NOW',
+      desc: isOpt ? 'Cut losses here. If premium hits this level, the trade is broken.' : 'Maximum stop loss — protect your capital.' },
+    { label: 'Conservative Exit', pct: 15, icon: '🟡',
+      action: 'TRIM 25%',
+      desc: 'Lock in early. Even a small win is better than watching it turn red.' },
+    { label: 'Recommended Exit',  pct: 30, icon: '⭐',
+      action: 'TAKE PROFIT',
+      desc: 'Where most solid moves run their course. The sweet spot for consistent winners.' },
+    { label: 'Aggressive Target', pct: 60, icon: '🚀',
+      action: 'HOLD',
+      desc: 'Only reach for this if momentum is very strong and RSI has room to run.' },
   ];
 
   el.innerHTML = levels.map(lvl => {
-    const targetPx = base * (1 + lvl.pct / 100);
+    const targetPx      = base * (1 + lvl.pct / 100);
     const plPerContract = (targetPx - base) * (isOpt ? 100 : 1);
-    const isStop = lvl.pct < 0;
-    const color  = isStop ? 'var(--bear)' : lvl.pct >= 25 ? 'var(--bull)' : 'var(--warn)';
-    const sign   = lvl.pct >= 0 ? '+' : '';
+    const isStop        = lvl.pct < 0;
+    const color         = isStop ? 'var(--bear)' : lvl.pct >= 30 ? 'var(--bull)' : 'var(--warn)';
+    const sign          = lvl.pct >= 0 ? '+' : '';
 
+    // ETA: premium (optMode) or stock price needs to reach targetPx
+    // effVel > 0 means winning direction; diff = how far we need to go
     let etaStr = '';
-    if (!isStop && vel > 0 && currentForETA < targetPx) {
-      const mins = (targetPx - currentForETA) / vel;
-      if (mins < 360) etaStr = mins < 60 ? `~${Math.round(mins)}m` : `~${Math.round(mins/60)}h`;
+    if (!isStop) {
+      const diff = targetPx - currentForETA;
+      if (effVel > 0 && diff > 0) {
+        const mins = diff / effVel;
+        if (mins < 360) etaStr = mins < 60 ? `~${Math.round(mins)}m` : `~${Math.round(mins/60)}h`;
+      }
     }
+
+    const totalPL = plPerContract * contracts;
 
     return `<div class="exit-level-row">
       <div class="el-icon">${lvl.icon}</div>
       <div class="el-body">
-        <div class="el-label">${lvl.label}</div>
+        <div class="el-label">${lvl.action} — ${lvl.label}</div>
         <div class="el-desc">${lvl.desc}</div>
       </div>
       <div class="el-price" style="color:${color}">
         $${targetPx.toFixed(2)}
-        <span>${sign}${lvl.pct}% · ${plPerContract >= 0 ? '+' : ''}$${Math.abs(plPerContract * contracts).toFixed(0)}${etaStr ? ' · ' + etaStr : ''}</span>
+        <span>${sign}${lvl.pct}% · ${totalPL >= 0 ? '+' : ''}$${Math.abs(totalPL).toFixed(0)}${etaStr ? ' · ' + etaStr : ''}</span>
       </div>
     </div>`;
   }).join('');
@@ -4020,17 +4276,20 @@ function renderSampsonXSummary(rsiVal, vel, atrVal, vt, gainPct, sig, isPut, opt
   if      (effRSI >= 76) parts.push(`Buyer strength is stretched (RSI ${rsiVal.toFixed(0)}) — the move may be running out of gas.`);
   else if (effRSI <= 30) parts.push(`The setup still has plenty of room to run.`);
 
-  // Action recommendation
-  if (sig.color === 'red') {
-    parts.push(`<strong style="color:var(--bear)">SampsonX says: Exit now.</strong>`);
-  } else if (sig.color === 'yellow' && gainPct !== null && gainPct >= 8) {
-    parts.push(`<strong style="color:var(--warn)">Locking in partial profits now reduces risk while leaving room for more upside.</strong>`);
-  } else if (sig.color === 'yellow') {
-    parts.push(`<strong style="color:var(--warn)">Things are getting mixed — watch closely and tighten your stop.</strong>`);
-  } else if (sig.color === 'green') {
-    parts.push(`<strong style="color:var(--bull)">The setup still looks good — hold your position for now.</strong>`);
+  // Action recommendation — uses the new level vocabulary
+  const level = sig?.level || 'HOLD';
+  if (level === 'EXIT NOW') {
+    parts.push(`<strong style="color:var(--bear)">SampsonX says: EXIT NOW. Don't hesitate — every second you wait costs you.</strong>`);
+  } else if (level === 'TAKE PROFIT') {
+    parts.push(`<strong style="color:var(--bull)">SampsonX says: TAKE PROFIT. You've hit a great target — close the trade and bank the win.</strong>`);
+  } else if (level === 'TRIM 50%') {
+    parts.push(`<strong style="color:var(--warn)">SampsonX says: TRIM 50%. Sell half now. Protect your gains while keeping upside exposure.</strong>`);
+  } else if (level === 'TRIM 25%') {
+    parts.push(`<strong style="color:var(--warn)">SampsonX says: TRIM 25%. Take some money off the table and tighten your stop on the rest.</strong>`);
+  } else if (level === 'MOVE STOP UP') {
+    parts.push(`<strong style="color:var(--warn)">SampsonX says: MOVE STOP UP. Protect what you've made — adjust your stop to lock in at least partial gains.</strong>`);
   } else {
-    parts.push(`Waiting for a clearer signal before recommending action.`);
+    parts.push(`<strong style="color:var(--bull)">SampsonX says: HOLD. The setup still looks good — let the trade work.</strong>`);
   }
 
   el.innerHTML = parts.join(' ');
