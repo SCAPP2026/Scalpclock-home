@@ -108,7 +108,17 @@ async function handleValidatePromo(env, request) {
 
   if (!coupon || typeof coupon !== 'object') {
     console.error('Could not resolve coupon for promo:', promo.id, 'coupon field:', promo.coupon);
-    return json({ valid: false, error: 'Promotion code is not valid. Please contact support.' });
+    return json({
+      valid: false,
+      error: 'Promotion code is not valid. Please contact support.',
+      _debug: {
+        promoId:    promo.id,
+        promoCode:  promo.code,
+        couponRaw:  promo.coupon,
+        couponType: typeof promo.coupon,
+        promoKeys:  Object.keys(promo),
+      },
+    });
   }
 
   // 3. Build response fields
