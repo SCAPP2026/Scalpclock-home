@@ -61,10 +61,7 @@ async function handleCheckout(env, request) {
 
   if (isTrialSession) {
     params.set('subscription_data[trial_period_days]', '7');
-    params.set('subscription_data[trial_settings][end_behavior][missing_payment_method]', 'cancel');
     params.set('payment_method_collection', 'always');
-    params.set('subscription_data[metadata][trial_offer_id]', env.STRIPE_TRIAL_OFFER_ID || 'to_1TooZ2IpxBaK009pQPsWGEe4');
-    params.set('subscription_data[metadata][trial_type]', '7_day_free');
   }
 
   // Pass userId so webhook can update profile on completion
