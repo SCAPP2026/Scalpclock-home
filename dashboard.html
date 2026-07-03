@@ -1042,9 +1042,10 @@ async function applyDashPromo() {
     const data = await res.json();
     if (data.valid) {
       _promoId = data.promoId;
-      msg.textContent = `✓ ${data.discountText} applied — you're set!`;
+      const enteredCode = (document.getElementById('dashPromoCode').value || '').trim().toUpperCase();
+      msg.innerHTML = `✓ <strong>${data.discountText}</strong> — click below, then enter <strong style="letter-spacing:.06em">${enteredCode}</strong> in the promo field at checkout.`;
       msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);';
-      document.getElementById('upgradeBtn').textContent = 'Claim Free Month';
+      document.getElementById('upgradeBtn').textContent = 'Go to Checkout →';
     } else {
       _promoId = null;
       msg.textContent = data.error || 'Invalid or expired code.';

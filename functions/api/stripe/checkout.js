@@ -44,12 +44,10 @@ async function handleCheckout(env, request) {
   }
 
   const isTrialSession = trial === true && tier === 'pro';
-  const hasPromo       = typeof promoId === 'string' && promoId.startsWith('promo_');
   const origin         = new URL(request.url).origin;
 
   const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}` +
-    (isTrialSession ? '&trial=1' : '') +
-    (hasPromo       ? '&promo=1' : '');
+    (isTrialSession ? '&trial=1' : '');
 
   const params = new URLSearchParams({
     'line_items[0][price]':    priceId,
@@ -57,14 +55,9 @@ async function handleCheckout(env, request) {
     mode:                      'subscription',
     success_url:               successUrl,
     cancel_url:                `${origin}/pricing`,
+    // Always allow promo codes — Stripe applies them natively in checkout
+    allow_promotion_codes:     'true',
   });
-
-  // Attach promotion code — mutually exclusive with allow_promotion_codes
-  if (hasPromo) {
-    params.set('discounts[0][promotion_code]', promoId);
-  } else {
-    params.set('allow_promotion_codes', 'true');
-  }
 
   if (isTrialSession) {
     params.set('subscription_data[trial_period_days]', '7');
@@ -74,14 +67,10 @@ async function handleCheckout(env, request) {
     params.set('subscription_data[metadata][trial_type]', '7_day_free');
   }
 
-  // Pass userId so webhook can mark promoRedeemed in Supabase
+  // Pass userId so webhook can update profile on completion
   if (userId) {
     params.set('client_reference_id', userId);
     params.set('subscription_data[metadata][user_id]', userId);
-  }
-
-  if (hasPromo) {
-    params.set('subscription_data[metadata][promo_redeemed]', 'true');
   }
 
   let res;

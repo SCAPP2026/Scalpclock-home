@@ -450,6 +450,7 @@ const _sb = supabase.createClient(
 
 let annual  = false;
 let _promoId = null;
+let _validatedCode = null;
 
 function toggleBilling() {
   annual = !annual;
@@ -488,9 +489,10 @@ async function applyPromo() {
     const data = await res.json();
     if (data.valid) {
       _promoId = data.promoId;
-      msg.textContent = `✓ ${data.discountText} applied — you're set!`;
+      _validatedCode = (document.getElementById('promoCode').value || '').trim().toUpperCase();
+      msg.innerHTML = `✓ <strong>${data.discountText}</strong> — click below, then enter <strong style="letter-spacing:.06em">${_validatedCode}</strong> in the promo field at checkout.`;
       msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);';
-      document.getElementById('proBtn').textContent = 'Claim Free Month';
+      document.getElementById('proBtn').textContent = 'Go to Checkout →';
     } else {
       _promoId = null;
       msg.textContent = data.error || 'Invalid or expired code.';
