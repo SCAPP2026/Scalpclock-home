@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Diagnostics</title>
+<link rel="icon" href="hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.9);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;
+  --red:#ff3b46;
+  --yellow:#ffc832;
+  --text:#eef3f0;--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --mono:'JetBrains Mono',monospace;--disp:'Rajdhani',sans-serif;
+}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;padding:24px;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.06),transparent 68%),
+  linear-gradient(rgba(120,200,160,.02) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.02) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+.wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.hdr-title{font-family:var(--disp);font-size:1.6rem;font-weight:700;color:var(--green);}
+.hdr-sub{font-size:.75rem;color:var(--t55);}
+.refresh-btn{background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);border-radius:8px;padding:8px 18px;color:var(--green);font-family:var(--disp);font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s;}
+.refresh-btn:hover{background:rgba(22,217,126,.2);}
+
+.section{margin-bottom:20px;}
+.section-label{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);margin-bottom:8px;}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.card-icon{font-size:1.2rem;flex-shrink:0;}
+.card-label{font-size:.7rem;color:var(--t30);margin-bottom:3px;text-transform:uppercase;letter-spacing:.1em;}
+.card-val{font-size:.85rem;font-weight:700;color:var(--text);}
+.card-sub{font-size:.68rem;color:var(--t55);margin-top:2px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+.dot.fail{background:var(--red);box-shadow:0 0 6px var(--red);}
+.dot.warn{background:var(--yellow);box-shadow:0 0 6px var(--yellow);}
+.dot.pending{background:var(--t30);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* LOG */
+.log-wrap{background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:.78rem;line-height:1.8;max-height:420px;overflow-y:auto;}
+.log-wrap::-webkit-scrollbar{width:4px;}
+.log-wrap::-webkit-scrollbar-thumb{background:rgba(22,217,126,.2);border-radius:2px;}
+.log-line{display:flex;gap:10px;align-items:flex-start;}
+.log-ts{color:var(--t30);white-space:nowrap;flex-shrink:0;}
+.log-msg{color:var(--text);}
+.log-msg.ok{color:var(--green);}
+.log-msg.fail{color:var(--red);}
+.log-msg.warn{color:var(--yellow);}
+.log-msg.info{color:#7db8ff;}
+
+/* SIGNAL TABLE */
+.sig-table{width:100%;border-collapse:collapse;font-size:.75rem;margin-top:8px;}
+.sig-table th{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t30);padding:6px 10px;text-align:left;border-bottom:1px solid var(--line);}
+.sig-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.03);}
+.sig-table tr:last-child td{border-bottom:none;}
+.sig-buy{color:var(--green);}
+.sig-sell{color:var(--red);}
+.sig-hold{color:var(--t30);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">🔧 ScalpClock Diagnostics</div>
+      <div class="hdr-sub">System status · <span id="runTime">—</span> · <a href="/dashboard" style="color:var(--green)">← Dashboard</a></div>
+    </div>
+    <button class="refresh-btn" onclick="runAll()">↻ Re-run All</button>
+  </div>
+
+  <!-- STATUS GRID -->
+  <div class="section">
+    <div class="section-label">System Status</div>
+    <div class="grid" id="statusGrid">
+      <div class="card"><span class="dot pending" id="d-auth"></span><div><div class="card-label">Authentication</div><div class="card-val" id="v-auth">Checking…</div><div class="card-sub" id="s-auth"></div></div></div>
+      <div class="card"><span class="dot pending" id="d-sub"></span><div><div class="card-label">Subscription</div><div class="card-val" id="v-sub">Checking…</div><div class="card-sub" id="s-sub"></div></div></div>
+      <div class="card"><span class="dot pending" id="d-signals"></span><div><div class="card-label">Live Signal API</div><div class="card-val" id="v-signals">Checking…</div><div class="card-sub" id="s-signals"></div></div></div>
+      <div class="card"><span class="dot pending" id="d-market"></span><div><div class="card-label">Market Status</div><div class="card-val" id="v-market">Checking…</div><div class="card-sub" id="s-market"></div></div></div>
+      <div class="card"><span class="dot pending" id="d-historical"></span><div><div class="card-label">Market Data (Yahoo)</div><div class="card-val" id="v-historical">Checking…</div><div class="card-sub" id="s-historical"></div></div></div>
+      <div class="card"><span class="dot pending" id="d-price"></span><div><div class="card-label">Price API (Alpaca)</div><div class="card-val" id="v-price">Checking…</div><div class="card-sub" id="s-price"></div></div></div>
+    </div>
+  </div>
+
+  <!-- EVENT LOG -->
+  <div class="section">
+    <div class="section-label">Event Log</div>
+    <div class="log-wrap" id="logWrap"></div>
+  </div>
+
+  <!-- LAST SIGNAL RESPONSE -->
+  <div class="section" id="signalSection" style="display:none">
+    <div class="section-label">Last Signal Response — <span id="sigCount">0</span> tickers</div>
+    <div style="background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;">
+      <table class="sig-table">
+        <thead><tr>
+          <th>Symbol</th><th>Price</th><th>RSI</th><th>Signal</th><th>Vol×</th>
+        </tr></thead>
+        <tbody id="sigBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PROFILE DATA -->
+  <div class="section" id="profileSection" style="display:none">
+    <div class="section-label">Profile Record</div>
+    <div class="log-wrap" id="profileData" style="max-height:160px;"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) {}
+
+const logs = [];
+function log(msg, type = 'info') {
+  const ts = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  logs.push({ ts, msg, type });
+  const el = document.getElementById('logWrap');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-ts">${ts}</span><span class="log-msg ${type}">${msg}</span>`;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setStatus(id, state, val, sub = '') {
+  const dot = document.getElementById('d-' + id);
+  const v   = document.getElementById('v-' + id);
+  const s   = document.getElementById('s-' + id);
+  if (dot) { dot.className = 'dot ' + state; }
+  if (v) v.textContent = val;
+  if (s) s.textContent = sub;
+}
+
+async function checkAuth() {
+  if (!sb) {
+    setStatus('auth', 'fail', 'Supabase unavailable', 'CDN load failed');
+    log('Supabase client failed to initialize — CDN may be unavailable', 'fail');
+    return null;
+  }
+  log('Checking authentication...', 'info');
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error) throw error;
+    if (!session) {
+      setStatus('auth', 'warn', 'Not logged in', 'Session is null');
+      log('No active session — user is not logged in', 'warn');
+      return null;
+    }
+    const email = session.user.email;
+    const uid   = session.user.id;
+    setStatus('auth', 'ok', 'Logged In', email);
+    log(`✓ Authenticated as ${email}`, 'ok');
+    log(`  User ID: ${uid}`, 'info');
+    log(`  Session expires: ${new Date(session.expires_at * 1000).toLocaleString()}`, 'info');
+    return session;
+  } catch(e) {
+    setStatus('auth', 'fail', 'Auth error', e.message);
+    log('Auth check failed: ' + e.message, 'fail');
+    return null;
+  }
+}
+
+async function checkSubscription(session) {
+  if (!session) { setStatus('sub', 'warn', '—', 'Not authenticated'); return; }
+  log('Checking subscription (profiles table)...', 'info');
+  try {
+    const { data: rows, error } = await sb.from('profiles')
+      .select('plan, promo_redeemed')
+      .eq('id', session.user.id)
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!rows || rows.length === 0) {
+      setStatus('sub', 'warn', 'No profile row', 'Row missing — signup bug?');
+      log('WARNING: No profiles row for this user — webhook PATCH would silently fail', 'warn');
+      log('  Fix: profiles row is now created on signup via login.html upsert', 'info');
+      document.getElementById('profileSection').style.display = 'block';
+      document.getElementById('profileData').textContent = 'No row found in profiles table for user ID: ' + session.user.id;
+      return;
+    }
+
+    const plan = rows[0].plan || 'free';
+    const isTrial = plan === 'trial';
+    const isPro   = plan === 'pro';
+    const isPaid  = isTrial || isPro;
+    setStatus('sub', isPaid ? 'ok' : plan === 'expired' ? 'warn' : 'ok',
+      plan.toUpperCase(), isPaid ? 'Full access' : plan === 'expired' ? 'Subscription ended' : 'Limited access');
+    log(`✓ Subscription: ${plan.toUpperCase()}`, isPaid ? 'ok' : 'warn');
+    log(`  isPaid: ${isPaid} · isTrial: ${isTrial} · isPro: ${isPro}`, 'info');
+    if (rows[0].promo_redeemed) log('  Promo redeemed: YES', 'info');
+
+    document.getElementById('profileSection').style.display = 'block';
+    document.getElementById('profileData').textContent = JSON.stringify(rows[0], null, 2);
+  } catch(e) {
+    setStatus('sub', 'fail', 'Error', e.message);
+    log('Subscription check failed: ' + e.message, 'fail');
+  }
+}
+
+async function checkSignals() {
+  log('Calling /api/signals...', 'info');
+  const t0 = Date.now();
+  try {
+    const res  = await fetch('/api/signals');
+    const ms   = Date.now() - t0;
+    const data = await res.json();
+
+    if (!res.ok) {
+      setStatus('signals', 'fail', `HTTP ${res.status}`, data.error || 'API error');
+      log(`✗ /api/signals returned ${res.status}`, 'fail');
+      return;
+    }
+
+    const count = (data.tickers || []).length;
+    setStatus('signals', 'ok', `${count} signals`, `${ms}ms · asOf: ${data.asOf?.slice(11,19) || '?'}`);
+    log(`✓ /api/signals: ${count} tickers in ${ms}ms`, 'ok');
+
+    const buys  = data.tickers?.filter(t => t.tone === 'buy').length  || 0;
+    const sells = data.tickers?.filter(t => t.tone === 'sell').length || 0;
+    const holds = count - buys - sells;
+    log(`  Signals: ${buys} buy, ${sells} sell, ${holds} hold`, 'info');
+
+    // Market status
+    if (data.marketOpen !== undefined) {
+      setStatus('market', 'ok', data.marketOpen ? 'OPEN' : 'CLOSED', data.marketOpen ? 'Live signals active' : 'Pre/after hours');
+      log(`  Market: ${data.marketOpen ? 'OPEN — live signals active' : 'CLOSED'}`, data.marketOpen ? 'ok' : 'warn');
+    }
+
+    // Render signal table
+    if (data.tickers?.length) {
+      document.getElementById('signalSection').style.display = 'block';
+      document.getElementById('sigCount').textContent = count;
+      document.getElementById('sigBody').innerHTML = data.tickers.map(t => {
+        const cls = t.tone === 'buy' ? 'sig-buy' : t.tone === 'sell' ? 'sig-sell' : 'sig-hold';
+        return `<tr>
+          <td style="font-weight:700">${t.symbol}</td>
+          <td>${t.price != null ? '$'+t.price.toFixed(2) : '—'}</td>
+          <td>${t.rsi != null ? t.rsi : '—'}</td>
+          <td class="${cls}">${t.signal || 'Hold'}</td>
+          <td>${t.volSurge != null ? t.volSurge+'×' : '—'}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    return data;
+  } catch(e) {
+    setStatus('signals', 'fail', 'Network error', e.message);
+    log('✗ /api/signals failed: ' + e.message, 'fail');
+    setStatus('market', 'fail', '—', 'Cannot determine');
+  }
+}
+
+async function checkHistorical() {
+  log('Calling /api/historical?symbol=SPY&interval=1d&range=5d...', 'info');
+  const t0 = Date.now();
+  try {
+    const res  = await fetch('/api/historical?symbol=SPY&interval=1d&range=5d');
+    const ms   = Date.now() - t0;
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      setStatus('historical', 'fail', `HTTP ${res.status}`, data.error || 'API error');
+      log(`✗ /api/historical returned error: ${data.error || res.status}`, 'fail');
+      return;
+    }
+
+    const n = data.candles?.length || 0;
+    setStatus('historical', 'ok', `${n} candles`, `${ms}ms · ${data.symbol}`);
+    log(`✓ /api/historical: ${n} candles for ${data.symbol} in ${ms}ms`, 'ok');
+  } catch(e) {
+    setStatus('historical', 'fail', 'Network error', e.message);
+    log('✗ /api/historical failed: ' + e.message, 'fail');
+  }
+}
+
+async function checkPrice() {
+  log('Calling /api/price?symbol=SPY...', 'info');
+  const t0 = Date.now();
+  try {
+    const res  = await fetch('/api/price?symbol=SPY');
+    const ms   = Date.now() - t0;
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      setStatus('price', 'fail', `HTTP ${res.status}`, data.error || 'No price');
+      log(`✗ /api/price returned error: ${data.error || res.status}`, 'fail');
+      return;
+    }
+
+    setStatus('price', 'ok', `SPY $${data.price}`, `${ms}ms · ${(data.change_pct>=0?'+':'')}${data.change_pct}%`);
+    log(`✓ /api/price: SPY = $${data.price} (${data.change_pct>=0?'+':''}${data.change_pct}%) in ${ms}ms`, 'ok');
+  } catch(e) {
+    setStatus('price', 'fail', 'Network error', e.message);
+    log('✗ /api/price failed: ' + e.message, 'fail');
+  }
+}
+
+function clearResults() {
+  document.getElementById('logWrap').innerHTML = '';
+  document.getElementById('sigBody').innerHTML = '';
+  document.getElementById('signalSection').style.display = 'none';
+  document.getElementById('profileSection').style.display = 'none';
+  ['auth','sub','signals','market','historical','price'].forEach(id => {
+    setStatus(id, 'pending', 'Checking…', '');
+  });
+}
+
+async function runAll() {
+  clearResults();
+  document.getElementById('runTime').textContent = new Date().toLocaleString();
+  log('═══ ScalpClock Diagnostics ═══', 'info');
+  log('Environment: ' + location.hostname, 'info');
+  log('Supabase: ' + (sb ? '✓ initialized' : '✗ failed'), sb ? 'ok' : 'fail');
+  log('LocalStorage trial_start: ' + (localStorage.getItem('sc_trial_start') || 'not set'), 'info');
+
+  const session = await checkAuth();
+  await checkSubscription(session);
+  await checkSignals();
+  await checkHistorical();
+  await checkPrice();
+
+  log('═══ Diagnostics complete ═══', 'info');
+}
+
+// Auto-run on load
+runAll();
+</script>
+</body>
+</html>

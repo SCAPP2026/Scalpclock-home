@@ -392,17 +392,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 
   <!-- SIGNAL PREVIEW -->
-  <div class="section-title" style="margin-bottom:16px;">Live Signal Preview</div>
+  <div class="section-title" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+    Live Signal Preview
+    <span id="signalStatusBadge" style="font-family:var(--mono);font-size:.65rem;color:var(--t30);"></span>
+  </div>
+  <!-- Status log (shown to all) -->
+  <div id="signalLog" style="background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-family:var(--mono);font-size:.72rem;line-height:1.9;display:none;"></div>
+
   <div class="signal-preview-wrap" id="signalPreview">
-    <div class="sp-row">
-      <span class="sp-sym">SPY</span>
-      <span class="sp-tag buy">BUY CALLS</span>
-      <span style="font-family:var(--mono);font-size:.72rem;color:var(--t30);">Confidence: 94%</span>
+    <div class="sp-row" id="signalRow">
+      <span class="sp-sym" id="signalSym">SPY</span>
+      <span class="sp-tag buy" id="signalTag">BUY CALLS</span>
+      <span style="font-family:var(--mono);font-size:.72rem;color:var(--t30);" id="signalConf">Confidence: 94%</span>
     </div>
     <div class="sp-vals">
-      <div class="sp-val-item"><div class="sp-val-label">Entry Price</div><div class="sp-val-num">$542.80</div></div>
-      <div class="sp-val-item"><div class="sp-val-label">Stop-Loss</div><div class="sp-val-num">$540.10</div></div>
-      <div class="sp-val-item"><div class="sp-val-label">Target</div><div class="sp-val-num">$548.50</div></div>
+      <div class="sp-val-item"><div class="sp-val-label">RSI</div><div class="sp-val-num" id="signalRSI">—</div></div>
+      <div class="sp-val-item"><div class="sp-val-label">Vol Surge</div><div class="sp-val-num" id="signalVol">—</div></div>
+      <div class="sp-val-item"><div class="sp-val-label">VWAP Dist</div><div class="sp-val-num" id="signalVWAP">—</div></div>
     </div>
     <div class="sp-lock" id="signalLock">
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
@@ -652,6 +658,7 @@ async function init() {
   initWatchlist();
   loadAllTrades();
   checkSubscription();
+  loadLiveSignals();
 }
 
 // ── Streak ────────────────────────────────────────────────────────────────────
@@ -1232,6 +1239,84 @@ function renderScorecard(closedTrades) {
         ${totalPnl < 0 ? ' — Tomorrow is a new session. Stay disciplined.' : ' — Still a winning day. Well done.'}
       </div>` : ''}
     </div>`;
+}
+
+// ── Live Signals ──────────────────────────────────────────────────────────────
+function signalLog(msg, color = 'var(--t55)') {
+  const log = document.getElementById('signalLog');
+  if (!log) return;
+  log.style.display = 'block';
+  const ts = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  log.innerHTML += `<span style="color:var(--t30)">${ts}</span>&nbsp; <span style="color:${color}">${msg}</span><br>`;
+}
+
+async function loadLiveSignals() {
+  const logEl = document.getElementById('signalLog');
+  if (logEl) logEl.innerHTML = '';
+
+  signalLog('Connecting to signal feed…');
+  signalLog(`Authenticated as: ${_uid ? _uid.slice(0,8)+'…' : '—'}`);
+
+  // Show subscription context
+  try {
+    const { data: rows } = await sb.from('profiles').select('plan').eq('id', _uid).limit(1);
+    const plan = rows?.[0]?.plan || 'free';
+    const label = plan === 'trial' ? 'Pro Trial' : plan === 'pro' ? 'Pro' : plan === 'expired' ? 'Expired' : 'Free';
+    signalLog(`Subscription: ${label}`, plan === 'pro' || plan === 'trial' ? 'var(--green)' : 'var(--t55)');
+  } catch(_) {}
+
+  signalLog('Loading live signals…');
+
+  try {
+    const t0  = Date.now();
+    const res  = await fetch('/api/signals');
+    const ms   = Date.now() - t0;
+
+    if (!res.ok) {
+      signalLog(`API error ${res.status} — signal feed unavailable`, 'var(--red)');
+      document.getElementById('signalStatusBadge').textContent = `⚠ API ${res.status}`;
+      return;
+    }
+
+    const data = await res.json();
+    const tickers = data.tickers || [];
+    const count   = tickers.length;
+
+    if (count === 0) {
+      signalLog('No signals returned — market may be closed or data feed is paused', '#ffc832');
+      signalLog(data.marketOpen ? 'Market shows OPEN — check Alpaca API key config' : 'Market is CLOSED · Signals resume at 9:30 AM ET', '#ffc832');
+      document.getElementById('signalStatusBadge').textContent = data.marketOpen ? '⚠ No data' : 'Market closed';
+      return;
+    }
+
+    const buys  = tickers.filter(t => t.tone === 'buy').length;
+    const sells = tickers.filter(t => t.tone === 'sell').length;
+    signalLog(`✓ ${count} signals loaded in ${ms}ms`, 'var(--green)');
+    signalLog(`  ${buys} buy · ${sells} sell · ${count - buys - sells} hold`, 'var(--t55)');
+    signalLog(data.marketOpen ? 'Market: OPEN — live data' : 'Market: CLOSED — last session data', data.marketOpen ? 'var(--green)' : '#ffc832');
+
+    document.getElementById('signalStatusBadge').textContent =
+      `${count} signals · ${ms}ms · ${data.marketOpen ? '🟢 LIVE' : '⭕ CLOSED'}`;
+
+    // Show the top actionable signal
+    const actionable = tickers.filter(t => t.tone !== 'hold').sort((a, b) => b.confluence - a.confluence);
+    const top = actionable[0] || tickers[0];
+
+    if (top) {
+      const isBuy = top.tone === 'buy';
+      document.getElementById('signalSym').textContent  = top.symbol;
+      document.getElementById('signalTag').textContent  = top.signal;
+      document.getElementById('signalTag').className    = `sp-tag ${isBuy ? 'buy' : 'sell'}`;
+      document.getElementById('signalConf').textContent = `RSI: ${top.rsi} · Confluence: ${top.confluence}/3`;
+      document.getElementById('signalRSI').textContent  = top.rsi ?? '—';
+      document.getElementById('signalVol').textContent  = top.volSurge ? `${top.volSurge}×` : '—';
+      document.getElementById('signalVWAP').textContent = top.vwapDist ? `${top.vwapDist > 0 ? '+' : ''}${top.vwapDist}%` : '—';
+    }
+  } catch(e) {
+    signalLog('Network error — signal feed unreachable: ' + e.message, 'var(--red)');
+    signalLog('Check your internet connection and try refreshing', '#ffc832');
+    document.getElementById('signalStatusBadge').textContent = '⚠ Network error';
+  }
 }
 
 async function signOut() {
