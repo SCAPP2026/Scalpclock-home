@@ -417,11 +417,13 @@
 </header>
 
 <div class="tf-bar">
-  <button class="tf-btn active" onclick="setTF(this,'1m')">1m</button>
-  <button class="tf-btn" onclick="setTF(this,'5m')">5m</button>
+  <button class="tf-btn" onclick="setTF(this,'1m')">1m</button>
+  <button class="tf-btn active" onclick="setTF(this,'5m')">5m ⭐</button>
   <button class="tf-btn" onclick="setTF(this,'15m')">15m</button>
+  <button class="tf-btn" onclick="setTF(this,'30m')">30m</button>
+  <button class="tf-btn" onclick="setTF(this,'1h')">1H</button>
   <div class="separator"></div>
-  <button class="tf-btn active" style="pointer-events:none;color:var(--text);border:none;" id="tfLabel">Candlestick</button>
+  <span style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;" id="tfLabel">Candlestick</span>
 </div>
 
 <div class="ohlcv">
@@ -663,13 +665,16 @@ async function loadTicker() {
 }
 
 // ─── REAL DATA FETCH ─────────────────────────────────────────────
-const TF_MAP = { '1m': '1Min', '5m': '5Min', '15m': '15Min' };
+const TF_MAP   = { '1m': '1Min', '5m': '5Min', '15m': '15Min', '30m': '30Min', '1h': '1Hour' };
+const TF_HOURS = { '1m': 2,      '5m': 8,      '15m': 24,      '30m': 48,      '1h': 168    };
+const TF_LABEL = { '1m': '1-min', '5m': '5-min', '15m': '15-min', '30m': '30-min', '1h': '1-hour' };
 let currentTF = '5m';
 
 async function fetchRealCandles(symbol, tf) {
   const alpacaTF = TF_MAP[tf] || '5Min';
+  const hours    = TF_HOURS[tf] || 8;
   try {
-    const res = await fetch(`/api/bars?symbol=${symbol}&tf=${alpacaTF}`);
+    const res = await fetch(`/api/bars?symbol=${symbol}&tf=${alpacaTF}&hours=${hours}`);
     const data = await res.json();
     if (data.candles && data.candles.length > 0) {
       return data.candles.map(c => ({
@@ -935,12 +940,199 @@ function setTF(btn, tf) {
   loadTicker();
 }
 
+// ─── AI TRADE COACH ────────────────────────────────────────────
+
+function analyzeCandle(candle, idx, visible, tf) {
+  const tfName = TF_LABEL[tf] || '5-min';
+  const isBull  = candle.close >= candle.open;
+  const body    = Math.abs(candle.close - candle.open);
+  const range   = candle.high - candle.low || 0.001;
+  const upperW  = candle.high - Math.max(candle.open, candle.close);
+  const lowerW  = Math.min(candle.open, candle.close) - candle.low;
+  const bodyPct = body / range;
+
+  // Average volume over prior 20 candles
+  const prior  = visible.slice(Math.max(0, idx - 20), idx);
+  const avgVol = prior.length ? prior.reduce((s, c) => s + c.volume, 0) / prior.length : candle.volume;
+  const volRatio = candle.volume / (avgVol || 1);
+
+  // Consecutive streak before this candle
+  let bullStreak = 0, bearStreak = 0;
+  for (let i = idx - 1; i >= 0 && bullStreak < 6; i--) {
+    if (visible[i].close >= visible[i].open) bullStreak++; else break;
+  }
+  for (let i = idx - 1; i >= 0 && bearStreak < 6; i--) {
+    if (visible[i].close < visible[i].open) bearStreak++; else break;
+  }
+
+  const lines = [];
+  const chgPct = ((body / (candle.open || 1)) * 100).toFixed(2);
+  const isLast = idx === visible.length - 1;
+  const when   = isLast ? 'Right now' : 'At this point';
+
+  // ── 1. BODY — what happened ──
+  if (bodyPct < 0.06) {
+    lines.push({ icon: '⚖️', text: `Nobody won this candle. Buyers and sellers ended up almost exactly where they started — this is called a Doji. The market is completely undecided.` });
+  } else if (isBull && bodyPct > 0.65) {
+    lines.push({ icon: '🟢', text: `Buyers took strong control. Price opened at $${candle.open.toFixed(2)} and powered up to $${candle.close.toFixed(2)} — a clean ${chgPct}% move with almost no resistance.` });
+  } else if (isBull) {
+    lines.push({ icon: '🟢', text: `Buyers edged out sellers. Price moved from $${candle.open.toFixed(2)} up to $${candle.close.toFixed(2)}. Modest but bullish.` });
+  } else if (bodyPct > 0.65) {
+    lines.push({ icon: '🔴', text: `Sellers took strong control. Price opened at $${candle.open.toFixed(2)} and dropped hard to $${candle.close.toFixed(2)} — a ${chgPct}% fall with buyers barely fighting back.` });
+  } else {
+    lines.push({ icon: '🔴', text: `Sellers edged out buyers. Price drifted from $${candle.open.toFixed(2)} down to $${candle.close.toFixed(2)}. Not a panic drop, but sellers had the edge.` });
+  }
+
+  // ── 2. WICKS — rejection story ──
+  if (upperW > body * 2 && upperW > range * 0.25) {
+    lines.push({ icon: '⚠️', text: `See that long spike on top? Buyers tried to push higher but sellers rejected them and pushed the price back down. That upper tail is a warning — sellers are defending higher prices.` });
+  } else if (lowerW > body * 2 && lowerW > range * 0.25) {
+    lines.push({ icon: '💪', text: `See that long spike on the bottom? Sellers tried to push it down but buyers stepped in hard and pushed price back up. That lower tail shows buyers are defending this level.` });
+  } else if (upperW < body * 0.15 && lowerW < body * 0.15 && bodyPct > 0.7) {
+    lines.push({ icon: '✅', text: `Almost no wicks at all — one side had complete control from open to close. No pushback. That's a sign of very strong conviction.` });
+  } else if (upperW < body * 0.2 && isBull) {
+    lines.push({ icon: '✅', text: `Tiny upper wick — buyers held their gains all the way to the close. Sellers couldn't push back. That's confidence from the bull side.` });
+  } else if (lowerW < body * 0.2 && !isBull) {
+    lines.push({ icon: '✅', text: `Tiny lower wick — sellers held their ground all the way to the close. Buyers couldn't bounce it. Strong bearish control.` });
+  }
+
+  // ── 3. VOLUME — conviction check ──
+  if (volRatio >= 2) {
+    lines.push({ icon: '🔥', text: `Volume exploded — ${volRatio.toFixed(1)}× the normal amount of traders joined this move. When that many people pile in, the market is sending a loud signal. Pay attention.` });
+  } else if (volRatio >= 1.4) {
+    lines.push({ icon: '📊', text: `Above-average volume (${volRatio.toFixed(1)}× normal). More traders than usual backed this move. That adds credibility to the direction.` });
+  } else if (volRatio < 0.5) {
+    lines.push({ icon: '😴', text: `Very low volume (${volRatio.toFixed(1)}× normal). Almost nobody traded on this candle — don't trust the move. Low volume moves are easy to fake.` });
+  } else {
+    lines.push({ icon: '📊', text: `Normal volume (${volRatio.toFixed(1)}× average). Nothing unusual — standard trading activity for this stock.` });
+  }
+
+  // ── 4. TREND CONTEXT ──
+  const streak = isBull ? bullStreak : bearStreak;
+  if (streak >= 3) {
+    const side = isBull ? 'green' : 'red';
+    const who  = isBull ? 'Buyers keep winning' : 'Sellers keep winning';
+    lines.push({ icon: isBull ? '🚀' : '📉', text: `This is the ${streak + 1}th ${side} candle in a row. ${who} every round — that's real, sustained momentum. Trends like this don't stop easily.` });
+  } else if (streak === 1 && bodyPct > 0.4) {
+    const turn  = isBull ? 'up after a red one' : 'down after a green one';
+    const watch = isBull ? 'Could be a reversal starting.' : 'Could be sellers taking back control.';
+    lines.push({ icon: '🔄', text: `This candle flipped ${turn}. ${watch} Watch the next candle closely to see which side follows through.` });
+  } else if (isBull && bullStreak > 0) {
+    lines.push({ icon: '📈', text: `Two green candles back to back — buyers are starting to build momentum. Still early, but the direction is positive.` });
+  } else if (!isBull && bearStreak > 0) {
+    lines.push({ icon: '📉', text: `Two red candles in a row — sellers are gaining traction. Keep an eye on whether buyers can step in and stop the slide.` });
+  }
+
+  // ── 5. BOTTOM LINE ──
+  const strongBull = isBull && volRatio >= 1.3 && bodyPct > 0.4 && (bullStreak >= 1 || streak >= 1);
+  const strongBear = !isBull && volRatio >= 1.3 && bodyPct > 0.4 && (bearStreak >= 1 || streak >= 1);
+  const rejectedHigh = upperW > body * 2;
+  const rejectedLow  = lowerW > body * 2;
+
+  if (strongBull && !rejectedHigh) {
+    lines.push({ icon: '🎯', text: `${when}, the ${tfName} chart favors another push higher. Buyers are in control with volume rising — that's real, confirmed momentum. This is the kind of ${tfName} setup that keeps going.`, highlight: true });
+  } else if (strongBear && !rejectedLow) {
+    lines.push({ icon: '🎯', text: `${when}, the ${tfName} chart favors continued selling. Sellers are in control with volume behind them. Fighting this trend on the ${tfName} is risky.`, highlight: true });
+  } else if (rejectedHigh) {
+    lines.push({ icon: '🎯', text: `That upper rejection is a red flag on the ${tfName}. Even if this candle is green, sellers are defending higher prices. Wait for them to lose control before buying.`, highlight: true });
+  } else if (rejectedLow) {
+    lines.push({ icon: '🎯', text: `Buyers defended the low on this ${tfName} candle. Sellers tried and failed. If the next ${tfName} candle closes green with decent volume, that's a higher-probability entry.`, highlight: true });
+  } else if (bodyPct < 0.1) {
+    lines.push({ icon: '🎯', text: `${when}, the ${tfName} chart is completely undecided. Don't force a trade here. Wait for the next candle to show which side wins before putting money on the line.`, highlight: true });
+  } else {
+    lines.push({ icon: '🎯', text: `${when}, there's a slight edge for ${isBull ? 'buyers' : 'sellers'} on the ${tfName} chart — but no strong conviction signal yet. Let the next candle confirm the direction.`, highlight: true });
+  }
+
+  return lines;
+}
+
+function onCandleClick(clientX, clientY) {
+  const rect  = chartCanvas.getBoundingClientRect();
+  const x     = (clientX - rect.left) * (chartCanvas.width / rect.width);
+  const visible = candles.slice(-55);
+  const n     = visible.length;
+  if (!n) return;
+
+  const W = chartCanvas.width;
+  const padL = 8, padR = 60;
+  const chartW = W - padL - padR;
+  const gap  = chartW / n;
+  const idx  = Math.floor((x - padL) / gap);
+
+  if (idx < 0 || idx >= n) return;
+
+  selectedVisibleIdx = idx;
+  drawChart();
+  showCoach(visible[idx], idx, visible);
+}
+
+function showCoach(candle, idx, visible) {
+  const isBull = candle.close >= candle.open;
+  const lines  = analyzeCandle(candle, idx, visible, currentTF);
+
+  const badge = document.getElementById('coachBadge');
+  badge.textContent = isBull ? '▲ BULLISH' : '▼ BEARISH';
+  badge.className = 'coach-candle-badge ' + (isBull ? 'bull' : 'bear');
+
+  const tfEl = document.getElementById('coachTFLabel');
+  if (tfEl) tfEl.textContent = (TF_LABEL[currentTF] || currentTF) + ' candle';
+
+  const avgVol = visible.slice(Math.max(0, idx - 20), idx);
+  document.getElementById('coachOHLC').innerHTML =
+    `<span>O</span> <b>$${candle.open.toFixed(2)}</b>
+     <span>H</span> <b style="color:var(--bull)">$${candle.high.toFixed(2)}</b>
+     <span>L</span> <b style="color:var(--bear)">$${candle.low.toFixed(2)}</b>
+     <span>C</span> <b>$${candle.close.toFixed(2)}</b>
+     <span>Vol</span> <b>${candle.volume >= 1e6 ? (candle.volume/1e6).toFixed(1)+'M' : candle.volume >= 1e3 ? (candle.volume/1e3).toFixed(0)+'K' : candle.volume}</b>`;
+
+  document.getElementById('coachLines').innerHTML = lines.map(l =>
+    `<div class="coach-line${l.highlight ? ' highlight' : ''}">
+      <span class="coach-icon">${l.icon}</span>
+      <span class="coach-text">${l.text}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('coachPanel').classList.add('open');
+}
+
+function closeCoach() {
+  document.getElementById('coachPanel').classList.remove('open');
+  selectedVisibleIdx = null;
+  drawChart();
+}
+
+// Close coach when tapping outside
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('coachPanel');
+  if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== chartCanvas) {
+    closeCoach();
+  }
+});
+
 // ─── INIT ───────────────────────────────────────────────────────
 setTimeout(() => {
   resizeCanvases();
   loadTicker();
 }, 100);
 </script>
+<!-- AI Trade Coach slide-up panel -->
+<div class="coach-panel" id="coachPanel">
+  <div class="coach-handle"></div>
+  <div class="coach-header">
+    <div>
+      <div class="coach-title">🤖 SampsonX Trade Coach</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;" id="coachTFLabel">5-min candle</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="coach-candle-badge" id="coachBadge">—</span>
+      <button class="coach-close" onclick="closeCoach()">✕</button>
+    </div>
+  </div>
+  <div class="coach-ohlc" id="coachOHLC"></div>
+  <div class="coach-lines" id="coachLines"></div>
+  <div class="coach-tip">Tap any candle to re-analyze · Tap outside to close</div>
+</div>
+
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>

@@ -8,6 +8,7 @@ export async function onRequest(context) {
   // Treat as a plain string — do not JSON.parse the symbol
   const rawSymbol  = url.searchParams.get('symbol') || 'SPY';
   const timeframe  = url.searchParams.get('tf') || '5Min';
+  const hours      = Math.min(720, Math.max(1, parseInt(url.searchParams.get('hours') || '8', 10)));
 
   const headers = {
     'APCA-API-KEY-ID':     KEY_ID,
@@ -15,7 +16,7 @@ export async function onRequest(context) {
   };
 
   const now      = new Date();
-  const startISO = new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString();
+  const startISO = new Date(now.getTime() - hours * 60 * 60 * 1000).toISOString();
 
   // Option symbols arrive as "O:SOFI260702P00017000" (OCC/Polygon format).
   // Extract the underlying ticker so we can fetch stock bars for RSI/ATR/velocity.
