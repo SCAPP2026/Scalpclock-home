@@ -620,6 +620,7 @@ function fmtPnl(n) {
 }
 
 async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = '/login'; return; }
 
@@ -719,22 +720,83 @@ function renderWatchlist() {
 }
 
 // ── Subscription check ────────────────────────────────────────────────────────
+// plan values: 'free' | 'trial' | 'pro' | 'expired'
 async function checkSubscription() {
   try {
     const { data: rows } = await sb.from('profiles').select('plan, promo_redeemed').eq('id', _uid).limit(1);
-    const plan = rows?.[0]?.plan || 'free';
-    const isPro = plan === 'pro' || plan === 'trialing';
-    if (isPro) {
-      document.getElementById('planBadge').textContent = plan === 'trialing' ? 'Pro (Trial)' : 'Pro';
-      document.getElementById('planBadge').style.color = 'var(--green)';
-      // Hide signal lock overlay for pro users
+    const plan      = rows?.[0]?.plan || 'free';
+    const isTrial   = plan === 'trial';
+    const isPro     = plan === 'pro';
+    const isPaid    = isTrial || isPro;
+    const isExpired = plan === 'expired';
+
+    if (isPaid) {
       const lock = document.getElementById('signalLock');
       if (lock) lock.style.display = 'none';
-      // Hide upgrade section
       const upg = document.querySelector('.upgrade');
       if (upg) upg.style.display = 'none';
+
+      if (isTrial) {
+        // Compute trial day from localStorage start date (set by success.html)
+        const startStr = localStorage.getItem('sc_trial_start');
+        const trialStart = startStr ? new Date(startStr) : new Date();
+        const trialEnd   = new Date(trialStart.getTime() + 7 * 864e5);
+        const dayNum     = Math.min(7, Math.max(1, Math.ceil((Date.now() - trialStart.getTime()) / 864e5)));
+        const expiresStr = trialEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        document.getElementById('planBadge').innerHTML =
+          `<span style="color:var(--green)">PRO ACTIVE</span>`;
+        const sub = document.querySelector('.stat-card .stat-sub') || document.createElement('div');
+        document.querySelector('#planBadge').insertAdjacentHTML('afterend',
+          `<div style="font-size:.72rem;color:var(--t55);margin-top:4px;font-family:var(--mono)">Trial Day ${dayNum} of 7 · Expires ${expiresStr}</div>`);
+      } else {
+        document.getElementById('planBadge').textContent = 'PRO ACTIVE';
+        document.getElementById('planBadge').style.color = 'var(--green)';
+      }
+
+      // Show onboarding banner once (dismissed via localStorage)
+      if (!localStorage.getItem('sc_onboarding_dismissed')) {
+        showOnboardingBanner(isTrial);
+      }
+    } else if (isExpired) {
+      document.getElementById('planBadge').textContent = 'Expired';
+      document.getElementById('planBadge').style.color = '#ff7a1a';
     }
+    // 'free' — default UI shows Free, nothing to change
   } catch(_) {}
+}
+
+function showOnboardingBanner(isTrial) {
+  const banner = document.createElement('div');
+  banner.id = 'onboardingBanner';
+  banner.style.cssText = 'background:rgba(22,217,126,.07);border:1px solid rgba(22,217,126,.25);border-radius:14px;padding:20px 22px;margin-bottom:28px;position:relative;';
+  banner.innerHTML = `
+    <button onclick="document.getElementById('onboardingBanner').remove();localStorage.setItem('sc_onboarding_dismissed','1')"
+      style="position:absolute;top:12px;right:14px;background:none;border:none;color:var(--t30);font-size:1.1rem;cursor:pointer;line-height:1;">✕</button>
+    <div style="font-family:var(--disp);font-weight:700;font-size:1.05rem;color:var(--green);margin-bottom:12px;">
+      ${isTrial ? '🎉 Trial Active — Here\'s What\'s Unlocked' : '🎉 Pro Active — Get the Most From ScalpClock'}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      ${[
+        ['✅','Trial Activated','No charge for 7 days'],
+        ['📊','ScalpCharts','Tap any candle → AI coaching'],
+        ['📅','Chart Replay','Learn patterns, earn XP'],
+        ['🚪','Exit Assistant','Know exactly when to exit'],
+        ['📡','Live Signals','Real-time entry &amp; exit alerts'],
+        ['📲','Push Notifications','Enable in browser settings'],
+      ].map(([ico,title,desc]) =>
+        `<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;">
+          <span style="font-size:1rem;flex-shrink:0">${ico}</span>
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--text)">${title}</div>
+            <div style="font-size:.73rem;color:var(--t55)">${desc}</div>
+          </div>
+        </div>`
+      ).join('')}
+    </div>`;
+
+  const shell = document.querySelector('.shell');
+  const welcome = shell?.querySelector('.welcome');
+  if (welcome) welcome.insertAdjacentElement('afterend', banner);
 }
 
 // ── XP (computed from trade history) ─────────────────────────────────────────

@@ -27,7 +27,7 @@
   --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
 }
 html{scroll-behavior:smooth}
-body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.14),transparent 68%),
   linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
@@ -35,21 +35,39 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background-size:auto,48px 48px,48px 48px;}
 a{color:inherit;text-decoration:none;}
 
-.card{position:relative;z-index:1;background:var(--panel);border:1px solid rgba(22,217,126,.35);border-radius:24px;padding:52px 44px;max-width:480px;width:90%;text-align:center;box-shadow:0 0 60px rgba(22,217,126,.12);}
+.card{position:relative;z-index:1;background:var(--panel);border:1px solid rgba(22,217,126,.35);border-radius:24px;padding:44px 40px;max-width:520px;width:100%;text-align:center;box-shadow:0 0 60px rgba(22,217,126,.12);}
+@media(max-width:480px){.card{padding:32px 24px;}}
 
-.check{width:64px;height:64px;border-radius:50%;background:rgba(22,217,126,.12);border:2px solid rgba(22,217,126,.4);display:grid;place-items:center;margin:0 auto 28px;}
-.check svg{width:32px;height:32px;color:var(--green);}
+.check{width:68px;height:68px;border-radius:50%;background:rgba(22,217,126,.12);border:2px solid rgba(22,217,126,.4);display:grid;place-items:center;margin:0 auto 24px;animation:pop .4s ease;}
+@keyframes pop{0%{transform:scale(.7);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.check svg{width:34px;height:34px;color:var(--green);}
 
-h1{font-family:var(--disp);font-size:2rem;font-weight:700;margin-bottom:10px;}
+h1{font-family:var(--disp);font-size:2.1rem;font-weight:700;margin-bottom:6px;}
 h1 em{color:var(--green);font-style:normal;}
-p{color:var(--t55);font-size:.95rem;line-height:1.65;margin-bottom:32px;}
+.subtitle{color:var(--t55);font-size:.95rem;line-height:1.65;margin-bottom:20px;}
 
-.actions{display:flex;flex-direction:column;gap:12px;}
+.trial-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:30px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.35);color:var(--green);font-family:var(--disp);font-weight:700;font-size:.95rem;letter-spacing:.04em;margin-bottom:28px;}
+.trial-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+.checklist{text-align:left;background:rgba(22,217,126,.04);border:1px solid rgba(22,217,126,.12);border-radius:14px;padding:18px 20px;margin-bottom:28px;}
+.checklist-title{font-family:var(--disp);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;margin-bottom:12px;}
+.cl-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:.88rem;color:var(--t80);border-bottom:1px solid rgba(255,255,255,.03);}
+.cl-item:last-child{border-bottom:none;}
+.cl-icon{width:20px;height:20px;border-radius:50%;background:rgba(22,217,126,.15);border:1px solid rgba(22,217,126,.3);display:grid;place-items:center;flex-shrink:0;font-size:.75rem;}
+
+.redirect-notice{font-size:.8rem;color:var(--t30);margin-bottom:20px;}
+.redirect-notice strong{color:var(--t55);}
+
+.actions{display:flex;flex-direction:column;gap:10px;}
 .btn{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:13px 24px;border-radius:11px;transition:.15s;display:block;text-align:center;}
 .btn-green{background:var(--green);color:#04150d;box-shadow:0 0 24px rgba(22,217,126,.3);}
 .btn-green:hover{background:#20e88a;}
 .btn-outline{border:1px solid rgba(22,217,126,.35);color:var(--green);}
 .btn-outline:hover{background:var(--g-dim);}
+
+.progress-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:16px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width 1s linear;}
 
 .brand{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:12px;text-decoration:none;}
 .brand-text{display:flex;flex-direction:column;gap:2px;}
@@ -82,15 +100,68 @@ p{color:var(--t55);font-size:.95rem;line-height:1.65;margin-bottom:32px;}
       <polyline points="6 17 13 24 26 10"/>
     </svg>
   </div>
-  <h1>You're <em>In</em></h1>
-  <p>Your Pro subscription is active. Real-time signals, push notifications, and options recommendations are all unlocked. Go make some trades.</p>
+
+  <h1 id="mainHeading">🎉 Welcome to <em>Pro</em></h1>
+  <p class="subtitle" id="mainSubtitle">Your subscription is active. Every Pro feature is unlocked.</p>
+
+  <div class="trial-badge" id="trialBadge" style="display:none">
+    <span class="trial-dot"></span>
+    <span id="trialBadgeText">7-Day Free Trial — Active</span>
+  </div>
+
+  <div class="checklist">
+    <div class="checklist-title">Your Pro Access</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> Trial Activated — no charge for 7 days</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> Live Signals — real-time RSI entry &amp; exit alerts</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> ScalpCharts — tap any candle for AI coaching</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> Exit Assistant — know exactly when to exit</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> SampsonX — confidence meter on every signal</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> Chart Replay — learn patterns with XP quiz</div>
+    <div class="cl-item"><span class="cl-icon">📲</span> Enable Push Notifications — never miss a signal</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:100%"></div></div>
+  <div class="redirect-notice" id="redirectNotice">Redirecting to your dashboard in <strong id="countdown">5</strong>s…</div>
+
   <div class="actions">
-    <a class="btn btn-green" href="/">See Live Signals</a>
-    <a class="btn btn-outline" href="/dashboard">Go to Dashboard</a>
+    <a class="btn btn-green" href="/dashboard">Go to Dashboard Now</a>
+    <a class="btn btn-outline" href="/">See Live Signals</a>
   </div>
 </div>
 
-<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
-<p style="text-align:center;padding:24px 20px 40px;font-size:11px;color:#3a4f6a;line-height:1.7">&copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.</p>
+<p style="position:relative;z-index:1;text-align:center;padding:24px 20px 40px;font-size:11px;color:#3a4f6a;line-height:1.7">&copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; Not financial advice. Options trading carries risk.</p>
+
+<script>
+const params = new URLSearchParams(location.search);
+const isTrial = params.get('trial') === '1';
+
+if (isTrial) {
+  document.getElementById('mainHeading').innerHTML = '🎉 Welcome to <em>Pro</em>';
+  document.getElementById('mainSubtitle').textContent = 'Your 7-day free trial is active. Every Pro feature is unlocked now — no charge until day 8.';
+  document.getElementById('trialBadge').style.display = 'inline-flex';
+
+  // Store trial start date so dashboard can compute "Day X of 7"
+  const now = new Date().toISOString();
+  if (!localStorage.getItem('sc_trial_start')) {
+    localStorage.setItem('sc_trial_start', now);
+  }
+}
+
+// Countdown auto-redirect
+let secs = 5;
+const countEl = document.getElementById('countdown');
+const fillEl  = document.getElementById('progressFill');
+const timer = setInterval(() => {
+  secs--;
+  if (countEl) countEl.textContent = secs;
+  if (fillEl) fillEl.style.width = (secs / 5 * 100) + '%';
+  if (secs <= 0) {
+    clearInterval(timer);
+    window.location.href = '/dashboard';
+  }
+}, 1000);
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
 </body>
 </html>

@@ -25,58 +25,50 @@ export async function onRequest(context) {
 
     case 'checkout.session.completed': {
       const session = event.data.object;
-      const isTrial = session.subscription
-        && session.metadata?.trial_type === '7_day_free';
-      console.log(
-        isTrial ? 'Trial started:' : 'New subscription:',
-        session.customer_email,
-        session.subscription
-      );
+      const userId  = session.client_reference_id;
 
-      // Update user profile: set plan=pro and mark promo if discount applied
-      const userId   = session.client_reference_id;
-      const hasPromo = Array.isArray(session.discounts) && session.discounts.length > 0;
+      console.log('Checkout completed:', session.customer_email, 'subscription:', session.subscription);
+
       if (userId && env.SUPABASE_SERVICE_KEY) {
-        const patch = { plan: 'pro' };
+        // All new subscriptions start with a trial period, so mark 'trial'
+        // customer.subscription.updated will promote to 'pro' when trial ends
+        const hasPromo = Array.isArray(session.discounts) && session.discounts.length > 0;
+        const patch = {
+          id:             userId,
+          plan:           'trial',
+          stripe_sub_id:  session.subscription || null,
+        };
         if (hasPromo) patch.promo_redeemed = true;
-        try {
-          const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
-            method:  'PATCH',
-            headers: {
-              apikey:         env.SUPABASE_SERVICE_KEY,
-              Authorization:  `Bearer ${env.SUPABASE_SERVICE_KEY}`,
-              'Content-Type': 'application/json',
-              Prefer:         'return=minimal',
-            },
-            body: JSON.stringify(patch),
-          });
-          console.log('Profile updated for user:', userId, 'patch:', JSON.stringify(patch), 'status:', r.status);
-        } catch (e) {
-          console.error('Failed to update profile:', e.message);
+
+        await upsertProfile(userId, patch, env.SUPABASE_SERVICE_KEY);
+      }
+      break;
+    }
+
+    case 'customer.subscription.updated': {
+      const sub    = event.data.object;
+      const userId = sub.metadata?.user_id;
+
+      console.log('Subscription updated:', sub.id, 'status:', sub.status, 'user:', userId);
+
+      if (userId && env.SUPABASE_SERVICE_KEY) {
+        let plan;
+        if (sub.status === 'trialing')   plan = 'trial';
+        else if (sub.status === 'active') plan = 'pro';
+        else if (sub.status === 'past_due' || sub.status === 'unpaid') plan = 'expired';
+        else if (sub.status === 'canceled') plan = 'free';
+
+        if (plan) {
+          await upsertProfile(userId, { id: userId, plan }, env.SUPABASE_SERVICE_KEY);
         }
       }
       break;
     }
 
     case 'customer.subscription.trial_will_end': {
-      // Fires 3 days before trial ends — good hook for a reminder email
       const sub = event.data.object;
-      console.log(
-        'Trial ending soon for customer:',
-        sub.customer,
-        'trial ends:',
-        new Date(sub.trial_end * 1000).toISOString()
-      );
-      break;
-    }
-
-    case 'customer.subscription.updated': {
-      const sub = event.data.object;
-      const wasTrialing = event.data.previous_attributes?.status === 'trialing';
-      const nowActive   = sub.status === 'active';
-      if (wasTrialing && nowActive) {
-        console.log('Trial converted to paid subscription:', sub.id, sub.customer);
-      }
+      console.log('Trial ending soon for customer:', sub.customer,
+        'trial ends:', new Date(sub.trial_end * 1000).toISOString());
       break;
     }
 
@@ -84,28 +76,21 @@ export async function onRequest(context) {
       const sub    = event.data.object;
       const userId = sub.metadata?.user_id;
       console.log('Subscription cancelled:', sub.id, sub.customer, 'user:', userId);
+
       if (userId && env.SUPABASE_SERVICE_KEY) {
-        try {
-          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
-            method:  'PATCH',
-            headers: {
-              apikey:         env.SUPABASE_SERVICE_KEY,
-              Authorization:  `Bearer ${env.SUPABASE_SERVICE_KEY}`,
-              'Content-Type': 'application/json',
-              Prefer:         'return=minimal',
-            },
-            body: JSON.stringify({ plan: 'free' }),
-          });
-        } catch (e) {
-          console.error('Failed to reset plan on cancel:', e.message);
-        }
+        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_KEY);
       }
       break;
     }
 
     case 'invoice.payment_failed': {
-      const inv = event.data.object;
-      console.log('Payment failed:', inv.customer_email, inv.id);
+      const inv    = event.data.object;
+      const userId = inv.subscription_details?.metadata?.user_id;
+      console.log('Payment failed:', inv.customer_email, inv.id, 'user:', userId);
+
+      if (userId && env.SUPABASE_SERVICE_KEY) {
+        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_KEY);
+      }
       break;
     }
 
@@ -114,6 +99,29 @@ export async function onRequest(context) {
   return new Response(JSON.stringify({ received: true }), {
     headers: { 'Content-Type': 'application/json' },
   });
+}
+
+// Upsert (not PATCH) — creates the row if it doesn't exist, merges if it does
+async function upsertProfile(userId, patch, serviceKey) {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+      method:  'POST',
+      headers: {
+        apikey:         serviceKey,
+        Authorization:  `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+        Prefer:         'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify(patch),
+    });
+    console.log('Profile upserted for user:', userId, 'patch:', JSON.stringify(patch), 'status:', r.status);
+    if (!r.ok) {
+      const text = await r.text();
+      console.error('Upsert error body:', text);
+    }
+  } catch (e) {
+    console.error('Failed to upsert profile:', e.message);
+  }
 }
 
 async function verifyStripeSignature(payload, sigHeader, secret) {

@@ -178,7 +178,15 @@ async function signUp() {
     showMsg(error.message, 'error');
     btn.disabled = false; btn.textContent = 'Create Account';
   } else {
-    showMsg('Account created! Check your email to confirm your account.', 'success');
+    // Create profiles row immediately so webhook PATCH has a target
+    if (data.user) {
+      try {
+        await sb.from('profiles').upsert({ id: data.user.id, plan: 'free' }, { onConflict: 'id' });
+      } catch (_) {}
+    }
+    showMsg('Account created! Check your email to confirm, then sign in below.', 'success');
+    // Auto-switch to sign-in tab after 2 seconds
+    setTimeout(() => showTab('signin'), 2000);
   }
 }
 
