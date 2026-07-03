@@ -126,13 +126,16 @@ input::placeholder{color:var(--t30);}
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
 
-const _from = new URLSearchParams(location.search).get('from') || '/';
+const _from = new URLSearchParams(location.search).get('from') || '/dashboard';
 
-sb.auth.getSession().then(({ data: { session } }) => {
+if (sb) sb.auth.getSession().then(({ data: { session } }) => {
   if (session) window.location.href = _from;
 });
+
+if (new URLSearchParams(location.search).get('tab') === 'signup') showTab('signup');
 
 function showTab(tab) {
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
