@@ -66,8 +66,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .welcome p{color:var(--t55);margin-top:8px;font-size:.95rem;}
 
 /* STATS ROW */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
-@media(max-width:600px){.stats{grid-template-columns:1fr;}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+@media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:420px){.stats{grid-template-columns:1fr;}}
 .stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;}
 .stat-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--t30);margin-bottom:8px;}
 .stat-val{font-family:var(--disp);font-weight:700;font-size:1.6rem;color:var(--text);}
@@ -244,6 +245,51 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     .account-val{word-break:break-all;font-size:.75rem;}
     .account-row{flex-direction:column;align-items:flex-start;gap:4px;}
   }
+  /* XP BAR */
+  .xp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;margin-top:6px;}
+  .xp-label{font-family:var(--mono);font-size:.6rem;color:var(--t30);letter-spacing:.12em;}
+  .xp-track{height:4px;background:rgba(22,217,126,.1);border-radius:2px;overflow:hidden;}
+  .xp-fill{height:100%;background:var(--green);border-radius:2px;transition:width .6s ease;}
+  /* WATCHLIST */
+  .watchlist-widget{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:32px;}
+  .watchlist-add{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);}
+  .watchlist-add input{flex:1;background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;text-transform:uppercase;transition:.15s;}
+  .watchlist-add input:focus{border-color:rgba(22,217,126,.4);}
+  .watchlist-add input::placeholder{color:var(--t30);text-transform:none;}
+  .watchlist-add button{font-family:var(--disp);font-weight:700;font-size:1.2rem;line-height:1;padding:8px 16px;border-radius:8px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
+  .watchlist-add button:hover{background:#20e88a;}
+  .watchlist-item{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.04);}
+  .watchlist-item:last-child{border-bottom:none;}
+  .watchlist-ticker{font-family:var(--disp);font-weight:700;font-size:1rem;letter-spacing:.04em;}
+  .watchlist-remove{background:none;border:none;color:var(--t30);cursor:pointer;font-size:1rem;padding:4px 8px;border-radius:4px;line-height:1;transition:.15s;}
+  .watchlist-remove:hover{color:#ff3b46;background:rgba(255,59,70,.08);}
+  .watchlist-empty{padding:24px;text-align:center;font-size:.85rem;color:var(--t30);}
+  /* ACHIEVEMENTS */
+  .ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+  @media(max-width:600px){.ach-grid{grid-template-columns:repeat(2,1fr);}}
+  .ach-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center;transition:.2s;}
+  .ach-card.earned{border-color:rgba(22,217,126,.35);background:rgba(22,217,126,.04);}
+  .ach-card.locked{opacity:.35;filter:grayscale(1);}
+  .ach-icon{font-size:1.6rem;display:block;margin-bottom:6px;}
+  .ach-name{font-family:var(--disp);font-weight:700;font-size:.82rem;margin-bottom:2px;color:var(--text);}
+  .ach-desc{font-size:.68rem;color:var(--t30);}
+  /* SIGNAL PREVIEW */
+  .signal-preview-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:32px;position:relative;overflow:hidden;}
+  .sp-row{display:flex;align-items:center;gap:16px;margin-bottom:10px;}
+  .sp-sym{font-family:var(--disp);font-weight:700;font-size:1.1rem;}
+  .sp-tag{font-family:var(--mono);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.06em;}
+  .sp-tag.buy{background:rgba(22,217,126,.15);color:var(--green);}
+  .sp-tag.sell{background:rgba(255,59,70,.12);color:#ff3b46;}
+  .sp-vals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
+  .sp-val-item{background:rgba(255,255,255,.03);border-radius:8px;padding:10px 12px;}
+  .sp-val-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);margin-bottom:4px;}
+  .sp-val-num{font-family:var(--disp);font-weight:700;font-size:1rem;filter:blur(5px);user-select:none;}
+  .sp-lock{position:absolute;inset:0;background:rgba(7,10,8,.78);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--r);}
+  .sp-lock svg{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.8;}
+  .sp-lock-msg{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--text);}
+  .sp-lock-sub{font-size:.78rem;color:var(--t55);text-align:center;max-width:220px;}
+  .sp-lock-btn{font-family:var(--disp);font-weight:700;font-size:.88rem;padding:9px 22px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;margin-top:4px;}
+  .sp-lock-btn:hover{background:#20e88a;}
   </style>
 </head>
 <body>
@@ -285,8 +331,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="stats">
     <div class="stat-card">
       <div class="stat-label">Plan</div>
-      <div class="stat-val green">Free</div>
-      <div class="stat-sub">Upgrade for premium signals</div>
+      <div class="stat-val" id="planBadge" style="font-size:1.2rem;">Free</div>
+      <div class="xp-row"><span class="xp-label">LVL <span id="xpLevel">1</span></span><span class="xp-label"><span id="xpVal">0</span> XP</span></div>
+      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Daily Streak</div>
+      <div class="stat-val" id="streakVal" style="font-size:1.5rem;">0 🔥</div>
+      <div class="stat-sub" id="streakSub">Log in every day to build it</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Member Since</div>
@@ -324,6 +376,44 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="link-desc">Profit clock, exit signals, and probability targets for your open trades.</div>
     </a>
   </div>
+
+  <!-- WATCHLIST -->
+  <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <span>Watchlist</span>
+    <span style="font-family:var(--mono);font-size:.7rem;color:var(--t30);" id="wlCount">0 / 5</span>
+  </div>
+  <div class="watchlist-widget">
+    <div class="watchlist-add">
+      <input type="text" id="wlInput" placeholder="Add ticker (e.g. SPY)" maxlength="6" onkeydown="if(event.key==='Enter')addToWatchlist()">
+      <button onclick="addToWatchlist()">+</button>
+    </div>
+    <div id="wlItems"><div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div></div>
+  </div>
+
+  <!-- SIGNAL PREVIEW -->
+  <div class="section-title" style="margin-bottom:16px;">Live Signal Preview</div>
+  <div class="signal-preview-wrap" id="signalPreview">
+    <div class="sp-row">
+      <span class="sp-sym">SPY</span>
+      <span class="sp-tag buy">BUY CALLS</span>
+      <span style="font-family:var(--mono);font-size:.72rem;color:var(--t30);">Confidence: 94%</span>
+    </div>
+    <div class="sp-vals">
+      <div class="sp-val-item"><div class="sp-val-label">Entry Price</div><div class="sp-val-num">$542.80</div></div>
+      <div class="sp-val-item"><div class="sp-val-label">Stop-Loss</div><div class="sp-val-num">$540.10</div></div>
+      <div class="sp-val-item"><div class="sp-val-label">Target</div><div class="sp-val-num">$548.50</div></div>
+    </div>
+    <div class="sp-lock" id="signalLock">
+      <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+      <div class="sp-lock-msg">Unlock Live Signals</div>
+      <div class="sp-lock-sub">Get exact entry, stop-loss &amp; target with Pro — includes 7-day free trial.</div>
+      <button class="sp-lock-btn" onclick="window.location.href='/pricing'">Start Free Trial →</button>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="section-title" style="margin-bottom:16px;">Achievements</div>
+  <div class="ach-grid" id="achGrid"></div>
 
   <div class="section-title">Account Details</div>
   <div class="account-card">
@@ -555,11 +645,142 @@ async function init() {
     document.getElementById('marketStatus').textContent = '—';
   }
 
+  initStreak();
+  initWatchlist();
   loadAllTrades();
+  checkSubscription();
+}
+
+// ── Streak ────────────────────────────────────────────────────────────────────
+function initStreak() {
+  const today = new Date().toISOString().slice(0, 10);
+  const last  = localStorage.getItem('sc_last_login') || '';
+  let streak  = parseInt(localStorage.getItem('sc_streak') || '0', 10);
+  const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+
+  if (last === today) {
+    // already logged in today — keep streak
+  } else if (last === yesterday) {
+    streak++;
+  } else {
+    streak = 1;
+  }
+  localStorage.setItem('sc_last_login', today);
+  localStorage.setItem('sc_streak', String(streak));
+
+  document.getElementById('streakVal').textContent = `${streak} 🔥`;
+  document.getElementById('streakSub').textContent = streak >= 7
+    ? 'Amazing — keep it going!'
+    : streak >= 3 ? 'Building momentum!'
+    : 'Log in daily to build your streak';
+}
+
+// ── Watchlist ─────────────────────────────────────────────────────────────────
+const WL_KEY = 'sc_watchlist';
+function getWL() { try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch { return []; } }
+function saveWL(list) { localStorage.setItem(WL_KEY, JSON.stringify(list)); }
+
+function initWatchlist() { renderWatchlist(); }
+
+function addToWatchlist() {
+  const inp = document.getElementById('wlInput');
+  const ticker = (inp.value || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+  if (!ticker) return;
+  let list = getWL();
+  if (list.length >= 5) { inp.value = ''; return; }
+  if (list.includes(ticker)) { inp.value = ''; return; }
+  list.push(ticker);
+  saveWL(list);
+  inp.value = '';
+  renderWatchlist();
+}
+
+function removeFromWatchlist(ticker) {
+  saveWL(getWL().filter(t => t !== ticker));
+  renderWatchlist();
+}
+
+function renderWatchlist() {
+  const list = getWL();
+  const el   = document.getElementById('wlItems');
+  const cnt  = document.getElementById('wlCount');
+  cnt.textContent = `${list.length} / 5`;
+  if (!list.length) {
+    el.innerHTML = '<div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div>';
+    return;
+  }
+  el.innerHTML = list.map(t => `
+    <div class="watchlist-item">
+      <span class="watchlist-ticker">${t}</span>
+      <button class="watchlist-remove" onclick="removeFromWatchlist('${t}')" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+// ── Subscription check ────────────────────────────────────────────────────────
+async function checkSubscription() {
+  try {
+    const { data: rows } = await sb.from('profiles').select('plan, promo_redeemed').eq('id', _uid).limit(1);
+    const plan = rows?.[0]?.plan || 'free';
+    const isPro = plan === 'pro' || plan === 'trialing';
+    if (isPro) {
+      document.getElementById('planBadge').textContent = plan === 'trialing' ? 'Pro (Trial)' : 'Pro';
+      document.getElementById('planBadge').style.color = 'var(--green)';
+      // Hide signal lock overlay for pro users
+      const lock = document.getElementById('signalLock');
+      if (lock) lock.style.display = 'none';
+      // Hide upgrade section
+      const upg = document.querySelector('.upgrade');
+      if (upg) upg.style.display = 'none';
+    }
+  } catch(_) {}
+}
+
+// ── XP (computed from trade history) ─────────────────────────────────────────
+function updateXP(closedCount, openCount) {
+  const xp    = closedCount * 20 + openCount * 10;
+  const level = Math.floor(xp / 100) + 1;
+  const pct   = (xp % 100);
+  document.getElementById('xpVal').textContent   = xp;
+  document.getElementById('xpLevel').textContent = level;
+  document.getElementById('xpFill').style.width  = pct + '%';
+}
+
+// ── Achievements ──────────────────────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  { id:'first_trade', icon:'📈', name:'First Trade',    desc:'Log your first trade',          check: (c,o) => c+o >= 1 },
+  { id:'paper_5',     icon:'📋', name:'Paper Trader',   desc:'Log 5 trades',                  check: (c,o) => c+o >= 5 },
+  { id:'winner',      icon:'🏆', name:'Winner',         desc:'Close a profitable trade',       check: (c,_,wins) => wins >= 1 },
+  { id:'streak_3',    icon:'🔥', name:'On Fire',        desc:'3-day login streak',             check: () => parseInt(localStorage.getItem('sc_streak')||'0') >= 3 },
+  { id:'streak_7',    icon:'⚡', name:'Week Warrior',   desc:'7-day login streak',             check: () => parseInt(localStorage.getItem('sc_streak')||'0') >= 7 },
+  { id:'lvl2',        icon:'⭐', name:'Level 2',        desc:'Earn 100 XP',                   check: (c,o) => c*20+o*10 >= 100 },
+  { id:'diversified', icon:'🌐', name:'Diversified',    desc:'Trade 3 different tickers',      check: (_,__,___,tickers) => tickers >= 3 },
+  { id:'journal',     icon:'📓', name:'Journaler',      desc:'Log 10 trades',                  check: (c,o) => c+o >= 10 },
+];
+
+function renderAchievements(closed, open, wins, uniqueTickers) {
+  const grid = document.getElementById('achGrid');
+  grid.innerHTML = ACHIEVEMENTS.map(a => {
+    const earned = a.check(closed, open, wins, uniqueTickers);
+    return `<div class="ach-card ${earned ? 'earned' : 'locked'}">
+      <span class="ach-icon">${a.icon}</span>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+    </div>`;
+  }).join('');
 }
 
 async function loadAllTrades() {
   await Promise.all([loadOpenTrades(), loadClosedTrades()]);
+  // Compute XP + achievements after both load
+  try {
+    const { data: all } = await sb.from('trades').select('status,pnl,symbol').eq('user_id', _uid);
+    const closed  = all?.filter(t => t.status === 'closed') || [];
+    const open    = all?.filter(t => t.status === 'open')   || [];
+    const wins    = closed.filter(t => (t.pnl || 0) > 0).length;
+    const tickers = new Set((all || []).map(t => t.symbol)).size;
+    updateXP(closed.length, open.length);
+    renderAchievements(closed.length, open.length, wins, tickers);
+  } catch(_) {}
 }
 
 async function loadOpenTrades() {

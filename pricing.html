@@ -120,6 +120,16 @@ a{color:inherit;text-decoration:none;}
 .footer-note{text-align:center;color:var(--t30);font-size:.82rem;padding:0 24px 60px;position:relative;z-index:1;}
 .footer-note a{color:var(--green);}
 
+/* VISITOR BANNER */
+.visitor-band{position:relative;z-index:1;margin:0 auto 32px;max-width:var(--max);padding:0 24px;}
+.visitor-inner{background:rgba(120,200,160,.05);border:1px solid rgba(120,200,160,.12);border-radius:14px;padding:16px 22px;text-align:center;}
+.visitor-label{font-family:var(--disp);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);margin-bottom:10px;}
+.visitor-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.visitor-chip{font-size:.78rem;color:var(--t55);background:rgba(120,200,160,.07);border:1px solid rgba(120,200,160,.12);padding:4px 13px;border-radius:20px;}
+/* FEATURE GROUPS */
+.feature-group{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t30);padding:8px 0 4px;border-top:1px solid rgba(255,255,255,.05);margin-top:4px;}
+.feature-list li:first-child .feature-group{border-top:none;padding-top:0;}
+.ic-lock{color:rgba(238,243,240,.2);}
 /* FAQ STRIP */
 .compare-note{position:relative;z-index:1;text-align:center;padding:0 24px 24px;}
 .compare-note a{color:var(--green);font-size:.9rem;}
@@ -177,47 +187,92 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
+<!-- VISITOR ACCESS BAND -->
+<div class="visitor-band">
+  <div class="visitor-inner">
+    <div class="visitor-label">No account needed — explore freely</div>
+    <div class="visitor-chips">
+      <span class="visitor-chip">Live market overview</span>
+      <span class="visitor-chip">Delayed charts</span>
+      <span class="visitor-chip">Basic indicators</span>
+      <span class="visitor-chip">Exit P/L calculator</span>
+      <span class="visitor-chip">Full learning center</span>
+      <span class="visitor-chip">Market news</span>
+      <span class="visitor-chip">Economic calendar</span>
+      <span class="visitor-chip">Broker guides</span>
+      <span class="visitor-chip">Candlestick encyclopedia</span>
+      <span class="visitor-chip">Pricing &amp; FAQ</span>
+    </div>
+  </div>
+</div>
+
 <section class="plans">
   <div class="wrap">
     <div class="plans-grid">
 
-      <!-- FREE -->
+      <!-- FREE ACCOUNT -->
       <div class="plan-card">
-        <div class="plan-name">Free</div>
+        <div class="plan-name">Free Account</div>
         <div class="plan-price"><span class="amount">$0</span></div>
-        <div class="plan-desc">Experience ScalpClock before you commit.</div>
+        <div class="plan-desc">Save progress, build habits, and see real signals — direction included, details locked.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
+          <!-- Signals -->
+          <li style="padding-bottom:4px"><span class="feature-group" style="border-top:none;padding-top:0;">Signals</span></li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            4 delayed signals per day
+            Delayed signals — direction &amp; confidence
+          </li>
+          <li>
+            <svg class="ic ic-lock" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="8" width="10" height="8" rx="2"/><path d="M6 8V6a3 3 0 016 0v2"/></svg>
+            <span style="color:var(--t30)">Entry price, stop-loss &amp; target</span>
+          </li>
+          <li>
+            <svg class="ic ic-lock" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="8" width="10" height="8" rx="2"/><path d="M6 8V6a3 3 0 016 0v2"/></svg>
+            <span style="color:var(--t30)">Options contract recommendations</span>
+          </li>
+          <!-- Platform -->
+          <li style="padding-bottom:4px"><span class="feature-group">Platform</span></li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Watchlist (up to 5 stocks)
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Market news feed
+            Basic charts (delayed, EMA/SMA/RSI/MACD)
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Watchlist (15-min delayed data)
+            Exit P/L calculator &amp; breakeven
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            2 AI explanations per day
+            Paper trading journal
           </li>
           <li>
-            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
-            <span style="color:var(--t30)">Real-time signals</span>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Market news &amp; economic calendar
+          </li>
+          <!-- Engagement -->
+          <li style="padding-bottom:4px"><span class="feature-group">Engagement</span></li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            XP &amp; leveling system
           </li>
           <li>
-            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
-            <span style="color:var(--t30)">Push notifications</span>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Daily streak &amp; achievement badges
           </li>
           <li>
-            <svg class="ic ic-no" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
-            <span style="color:var(--t30)">Options recommendations</span>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Full learning center (all lessons &amp; guides)
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Daily market recap email
           </li>
         </ul>
-        <a class="plan-cta cta-free" href="/login">Get Started Free</a>
+        <a class="plan-cta cta-free" href="/login">Create Free Account</a>
       </div>
 
       <!-- PRO -->
@@ -231,36 +286,80 @@ a{color:inherit;text-decoration:none;}
         <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);border-radius:20px;margin-bottom:10px;">
           <span style="font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:.04em;">🎁 7-DAY FREE TRIAL</span>
         </div>
-        <div class="plan-desc">Everything you need to trade with real-time edge. Try free for 7 days.</div>
+        <div class="plan-desc">Every tool that saves time, improves decisions, and surfaces real trading opportunities.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
+          <!-- Signals -->
+          <li style="padding-bottom:4px"><span class="feature-group" style="border-top:none;padding-top:0;">Live AI Signals</span></li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Unlimited real-time signals
+            Unlimited real-time buy/sell signals
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Buy/Sell notifications
+            Exact entry price, stop-loss &amp; profit target
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Confidence score
+            AI confidence scoring &amp; opportunity rank
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Push notifications
+            Options contract recommendations
+          </li>
+          <!-- Charts & Scanner -->
+          <li style="padding-bottom:4px"><span class="feature-group">Charts Pro &amp; AI Scanner</span></li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Real-time charting &amp; AI overlays
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Options entry/exit recommendations
+            Pattern recognition &amp; auto trendlines
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            News catalyst integration
+            VWAP, volume profile &amp; momentum detection
           </li>
           <li>
             <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Full watchlist + mobile access
+            Institutional activity &amp; options flow
+          </li>
+          <!-- Exit & Alerts -->
+          <li style="padding-bottom:4px"><span class="feature-group">Exit Assistant Pro &amp; Alerts</span></li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Live trade monitoring &amp; AI exit recs
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Smart trailing stops &amp; Greeks analysis
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Push, SMS, email, Discord &amp; webhook alerts
+          </li>
+          <!-- Journal & Academy -->
+          <li style="padding-bottom:4px"><span class="feature-group">Journal, Academy &amp; Analytics</span></li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Premium trade journal (AI coaching, tax export)
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            ScalpClock Academy — full access
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Premium analytics (sectors, breadth, heatmaps)
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Unlimited watchlists &amp; saved layouts
+          </li>
+          <li>
+            <svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            SampsonX AI coach &amp; priority support
           </li>
         </ul>
         <button class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 7-Day Free Trial</button>
@@ -288,7 +387,7 @@ a{color:inherit;text-decoration:none;}
         <div class="plan-price">
           <span class="amount" style="font-size:1.8rem;color:var(--gold)">Coming Soon</span>
         </div>
-        <div class="plan-desc">Everything in Pro, plus the deepest market intelligence we offer.</div>
+        <div class="plan-desc">Everything in Pro, plus the deepest market intelligence ScalpClock offers.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
           <li>
@@ -301,23 +400,27 @@ a{color:inherit;text-decoration:none;}
           </li>
           <li>
             <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Advanced scanner
+            Gamma exposure analysis
           </li>
           <li>
             <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Earnings mode
+            Earnings mode &amp; IV crush detection
           </li>
           <li>
             <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            AI trade explanations
+            Institutional flow heatmaps
           </li>
           <li>
             <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Priority alerts
+            Advanced AI scanner (unlimited)
           </li>
           <li>
             <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Premium support
+            Priority voice &amp; webhook alerts
+          </li>
+          <li>
+            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
+            Dedicated account manager
           </li>
         </ul>
         <div class="waitlist-wrap" id="eliteForm">

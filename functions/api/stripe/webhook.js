@@ -33,24 +33,26 @@ export async function onRequest(context) {
         session.subscription
       );
 
-      // If a promo discount was applied, mark the user's account so they can't reuse it
-      const userId    = session.client_reference_id;
-      const hasPromo  = Array.isArray(session.discounts) && session.discounts.length > 0;
-      if (hasPromo && userId && env.SUPABASE_SERVICE_KEY) {
+      // Update user profile: set plan=pro and mark promo if discount applied
+      const userId   = session.client_reference_id;
+      const hasPromo = Array.isArray(session.discounts) && session.discounts.length > 0;
+      if (userId && env.SUPABASE_SERVICE_KEY) {
+        const patch = { plan: 'pro' };
+        if (hasPromo) patch.promo_redeemed = true;
         try {
-          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+          const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
             method:  'PATCH',
             headers: {
-              apikey:          env.SUPABASE_SERVICE_KEY,
-              Authorization:   `Bearer ${env.SUPABASE_SERVICE_KEY}`,
-              'Content-Type':  'application/json',
-              Prefer:          'return=minimal',
+              apikey:         env.SUPABASE_SERVICE_KEY,
+              Authorization:  `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+              'Content-Type': 'application/json',
+              Prefer:         'return=minimal',
             },
-            body: JSON.stringify({ promo_redeemed: true }),
+            body: JSON.stringify(patch),
           });
-          console.log('promo_redeemed set for user:', userId);
+          console.log('Profile updated for user:', userId, 'patch:', JSON.stringify(patch), 'status:', r.status);
         } catch (e) {
-          console.error('Failed to set promo_redeemed:', e.message);
+          console.error('Failed to update profile:', e.message);
         }
       }
       break;
@@ -79,8 +81,25 @@ export async function onRequest(context) {
     }
 
     case 'customer.subscription.deleted': {
-      const sub = event.data.object;
-      console.log('Subscription cancelled:', sub.id, sub.customer);
+      const sub    = event.data.object;
+      const userId = sub.metadata?.user_id;
+      console.log('Subscription cancelled:', sub.id, sub.customer, 'user:', userId);
+      if (userId && env.SUPABASE_SERVICE_KEY) {
+        try {
+          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+            method:  'PATCH',
+            headers: {
+              apikey:         env.SUPABASE_SERVICE_KEY,
+              Authorization:  `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+              'Content-Type': 'application/json',
+              Prefer:         'return=minimal',
+            },
+            body: JSON.stringify({ plan: 'free' }),
+          });
+        } catch (e) {
+          console.error('Failed to reset plan on cancel:', e.message);
+        }
+      }
       break;
     }
 
