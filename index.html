@@ -552,15 +552,8 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </footer>
 
 <script>
-// Supabase auth gate
-(function(){
-  const SB_URL='https://iizoafqsqjvjxuwfkysp.supabase.co';
-  const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpem9hZnFzcWp2anh1d2ZreXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzMzE3NzYsImV4cCI6MjA2NDkwNzc3Nn0.5iizoMWIGHN-XYiJTtTbMB0SBOP1w4e5V1EaX1q7OPQ';
-  const reveal=()=>{document.body.style.visibility='visible';};
-  const t=setTimeout(reveal,3000);
-  fetch(`${SB_URL}/auth/v1/user`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+((JSON.parse(localStorage.getItem('sb-iizoafqsqjvjxuwfkysp-auth-token')||'{}').access_token)||'')}})
-    .then(r=>r.json()).then(()=>{clearTimeout(t);reveal();}).catch(()=>{clearTimeout(t);reveal();});
-})();
+// Page reveal (removed stale Supabase auth check — wrong project)
+document.body.style.visibility='visible';
 
 // Nav drawer
 function toggleDrawer(){document.getElementById('navDrawer').classList.toggle('open');}

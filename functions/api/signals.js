@@ -6,7 +6,7 @@ export async function onRequest(context) {
   const SYMBOLS = [
     'SPY','QQQ','IWM','AAPL','MSFT','AMZN','GOOGL','META',
     'NVDA','TSLA','AMD','NFLX','COIN','PLTR','SOFI','ARM',
-    'GOLD','JPM','XOM','RIOT',
+    'GLD','BAC','CVX','HOOD',
   ];
 
   const NAMES = {
@@ -15,7 +15,7 @@ export async function onRequest(context) {
     META:'Meta Platforms', NVDA:'Nvidia', TSLA:'Tesla',
     AMD:'Advanced Micro Devices', NFLX:'Netflix', COIN:'Coinbase',
     PLTR:'Palantir', SOFI:'SoFi Technologies', ARM:'Arm Holdings',
-    GOLD:'Barrick Gold', JPM:'JPMorgan Chase', XOM:'ExxonMobil', RIOT:'Riot Platforms',
+    GLD:'SPDR Gold ETF', BAC:'Bank of America', CVX:'Chevron', HOOD:'Robinhood Markets',
   };
 
   const headers = {
