@@ -666,14 +666,14 @@
   .sc-drawer-links .sc-cta:hover{background:#12c470;color:#070a08;}
 
   /* ── MODE TAB BAR ── */
-  .mode-tab-bar{display:flex;align-items:center;gap:0;background:var(--surface);border-bottom:2px solid var(--border);padding:0 20px;}
+  .mode-tab-bar{display:flex;align-items:center;gap:0;background:var(--surface);border-bottom:2px solid var(--border);padding:0 20px;flex-shrink:0;}
   .mode-tab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:10px 20px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;letter-spacing:.02em;}
   .mode-tab:hover{color:var(--text);}
   .mode-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-  /* ── REPLAY PANEL ── */
-  #replayPanel{display:none;flex-direction:column;flex:1;overflow:hidden;}
-  #replayPanel.rp-active{display:flex;}
+  /* ── PANEL CONTAINERS ── */
+  #livePanel{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+  #replayPanel{display:none;flex-direction:column;flex:1;overflow:auto;}
 
   .rp-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
   .rp-ctrl-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
@@ -2209,12 +2209,12 @@ function switchTab(tab) {
   if (tab === 'replay') {
     livePanel.style.display   = 'none';
     replayPanel.style.display = 'flex';
-    replayPanel.style.flexDirection = 'column';
     tabLive.classList.remove('active');
     tabReplay.classList.add('active');
     if (!rpChart) { rpInitChart(); rpInitDate(); rpQuickLoad('3mo'); rpUpdateProgressUI(); }
+    else if (rpChart) { setTimeout(() => rpChart.applyOptions({ width: document.getElementById('rpChartEl').clientWidth }), 50); }
   } else {
-    livePanel.style.display   = '';
+    livePanel.style.display   = 'flex';
     replayPanel.style.display = 'none';
     tabLive.classList.add('active');
     tabReplay.classList.remove('active');
