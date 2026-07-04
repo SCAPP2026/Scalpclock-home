@@ -353,6 +353,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
 
+  <!-- ACCOUNT DETAILS — shown near top for quick reference -->
+  <div class="section-title">Account Details</div>
+  <div class="account-card" style="margin-bottom:32px;">
+    <div class="account-row">
+      <span class="account-key">Email</span>
+      <span class="account-val" id="accountEmail">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">User ID</span>
+      <span class="account-val" id="accountId">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Subscription</span>
+      <span class="badge free" id="accountSubBadge">FREE</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Email Verified</span>
+      <span class="account-val" id="emailVerified">—</span>
+    </div>
+  </div>
+
   <div class="section-title">Quick Access</div>
   <div class="links-grid">
     <a class="link-card" href="/#signals">
@@ -422,25 +443,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="section-title" style="margin-bottom:16px;">Achievements</div>
   <div class="ach-grid" id="achGrid"></div>
 
-  <div class="section-title">Account Details</div>
-  <div class="account-card">
-    <div class="account-row">
-      <span class="account-key">Email</span>
-      <span class="account-val" id="accountEmail">—</span>
-    </div>
-    <div class="account-row">
-      <span class="account-key">User ID</span>
-      <span class="account-val" id="accountId">—</span>
-    </div>
-    <div class="account-row">
-      <span class="account-key">Subscription</span>
-      <span class="badge free">FREE</span>
-    </div>
-    <div class="account-row">
-      <span class="account-key">Email Verified</span>
-      <span class="account-val" id="emailVerified">—</span>
-    </div>
-  </div>
 <!-- EARNINGS CALENDAR -->
   <div class="earnings-wrap" id="earningsWrap">
     <div class="earnings-header">
@@ -752,13 +754,16 @@ async function checkSubscription() {
         const expiresStr = trialEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         document.getElementById('planBadge').innerHTML =
           `<span style="color:var(--green)">PRO ACTIVE</span>`;
-        const sub = document.querySelector('.stat-card .stat-sub') || document.createElement('div');
         document.querySelector('#planBadge').insertAdjacentHTML('afterend',
           `<div style="font-size:.72rem;color:var(--t55);margin-top:4px;font-family:var(--mono)">Trial Day ${dayNum} of 7 · Expires ${expiresStr}</div>`);
+        const subBadge = document.getElementById('accountSubBadge');
+        if (subBadge) { subBadge.textContent = `TRIAL · Day ${dayNum}/7`; subBadge.className = 'badge pro'; }
       } else {
         document.getElementById('planBadge').textContent = 'PRO ACTIVE';
         document.getElementById('planBadge').style.color = 'var(--green)';
       }
+      const subBadge = document.getElementById('accountSubBadge');
+      if (subBadge) { subBadge.textContent = 'PRO'; subBadge.className = 'badge pro'; }
 
       // Show onboarding banner once (dismissed via localStorage)
       if (!localStorage.getItem('sc_onboarding_dismissed')) {
@@ -767,6 +772,8 @@ async function checkSubscription() {
     } else if (isExpired) {
       document.getElementById('planBadge').textContent = 'Expired';
       document.getElementById('planBadge').style.color = '#ff7a1a';
+      const subBadge = document.getElementById('accountSubBadge');
+      if (subBadge) { subBadge.textContent = 'EXPIRED'; subBadge.style.cssText = 'background:rgba(255,122,26,.1);color:#ff7a1a;border:1px solid rgba(255,122,26,.3);'; }
     }
     // 'free' — default UI shows Free, nothing to change
   } catch(_) {}
