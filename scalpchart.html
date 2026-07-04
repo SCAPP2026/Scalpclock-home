@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lightweight-charts@4.1.4/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -663,6 +664,147 @@
   .sc-drawer-links a.sc-active{color:#16d97e;}
   .sc-drawer-links .sc-cta{margin-top:12px;background:#16d97e;color:#070a08;font-weight:700;justify-content:center;border-color:transparent;}
   .sc-drawer-links .sc-cta:hover{background:#12c470;color:#070a08;}
+
+  /* ── MODE TAB BAR ── */
+  .mode-tab-bar{display:flex;align-items:center;gap:0;background:var(--surface);border-bottom:2px solid var(--border);padding:0 20px;}
+  .mode-tab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:10px 20px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;letter-spacing:.02em;}
+  .mode-tab:hover{color:var(--text);}
+  .mode-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+  /* ── REPLAY PANEL ── */
+  #replayPanel{display:none;flex-direction:column;flex:1;overflow:hidden;}
+  #replayPanel.rp-active{display:flex;}
+
+  .rp-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
+  .rp-ctrl-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .rp-input{background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;outline:none;transition:border-color .2s;}
+  .rp-input:focus{border-color:var(--accent);}
+  .rp-sym{width:80px;text-transform:uppercase;}
+  input[type="date"].rp-input{color-scheme:dark;}
+  .rp-divider{width:1px;height:24px;background:var(--border);flex-shrink:0;}
+  .rp-quick-btns{display:flex;gap:4px;flex-wrap:wrap;}
+  .rp-quick-btn{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:5px 11px;color:var(--muted);font-size:11px;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .rp-quick-btn:hover,.rp-quick-btn.rp-active{background:rgba(0,212,170,.1);border-color:var(--accent);color:var(--accent);}
+  .rp-load-btn{background:var(--accent);border:none;border-radius:6px;padding:7px 18px;color:#000;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+  .rp-load-btn:hover{opacity:.85;}
+  .rp-load-btn:disabled{opacity:.4;cursor:default;}
+  .rp-err{font-size:11px;color:#ff4566;flex-basis:100%;display:none;}
+
+  .rp-body{display:flex;flex:1;overflow:hidden;gap:0;}
+  @media(max-width:900px){.rp-body{flex-direction:column;overflow:visible;}}
+
+  .rp-chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+  .rp-chart-wrap{position:relative;background:var(--bg);border-bottom:1px solid var(--border);flex:1;min-height:320px;}
+  .rp-chart-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);}
+  .rp-ticker{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#fff;}
+  .rp-ohlcv{font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;}
+  .rp-ohlcv strong{color:var(--text);}
+  #rpChartEl{width:100%;height:340px;}
+  .rp-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(7,11,16,.9);z-index:5;}
+  .rp-overlay p{font-size:13px;color:var(--muted);text-align:center;max-width:280px;line-height:1.5;}
+  .rp-overlay.hidden{display:none;}
+
+  .rp-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 14px;background:var(--surface);border-top:1px solid var(--border);}
+  .rp-ctrl-btns{display:flex;gap:4px;}
+  .rp-ctrl-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-size:.9rem;cursor:pointer;transition:all .15s;line-height:1;}
+  .rp-ctrl-btn:hover{background:rgba(0,212,170,.1);border-color:var(--accent);color:var(--accent);}
+  .rp-ctrl-btn.rp-play{background:rgba(0,212,170,.12);border-color:var(--accent);color:var(--accent);}
+  .rp-ctrl-btn:disabled{opacity:.3;cursor:default;}
+  .rp-speed-btns{display:flex;gap:3px;margin-left:4px;}
+  .rp-speed-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:4px 9px;color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;}
+  .rp-speed-btn:hover{color:var(--text);}
+  .rp-speed-btn.rp-active{background:rgba(0,212,170,.1);border-color:var(--accent);color:var(--accent);}
+  .rp-info{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;}
+  .rp-info strong{color:var(--text);}
+  .rp-pos{font-size:10px;color:var(--muted);}
+
+  .rp-scrubber{padding:8px 14px;background:var(--surface);border-top:1px solid var(--border);}
+  .rp-scrub-track{position:relative;height:5px;background:rgba(255,255,255,.08);border-radius:3px;cursor:pointer;margin-top:2px;}
+  .rp-scrub-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),#00ffcc);transition:width .1s;}
+  .rp-scrub-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;}
+
+  .rp-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 14px;background:var(--surface);border-top:1px solid var(--border);min-height:38px;}
+  .rp-chips-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .rp-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid transparent;}
+  .rp-chip.bullish{background:rgba(0,201,107,.1);border-color:rgba(0,201,107,.3);color:var(--bull);}
+  .rp-chip.bullish:hover{background:rgba(0,201,107,.2);}
+  .rp-chip.bearish{background:rgba(255,69,102,.08);border-color:rgba(255,69,102,.25);color:var(--bear);}
+  .rp-chip.bearish:hover{background:rgba(255,69,102,.15);}
+  .rp-chip.neutral{background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.2);color:var(--warn);}
+  .rp-chip.neutral:hover{background:rgba(245,166,35,.14);}
+  .rp-no-chips{font-size:11px;color:var(--muted);font-style:italic;}
+
+  /* Replay education sidebar */
+  .rp-edu{width:280px;min-width:280px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+  @media(max-width:900px){.rp-edu{width:100%;min-width:unset;border-left:none;border-top:1px solid var(--border);max-height:260px;}}
+  .rp-edu::-webkit-scrollbar{width:4px;}
+  .rp-edu::-webkit-scrollbar-track{background:transparent;}
+  .rp-edu::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  .rp-edu-default{padding:20px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .rp-edu-icon{font-size:2rem;}
+  .rp-edu-title{font-size:13px;font-weight:700;color:var(--text);}
+  .rp-edu-sub{font-size:11px;color:var(--muted);line-height:1.6;}
+  .rp-edu-tip{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text);line-height:1.5;text-align:left;width:100%;}
+  .rp-edu-tip strong{color:var(--accent);}
+  .rp-edu-hdr{padding:14px 16px 10px;border-bottom:1px solid var(--border);}
+  .rp-edu-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;}
+  .rp-edu-sig{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;padding:2px 9px;border-radius:20px;text-transform:uppercase;}
+  .rp-edu-sig.bullish{background:rgba(0,201,107,.12);color:var(--bull);}
+  .rp-edu-sig.bearish{background:rgba(255,69,102,.1);color:var(--bear);}
+  .rp-edu-sig.neutral{background:rgba(245,166,35,.1);color:var(--warn);}
+  .rp-edu-conf{font-size:10px;color:var(--muted);margin-left:8px;}
+  .rp-edu-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px;}
+  .rp-edu-sec-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+  .rp-edu-sec-txt{font-size:11px;color:var(--text);line-height:1.6;}
+  .rp-edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .rp-edu-stat{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+  .rp-edu-stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:2px;}
+  .rp-edu-stat-val{font-size:11px;font-weight:600;color:var(--text);}
+  .rp-edu-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+  .rp-edu-list li{font-size:11px;color:var(--text);padding-left:12px;position:relative;line-height:1.5;}
+  .rp-edu-list li::before{content:'•';position:absolute;left:0;color:var(--accent);opacity:.7;}
+  .rp-edu-list li.bad::before{color:var(--bear);}
+  .rp-edu-quote{background:rgba(0,212,170,.04);border-left:2px solid rgba(0,212,170,.3);padding:8px 12px;border-radius:0 6px 6px 0;}
+  .rp-edu-quote p{font-size:11px;color:var(--text);font-style:italic;line-height:1.6;}
+
+  /* Replay quiz */
+  .rp-quiz{border-top:1px solid var(--border);padding:14px 16px;}
+  .rp-quiz-q{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+  .rp-quiz-sub{font-size:10px;color:var(--muted);margin-bottom:10px;}
+  .rp-quiz-btns{display:flex;flex-direction:column;gap:6px;}
+  .rp-quiz-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:12px;cursor:pointer;transition:all .15s;text-align:left;font-family:inherit;}
+  .rp-quiz-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(0,212,170,.08);}
+  .rp-quiz-btn.correct{background:rgba(0,201,107,.1);border-color:rgba(0,201,107,.4);color:var(--bull);}
+  .rp-quiz-btn.wrong{background:rgba(255,69,102,.08);border-color:rgba(255,69,102,.3);color:var(--bear);}
+  .rp-quiz-btn:disabled{opacity:.4;cursor:default;}
+  .rp-quiz-result{margin-top:8px;padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.5;}
+  .rp-quiz-result.win{background:rgba(0,201,107,.1);border:1px solid rgba(0,201,107,.3);color:var(--bull);}
+  .rp-quiz-result.lose{background:rgba(255,69,102,.06);border:1px solid rgba(255,69,102,.25);color:var(--bear);}
+  .rp-quiz-xp{font-size:13px;font-weight:700;margin-bottom:2px;}
+  .rp-quiz-next{display:none;margin-top:8px;padding:8px;border-radius:7px;background:rgba(0,212,170,.12);border:1px solid var(--accent);color:var(--accent);font-weight:700;font-size:12px;cursor:pointer;width:100%;font-family:inherit;}
+  .rp-quiz-next.show{display:block;}
+
+  /* Replay progress bar */
+  .rp-progress{padding:16px 20px;background:var(--surface);border-top:1px solid var(--border);}
+  .rp-prog-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;}
+  .rp-prog-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+  @media(max-width:600px){.rp-prog-stats{grid-template-columns:1fr 1fr;}}
+  .rp-prog-stat{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+  .rp-prog-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--accent);}
+  .rp-prog-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+  .rp-mastery{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+  .rp-mastery-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  .rp-mastery-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .rp-mastery-row{display:flex;flex-direction:column;gap:4px;}
+  .rp-mastery-name{font-size:11px;color:var(--text);display:flex;justify-content:space-between;}
+  .rp-mastery-name span{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:10px;}
+  .rp-mastery-track{height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+  .rp-mastery-fill{height:100%;border-radius:2px;background:var(--accent);}
+  .rp-mastery-empty{font-size:11px;color:var(--muted);font-style:italic;}
+  .rp-loading-bar{height:3px;background:transparent;}
+  .rp-loading-bar.active{background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:rp-shimmer 1.4s infinite;}
+  @keyframes rp-shimmer{0%{background-position:-200%}100%{background-position:200%}}
+  @keyframes rp-shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
 </style>
 </head>
 <body>
@@ -699,6 +841,11 @@
   </button>
 </header>
 
+<div class="mode-tab-bar">
+  <button class="mode-tab active" id="tabLive" onclick="switchTab('live')">📊 Live Charts</button>
+  <button class="mode-tab" id="tabReplay" onclick="switchTab('replay')">📅 Replay</button>
+</div>
+
 <div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
 <div class="sc-drawer" id="scDrawer">
   <div class="sc-drawer-head">
@@ -708,7 +855,7 @@
   <div class="sc-drawer-links">
     <a href="/">🏠 Home</a>
     <a href="/scalpchart.html" class="sc-active">📊 ScalpCharts</a>
-    <a href="/replay.html">📅 Replay</a>
+    <a href="#" onclick="closeSCNav();switchTab('replay');return false;">📅 Replay</a>
     <a href="/exitassistant.html">🚪 Exit Assistant</a>
     <a href="/pricing.html">💳 Pricing</a>
     <a href="/dashboard.html">⚙️ Dashboard</a>
@@ -716,6 +863,7 @@
   </div>
 </div>
 
+<div id="livePanel">
 <div class="sx-bar" id="sxBar" onclick="toggleSampsonX()">
   <div class="sx-label">SampsonX</div>
   <div class="sx-track"><div class="sx-fill" id="sxFill" style="width:0%"></div></div>
@@ -772,6 +920,107 @@
     </div>
   </div>
 </div>
+</div><!-- /livePanel -->
+
+<div id="replayPanel">
+  <!-- Loading bar -->
+  <div class="rp-loading-bar" id="rpLoadingBar"></div>
+
+  <!-- Controls -->
+  <div class="rp-controls">
+    <span class="rp-ctrl-label">Symbol</span>
+    <input type="text" id="rpSymbol" class="rp-input rp-sym" value="SPY" maxlength="8" placeholder="SPY">
+    <span class="rp-ctrl-label">Start Date</span>
+    <input type="date" id="rpDate" class="rp-input">
+    <div class="rp-divider"></div>
+    <span class="rp-ctrl-label">Quick</span>
+    <div class="rp-quick-btns">
+      <button type="button" class="rp-quick-btn" data-range="5d">Last Week</button>
+      <button type="button" class="rp-quick-btn" data-range="1mo">Last Month</button>
+      <button type="button" class="rp-quick-btn rp-active" data-range="3mo">3 Months</button>
+      <button type="button" class="rp-quick-btn" data-range="1y">1 Year</button>
+    </div>
+    <button type="button" class="rp-load-btn" id="rpLoadBtn" onclick="rpLoadChart()">Load Chart</button>
+    <div class="rp-err" id="rpErr"></div>
+  </div>
+
+  <!-- Body: chart col + edu sidebar -->
+  <div class="rp-body">
+    <div class="rp-chart-col">
+      <!-- Chart header + chart -->
+      <div class="rp-chart-hdr">
+        <span class="rp-ticker" id="rpTicker">—</span>
+        <div class="rp-ohlcv" id="rpOHLCV"><strong>Load a chart to begin</strong></div>
+      </div>
+      <div class="rp-chart-wrap">
+        <div id="rpChartEl"></div>
+        <div class="rp-overlay" id="rpOverlay">
+          <div style="font-size:2rem">📊</div>
+          <p>Pick a symbol and press <strong>Load Chart</strong> to start replay.</p>
+        </div>
+      </div>
+      <!-- Replay bar -->
+      <div class="rp-bar">
+        <div class="rp-ctrl-btns">
+          <button type="button" class="rp-ctrl-btn" id="rpBtnFirst" onclick="rpGoFirst()" title="First" disabled>⏮</button>
+          <button type="button" class="rp-ctrl-btn" id="rpBtnPrev"  onclick="rpGoPrev()"  title="Prev"  disabled>⏪</button>
+          <button type="button" class="rp-ctrl-btn rp-play" id="rpBtnPlay" onclick="rpTogglePlay()" title="Play/Pause" disabled>▶</button>
+          <button type="button" class="rp-ctrl-btn" id="rpBtnNext"  onclick="rpGoNext()"  title="Next"  disabled>⏩</button>
+          <button type="button" class="rp-ctrl-btn" id="rpBtnLast"  onclick="rpGoLast()"  title="Last"  disabled>⏭</button>
+        </div>
+        <div class="rp-speed-btns">
+          <button type="button" class="rp-speed-btn rp-active" onclick="rpSetSpeed(1,this)">1×</button>
+          <button type="button" class="rp-speed-btn" onclick="rpSetSpeed(2,this)">2×</button>
+          <button type="button" class="rp-speed-btn" onclick="rpSetSpeed(5,this)">5×</button>
+        </div>
+        <div class="rp-info" id="rpInfo"><strong>—</strong></div>
+        <div class="rp-pos" id="rpPos"></div>
+      </div>
+      <!-- Scrubber -->
+      <div class="rp-scrubber" id="rpScrubberWrap" style="display:none">
+        <div class="rp-scrub-track" id="rpScrubTrack" onclick="rpScrubClick(event)">
+          <div class="rp-scrub-fill" id="rpScrubFill" style="width:0%"></div>
+        </div>
+        <div class="rp-scrub-labels">
+          <span id="rpScrubStart">—</span>
+          <span id="rpScrubEnd">—</span>
+        </div>
+      </div>
+      <!-- Pattern chips -->
+      <div class="rp-chips">
+        <span class="rp-chips-lbl">Patterns</span>
+        <div id="rpChips" style="display:flex;gap:6px;flex-wrap:wrap;"><span class="rp-no-chips">Load a chart to detect patterns</span></div>
+      </div>
+    </div>
+
+    <!-- Education sidebar -->
+    <div class="rp-edu" id="rpEdu">
+      <div id="rpEduContent">
+        <div class="rp-edu-default">
+          <div class="rp-edu-icon">📚</div>
+          <div class="rp-edu-title">Replay Ready</div>
+          <div class="rp-edu-sub">Load a chart, then press ▶ to advance candle by candle. Click any detected pattern to see the full educational breakdown.</div>
+          <div class="rp-edu-tip"><strong>How it works:</strong><br>1. Pick a symbol + date range<br>2. Press ▶ Play or ⏩ to reveal candles<br>3. Click any pattern chip to learn why it formed<br>4. Predict the next move and earn XP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="rp-progress">
+    <div class="rp-prog-title">📊 Learning Progress</div>
+    <div class="rp-prog-stats">
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatXP">0</div><div class="rp-prog-lbl">Total XP</div></div>
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatAcc">—</div><div class="rp-prog-lbl">Quiz Accuracy</div></div>
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatPats">0</div><div class="rp-prog-lbl">Patterns Studied</div></div>
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatStreak">0</div><div class="rp-prog-lbl">Correct Streak</div></div>
+    </div>
+    <div class="rp-mastery">
+      <div class="rp-mastery-title">Pattern Mastery</div>
+      <div class="rp-mastery-grid" id="rpMasteryGrid"><div class="rp-mastery-empty">No patterns studied yet — make your first prediction!</div></div>
+    </div>
+  </div>
+</div><!-- /replayPanel -->
 
 <script>
 // ─── PATTERN LIBRARY ───────────────────────────────────────────
@@ -1949,6 +2198,518 @@ document.addEventListener('visibilitychange', () => {
   <div id="coachContent"></div>
   <div class="coach-tip" style="margin-top:14px">Tap any candle to re-analyze · Tap outside to close</div>
 </div>
+
+<script>
+// ─── TAB SWITCHING ────────────────────────────────────────────
+function switchTab(tab) {
+  const livePanel   = document.getElementById('livePanel');
+  const replayPanel = document.getElementById('replayPanel');
+  const tabLive     = document.getElementById('tabLive');
+  const tabReplay   = document.getElementById('tabReplay');
+  if (tab === 'replay') {
+    livePanel.style.display   = 'none';
+    replayPanel.style.display = 'flex';
+    replayPanel.style.flexDirection = 'column';
+    tabLive.classList.remove('active');
+    tabReplay.classList.add('active');
+    if (!rpChart) { rpInitChart(); rpInitDate(); rpQuickLoad('3mo'); rpUpdateProgressUI(); }
+  } else {
+    livePanel.style.display   = '';
+    replayPanel.style.display = 'none';
+    tabLive.classList.add('active');
+    tabReplay.classList.remove('active');
+  }
+}
+
+// ─── REPLAY BOOK (pattern education) ─────────────────────────
+const BOOK = {
+  'Bullish Engulfing': { signal:'bullish', confidence:82,
+    definition:'A large green candle completely engulfs the previous red candle.',
+    psychology:'Buyers overwhelmed sellers, reversing the entire prior session\'s move.',
+    buyers:'Entered aggressively after sellers created a dip.',
+    sellers:'Caught off-guard; short sellers forced to cover.',
+    successRate:'63%', entry:'Next candle open', stop:'Below the engulfing candle low', target:'Next resistance (2–3% above)', rr:'1:2',
+    best:['Near support levels','After extended downtrend','Volume above 20-day average'],
+    mistakes:['Trading without nearby support','Ignoring volume — low volume = weak signal'],
+    confirm:['Volume spike on engulfing candle','RSI bouncing from oversold'],
+    quote:'The market tried to go lower, buyers said no — loudly.',
+  },
+  'Bearish Engulfing': { signal:'bearish', confidence:80,
+    definition:'A large red candle engulfs the prior green candle entirely.',
+    psychology:'Sellers overwhelmed buyers, taking back the entire prior session\'s gain.',
+    buyers:'Exhausted — couldn\'t push higher. Bears seized the moment.',
+    sellers:'Entered with force after a rally attempt failed.',
+    successRate:'61%', entry:'Next candle open', stop:'Above the engulfing candle high', target:'Next support (2–3% below)', rr:'1:2',
+    best:['Near resistance','After extended uptrend','Volume confirmation'],
+    mistakes:['Ignoring overall trend','Entering without a clear resistance level'],
+    confirm:['RSI overbought','Volume above average'],
+    quote:'Distribution often looks like just one big red candle.',
+  },
+  'Doji': { signal:'neutral', confidence:65,
+    definition:'Open and close are virtually identical — the market couldn\'t decide.',
+    psychology:'Perfect balance between buyers and sellers. Indecision before a potential shift.',
+    buyers:'Attempted to push higher but gave it all back by close.',
+    sellers:'Attempted to push lower but also failed to hold gains.',
+    successRate:'55%', entry:'Wait for next candle direction', stop:'Outside the doji range', target:'1–2% in breakout direction', rr:'1:1.5',
+    best:['After a strong trend','At key S/R levels','High volume doji = stronger signal'],
+    mistakes:['Trading every doji regardless of context','No confirmation candle'],
+    confirm:['High volume','Located at key S/R','Followed by strong directional candle'],
+    quote:'When the market takes a breath, be ready to run.',
+  },
+  'Hammer': { signal:'bullish', confidence:72,
+    definition:'Small body at the top, long lower wick — buyers rejected lower prices.',
+    psychology:'Sellers pushed price down hard, but buyers stepped in and drove it back up.',
+    buyers:'Absorbed all selling pressure and closed near the open.',
+    sellers:'Dominated early but lost complete control by close.',
+    successRate:'60%', entry:'Open of next green candle', stop:'Below the hammer low', target:'Top of prior consolidation', rr:'1:2',
+    best:['After a downtrend','At known support','With volume surge'],
+    mistakes:['Trading without a prior downtrend','Missing the volume confirmation'],
+    confirm:['Volume spike','Next candle closes bullish','RSI below 30'],
+    quote:'The lower the shadow, the louder the rejection.',
+  },
+  'Shooting Star': { signal:'bearish', confidence:70,
+    definition:'Small body at the bottom, long upper wick — buyers failed to hold gains.',
+    psychology:'Price was pushed high but completely rejected. Bears took over.',
+    buyers:'Pushed aggressively intraday but were unable to hold any of it.',
+    sellers:'Absorbed all buying pressure and closed near the open.',
+    successRate:'59%', entry:'Open of next red candle', stop:'Above the star high', target:'Prior support level', rr:'1:2',
+    best:['After an uptrend','At resistance','Volume above average'],
+    mistakes:['Ignoring the prior uptrend context','No resistance nearby'],
+    confirm:['Volume spike','Next candle closes bearish'],
+    quote:'The market reached for the sky — and was handed back down.',
+  },
+  'Morning Star': { signal:'bullish', confidence:75,
+    definition:'Three-candle reversal: big red, small-bodied star, then big green above the midpoint of the first candle.',
+    psychology:'Sellers were exhausted, then indecision set in, then buyers overpowered.',
+    buyers:'Stepped in decisively after the indecision gap.',
+    sellers:'Lost momentum after the first candle — couldn\'t follow through.',
+    successRate:'68%', entry:'Close of the third bullish candle', stop:'Below the star low', target:'Prior resistance', rr:'1:2.5',
+    best:['After downtrend','At major support','Large third candle body'],
+    mistakes:['Too small a third candle','No gap between candles'],
+    confirm:['Gap between candles','Volume rising on third candle'],
+    quote:'A three-act play: exhaustion, doubt, then resolution.',
+  },
+  'Evening Star': { signal:'bearish', confidence:73,
+    definition:'Three-candle top reversal: big green, small star, then big red below the midpoint of the first.',
+    psychology:'Buyers were exhausted at the top. Indecision, then sellers piled in.',
+    buyers:'Failed to follow through after the strong green candle.',
+    sellers:'Used the pause to overwhelm buyers completely.',
+    successRate:'66%', entry:'Close of the third bearish candle', stop:'Above the star high', target:'Prior support', rr:'1:2',
+    best:['After uptrend','At major resistance','Large third candle'],
+    mistakes:['Ignoring the trend context','Acting on too small a star body'],
+    confirm:['Volume surge on third candle','RSI overbought'],
+    quote:'Tops are made quietly — until they aren\'t.',
+  },
+  'Inside Bar': { signal:'neutral', confidence:68,
+    definition:'Current candle is contained entirely within the prior candle\'s range — a pause in volatility.',
+    psychology:'The market is coiling. Breakout in either direction is coming.',
+    buyers:'Not committing until direction is clear.',
+    sellers:'Not committing either — consolidation phase.',
+    successRate:'58%', entry:'Breakout above or below the mother bar', stop:'Opposite side of the mother bar', target:'100% of mother bar range projected', rr:'1:2',
+    best:['After a trend','On daily chart at key levels','Multiple inside bars in a row'],
+    mistakes:['Trading the inside bar itself (wait for breakout)','Ignoring trend direction'],
+    confirm:['Volume expansion on breakout','RSI confirming direction'],
+    quote:'Compression precedes explosion.',
+  },
+  'Double Top': { signal:'bearish', confidence:77,
+    definition:'Price forms two peaks at nearly the same level, then fails — a reversal warning.',
+    psychology:'Buyers tried twice to break resistance and couldn\'t. Sellers are in control.',
+    buyers:'Exhausted after two attempts. Smart money selling into the rallies.',
+    sellers:'Absorbing every push higher, waiting for the breakdown.',
+    successRate:'72%', entry:'Break below the neckline (valley between the peaks)', stop:'Above the second top', target:'Neckline − height of the pattern', rr:'1:2',
+    best:['At prior highs','RSI divergence','Volume declining on second peak'],
+    mistakes:['Entering before the neckline breaks','Ignoring volume divergence'],
+    confirm:['Neckline break on volume','RSI bearish divergence'],
+    quote:'The second attempt at resistance is a confession of weakness.',
+  },
+  'Double Bottom': { signal:'bullish', confidence:79,
+    definition:'Price forms two troughs at similar levels — strong support holding twice.',
+    psychology:'Sellers tried twice to break the low and failed. Buyers are absorbing.',
+    buyers:'Building a base — each dip is bought aggressively.',
+    sellers:'Losing conviction after the second failed breakdown.',
+    successRate:'74%', entry:'Break above the neckline', stop:'Below the second bottom', target:'Neckline + height of the pattern', rr:'1:2',
+    best:['At prior lows','RSI bullish divergence','Volume increasing on second trough'],
+    mistakes:['Entering before neckline break','Missing volume confirmation'],
+    confirm:['Neckline break','RSI rising','Volume surge'],
+    quote:'Support held twice. That\'s not luck, that\'s a floor.',
+  },
+  'Bull Flag': { signal:'bullish', confidence:80,
+    definition:'Strong upward pole followed by a tight, sideways-to-slightly-down consolidation channel.',
+    psychology:'After a fast move, bulls let weak holders shake out before the next leg.',
+    buyers:'Patiently accumulating during consolidation, positioning for the breakout.',
+    sellers:'Trimming profits, but can\'t push price meaningfully lower.',
+    successRate:'68%', entry:'Break above the flag high', stop:'Below the flag low', target:'Flag breakout + pole height', rr:'1:3',
+    best:['Strong volume on the pole','Tight, orderly consolidation','Volume drops during flag'],
+    mistakes:['Flags that angle upward (that\'s a wedge, not a flag)','Low-volume pole'],
+    confirm:['Volume surge on breakout','Price closes above flag high'],
+    quote:'Flags are where momentum rests before it resumes.',
+  },
+  'Bear Flag': { signal:'bearish', confidence:78,
+    definition:'Strong downward pole followed by a tight, sideways-to-slightly-up consolidation.',
+    psychology:'Brief relief rally trapping longs, then continuation of the downtrend.',
+    buyers:'Caught in a dead-cat bounce — will be punished when breakdown resumes.',
+    sellers:'Patiently waiting for the relief rally to exhaust itself.',
+    successRate:'66%', entry:'Break below the flag low', stop:'Above the flag high', target:'Flag breakdown − pole height', rr:'1:2.5',
+    best:['Strong volume on the pole','Flag is relatively shallow'],
+    mistakes:['Chasing the pole','Ignoring market-wide trend'],
+    confirm:['Volume surge on breakdown'],
+    quote:'Hope turns into a trap when the trend is still down.',
+  },
+  'Three White Soldiers': { signal:'bullish', confidence:88,
+    definition:'Three consecutive bullish candles, each opening within the prior body and closing near its high.',
+    psychology:'Sustained, committed buying pressure over multiple sessions.',
+    buyers:'Systematic, institutional-style accumulation. No hesitation.',
+    sellers:'Completely overwhelmed for three straight sessions.',
+    successRate:'78%', entry:'Open after the third candle', stop:'Below the first soldier low', target:'Prior resistance', rr:'1:2',
+    best:['After a downtrend','Each candle bigger than the last','Volume increasing each session'],
+    mistakes:['Entering after huge gap-up open','Not checking for overbought conditions'],
+    confirm:['Volume rising each day','RSI trending up from oversold'],
+    quote:'Three days of commitment is more than noise.',
+  },
+  'Three Black Crows': { signal:'bearish', confidence:86,
+    definition:'Three consecutive bearish candles, each opening within the prior body and closing near its low.',
+    psychology:'Sustained, committed selling over three sessions — a distribution pattern.',
+    buyers:'Trying to push back each day and failing completely.',
+    sellers:'In total control. Methodical takedown of price.',
+    successRate:'76%', entry:'Open after the third candle', stop:'Above the first crow high', target:'Prior support', rr:'1:2',
+    best:['After an uptrend','Each candle closes near its low','Volume confirming'],
+    mistakes:['Ignoring if already at support','Not checking for oversold conditions'],
+    confirm:['Volume trend','RSI declining'],
+    quote:'Three consecutive failures to hold the high is a verdict.',
+  },
+  'Gap Up': { signal:'bullish', confidence:70,
+    definition:'Price opens meaningfully above the prior close — strong overnight demand.',
+    psychology:'News, earnings, or macro catalyst created a surge of buy orders overnight.',
+    buyers:'Pre-market buyers willing to pay up significantly for entry.',
+    sellers:'Suddenly on the wrong side — must either hold or take losses.',
+    successRate:'60%', entry:'Pullback to the gap edge if it holds', stop:'Below the gap', target:'Prior resistance levels', rr:'1:2',
+    best:['On earnings beat','Volume far above average','Gap holds as support intraday'],
+    mistakes:['Chasing immediately at open','Ignoring if gap fills quickly'],
+    confirm:['Gap holds as support','Volume above average'],
+    quote:'Gaps tell you where demand overwhelmed supply before the bell.',
+  },
+  'Gap Down': { signal:'bearish', confidence:68,
+    definition:'Price opens meaningfully below the prior close — strong overnight selling pressure.',
+    psychology:'Negative catalyst drove aggressive sellers before the open.',
+    buyers:'Caught off-guard. Scrambling to exit.',
+    sellers:'Taking advantage of trapped longs and selling aggressively.',
+    successRate:'58%', entry:'Failed bounce back toward the gap', stop:'Above the gap', target:'Prior support levels', rr:'1:2',
+    best:['On earnings miss or bad news','Gap holds as resistance','Confirmed by volume'],
+    mistakes:['Shorting into support','Gap fills completely within first 30 minutes'],
+    confirm:['Gap holds as resistance intraday','Volume above average'],
+    quote:'Bad news gaps down. The question is: is the bad news already priced in?',
+  },
+  'Uptrend': { signal:'bullish', confidence:75,
+    definition:'20-day SMA is at least 2% above the 40-day SMA — price is in a confirmed uptrend.',
+    psychology:'Buyers have been consistently more aggressive than sellers over 6+ weeks.',
+    buyers:'In control of the narrative. Each dip is bought.',
+    sellers:'Can slow it temporarily but haven\'t been able to reverse it.',
+    successRate:'72%', entry:'Buy dips to the 20-day moving average', stop:'Below the 40-day SMA', target:'Prior swing high', rr:'1:2',
+    best:['Strong sector','Broad market uptrend','Volume expanding on up days'],
+    mistakes:['Chasing after parabolic moves','Ignoring sector rotation signals'],
+    confirm:['Price above both 20 and 50-day SMA','Higher highs and higher lows'],
+    quote:'Trend is your friend — until it isn\'t. Know where it ends.',
+  },
+  'Downtrend': { signal:'bearish', confidence:75,
+    definition:'20-day SMA is at least 2% below the 40-day SMA — price is in a confirmed downtrend.',
+    psychology:'Sellers have been consistently more aggressive than buyers over 6+ weeks.',
+    buyers:'Losing every counter-rally attempt. Sell-the-bounce mentality.',
+    sellers:'In complete control. Every bounce is sold aggressively.',
+    successRate:'70%', entry:'Short the bounces to the 20-day SMA', stop:'Above the 40-day SMA', target:'Prior swing low', rr:'1:2',
+    best:['Weak sector','Broad market downtrend','Volume expanding on down days'],
+    mistakes:['Shorting into major support','Ignoring when trend starts to slow'],
+    confirm:['Price below both 20 and 50-day SMA','Lower highs and lower lows'],
+    quote:'In a downtrend, every bounce is a gift to the short side.',
+  },
+};
+
+// ─── REPLAY DETECTION FUNCTIONS ─────────────────────────────
+function detectAt(candles, idx) {
+  const found = [];
+  const n = candles.length;
+  if (idx < 0 || idx >= n) return found;
+  const c=candles[idx],prev=idx>0?candles[idx-1]:null,prev2=idx>1?candles[idx-2]:null;
+  const body=Math.abs(c.close-c.open),rng=(c.high-c.low)||0.001,bull=c.close>=c.open,br=body/rng;
+  if(br>0.9&&body/c.open>0.005) found.push({name:bull?'Marubozu (Bullish)':'Marubozu (Bearish)',conf:bull?85:83});
+  if(br<0.1) found.push({name:'Doji',conf:75});
+  if(br>=0.1&&br<=0.3){const uw=c.high-Math.max(c.open,c.close),lw=Math.min(c.open,c.close)-c.low;if(uw>body*0.5&&lw>body*0.5)found.push({name:'Spinning Top',conf:65});}
+  if(br>0.05&&br<0.45&&bull){const lw=c.open-c.low,uw=c.high-c.close;if(lw>body*2&&uw<body*0.3)found.push({name:'Hammer',conf:78});}
+  if(br>0.05&&br<0.45){const uw=c.high-Math.max(c.open,c.close),lw=Math.min(c.open,c.close)-c.low;if(uw>body*2&&lw<body*0.3)found.push({name:bull?'Inverted Hammer':'Shooting Star',conf:bull?70:76});}
+  if(prev){const pb=prev.close>=prev.open,pbody=Math.abs(prev.close-prev.open);
+    if(bull&&!pb&&c.open<=prev.close&&c.close>=prev.open&&body>pbody)found.push({name:'Bullish Engulfing',conf:82});
+    if(!bull&&pb&&c.open>=prev.close&&c.close<=prev.open&&body>pbody)found.push({name:'Bearish Engulfing',conf:80});
+    if(c.high<prev.high&&c.low>prev.low)found.push({name:'Inside Bar',conf:70});
+    const gp=(c.open-prev.close)/prev.close;
+    if(gp>0.005)found.push({name:'Gap Up',conf:74});
+    if(gp<-0.005)found.push({name:'Gap Down',conf:72});
+  }
+  if(prev&&prev2){const pb=prev.close>=prev.open,p2b=prev2.close>=prev2.open,pSmall=Math.abs(prev.close-prev.open)<(prev.high-prev.low)*0.35;
+    const pbody=Math.abs(prev.close-prev.open),p2body=Math.abs(prev2.close-prev2.open);
+    if(bull&&!p2b&&pSmall&&c.close>(prev2.open+prev2.close)/2)found.push({name:'Morning Star',conf:75});
+    if(!bull&&p2b&&pSmall&&c.close<(prev2.open+prev2.close)/2)found.push({name:'Evening Star',conf:73});
+    if(bull&&pb&&p2b&&c.close>prev.close&&prev.close>prev2.close&&pbody>0&&p2body>0)found.push({name:'Three White Soldiers',conf:88});
+    if(!bull&&!pb&&!p2b&&c.close<prev.close&&prev.close<prev2.close)found.push({name:'Three Black Crows',conf:86});
+  }
+  if(idx>=20){const win=candles.slice(Math.max(0,idx-60),idx+1);rpDetectChartPatterns(win).forEach(p=>found.push(p));}
+  if(idx>=40){const recent=candles.slice(idx-20,idx+1).reduce((s,x)=>s+x.close,0)/21,older=candles.slice(idx-40,idx-19).reduce((s,x)=>s+x.close,0)/21,pct=(recent-older)/older;
+    if(pct>0.02)found.push({name:'Uptrend',conf:80});if(pct<-0.02)found.push({name:'Downtrend',conf:80});}
+  return found;
+}
+function rpDetectChartPatterns(w){
+  const res=[],n=w.length;if(n<15)return res;
+  const H=[],L=[];
+  for(let i=2;i<n-2;i++){
+    if(w[i].high>w[i-1].high&&w[i].high>w[i-2].high&&w[i].high>w[i+1].high&&w[i].high>w[i+2].high)H.push({i,p:w[i].high});
+    if(w[i].low<w[i-1].low&&w[i].low<w[i-2].low&&w[i].low<w[i+1].low&&w[i].low<w[i+2].low)L.push({i,p:w[i].low});
+  }
+  for(let a=0;a<H.length-1;a++)for(let b=a+1;b<H.length;b++)if(H[b].i-H[a].i>=5&&H[b].i-H[a].i<=50&&Math.abs(H[b].p-H[a].p)/H[a].p<0.02){res.push({name:'Double Top',conf:77});break;}
+  for(let a=0;a<L.length-1;a++)for(let b=a+1;b<L.length;b++)if(L[b].i-L[a].i>=5&&L[b].i-L[a].i<=50&&Math.abs(L[b].p-L[a].p)/L[a].p<0.02){res.push({name:'Double Bottom',conf:79});break;}
+  const fLen=Math.min(10,Math.floor(n/2)),pole=w.slice(0,n-fLen),flag=w.slice(n-fLen);
+  if(pole.length>0&&flag.length>0){const pH=Math.max(...pole.map(x=>x.high)),pL=Math.min(...pole.map(x=>x.low)),pR=pH-pL||1,fH=Math.max(...flag.map(x=>x.high)),fL=Math.min(...flag.map(x=>x.low)),fR=fH-fL,last=w[n-1].close;
+    if(fR/pR<0.35&&last>pL+pR*0.55&&last>w[0].close)res.push({name:'Bull Flag',conf:80});
+    else if(fR/pR<0.35&&last<pL+pR*0.45&&last<w[0].close)res.push({name:'Bear Flag',conf:78});
+  }
+  return res;
+}
+function rpFindSR(candles){
+  const n=candles.length,tol=0.008,lvls=[],end=n,start=Math.max(0,n-80);
+  for(let i=start+2;i<end-2;i++){const c=candles[i];
+    const isH=c.high>candles[i-1].high&&c.high>candles[i-2].high&&c.high>candles[i+1].high&&c.high>candles[i+2].high;
+    const isL=c.low<candles[i-1].low&&c.low<candles[i-2].low&&c.low<candles[i+1].low&&c.low<candles[i+2].low;
+    if(isH){const ex=lvls.find(l=>Math.abs(l.p-c.high)/c.high<tol);if(ex)ex.t++;else lvls.push({p:c.high,type:'res',t:1});}
+    if(isL){const ex=lvls.find(l=>Math.abs(l.p-c.low)/c.low<tol);if(ex)ex.t++;else lvls.push({p:c.low,type:'sup',t:1});}
+  }
+  return lvls.filter(l=>l.t>=2).sort((a,b)=>b.t-a.t).slice(0,5);
+}
+
+// ─── REPLAY STATE ────────────────────────────────────────────
+let rpChart=null,rpCSeries=null,rpVSeries=null;
+let rpAllCandles=[],rpReplayIdx=0,rpStartIdx=0;
+let rpPlayTimer=null,rpSpeed=1,rpSRLines=[],rpCurrentSym='SPY';
+let rpActivePatternName=null;
+let rpTotalXP=parseInt(localStorage.getItem('sc_replay_xp')||'0');
+let rpCorrect=parseInt(localStorage.getItem('sc_replay_correct')||'0');
+let rpQuizTotal=parseInt(localStorage.getItem('sc_replay_quiz_total')||'0');
+let rpStreak=parseInt(localStorage.getItem('sc_replay_streak')||'0');
+let rpProgress=JSON.parse(localStorage.getItem('sc_replay_progress')||'{}');
+
+// ─── REPLAY CHART INIT ───────────────────────────────────────
+function rpInitChart(){
+  if(rpChart){rpChart.remove();rpChart=null;}
+  const el=document.getElementById('rpChartEl');
+  rpChart=LightweightCharts.createChart(el,{
+    width:el.clientWidth,height:340,
+    layout:{background:{type:'solid',color:'#070b10'},textColor:'#8aa4c0'},
+    grid:{vertLines:{color:'rgba(255,255,255,0.04)'},horzLines:{color:'rgba(255,255,255,0.04)'}},
+    rightPriceScale:{borderColor:'rgba(255,255,255,0.06)'},
+    timeScale:{borderColor:'rgba(255,255,255,0.06)',timeVisible:true,secondsVisible:false},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+    handleScroll:true,handleScale:true,
+  });
+  rpCSeries=rpChart.addCandlestickSeries({upColor:'#00c96b',downColor:'#ff4566',borderUpColor:'#00c96b',borderDownColor:'#ff4566',wickUpColor:'#00c96b',wickDownColor:'#ff4566'});
+  rpVSeries=rpChart.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:'rpvol',color:'#00c96b'});
+  rpChart.priceScale('rpvol').applyOptions({scaleMargins:{top:0.82,bottom:0}});
+  rpChart.subscribeClick(param=>{
+    if(!param.time||!param.point)return;
+    const d=param.seriesData.get(rpCSeries);
+    if(d){const idx=rpAllCandles.findIndex(c=>c.time===param.time);if(idx>=0&&idx<rpReplayIdx)rpShowEdu(detectAt(rpAllCandles,idx),rpAllCandles,idx);}
+  });
+  window.addEventListener('resize',()=>{if(rpChart)rpChart.applyOptions({width:document.getElementById('rpChartEl').clientWidth});});
+}
+
+function rpSetChartData(candles){
+  if(!rpCSeries)return;
+  rpCSeries.setData(candles.map(c=>({time:c.time,open:c.open,high:c.high,low:c.low,close:c.close})));
+  rpVSeries.setData(candles.map(c=>({time:c.time,value:c.volume,color:c.close>=c.open?'rgba(0,201,107,0.2)':'rgba(255,69,102,0.2)'})));
+}
+
+function rpAddSRLines(candles){
+  rpSRLines.forEach(l=>{try{rpCSeries.removePriceLine(l);}catch(_){}});
+  rpSRLines=[];
+  rpFindSR(candles).forEach(l=>{
+    const line=rpCSeries.createPriceLine({price:l.p,color:l.type==='res'?'rgba(255,100,100,0.5)':'rgba(0,212,170,0.5)',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,axisLabelVisible:true,title:l.type==='res'?'R':'S'});
+    rpSRLines.push(line);
+  });
+}
+
+function rpAddMarkers(candles,upToIdx){
+  const markers=[];
+  const step=Math.max(1,Math.floor(upToIdx/80));
+  for(let i=2;i<upToIdx;i+=step){detectAt(candles,i).filter(p=>BOOK[p.name]).forEach(p=>{const info=BOOK[p.name];markers.push({time:candles[i].time,position:info.signal==='bearish'?'aboveBar':'belowBar',color:info.signal==='bullish'?'#00c96b':info.signal==='bearish'?'#ff4566':'#f5a623',shape:info.signal==='bullish'?'arrowUp':info.signal==='bearish'?'arrowDown':'circle',size:0.5,text:''});});}
+  const cur=detectAt(candles,upToIdx-1).filter(p=>BOOK[p.name]);
+  cur.forEach(p=>{const info=BOOK[p.name];markers.push({time:candles[upToIdx-1].time,position:info.signal==='bearish'?'aboveBar':'belowBar',color:info.signal==='bullish'?'#00c96b':info.signal==='bearish'?'#ff4566':'#f5a623',shape:info.signal==='bullish'?'arrowUp':info.signal==='bearish'?'arrowDown':'circle',size:1,text:p.name.split(' ').slice(0,2).join(' ')});});
+  rpCSeries.setMarkers(markers.sort((a,b)=>a.time<b.time?-1:1));
+}
+
+// ─── DATA LOADING ────────────────────────────────────────────
+let rpActiveRange='3mo';
+
+function rpInitDate(){
+  const d=new Date();d.setMonth(d.getMonth()-3);
+  const el=document.getElementById('rpDate');
+  if(el){el.value=d.toISOString().slice(0,10);el.max=new Date().toISOString().slice(0,10);}
+  document.querySelectorAll('.rp-quick-btn').forEach(b=>{
+    b.addEventListener('click',function(){rpQuickLoad(this.dataset.range,this);});
+  });
+}
+
+function rpQuickLoad(range,btn){
+  rpActiveRange=range;
+  document.querySelectorAll('.rp-quick-btn').forEach(b=>b.classList.remove('rp-active'));
+  if(btn)btn.classList.add('rp-active');
+  const OFFSETS={'5d':5,'1mo':21,'3mo':63,'1y':252},RANGES={'5d':'6mo','1mo':'6mo','3mo':'1y','1y':'2y'};
+  const sym=(document.getElementById('rpSymbol').value||'SPY').toUpperCase();
+  rpFetchAndLoad(sym,RANGES[range]||'1y',null,OFFSETS[range]||21);
+}
+
+async function rpLoadChart(){
+  const sym=(document.getElementById('rpSymbol').value||'SPY').toUpperCase();
+  const date=document.getElementById('rpDate').value;
+  if(date){const sel=new Date(date),p1=Math.floor(sel.getTime()/1000-365*86400),p2=Math.floor(Date.now()/1000);await rpFetchAndLoad(sym,null,{p1,p2},null,date);}
+  else await rpFetchAndLoad(sym,rpActiveRange||'1y',null,63);
+}
+
+async function rpFetchAndLoad(sym,range,periods,replayOffset,targetDate){
+  rpSetLoading(true);rpHideErr();
+  if(!rpChart)rpInitChart();
+  let url=`/api/historical?symbol=${encodeURIComponent(sym)}&interval=1d`;
+  if(periods)url+=`&period1=${periods.p1}&period2=${periods.p2}`;
+  else url+=`&range=${range}`;
+  try{
+    const res=await fetch(url),data=await res.json();
+    if(!res.ok||data.error){rpShowErr(data.error||'Failed to load chart data.');rpSetLoading(false);return;}
+    rpAllCandles=data.candles;rpCurrentSym=data.symbol||sym;
+    if(!rpAllCandles.length){rpShowErr('No data returned for this symbol or date range.');rpSetLoading(false);return;}
+    if(targetDate){const idx=rpAllCandles.findIndex(c=>c.time>=targetDate);rpStartIdx=idx>=0?idx:rpAllCandles.length-1;}
+    else if(replayOffset!==null&&replayOffset!==undefined)rpStartIdx=Math.max(5,rpAllCandles.length-replayOffset);
+    else rpStartIdx=Math.max(5,rpAllCandles.length-20);
+    rpReplayIdx=rpStartIdx;
+    rpEnableControls();rpRenderReplay();
+    document.getElementById('rpOverlay').classList.add('hidden');
+    document.getElementById('rpTicker').textContent=rpCurrentSym;
+    document.getElementById('rpScrubberWrap').style.display='';
+    rpUpdateScrubberLabels();
+  }catch(e){rpShowErr('Network error — check your connection.');console.error(e);}
+  rpSetLoading(false);
+}
+
+function rpRenderReplay(){
+  if(!rpAllCandles.length||!rpCSeries)return;
+  const visible=rpAllCandles.slice(0,rpReplayIdx);
+  rpSetChartData(visible);rpAddSRLines(visible);rpAddMarkers(rpAllCandles,rpReplayIdx);
+  const last=visible[visible.length-1];
+  if(last){
+    const bull=last.close>=last.open,chg=last.close-last.open,pct=(chg/last.open*100).toFixed(2);
+    document.getElementById('rpOHLCV').innerHTML=`<span><strong>O</strong> ${last.open}</span><span><strong>H</strong> ${last.high}</span><span><strong>L</strong> ${last.low}</span><span><strong>C</strong> <strong style="color:${bull?'#00c96b':'#ff4566'}">${last.close}</strong></span><span style="color:${bull?'#00c96b':'#ff4566'}">${bull?'+':''}${chg.toFixed(2)} (${bull?'+':''}${pct}%)</span>`;
+    document.getElementById('rpInfo').innerHTML=`<strong>${last.time}</strong>`;
+    document.getElementById('rpPos').textContent=`Candle ${rpReplayIdx} of ${rpAllCandles.length} · ${Math.max(0,rpReplayIdx-rpStartIdx)} revealed`;
+  }
+  rpRenderChips(detectAt(rpAllCandles,rpReplayIdx-1));
+  rpUpdateScrubber();
+  if(rpChart)rpChart.timeScale().scrollToPosition(-2,true);
+}
+
+// ─── REPLAY CONTROLS ─────────────────────────────────────────
+function rpTogglePlay(){rpPlayTimer?rpPause():rpPlay();}
+function rpPlay(){
+  if(rpReplayIdx>=rpAllCandles.length)return;
+  document.getElementById('rpBtnPlay').textContent='⏸';
+  rpPlayTimer=setInterval(()=>{if(rpReplayIdx>=rpAllCandles.length){rpPause();return;}rpReplayIdx++;rpRenderReplay();rpAutoShowPat();},Math.max(50,Math.round(600/rpSpeed)));
+}
+function rpPause(){clearInterval(rpPlayTimer);rpPlayTimer=null;document.getElementById('rpBtnPlay').textContent='▶';}
+function rpGoNext(){rpPause();if(rpReplayIdx<rpAllCandles.length){rpReplayIdx++;rpRenderReplay();rpAutoShowPat();}}
+function rpGoPrev(){rpPause();if(rpReplayIdx>1){rpReplayIdx--;rpRenderReplay();}}
+function rpGoFirst(){rpPause();rpReplayIdx=rpStartIdx;rpRenderReplay();}
+function rpGoLast(){rpPause();rpReplayIdx=rpAllCandles.length;rpRenderReplay();}
+function rpSetSpeed(s,btn){rpSpeed=s;document.querySelectorAll('.rp-speed-btn').forEach(b=>b.classList.remove('rp-active'));if(btn)btn.classList.add('rp-active');if(rpPlayTimer){rpPause();rpPlay();}}
+function rpScrubClick(e){const t=document.getElementById('rpScrubTrack'),r=t.getBoundingClientRect(),pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));rpReplayIdx=Math.max(1,Math.round(pct*rpAllCandles.length));rpPause();rpRenderReplay();}
+function rpUpdateScrubber(){const pct=rpAllCandles.length?(rpReplayIdx/rpAllCandles.length*100).toFixed(1):0;document.getElementById('rpScrubFill').style.width=pct+'%';}
+function rpUpdateScrubberLabels(){if(!rpAllCandles.length)return;document.getElementById('rpScrubStart').textContent=rpAllCandles[0]?.time||'';document.getElementById('rpScrubEnd').textContent=rpAllCandles[rpAllCandles.length-1]?.time||'';}
+function rpAutoShowPat(){if(rpReplayIdx<1)return;const pts=detectAt(rpAllCandles,rpReplayIdx-1).filter(p=>BOOK[p.name]&&p.conf>=74);if(pts.length)rpShowEdu([pts[0]],rpAllCandles,rpReplayIdx-1);}
+
+// ─── PATTERN CHIPS ───────────────────────────────────────────
+function rpRenderChips(patterns){
+  const el=document.getElementById('rpChips');
+  if(!patterns.length){el.innerHTML='<span class="rp-no-chips">No notable patterns at this candle</span>';return;}
+  el.innerHTML=patterns.map(p=>{const info=BOOK[p.name],cls=info?info.signal:'neutral';return`<span class="rp-chip ${cls}" onclick="rpShowEdu([{name:'${p.name}',conf:${p.conf}}],rpAllCandles,rpReplayIdx-1)">${p.name} <small>${p.conf}%</small></span>`;}).join('');
+}
+
+// ─── EDUCATION PANEL ─────────────────────────────────────────
+function rpShowEdu(patterns,candles,idx){
+  if(!patterns.length)return;
+  const p=patterns[0],info=BOOK[p.name];if(!info)return;
+  rpActivePatternName=p.name;
+  const sigLabel=info.signal==='bullish'?'📈 Bullish':info.signal==='bearish'?'📉 Bearish':'➡ Neutral';
+  document.getElementById('rpEduContent').innerHTML=`
+    <div class="rp-edu-hdr">
+      <div class="rp-edu-name">${p.name}</div>
+      <span class="rp-edu-sig ${info.signal}">${sigLabel}</span>
+      <span class="rp-edu-conf">${info.confidence}% confidence</span>
+    </div>
+    <div class="rp-edu-body">
+      <div><div class="rp-edu-sec-lbl">📖 Definition</div><div class="rp-edu-sec-txt">${info.definition}</div></div>
+      <div><div class="rp-edu-sec-lbl">🧠 Psychology</div><div class="rp-edu-sec-txt">${info.psychology}</div></div>
+      <div><div class="rp-edu-sec-lbl">📊 Trade Setup</div>
+        <div class="rp-edu-grid">
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Entry</div><div class="rp-edu-stat-val">${info.entry}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Stop</div><div class="rp-edu-stat-val">${info.stop}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Target</div><div class="rp-edu-stat-val">${info.target}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Success Rate</div><div class="rp-edu-stat-val" style="color:var(--accent)">${info.successRate}</div></div>
+        </div>
+      </div>
+      <div><div class="rp-edu-sec-lbl">✅ Best Conditions</div><ul class="rp-edu-list">${(info.best||[]).map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><div class="rp-edu-sec-lbl">❌ Common Mistakes</div><ul class="rp-edu-list">${(info.mistakes||[]).map(x=>`<li class="bad">${x}</li>`).join('')}</ul></div>
+      <div class="rp-edu-quote"><p>${info.quote}</p></div>
+    </div>
+    <div class="rp-quiz" id="rpQuizSection">${rpBuildQuiz(info,candles,idx)}</div>
+  `;
+}
+
+function rpBuildQuiz(info,candles,idx){
+  const nextC=candles[idx+1];
+  if(!nextC)return`<div class="rp-quiz-q">What happens next?</div><div class="rp-quiz-sub">Press ⏩ to advance the replay and see.</div>`;
+  if(idx+1<rpReplayIdx){const c=candles[idx],next=candles[idx+1],chg=((next.close-c.close)/c.close*100).toFixed(2),up=next.close>c.close,flat=Math.abs(next.close-c.close)/c.close<0.003,result=flat?'Consolidated / Flat':up?`Moved Up +${chg}%`:`Moved Down ${Math.abs(chg)}%`,col=flat?'#f5a623':up?'#00c96b':'#ff4566';return`<div class="rp-quiz-q">What happened next:</div><div class="rp-quiz-result" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--text);display:block;">Next candle: <strong style="color:${col}">${result}</strong></div>`;}
+  return`<div class="rp-quiz-q">🎯 What happens next?</div><div class="rp-quiz-sub">Based on the <strong>${rpActivePatternName}</strong> — make your call:</div><div class="rp-quiz-btns"><button type="button" class="rp-quiz-btn" onclick="rpAnswerQuiz('up',${idx})">📈 Continues Higher</button><button type="button" class="rp-quiz-btn" onclick="rpAnswerQuiz('down',${idx})">📉 Reverses Lower</button><button type="button" class="rp-quiz-btn" onclick="rpAnswerQuiz('flat',${idx})">➡ Consolidates / Flat</button></div>`;
+}
+
+function rpAnswerQuiz(answer,idx){
+  const nextC=rpAllCandles[idx+1];if(!nextC)return;
+  const chgPct=(nextC.close-rpAllCandles[idx].close)/rpAllCandles[idx].close;
+  const actual=Math.abs(chgPct)<0.003?'flat':chgPct>0?'up':'down';
+  const isCorrect=actual===answer,xpGained=isCorrect?50:10;
+  rpTotalXP+=xpGained;rpQuizTotal++;
+  if(isCorrect){rpCorrect++;rpStreak++;}else{rpStreak=0;}
+  if(rpActivePatternName){if(!rpProgress[rpActivePatternName])rpProgress[rpActivePatternName]={c:0,t:0};rpProgress[rpActivePatternName].t++;if(isCorrect)rpProgress[rpActivePatternName].c++;}
+  localStorage.setItem('sc_replay_xp',rpTotalXP);localStorage.setItem('sc_replay_correct',rpCorrect);localStorage.setItem('sc_replay_quiz_total',rpQuizTotal);localStorage.setItem('sc_replay_streak',rpStreak);localStorage.setItem('sc_replay_progress',JSON.stringify(rpProgress));
+  if(rpReplayIdx<=idx+1){rpReplayIdx=idx+2;rpRenderReplay();}
+  const chgStr=(chgPct*100).toFixed(2);
+  const actualLabel=actual==='flat'?'Consolidated / Flat':actual==='up'?`Moved Up +${chgStr}%`:`Moved Down ${chgStr}%`;
+  const btns=document.querySelectorAll('.rp-quiz-btn');
+  const answers=['up','down','flat'];
+  btns.forEach((b,i)=>{b.disabled=true;if(answers[i]===actual)b.classList.add('correct');else if(answers[i]===answer&&!isCorrect)b.classList.add('wrong');});
+  const quiz=document.getElementById('rpQuizSection'),res=document.createElement('div');
+  res.innerHTML=`<div class="rp-quiz-result ${isCorrect?'win':'lose'}"><div class="rp-quiz-xp">${isCorrect?'✅ Correct!':'❌ Incorrect'} +${xpGained} XP</div>Next: <strong>${actualLabel}</strong></div><button type="button" class="rp-quiz-next show" onclick="rpGoNext()">Next Candle ▶</button>`;
+  quiz.appendChild(res);rpUpdateProgressUI();
+}
+
+// ─── PROGRESS ────────────────────────────────────────────────
+function rpUpdateProgressUI(){
+  document.getElementById('rpStatXP').textContent=rpTotalXP.toLocaleString();
+  document.getElementById('rpStatAcc').textContent=rpQuizTotal?`${Math.round(rpCorrect/rpQuizTotal*100)}%`:'—';
+  document.getElementById('rpStatPats').textContent=Object.keys(rpProgress).length;
+  document.getElementById('rpStatStreak').textContent=rpStreak;
+  const grid=document.getElementById('rpMasteryGrid');
+  const keys=Object.keys(rpProgress).sort((a,b)=>(rpProgress[b].c/(rpProgress[b].t||1))-(rpProgress[a].c/(rpProgress[a].t||1)));
+  if(!keys.length){grid.innerHTML='<div class="rp-mastery-empty">No patterns studied yet.</div>';return;}
+  grid.innerHTML=keys.map(k=>{const{c,t}=rpProgress[k],pct=t?Math.round(c/t*100):0;return`<div class="rp-mastery-row"><div class="rp-mastery-name">${k}<span>${pct}%</span></div><div class="rp-mastery-track"><div class="rp-mastery-fill" style="width:${pct}%"></div></div></div>`;}).join('');
+}
+
+// ─── UTILS ───────────────────────────────────────────────────
+function rpEnableControls(){['rpBtnFirst','rpBtnPrev','rpBtnPlay','rpBtnNext','rpBtnLast'].forEach(id=>{document.getElementById(id).disabled=false;});}
+function rpSetLoading(on){document.getElementById('rpLoadingBar').classList.toggle('active',on);document.getElementById('rpLoadBtn').disabled=on;document.getElementById('rpLoadBtn').textContent=on?'Loading…':'Load Chart';}
+function rpShowErr(msg){const el=document.getElementById('rpErr');el.textContent=msg;el.style.display='block';}
+function rpHideErr(){document.getElementById('rpErr').style.display='none';}
+</script>
 
 <script>
 function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
