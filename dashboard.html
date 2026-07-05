@@ -77,10 +77,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* QUICK LINKS */
 .section-title{font-family:var(--disp);font-weight:700;font-size:1.2rem;margin-bottom:16px;color:var(--t80);}
-.links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
-@media(max-width:700px){.links-grid{grid-template-columns:repeat(2,1fr);}}
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px;}
+@media(max-width:800px){.links-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:420px){.links-grid{grid-template-columns:1fr;}}
-@media(max-width:500px){.links-grid{grid-template-columns:1fr;}}
 .link-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px;
   text-decoration:none;color:var(--text);transition:.18s;display:flex;flex-direction:column;gap:10px;}
 .link-card:hover{border-color:rgba(22,217,126,.4);transform:translateY(-3px);
@@ -311,9 +310,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </a>
     <div class="nav-page-links">
       <a href="/scalpchart.html">ScalpCharts</a>
-      <a href="/replay.html">Replay</a>
       <a href="/exitassistant.html">Exit Assistant</a>
       <a href="/pricing.html">Pricing</a>
+      <a href="/learn.html">Learn</a>
     </div>
     <div class="nav-right">
       <span class="nav-email" id="userEmail">Loading...</span>
@@ -374,28 +373,47 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
 
-  <div class="section-title">Quick Access</div>
+  <div class="section-title">Tool Menu</div>
   <div class="links-grid">
-    <a class="link-card" href="/#signals">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      </div>
-      <div class="link-title">Live Signals</div>
-      <div class="link-desc">Real-time RSI signals for SPY, QQQ, TSLA, NVDA, IWM and AAPL.</div>
-    </a>
-    <a class="link-card" href="/scalpchart">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 9 9 9 21"/><polyline points="9 14 15 14 15 21"/><polyline points="15 9 21 9 21 21"/></svg>
-      </div>
+    <a class="link-card" href="/scalpchart.html">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 9 9 9 21"/><polyline points="9 14 15 14 15 21"/><polyline points="15 9 21 9 21 21"/></svg></div>
       <div class="link-title">ScalpCharts</div>
-      <div class="link-desc">Live candlestick charts with pattern detection and alerts.</div>
+      <div class="link-desc">Live charts, pattern detection, and AI candle coach.</div>
     </a>
-    <a class="link-card" href="/exitassistant">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
-      <div class="link-title">Exit Assistant</div>
-      <div class="link-desc">Profit clock, exit signals, and probability targets for your open trades.</div>
+    <a class="link-card" href="/exitassistant.html">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="link-title">ScalpExit</div>
+      <div class="link-desc">Profit clock, trailing stops, and probability-based exit signals.</div>
+    </a>
+    <a class="link-card" href="/#signals">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="link-title">ScalpSignals</div>
+      <div class="link-desc">Real-time RSI + VWAP + volume signals for 20 tickers.</div>
+    </a>
+    <a class="link-card" href="/scalpchart.html">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+      <div class="link-title">ScalpScanner</div>
+      <div class="link-desc">Pattern scanner detecting 20+ candlestick formations live.</div>
+    </a>
+    <a class="link-card" href="/scalpchart.html?tab=replay">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 8 15 12 9 16 9 8"/></svg></div>
+      <div class="link-title">Chart Replay</div>
+      <div class="link-desc">Replay historical charts candle by candle. Earn XP.</div>
+    </a>
+    <a class="link-card" href="/learn.html">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="link-title">Learn Hub</div>
+      <div class="link-desc">Lessons, quizzes, badges, streaks — level up your trading.</div>
+    </a>
+    <a class="link-card" href="/dashboard.html#watchlist">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="link-title">ScalpWatchlist</div>
+      <div class="link-desc">Track up to 5 tickers in your personal watchlist.</div>
+    </a>
+    <a class="link-card" href="/dashboard.html">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="link-title">Account / Pro</div>
+      <div class="link-desc">Manage your plan, subscription details, and Pro access.</div>
     </a>
   </div>
 

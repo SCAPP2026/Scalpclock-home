@@ -858,6 +858,7 @@
     <a href="#" onclick="closeSCNav();switchTab('replay');return false;">📅 Replay</a>
     <a href="/exitassistant.html">🚪 Exit Assistant</a>
     <a href="/pricing.html">💳 Pricing</a>
+    <a href="/learn.html">📚 Learn</a>
     <a href="/dashboard.html">⚙️ Dashboard</a>
     <a href="/login.html?tab=signup" class="sc-cta">Start Free →</a>
   </div>
@@ -2716,6 +2717,12 @@ function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('ope
 function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+// Auto-switch to Replay tab when ?tab=replay is in the URL
+(function(){
+  if(new URLSearchParams(window.location.search).get('tab')==='replay'){
+    window.addEventListener('load',function(){setTimeout(function(){switchTab('replay');},150);});
+  }
+})();
 </script>
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">
   &copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.<br>
