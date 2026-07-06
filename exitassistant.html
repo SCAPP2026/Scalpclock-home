@@ -1607,12 +1607,12 @@
   <div class="sc-drawer-links">
     <a href="/">🏠 Home</a>
     <a href="/scalpchart.html">📊 ScalpCharts</a>
-    <a href="/scalpchart.html?tab=replay">📅 Replay</a>
-    <a href="/exitassistant.html" class="sc-active">🚪 Exit Assistant</a>
-    <a href="/pricing.html">💳 Pricing</a>
-    <a href="/learn.html">📚 Learn</a>
-    <a href="/dashboard.html">⚙️ Dashboard</a>
-    <a href="/login.html?tab=signup" class="sc-cta">Start Free →</a>
+    <a href="/scalpchart?tab=replay">📅 Replay</a>
+    <a href="/exitassistant" class="sc-active">🚪 Exit Assistant</a>
+    <a href="/pricing">💳 Pricing</a>
+    <a href="/learn">📚 Learn</a>
+    <a href="/dashboard">⚙️ Dashboard</a>
+    <a href="/login?tab=signup" class="sc-cta">Start Free →</a>
   </div>
 </div>
 <header>
@@ -2278,7 +2278,7 @@
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const { data: { session } } = await _sb.auth.getSession();
   clearTimeout(_authFallback);
-  if (!session) { window.location.href = '/login.html?from=/exitassistant.html'; return; }
+  if (!session) { window.location.href = '/login?from=/exitassistant'; return; }
   document.body.style.visibility = 'visible';
 })();
 

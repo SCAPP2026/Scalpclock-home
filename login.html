@@ -117,7 +117,7 @@ input::placeholder{color:var(--t30);}
       <button class="btn-main" id="su-btn" onclick="signUp()">Create Account</button>
     </div>
   </div>
-  <p class="footer-note">By signing up you agree to our <a href="/terms.html">Terms of Service</a> and <a href="/privacy.html">Privacy Policy</a>.</p>
+  <p class="footer-note">By signing up you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
   <p class="footer-note" style="margin-top:8px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC.</p>
 </div>
 
@@ -129,7 +129,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let sb = null;
 try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
 
-const _from = new URLSearchParams(location.search).get('from') || '/dashboard.html';
+const _from = new URLSearchParams(location.search).get('from') || '/dashboard';
 
 if (sb) sb.auth.getSession().then(({ data: { session } }) => {
   if (session) window.location.href = _from;
