@@ -124,7 +124,7 @@ h1 em{color:var(--green);font-style:normal;}
   <div class="redirect-notice" id="redirectNotice">Redirecting to your dashboard in <strong id="countdown">5</strong>s…</div>
 
   <div class="actions">
-    <a class="btn btn-green" href="/dashboard">Go to Dashboard Now</a>
+    <a class="btn btn-green" href="/dashboard.html">Go to Dashboard Now</a>
     <a class="btn btn-outline" href="/">See Live Signals</a>
   </div>
 </div>
@@ -157,7 +157,7 @@ const timer = setInterval(() => {
   if (fillEl) fillEl.style.width = (secs / 5 * 100) + '%';
   if (secs <= 0) {
     clearInterval(timer);
-    window.location.href = '/dashboard';
+    window.location.href = '/dashboard.html';
   }
 }, 1000);
 
