@@ -3,917 +3,876 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalpClock Academy — Learn, Level Up, Trade Better</title>
-<meta name="description" content="Learn options trading through lessons, quizzes, daily challenges, and chart replay. Earn XP, build streaks, unlock badges — the Duolingo of options trading.">
+<title>ScalpClock Learn — Duolingo of Options Trading</title>
+<meta name="description" content="Learn options trading through daily bite-sized lessons. Earn XP, build streaks, and become a Market Master.">
 <link rel="icon" href="hero.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#16d97e">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="/hero.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#070a08;--bg2:#0b110d;--bg3:#0e1610;
-  --panel:rgba(14,22,16,.88);--line:rgba(120,200,160,.13);
-  --green:#16d97e;--g-dim:rgba(22,217,126,.10);--g-mid:rgba(22,217,126,.18);
-  --red:#ff3b46;--orange:#f5a623;--blue:#5b9cf6;
-  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
-  --mono:'JetBrains Mono',monospace;--disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
-  --r:14px;--max:1060px;
+  --bg:#070a08;--card:#0d1510;--green:#16d97e;--green-dim:rgba(22,217,126,.08);
+  --gold:#f5c842;--red:#f54242;--text:#eef3f0;
+  --t70:rgba(238,243,240,.70);--t45:rgba(238,243,240,.45);--t20:rgba(238,243,240,.20);--t10:rgba(238,243,240,.10);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;--radius:14px;
 }
-body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.09),transparent 68%),
-  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
-  background-size:auto,48px 48px,48px 48px;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(22,217,126,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(22,217,126,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
 
 /* NAV */
-.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.82);border-bottom:1px solid var(--line);}
-.nav-in{max-width:var(--max);margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px;}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
-.b-mark{width:32px;height:32px;border-radius:9px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.28);display:grid;place-items:center;}
-.b-mark svg{width:16px;height:16px;}
-.brand-text{display:flex;flex-direction:column;gap:1px;}
-.brand-name{font-family:var(--disp);font-weight:700;font-size:1.15rem;letter-spacing:.02em;color:var(--text);line-height:1;}
-.brand-name em{color:var(--green);font-style:normal;}
-.brand-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;}
-.nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;}
-.nav-links a{font-size:.84rem;color:var(--t55);padding:6px 11px;border-radius:8px;text-decoration:none;transition:.15s;white-space:nowrap;}
-.nav-links a:hover{color:var(--text);background:rgba(22,217,126,.07);}
-.nav-links a.active{color:var(--green);}
-.nav-cta{font-family:var(--disp);font-weight:700;font-size:.88rem;padding:7px 16px;border-radius:8px;background:var(--green);color:#04150d;text-decoration:none;white-space:nowrap;transition:.15s;flex-shrink:0;}
-.nav-cta:hover{background:#20e88a;}
-@media(max-width:680px){.nav-links{display:none;}}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,10,8,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--t10);padding:0 24px;display:flex;align-items:center;gap:16px;height:56px;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+.nav-logo-mark{width:34px;height:34px;background:var(--green-dim);border:1.5px solid rgba(22,217,126,.22);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.nav-logo-mark svg{width:20px;height:20px;}
+.nav-logo-name{font-family:var(--disp);font-size:1.25rem;font-weight:700;color:var(--text);}
+.nav-logo-name em{color:var(--green);font-style:normal;}
+.nav-spacer{flex:1;}
+.nav-stat{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--t70);}
+.nav-stat .val{color:var(--text);}
+.nav-xp-bar{width:60px;height:5px;background:var(--t10);border-radius:3px;overflow:hidden;}
+.nav-xp-fill{height:100%;background:var(--green);border-radius:3px;transition:width .6s;}
+.nav-btn{background:var(--green-dim);border:1px solid rgba(22,217,126,.22);color:var(--green);font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:6px 14px;border-radius:8px;cursor:pointer;text-decoration:none;transition:background .2s;}
+.nav-btn:hover{background:rgba(22,217,126,.15);}
+.nav-drawer-btn{display:none;background:none;border:none;color:var(--t70);font-size:1.4rem;cursor:pointer;padding:4px;}
+@media(max-width:640px){.nav-stat.hide-sm{display:none;}.nav-drawer-btn{display:block;}}
 
-/* XP STATUS STRIP */
-.xp-strip{position:relative;z-index:1;background:var(--bg2);border-bottom:1px solid var(--line);padding:10px 22px;}
-.xp-strip-in{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
-.xp-level{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--green);white-space:nowrap;}
-.xp-bar-wrap{flex:1;min-width:120px;}
-.xp-bar-labels{display:flex;justify-content:space-between;font-size:.68rem;color:var(--t30);font-family:var(--mono);margin-bottom:4px;}
-.xp-track{height:6px;background:rgba(22,217,126,.1);border-radius:3px;overflow:hidden;}
-.xp-fill{height:100%;background:linear-gradient(90deg,var(--green),#20e88a);border-radius:3px;transition:width .6s ease;}
-.streak-badge{display:flex;align-items:center;gap:6px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:20px;padding:4px 12px;font-size:.8rem;font-weight:600;color:var(--orange);white-space:nowrap;}
-.daily-badge{display:flex;align-items:center;gap:6px;background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.2);border-radius:20px;padding:4px 12px;font-size:.8rem;font-weight:600;color:var(--green);white-space:nowrap;}
+/* DRAWER */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:260px;background:#0d1510;border-left:1px solid var(--t10);z-index:201;padding:20px 18px;display:flex;flex-direction:column;gap:8px;transform:translateX(100%);transition:transform .25s;}
+.drawer.open{transform:translateX(0);}
+.drawer-close{align-self:flex-end;background:none;border:none;color:var(--t45);font-size:1.5rem;cursor:pointer;margin-bottom:8px;}
+.drawer a,.drawer button.dl{display:block;padding:12px 10px;color:var(--t70);text-decoration:none;font-size:.9rem;font-weight:500;border-radius:10px;border:none;background:none;cursor:pointer;text-align:left;width:100%;}
+.drawer a:hover,.drawer button.dl:hover{background:var(--t10);color:var(--text);}
+.drawer-divider{height:1px;background:var(--t10);margin:4px 0;}
 
-/* TAB BAR */
-.tab-bar{position:relative;z-index:1;background:var(--bg2);border-bottom:1px solid var(--line);padding:0 22px;overflow-x:auto;scrollbar-width:none;}
-.tab-bar::-webkit-scrollbar{display:none;}
-.tab-bar-in{max-width:var(--max);margin:0 auto;display:flex;gap:0;}
-.tab-btn{background:none;border:none;border-bottom:2px solid transparent;padding:12px 18px;font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--t55);cursor:pointer;transition:.15s;white-space:nowrap;letter-spacing:.03em;}
-.tab-btn:hover{color:var(--text);}
-.tab-btn.active{color:var(--green);border-bottom-color:var(--green);}
+/* PAGE */
+.page-wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:32px 20px 80px;}
 
-/* MAIN CONTENT */
-.learn-body{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:28px 22px 60px;}
-.tab-panel{display:none;}
-.tab-panel.active{display:block;}
+/* HERO STATS */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+@media(max-width:600px){.hero-stats{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:var(--card);border:1px solid var(--t10);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:4px;}
+.stat-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--t45);}
+.stat-val{font-family:var(--disp);font-size:1.8rem;font-weight:700;line-height:1;}
+.stat-val.green{color:var(--green);}
+.stat-val.gold{color:var(--gold);}
+.stat-sub{font-size:.72rem;color:var(--t45);}
 
-/* SECTION TITLE */
-.sec-title{font-family:var(--disp);font-weight:700;font-size:1.3rem;margin-bottom:4px;}
-.sec-sub{font-size:.85rem;color:var(--t55);margin-bottom:20px;}
+/* SECTION HEADERS */
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:16px;margin-top:32px;}
+.section-hd h2{font-family:var(--disp);font-size:1.4rem;font-weight:700;letter-spacing:.02em;}
+.section-hd .pill{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:100px;background:var(--green-dim);border:1px solid rgba(22,217,126,.2);color:var(--green);}
 
-/* DAILY LESSON */
-.daily-lesson-card{background:linear-gradient(135deg,rgba(22,217,126,.12),rgba(22,217,126,.04));border:1px solid rgba(22,217,126,.3);border-radius:var(--r);padding:24px;margin-bottom:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
-.dl-badge{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);background:rgba(22,217,126,.12);border:1px solid rgba(22,217,126,.25);border-radius:20px;padding:3px 10px;display:inline-block;margin-bottom:8px;}
-.dl-title{font-family:var(--disp);font-size:1.4rem;font-weight:700;margin-bottom:6px;}
-.dl-meta{font-size:.8rem;color:var(--t55);}
-.dl-xp{font-family:var(--mono);font-size:.75rem;color:var(--green);margin-top:4px;}
-.btn-lesson{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:10px 24px;border-radius:10px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0;}
-.btn-lesson:hover{background:#20e88a;}
-.btn-lesson.done{background:rgba(22,217,126,.15);color:var(--green);border:1px solid rgba(22,217,126,.3);}
+/* TODAY CARD */
+.today-card{background:linear-gradient(135deg,rgba(22,217,126,.06) 0%,rgba(7,10,8,1) 60%);border:1px solid rgba(22,217,126,.25);border-radius:var(--radius);padding:24px;display:flex;align-items:center;gap:20px;margin-bottom:32px;cursor:pointer;transition:border-color .2s,background .2s;}
+.today-card:hover{border-color:rgba(22,217,126,.45);background:linear-gradient(135deg,rgba(22,217,126,.10) 0%,rgba(7,10,8,1) 60%);}
+.today-icon{width:56px;height:56px;border-radius:16px;background:rgba(22,217,126,.12);border:1.5px solid rgba(22,217,126,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;}
+.today-info{flex:1;}
+.today-day{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+.today-title{font-family:var(--disp);font-size:1.4rem;font-weight:700;line-height:1.1;margin-bottom:6px;}
+.today-meta{font-size:.78rem;color:var(--t45);}
+.today-meta span{color:var(--t70);}
+.today-cta{background:var(--green);color:#070a08;font-weight:700;font-size:.9rem;letter-spacing:.04em;padding:12px 24px;border-radius:10px;border:none;cursor:pointer;flex-shrink:0;transition:opacity .15s;}
+.today-cta:hover{opacity:.88;}
+@media(max-width:560px){.today-card{flex-wrap:wrap;}.today-cta{width:100%;}}
 
-/* COURSES */
-.courses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-@media(max-width:600px){.courses-grid{grid-template-columns:1fr;}}
-.course-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;transition:.2s;cursor:pointer;}
-.course-card:hover{border-color:rgba(22,217,126,.3);transform:translateY(-2px);}
-.course-icon{font-size:1.6rem;margin-bottom:10px;}
-.course-name{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin-bottom:4px;}
-.course-desc{font-size:.8rem;color:var(--t55);margin-bottom:12px;line-height:1.5;}
-.course-progress-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px;}
-.course-fill{height:100%;border-radius:3px;background:var(--green);transition:width .5s;}
-.course-meta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--t30);font-family:var(--mono);}
+/* WEEK PATH */
+.week-section{margin-bottom:8px;}
+.week-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--t10);border-radius:10px;cursor:pointer;margin-bottom:4px;transition:background .2s;}
+.week-header:hover{background:rgba(22,217,126,.05);}
+.week-header h3{font-family:var(--disp);font-size:1rem;font-weight:700;letter-spacing:.04em;flex:1;}
+.week-header .w-meta{font-size:.75rem;color:var(--t45);}
+.week-header .w-chev{font-size:.85rem;color:var(--t45);transition:transform .2s;}
+.week-header.open .w-chev{transform:rotate(180deg);}
+.week-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:4px 2px 12px;}
+@media(max-width:560px){.week-days{grid-template-columns:repeat(4,1fr);}}
+.day-node{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
+.day-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;border:2px solid var(--t10);background:var(--card);color:var(--t45);transition:all .2s;position:relative;}
+.day-circle.done{background:rgba(22,217,126,.12);border-color:rgba(22,217,126,.4);color:var(--green);}
+.day-circle.done::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.day-circle.current{border-color:var(--green);color:var(--text);background:rgba(22,217,126,.08);animation:pulse-day 2s ease-in-out infinite;}
+.day-circle.boss{border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.08);}
+.day-circle.locked{opacity:.4;cursor:not-allowed;}
+@keyframes pulse-day{0%,100%{box-shadow:0 0 0 0 transparent;}50%{box-shadow:0 0 0 6px rgba(22,217,126,.15);}}
+.day-label{font-size:.62rem;color:var(--t45);text-align:center;line-height:1.2;max-width:52px;}
 
-.lesson-list{margin-top:0;display:flex;flex-direction:column;gap:8px;}
-.lesson-item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s;}
-.lesson-item:hover{border-color:rgba(22,217,126,.3);}
-.lesson-item.done{border-color:rgba(22,217,126,.2);background:rgba(22,217,126,.04);}
-.lesson-num{font-family:var(--mono);font-size:.7rem;color:var(--t30);min-width:24px;}
-.lesson-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex-shrink:0;}
-.lesson-check.done{background:var(--green);border-color:var(--green);color:#04150d;font-size:.75rem;}
-.lesson-title{flex:1;font-size:.88rem;font-weight:500;}
-.lesson-xp{font-family:var(--mono);font-size:.7rem;color:var(--green);}
+/* BADGES */
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;}
+.badge-card{background:var(--card);border:1px solid var(--t10);border-radius:var(--radius);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:border-color .2s;}
+.badge-card.earned{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04);}
+.badge-card.locked{opacity:.45;filter:grayscale(1);}
+.badge-icon{font-size:2rem;line-height:1;}
+.badge-name{font-size:.7rem;font-weight:600;color:var(--t70);line-height:1.2;}
+.badge-desc{font-size:.62rem;color:var(--t45);line-height:1.3;}
 
-/* CHALLENGES */
-.challenge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-@media(max-width:560px){.challenge-grid{grid-template-columns:1fr;}}
-.challenge-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;transition:.18s;}
-.challenge-card:hover{border-color:rgba(22,217,126,.3);}
-.challenge-card.featured{border-color:rgba(22,217,126,.35);background:rgba(22,217,126,.04);}
-.ch-badge{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:20px;padding:2px 8px;display:inline-block;margin-bottom:10px;}
-.ch-badge.green{color:var(--green);background:rgba(22,217,126,.1);border-color:rgba(22,217,126,.25);}
-.ch-title{font-family:var(--disp);font-weight:700;font-size:1.1rem;margin-bottom:6px;}
-.ch-desc{font-size:.82rem;color:var(--t55);line-height:1.55;margin-bottom:14px;}
-.ch-xp{font-family:var(--mono);font-size:.72rem;color:var(--green);margin-bottom:12px;}
-.btn-ch{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;width:100%;}
-.btn-ch:hover{background:#20e88a;}
-.btn-ch.secondary{background:rgba(22,217,126,.1);color:var(--green);border:1px solid rgba(22,217,126,.3);}
-.btn-ch.secondary:hover{background:rgba(22,217,126,.18);}
-.btn-ch.done{background:rgba(22,217,126,.08);color:var(--t30);border:1px solid var(--line);cursor:default;opacity:.6;}
+/* LEVEL BAR */
+.level-card{background:var(--card);border:1px solid var(--t10);border-radius:var(--radius);padding:20px 22px;}
+.level-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.level-title-el{font-family:var(--disp);font-size:1.2rem;font-weight:700;}
+.level-num-el{font-size:.78rem;color:var(--t45);}
+.level-bar{height:8px;background:var(--t10);border-radius:4px;overflow:hidden;}
+.level-fill{height:100%;background:linear-gradient(90deg,rgba(22,217,126,.6),var(--green));border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.level-xp-label{margin-top:6px;font-size:.72rem;color:var(--t45);text-align:right;}
 
-/* QUIZZES */
-.quiz-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
-@media(max-width:640px){.quiz-cats{grid-template-columns:repeat(2,1fr);}}
-.quiz-cat-btn{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 14px;text-align:center;cursor:pointer;transition:.18s;border-bottom:3px solid transparent;}
-.quiz-cat-btn:hover{border-color:rgba(22,217,126,.3);}
-.quiz-cat-btn.active{border-bottom-color:var(--green);background:rgba(22,217,126,.06);}
-.qcat-icon{font-size:1.8rem;margin-bottom:8px;}
-.qcat-name{font-family:var(--disp);font-weight:700;font-size:.95rem;margin-bottom:3px;}
-.qcat-score{font-size:.72rem;color:var(--t55);font-family:var(--mono);}
-.quiz-area{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:28px;}
-.quiz-progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.quiz-prog-label{font-size:.75rem;color:var(--t30);font-family:var(--mono);}
-.quiz-prog-bar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin:0 14px;}
-.quiz-prog-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s;}
-.quiz-q-text{font-family:var(--disp);font-weight:700;font-size:1.2rem;margin-bottom:18px;line-height:1.3;}
-.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-.quiz-opt{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:13px 16px;cursor:pointer;font-size:.9rem;transition:.15s;text-align:left;color:var(--text);}
-.quiz-opt:hover:not(:disabled){background:rgba(22,217,126,.07);border-color:rgba(22,217,126,.3);}
-.quiz-opt.correct{background:rgba(22,217,126,.12);border-color:rgba(22,217,126,.5);color:var(--green);}
-.quiz-opt.wrong{background:rgba(255,59,70,.08);border-color:rgba(255,59,70,.35);color:var(--red);}
-.quiz-opt:disabled{cursor:default;}
-.quiz-result-box{display:none;padding:14px 16px;border-radius:10px;font-size:.88rem;margin-bottom:14px;line-height:1.5;}
-.quiz-result-box.show{display:block;}
-.quiz-result-box.correct{background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);color:var(--green);}
-.quiz-result-box.wrong{background:rgba(255,59,70,.06);border:1px solid rgba(255,59,70,.2);color:var(--red);}
-.btn-quiz-next{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:10px 28px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;display:none;}
-.btn-quiz-next.show{display:inline-block;}
-.quiz-done-screen{text-align:center;padding:32px 20px;}
-.quiz-score-big{font-family:var(--disp);font-size:3rem;font-weight:700;color:var(--green);}
-.quiz-done-title{font-family:var(--disp);font-size:1.4rem;font-weight:700;margin-bottom:8px;}
-.quiz-done-sub{font-size:.88rem;color:var(--t55);margin-bottom:20px;}
-.btn-quiz-retry{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 22px;border-radius:9px;background:rgba(22,217,126,.12);color:var(--green);border:1px solid rgba(22,217,126,.3);cursor:pointer;margin-right:10px;}
-.quiz-idle{text-align:center;padding:32px;color:var(--t55);}
-.quiz-idle p{margin-top:8px;font-size:.88rem;}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#0d1510;border:1px solid rgba(22,217,126,.2);border-radius:20px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;}
+.modal-header{padding:20px 24px 0;display:flex;align-items:center;gap:12px;}
+.step-dots{display:flex;gap:6px;flex:1;}
+.dot{height:5px;border-radius:3px;flex:1;background:var(--t10);transition:background .3s;}
+.dot.done{background:var(--green);}
+.dot.active{background:var(--green);opacity:.6;}
+.modal-close{background:none;border:none;color:var(--t45);font-size:1.4rem;cursor:pointer;padding:0 0 0 8px;line-height:1;}
+.modal-body{padding:24px;}
+.step-tag{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.step-title{font-family:var(--disp);font-size:1.6rem;font-weight:700;line-height:1.1;margin-bottom:16px;}
+.step-content{font-size:.92rem;color:var(--t70);line-height:1.75;}
+.step-content p{margin-bottom:12px;}
+.step-content strong{color:var(--text);}
+.step-content ul{margin:12px 0 12px 20px;line-height:2;color:var(--t70);}
+.step-content ul li strong{color:var(--text);}
+.hbox{background:rgba(22,217,126,.06);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:.88rem;}
+.modal-footer{padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end;}
+.btn-p{background:var(--green);color:#070a08;font-weight:700;font-size:.9rem;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;transition:opacity .15s;letter-spacing:.02em;}
+.btn-p:hover{opacity:.88;}
+.btn-s{background:var(--t10);color:var(--t70);font-weight:600;font-size:.9rem;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;}
 
-/* ACHIEVEMENTS */
-.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-@media(max-width:640px){.badge-grid{grid-template-columns:repeat(2,1fr);}}
-.badge-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 14px;text-align:center;transition:.2s;}
-.badge-card.earned{border-color:rgba(22,217,126,.35);background:rgba(22,217,126,.05);}
-.badge-card.locked{opacity:.38;filter:grayscale(1);}
-.badge-icon{font-size:2rem;display:block;margin-bottom:8px;}
-.badge-name{font-family:var(--disp);font-weight:700;font-size:.9rem;margin-bottom:3px;}
-.badge-desc{font-size:.7rem;color:var(--t55);line-height:1.4;}
-.badge-earned-tag{font-size:.65rem;font-weight:700;letter-spacing:.08em;color:var(--green);font-family:var(--mono);margin-top:6px;}
+/* WATCH */
+.chart-wrap{background:rgba(0,0,0,.4);border:1px solid var(--t10);border-radius:12px;padding:16px;margin:16px 0;}
+.chart-wrap svg{display:block;width:100%;height:160px;}
+.chart-caption{font-size:.78rem;color:var(--t45);text-align:center;margin-top:8px;font-style:italic;}
 
-/* PROGRESS */
-.progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:600px){.progress-grid{grid-template-columns:1fr;}}
-.prog-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;}
-.prog-card-title{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);font-family:var(--mono);margin-bottom:14px;}
-.level-display{font-family:var(--disp);font-weight:700;font-size:2rem;color:var(--green);margin-bottom:4px;}
-.xp-to-next{font-size:.78rem;color:var(--t55);margin-bottom:10px;}
-.streak-days{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
-.streak-dot{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.65rem;color:var(--t30);}
-.streak-dot.done{background:rgba(22,217,126,.15);border-color:rgba(22,217,126,.35);color:var(--green);}
-.streak-dot-label{font-size:.52rem;color:var(--t30);margin-top:1px;}
-.mastery-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.mastery-name{font-size:.8rem;color:var(--t80);min-width:140px;flex-shrink:0;}
-.mastery-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
-.mastery-fill{height:100%;border-radius:3px;background:var(--green);}
-.mastery-pct{font-family:var(--mono);font-size:.7rem;color:var(--t55);min-width:32px;text-align:right;}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
-.stat-box{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;}
-.stat-num{font-family:var(--disp);font-weight:700;font-size:1.6rem;color:var(--green);}
-.stat-lbl{font-size:.7rem;color:var(--t55);}
+/* PRACTICE */
+.scenario-box{background:rgba(0,0,0,.4);border:1px solid var(--t10);border-radius:12px;padding:20px;margin:16px 0;}
+.scenario-box p{font-size:.9rem;color:var(--t70);line-height:1.7;margin-bottom:16px;}
+.practice-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.practice-btn{padding:11px 22px;border-radius:10px;border:2px solid var(--t10);background:var(--card);color:var(--text);font-weight:600;font-size:.88rem;cursor:pointer;transition:all .2s;}
+.practice-btn:hover{border-color:var(--green);color:var(--green);}
+.practice-btn.correct{border-color:var(--green);background:rgba(22,217,126,.12);color:var(--green);}
+.practice-btn.wrong{border-color:var(--red);background:rgba(245,66,66,.08);color:var(--red);}
+.practice-fb{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.85rem;line-height:1.6;display:none;}
+.practice-fb.correct{background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.2);color:var(--green);}
+.practice-fb.wrong{background:rgba(245,66,66,.06);border:1px solid rgba(245,66,66,.2);color:#f89898;}
 
-/* TOOLS */
-.tools-intro{font-size:.9rem;color:var(--t55);margin-bottom:24px;line-height:1.6;}
-.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-@media(max-width:720px){.tools-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:400px){.tools-grid{grid-template-columns:1fr;}}
-.tool-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;text-decoration:none;color:var(--text);transition:.2s;display:flex;flex-direction:column;gap:8px;}
-.tool-card:hover{border-color:rgba(22,217,126,.4);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.35),0 0 20px rgba(22,217,126,.07);}
-.tool-card.active-tool{border-color:rgba(22,217,126,.4);background:rgba(22,217,126,.05);}
-.tool-icon{font-size:1.6rem;}
-.tool-name{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--green);}
-.tool-desc{font-size:.78rem;color:var(--t55);line-height:1.5;flex:1;}
-.tool-tag{font-family:var(--mono);font-size:.68rem;color:var(--t30);}
+/* QUIZ */
+.quiz-progress{font-size:.75rem;color:var(--t45);margin-bottom:16px;}
+.quiz-q{font-size:1rem;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:16px;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.quiz-opt{padding:13px 16px;border-radius:10px;border:1.5px solid var(--t10);background:var(--card);color:var(--t70);font-size:.88rem;cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:10px;}
+.quiz-opt:hover:not(.answered){border-color:rgba(22,217,126,.3);color:var(--text);}
+.quiz-opt .ol{font-family:var(--disp);font-weight:700;font-size:.9rem;flex-shrink:0;width:18px;}
+.quiz-opt.correct{border-color:var(--green);background:rgba(22,217,126,.10);color:var(--text);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(245,66,66,.07);color:var(--text);}
+.quiz-exp{padding:12px 16px;border-radius:10px;font-size:.83rem;line-height:1.6;margin-top:4px;display:none;}
+.quiz-exp.show{display:block;}
+.quiz-exp.correct{background:rgba(22,217,126,.07);border:1px solid rgba(22,217,126,.18);color:#a7f0cc;}
+.quiz-exp.wrong{background:rgba(245,66,66,.05);border:1px solid rgba(245,66,66,.18);color:#f8b0b0;}
+.quiz-fail{background:rgba(245,66,66,.06);border:1px solid rgba(245,66,66,.18);border-radius:10px;padding:14px 16px;font-size:.88rem;color:#f8b0b0;margin-bottom:16px;}
 
-/* LESSON MODAL */
-.lesson-overlay{position:fixed;inset:0;z-index:200;background:rgba(4,8,5,.92);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
-.lesson-modal{background:var(--bg2);border:1px solid rgba(22,217,126,.2);border-radius:18px;padding:32px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;position:relative;}
-.lesson-modal::-webkit-scrollbar{width:4px;}
-.lesson-modal::-webkit-scrollbar-thumb{background:rgba(22,217,126,.2);border-radius:2px;}
-.lesson-modal-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--t30);font-size:1.3rem;cursor:pointer;line-height:1;}
-.lesson-modal-close:hover{color:var(--text);}
-.lesson-modal-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
-.lesson-modal-title{font-family:var(--disp);font-weight:700;font-size:1.6rem;margin-bottom:16px;}
-.lesson-modal-body{font-size:.88rem;color:var(--t80);line-height:1.75;}
-.lesson-modal-body p{margin-bottom:12px;}
-.lesson-modal-body strong{color:var(--text);}
-.lesson-modal-body .highlight{background:rgba(22,217,126,.08);border-left:3px solid rgba(22,217,126,.4);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.84rem;line-height:1.7;}
-.lesson-modal-footer{display:flex;align-items:center;justify-content:space-between;margin-top:22px;padding-top:18px;border-top:1px solid var(--line);}
-.lesson-xp-reward{font-family:var(--mono);font-size:.78rem;color:var(--green);}
-.btn-complete{font-family:var(--disp);font-weight:700;font-size:1rem;padding:11px 28px;border-radius:10px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;}
-.btn-complete:hover{background:#20e88a;}
-.btn-complete.done{background:rgba(22,217,126,.1);color:var(--green);border:1px solid rgba(22,217,126,.3);cursor:default;}
+/* REWARD */
+.reward-center{text-align:center;padding:20px 0;}
+.reward-emoji{font-size:4rem;margin-bottom:12px;animation:pop-in .5s cubic-bezier(.17,.67,.83,.67);}
+@keyframes pop-in{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+.reward-xp{font-family:var(--disp);font-size:3rem;font-weight:700;color:var(--green);margin-bottom:4px;}
+.reward-xp-label{font-size:.78rem;color:var(--t45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;}
+.reward-badges{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.reward-badge{display:flex;flex-direction:column;align-items:center;gap:4px;animation:pop-in .5s .3s both cubic-bezier(.17,.67,.83,.67);}
+.reward-badge .rb-icon{font-size:2rem;}
+.reward-badge .rb-name{font-size:.68rem;font-weight:600;color:var(--gold);}
+.reward-breakdown{display:flex;flex-direction:column;gap:4px;align-items:center;margin-bottom:20px;}
+.reward-line{font-size:.82rem;color:var(--t70);}
+.reward-line span{color:var(--green);font-weight:600;}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);z-index:300;background:rgba(14,22,16,.95);border:1px solid rgba(22,217,126,.3);border-radius:10px;padding:12px 20px;font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--green);box-shadow:0 8px 32px rgba(0,0,0,.5);transition:transform .3s ease;white-space:nowrap;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a2e20;border:1px solid rgba(22,217,126,.3);border-radius:12px;padding:12px 20px;font-size:.85rem;color:var(--text);z-index:999;transition:transform .3s;pointer-events:none;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-in">
-    <a class="brand" href="/">
-      <div class="b-mark"><svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><line x1="9" y1="9" x2="9" y2="4.5"/><line x1="9" y1="9" x2="12.5" y2="9"/></svg></div>
-      <div class="brand-text"><span class="brand-name">Scalp<em>Clock</em></span><span class="brand-motto">The Time To Profit Is Now</span></div>
-    </a>
-    <div class="nav-links">
-      <a href="/scalpchart.html">ScalpCharts</a>
-      <a href="/exitassistant.html">Exit Assistant</a>
-      <a href="/pricing.html">Pricing</a>
-      <a href="/learn.html" class="active">Learn</a>
-      <a href="/dashboard.html">Dashboard</a>
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="9" cy="9" r="7"/>
+        <line x1="9" y1="9" x2="9" y2="4.2"/>
+        <line x1="9" y1="9" x2="12.8" y2="9"/>
+      </svg>
     </div>
-    <a class="nav-cta" href="/login.html?tab=signup">Start Free</a>
+    <span class="nav-logo-name">Scalp<em>Clock</em></span>
+  </a>
+  <div class="nav-spacer"></div>
+  <div class="nav-stat hide-sm">
+    <span>🔥</span><span class="val" id="nav-streak">0</span><span>day streak</span>
   </div>
+  <div class="nav-stat hide-sm" style="margin-left:14px;">
+    <span>⚡</span><span class="val" id="nav-xp">0</span><span>XP</span>
+    <div class="nav-xp-bar"><div class="nav-xp-fill" id="nav-xp-fill" style="width:0%"></div></div>
+  </div>
+  <a href="/dashboard" class="nav-btn" style="margin-left:14px;">Dashboard</a>
+  <button class="nav-drawer-btn" onclick="openDrawer()">☰</button>
 </nav>
 
-<!-- XP STATUS STRIP -->
-<div class="xp-strip">
-  <div class="xp-strip-in">
-    <div class="xp-level" id="xpLevelLabel">Level 1</div>
-    <div class="xp-bar-wrap">
-      <div class="xp-bar-labels"><span id="xpCurrent">0 XP</span><span id="xpNext">Lv 2</span></div>
-      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">×</button>
+  <a href="/">Home</a>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/scalpchart">ScalpChart</a>
+  <a href="/exitassistant">Exit Assistant</a>
+  <div class="drawer-divider"></div>
+  <a href="/learn">Learn</a>
+  <a href="/pricing">Pricing</a>
+  <a href="/faq">FAQ</a>
+  <div class="drawer-divider"></div>
+  <a href="/login">Login / Sign Up</a>
+</div>
+
+<div class="page-wrap">
+
+  <div class="hero-stats">
+    <div class="stat-card">
+      <div class="stat-label">Day</div>
+      <div class="stat-val green" id="stat-day">1</div>
+      <div class="stat-sub">of 365</div>
     </div>
-    <div class="streak-badge" id="streakBadge">🔥 0 Day Streak</div>
-    <div class="daily-badge" id="dailyBadge">📅 0/3 Daily Goals</div>
+    <div class="stat-card">
+      <div class="stat-label">Streak</div>
+      <div class="stat-val" id="stat-streak">🔥 0</div>
+      <div class="stat-sub">days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total XP</div>
+      <div class="stat-val green" id="stat-xp">0</div>
+      <div class="stat-sub">experience</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Level</div>
+      <div class="stat-val gold" id="stat-level">1</div>
+      <div class="stat-sub" id="stat-level-name">New Trader</div>
+    </div>
+  </div>
+
+  <div class="level-card" style="margin-bottom:32px;">
+    <div class="level-top">
+      <span class="level-title-el" id="lv-title">New Trader</span>
+      <span class="level-num-el" id="lv-num">Level 1</span>
+    </div>
+    <div class="level-bar"><div class="level-fill" id="lv-fill" style="width:0%"></div></div>
+    <div class="level-xp-label" id="lv-xp-label">0 / 100 XP to next level</div>
+  </div>
+
+  <div class="section-hd"><h2>Today's Lesson</h2><span class="pill" id="today-cat">Foundations</span></div>
+  <div class="today-card" id="today-card" onclick="startLesson(currentDay)">
+    <div class="today-icon" id="today-icon">📖</div>
+    <div class="today-info">
+      <div class="today-day" id="today-day-label">Day 1 · Week 1</div>
+      <div class="today-title" id="today-lesson-title">What Is a Stock? What Is an Option?</div>
+      <div class="today-meta">~5 min · <span>5 quiz questions</span> · <span>+50 XP</span></div>
+    </div>
+    <button class="today-cta" id="today-cta">Start Lesson →</button>
+  </div>
+
+  <div class="section-hd"><h2>Learning Path</h2><span class="pill">365 Days</span></div>
+  <div id="path-container"></div>
+
+  <div class="section-hd" style="margin-top:40px;"><h2>Badges</h2><span class="pill" id="badge-count-pill">0 Earned</span></div>
+  <div class="badges-grid" id="badges-grid"></div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="step-dots" id="step-dots"></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
   </div>
 </div>
 
-<!-- TAB BAR -->
-<div class="tab-bar">
-  <div class="tab-bar-in">
-    <button class="tab-btn active" data-tab="lessons" onclick="switchLearnTab('lessons')">📚 Lessons</button>
-    <button class="tab-btn" data-tab="challenges" onclick="switchLearnTab('challenges')">⚡ Challenges</button>
-    <button class="tab-btn" data-tab="quizzes" onclick="switchLearnTab('quizzes')">🧠 Quizzes</button>
-    <button class="tab-btn" data-tab="achievements" onclick="switchLearnTab('achievements')">🏆 Achievements</button>
-    <button class="tab-btn" data-tab="progress" onclick="switchLearnTab('progress')">📊 Progress</button>
-    <button class="tab-btn" data-tab="tools" onclick="switchLearnTab('tools')">🛠 Tools</button>
-  </div>
-</div>
-
-<div class="learn-body">
-
-<!-- LESSONS -->
-<div id="tab-lessons" class="tab-panel active">
-  <div class="daily-lesson-card">
-    <div style="flex:1;min-width:200px;">
-      <div class="dl-badge">📖 Today's Lesson</div>
-      <div class="dl-title" id="dlTitle">Loading…</div>
-      <div class="dl-meta" id="dlMeta"></div>
-      <div class="dl-xp" id="dlXP"></div>
-    </div>
-    <button class="btn-lesson" id="dlBtn" onclick="openDailyLesson()">Start Lesson →</button>
-  </div>
-  <div class="sec-title">Courses</div>
-  <div class="sec-sub">Complete lessons to earn XP and unlock badges.</div>
-  <div class="courses-grid" id="coursesGrid"></div>
-</div>
-
-<!-- CHALLENGES -->
-<div id="tab-challenges" class="tab-panel">
-  <div class="sec-title">Daily Challenges</div>
-  <div class="sec-sub">New challenges every day. Earn bonus XP and keep your streak alive.</div>
-  <div class="challenge-grid" id="challengeGrid"></div>
-</div>
-
-<!-- QUIZZES -->
-<div id="tab-quizzes" class="tab-panel">
-  <div class="sec-title">Pattern &amp; Trading Quizzes</div>
-  <div class="sec-sub">Test your knowledge. Each quiz has 5 questions — earn 25 XP per correct answer.</div>
-  <div class="quiz-cats" id="quizCats"></div>
-  <div class="quiz-area" id="quizArea">
-    <div class="quiz-idle">
-      <div style="font-size:2rem;">🧠</div>
-      <p>Select a quiz category above to begin.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ACHIEVEMENTS -->
-<div id="tab-achievements" class="tab-panel">
-  <div class="sec-title">Badges &amp; Achievements</div>
-  <div class="sec-sub">Earn badges by learning, trading, and building streaks.</div>
-  <div class="badge-grid" id="badgeGrid"></div>
-</div>
-
-<!-- PROGRESS -->
-<div id="tab-progress" class="tab-panel">
-  <div class="sec-title">Your Learning Progress</div>
-  <div class="sec-sub">Track XP, streaks, course completion, and pattern mastery.</div>
-  <div class="stats-row">
-    <div class="stat-box"><div class="stat-num" id="progTotalXP">0</div><div class="stat-lbl">Total XP</div></div>
-    <div class="stat-box"><div class="stat-num" id="progLessons">0</div><div class="stat-lbl">Lessons Done</div></div>
-    <div class="stat-box"><div class="stat-num" id="progQuizzes">0</div><div class="stat-lbl">Quizzes Taken</div></div>
-  </div>
-  <div class="progress-grid">
-    <div class="prog-card">
-      <div class="prog-card-title">Level &amp; XP</div>
-      <div class="level-display" id="progLevel">Lv 1</div>
-      <div class="xp-to-next" id="progXPToNext">100 XP to Level 2</div>
-      <div class="xp-track" style="margin-bottom:6px"><div class="xp-fill" id="progXPFill" style="width:0%"></div></div>
-      <div style="font-size:.72rem;color:var(--t30);font-family:var(--mono)" id="progXPLabel">0 / 100 XP</div>
-    </div>
-    <div class="prog-card">
-      <div class="prog-card-title">7-Day Streak</div>
-      <div style="font-family:var(--disp);font-weight:700;font-size:1.4rem;color:var(--orange);margin-bottom:12px;" id="progStreak">🔥 0 days</div>
-      <div class="streak-days" id="streakDays"></div>
-    </div>
-    <div class="prog-card" style="grid-column:1/-1;">
-      <div class="prog-card-title">Course Progress</div>
-      <div id="courseProgressList" style="display:flex;flex-direction:column;gap:10px;margin-top:4px;"></div>
-    </div>
-    <div class="prog-card" style="grid-column:1/-1;">
-      <div class="prog-card-title">Pattern Mastery (from Chart Replay)</div>
-      <div id="masteryList" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- TOOLS -->
-<div id="tab-tools" class="tab-panel">
-  <div class="sec-title">ScalpClock Tool Menu</div>
-  <p class="tools-intro">Every tool in one place. ScalpClock is a complete options trading system — each tool is built to work together.</p>
-  <div class="tools-grid" id="toolsGrid"></div>
-</div>
-
-</div><!-- /learn-body -->
-
-<!-- LESSON MODAL -->
-<div class="lesson-overlay" id="lessonOverlay" style="display:none;" onclick="closeLessonIfBg(event)">
-  <div class="lesson-modal" id="lessonModal">
-    <button class="lesson-modal-close" onclick="closeLesson()">✕</button>
-    <div class="lesson-modal-eyebrow" id="lmEyebrow"></div>
-    <div class="lesson-modal-title" id="lmTitle"></div>
-    <div class="lesson-modal-body" id="lmBody"></div>
-    <div class="lesson-modal-footer">
-      <div class="lesson-xp-reward" id="lmXP"></div>
-      <button class="btn-complete" id="lmBtn" onclick="completeLesson()">✅ Mark Complete</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── COURSES & LESSONS ─────────────────────────────────────────
-var COURSES = [
-  {
-    id:'candlestick',icon:'🕯️',name:'Candlestick Mastery',desc:'Learn to read every candle like a pro. Body, wicks, and what price is really telling you.',
-    lessons:[
-      {id:'c1',title:'What Is a Candlestick?',xp:50,content:'<p>Every candlestick represents one time period — 1 minute, 5 minutes, or 1 day — and tells you exactly what happened: where price opened, where it went (high and low), and where it closed.</p><div class="highlight"><strong>The body</strong> = distance between open and close. Green = bulls won. Red = bears won.<br><strong>The wicks</strong> = how far price traveled beyond the body before being rejected.</div><p>A large body means conviction. A small body means hesitation. Wicks show where buyers and sellers tested levels — and failed. Every pattern you will ever learn is made of these simple components.</p>'},
-      {id:'c2',title:'Bullish vs Bearish Candles',xp:50,content:'<p>A <strong>green candle</strong> closes higher than it opened — buyers controlled that period. A <strong>red candle</strong> closes lower — sellers were in charge.</p><div class="highlight">The bigger the body relative to the wick, the stronger the conviction. A candle that is 90%+ body (a Marubozu) means one side dominated completely.</div><p>Context matters more than color. A green candle after 10 red ones means something different than a green candle in the middle of an uptrend. The color tells you who won. The wick tells you who tried and failed.</p>'},
-      {id:'c3',title:'The Doji — Market Indecision',xp:75,content:'<p>A Doji forms when open and close are nearly identical — neither side won. Price moved, buyers and sellers fought, but ended where they started.</p><div class="highlight">A Doji is not a signal by itself — it is a <strong>warning</strong>. Especially after a strong trend, it means the trend has run out of steam. What happens next decides everything.<br><br>Types: <strong>Standard</strong> (wicks both sides), <strong>Dragonfly</strong> (long lower wick = bullish rejection), <strong>Gravestone</strong> (long upper wick = bearish rejection).</div><p>Look for high volume Doji at key support/resistance. That is the market saying: "I am not sure where to go." Get ready for the next move.</p>'},
-      {id:'c4',title:'Engulfing Patterns',xp:75,content:'<p>An engulfing pattern is two candles where the second candle\'s body completely covers the first. It is one of the most reliable reversal signals in all of technical analysis.</p><div class="highlight"><strong>Bullish Engulfing:</strong> After a downtrend, a large green candle swallows the prior red candle. Buyers overwhelmed sellers — momentum shifted.<br><br><strong>Bearish Engulfing:</strong> After an uptrend, a large red candle swallows the prior green. Sellers took over completely.</div><p>The larger the engulfing candle, the stronger the signal. Add volume confirmation and a nearby S/R level, and you have a high-probability setup. ScalpClock detects engulfing patterns in real time inside ScalpCharts.</p>'},
-      {id:'c5',title:'Three-Candle Patterns',xp:100,content:'<p>Some of the strongest reversal signals require three candles. The extra candle adds confirmation — you are not trading on a single reaction but a shift in market structure.</p><div class="highlight"><strong>Morning Star</strong> (bullish): Big red → Small star → Big green closing above prior candle\'s midpoint.<br><br><strong>Evening Star</strong> (bearish): Big green → Small star → Big red closing below prior candle\'s midpoint.<br><br><strong>Three White Soldiers / Three Black Crows:</strong> Three consecutive directional candles — strongest multi-day conviction signal.</div><p>Practice these in Chart Replay — seeing them form in real historical data is the fastest way to recognize them live.</p>'},
-    ]
-  },
-  {
-    id:'options',icon:'📈',name:'Options 101',desc:'Understand calls, puts, strikes, and how to use ScalpClock signals with options.',
-    lessons:[
-      {id:'o1',title:'What Is an Option?',xp:50,content:'<p>An option is a contract that gives you the <strong>right — but not the obligation</strong> — to buy or sell 100 shares of a stock at a specific price (the strike) by a specific date (expiry).</p><div class="highlight">You pay a <strong>premium</strong> to buy this right. If you are wrong, you lose the premium. If you are right, your gains can multiply — because options give you leverage.</div><p>100 shares of SPY at $500 = $50,000. One SPY call option controlling 100 shares might cost $200-500. The leverage is what makes options powerful — and risky. ScalpClock helps you pick better entry timing so premium does not decay against you.</p>'},
-      {id:'o2',title:'Calls vs Puts',xp:50,content:'<p><strong>Call option</strong> = the right to BUY at the strike price. You profit when the stock goes UP.</p><p><strong>Put option</strong> = the right to SELL at the strike price. You profit when the stock goes DOWN.</p><div class="highlight">ScalpClock\'s "Buy Calls" signal means RSI, VWAP, and volume suggest upward momentum. "Buy Puts" means those signals point down. The signal tells you the direction — the option type follows from that.</div><p>When ScalpClock says oversold — you buy calls. When overbought — you buy puts. The direction is the signal, not the other way around.</p>'},
-      {id:'o3',title:'Strike Price & Expiry',xp:75,content:'<p>The <strong>strike price</strong> is where you have the right to buy/sell. If you buy a $500 SPY call and SPY moves to $510, you made $10 × 100 shares = $1,000 profit on paper.</p><div class="highlight"><strong>At-the-money (ATM)</strong>: Strike = current price. Most sensitive to movement.<br><strong>In-the-money (ITM)</strong>: Already profitable. More expensive, less leverage.<br><strong>Out-of-the-money (OTM)</strong>: Has not been reached. Cheaper, more leverage, higher risk.</div><p><strong>Expiry</strong> is your deadline. Options lose value every day (theta decay). For ScalpClock scalp trades, shorter expiry (same day to 1 week) amplifies moves but requires being right quickly.</p>'},
-      {id:'o4',title:'Reading the ScalpClock Signal',xp:75,content:'<p>ScalpClock generates three signal types: <strong>Buy Calls</strong>, <strong>Buy Puts</strong>, and <strong>Hold</strong>. A HARD signal means RSI, VWAP, and volume surge all align — highest confidence.</p><div class="highlight">Signal flow: RSI below 30 (oversold) + price below VWAP (room to recover) + volume surge (buyers entering) = HARD Buy Calls signal. All three must align for HARD.</div><p>A single-factor signal gets a lower confidence score. Confluence is everything. The more signals pointing the same direction, the higher your edge.</p>'},
-      {id:'o5',title:'Full Trade Setup with ScalpClock',xp:100,content:'<p>Here is the complete flow: ScalpClock signal → options entry → Exit Assistant → out.</p><div class="highlight">1. See "HARD Buy Calls" on SPY<br>2. Buy ATM or 1-strike ITM call, 3-7 days to expiry<br>3. Set stop-loss at 40-50% of premium<br>4. Monitor Exit Assistant for "Close Now" signal or profit target<br>5. Exit when signal reverses or target is hit — do not hold hoping for more</div><p>The biggest mistake new traders make: staying in a trade after the signal has reversed. Trust the system, not your emotions.</p>'},
-    ]
-  },
-  {
-    id:'patterns',icon:'🔍',name:'Pattern Recognition',desc:'Double tops, flags, support/resistance, and confluence trading.',
-    lessons:[
-      {id:'p1',title:'Support & Resistance',xp:75,content:'<p><strong>Support</strong> is a price level where buyers consistently step in and stop the decline. <strong>Resistance</strong> is where sellers consistently appear and stop the advance. These are the most important levels on any chart.</p><div class="highlight">How S/R forms: every time price bounces from a level, that bounce gets baked into market memory. When price returns, buyers (at support) or sellers (at resistance) show up again — often a self-fulfilling prophecy.</div><p>Strong S/R levels: more touches = stronger. ScalpClock\'s Chart Replay marks S/R automatically so you can practice recognizing how price interacts with these levels in real historical data.</p>'},
-      {id:'p2',title:'Flags & Pennants',xp:75,content:'<p>A <strong>flag</strong> forms after a fast, strong move (the pole). Price then consolidates in a tight counter-directional channel — the flag. When it breaks in the original direction, the move typically continues by the length of the pole.</p><div class="highlight"><strong>Bull Flag</strong>: Strong up move → tight pullback → break higher.<br><strong>Bear Flag</strong>: Strong down move → tight pullback higher → break lower.<br><br>Key: volume should DROP during the flag and SURGE on the breakout.</div><p>Without volume, the breakout often fails. Always confirm with ScalpClock\'s volume surge indicator before entering.</p>'},
-      {id:'p3',title:'Double Tops & Bottoms',xp:100,content:'<p>A <strong>Double Top</strong> is two price peaks at nearly the same level. It means buyers tried twice to push through resistance and failed — bearish reversal ahead.</p><div class="highlight">A <strong>Double Bottom</strong> is the mirror: two lows at the same level. Sellers tried twice to break support and could not — bullish reversal ahead.<br><br>Entry: wait for the neckline to break. That is confirmation. Target: height of the pattern projected from the breakout.</div><p>RSI divergence makes these patterns stronger: price makes a new high/low but RSI does not follow — momentum is failing before the pattern even completes.</p>'},
-      {id:'p4',title:'Confluence Trading',xp:100,content:'<p>Confluence means multiple signals pointing in the same direction at the same time. This is the core of professional trading — you do not act on one signal, you wait for everything to line up.</p><div class="highlight"><strong>High-confluence setup example:</strong><br>• RSI below 30 (oversold)<br>• Price at known support level<br>• Volume surge on the bounce candle<br>• Price below VWAP (room to recover)<br>• Bullish Engulfing or Hammer candle pattern<br><br>When 4-5 factors align, probability edge is significantly higher than trading any one signal alone.</div><p>This is exactly what ScalpClock\'s HARD signal detects automatically. Confluence trading is harder to learn manually — that is why the tool exists.</p>'},
-    ]
-  },
-  {
-    id:'risk',icon:'🛡️',name:'Risk Management',desc:'Position sizing, stop-loss placement, and when not to trade.',
-    lessons:[
-      {id:'r1',title:'Position Sizing',xp:75,content:'<p>Position sizing is the most important — and most ignored — skill in trading. Knowing how much to risk per trade determines whether you survive long enough to get good.</p><div class="highlight"><strong>The 1-2% rule</strong>: Never risk more than 1-2% of your total account on a single trade. $5,000 account → $50-100 maximum risk per trade. This keeps any single loss from damaging your account meaningfully.</div><p>With options: if you are buying a call for $200, that premium IS your risk if it goes to zero. Size so the premium represents 1-2% of your account. This sounds boring. It keeps you alive.</p>'},
-      {id:'r2',title:'Stop-Loss Placement',xp:75,content:'<p>A stop-loss is your exit when you are wrong. Set it too tight and normal noise stops you out. Set it too wide and you take a massive loss before exiting.</p><div class="highlight"><strong>Pattern-based stops:</strong><br>• Hammer: below the hammer\'s low<br>• Engulfing: beyond the engulfing candle\'s extreme<br>• Support bounce: below the support level<br><br>For options: set a premium stop at 40-50% loss. If the option loses half its value, the thesis is likely wrong.</div><p>A stop-loss is not failure. It is capital preservation so you can take the next trade. Traders who do not use stops lose everything on one bad trade.</p>'},
-      {id:'r3',title:'Risk:Reward Ratios',xp:100,content:'<p>Your risk:reward ratio compares what you are risking to what you stand to gain. 1:2 = risk $100 to make $200. 1:3 = risk $100 to make $300.</p><div class="highlight">Why ratios matter: at 1:2, you can be wrong 50% of the time and still be profitable. Win 5, lose 5 at 1:2 = $1000 gained, $500 lost = +$500 net. Most retail traders take 1:0.5 trades and wonder why they lose despite winning often.</div><p>ScalpClock HARD signals typically offer better R:R because entry timing is tighter and stop placement is cleaner.</p>'},
-      {id:'r4',title:'When NOT to Trade',xp:100,content:'<p>The most profitable decision many days is not trading. Knowing when to stay out is as valuable as knowing when to enter.</p><div class="highlight"><strong>Stay flat when:</strong><br>• Volume is below average<br>• Market is choppy with no clear trend<br>• Signal is "Hold" with no confluence<br>• 30 minutes before/after major news (Fed, CPI, earnings)<br>• You have hit your daily loss limit<br>• You are emotional — angry, fearful, or overconfident</div><p>ScalpClock\'s Hold signal is often the most important signal it generates. No edge = no trade. Protect capital for setups that actually qualify.</p>'},
-    ]
-  },
-  {
-    id:'flow',icon:'⚡',name:'Live Trading Flow',desc:'Full ScalpClock workflow from signal to exit.',
-    lessons:[
-      {id:'f1',title:'Reading Live Signals',xp:75,content:'<p>ScalpClock monitors 20 tickers every 60 seconds during market hours, calculating RSI, VWAP distance, and volume surge for each.</p><div class="highlight"><strong>Example: HARD Buy Calls on NVDA</strong><br>RSI: 24.3 (deeply oversold) · VWAP: -2.1% below · Vol: ×3.2 surge<br><br>Translation: NVDA is at an extreme oversold reading, well below fair value today, with buyers flooding in at 3x normal volume. High probability bounce incoming.</div><p>Check the ticker first. Are you familiar with how it moves? SPY and QQQ are most reliable because they are most liquid. NVDA, TSLA, and COIN move faster and amplify both wins and losses.</p>'},
-      {id:'f2',title:'Using the Exit Assistant',xp:75,content:'<p>The Exit Assistant is your trade management layer. Once you are in a position, it tracks your profit clock, calculates exit signals, and shows the probability of the trade working.</p><div class="highlight"><strong>Exit when:</strong><br>• ScalpClock signal reverses (Buy Calls → Hold or Buy Puts)<br>• You hit your profit target (predefined before entry)<br>• The option has lost 40-50% of its value<br>• Exit Assistant shows "Close Now" or high reversal probability<br>• Major news event is imminent</div><p>Never change your exit plan mid-trade because you hope it will recover. Enter with a plan, exit on the plan.</p>'},
-      {id:'f3',title:'The Complete Trade Playbook',xp:150,content:'<p>Every step of a complete ScalpClock trade from signal to exit:</p><div class="highlight"><strong>Step 1 — Signal:</strong> Wait for HARD signal. Not Hold, not single-factor. HARD only.<br><br><strong>Step 2 — Confirm:</strong> Check pattern in ScalpCharts. Candlestick pattern at support? Volume surge visible?<br><br><strong>Step 3 — Size:</strong> Risk 1-2% of account. Buy ATM or 1-strike ITM, 3-7 DTE.<br><br><strong>Step 4 — Stop:</strong> 40-50% of premium paid. Know the exit before you enter.<br><br><strong>Step 5 — Monitor:</strong> Track via Exit Assistant. When signal reverses or target is hit — exit.<br><br><strong>Step 6 — Log it:</strong> Record in Dashboard journal. Win or lose, the log is how you improve.</div><p>This workflow, repeated consistently, is the edge. Not tips or predictions — repeatable process with disciplined execution.</p>'},
-    ]
-  },
-];
+/* ── LEVELS ── */
+const LV_TITLES = ['New Trader','Curious Learner','Chart Watcher','Pattern Spotter','Student Trader','Chart Reader','Trend Follower','Pattern Hunter','Momentum Trader','Scalper','Risk Manager','Options Learner','Options Specialist','Pro Analyst','Professional Trader','Elite Trader','Expert Strategist','Market Veteran','Market Master','Legend'];
 
-// ─── QUIZZES ─────────────────────────────────────────────────
-var QUIZZES = {
-  candles:{name:'Candlestick Basics',icon:'🕯️',questions:[
-    {q:'What does a Doji candle indicate?',opts:['Strong bullish momentum','Strong bearish momentum','Indecision — neither buyers nor sellers won','Market was closed'],ans:2,exp:'A Doji forms when open ≈ close. Neither side dominated, signaling indecision.'},
-    {q:'A Hammer appears after a downtrend. What does it typically signal?',opts:['Continuation of the downtrend','A potential bullish reversal','Market indecision','An overbought condition'],ans:1,exp:'The long lower wick shows sellers pushed price down hard, but buyers rejected those lows and closed near the open — bullish reversal signal.'},
-    {q:'The Morning Star pattern requires how many candles?',opts:['1','2','3','5'],ans:2,exp:'Morning Star = bearish candle + small star + bullish candle. Always 3 candles.'},
-    {q:'A Bearish Engulfing candle...',opts:['Opens below the prior close and closes above','Has a red body that completely covers the prior green candle','Is a single-candle pattern','Only occurs at support levels'],ans:1,exp:'The red body must fully engulf the prior green candle — bulls lost everything they gained.'},
-    {q:'A long upper wick on a candle indicates...',opts:['Buyers pushed price up and held','Sellers rejected higher prices','The market gapped up at open','A support level was found'],ans:1,exp:'Price was pushed to that high, but sellers stepped in and pushed it back down before the close.'},
-  ]},
-  options:{name:'Options Basics',icon:'📈',questions:[
-    {q:'A Call option gives you the right to...',opts:['Sell shares at market price','Buy shares at the strike price before expiry','Short the stock','Buy shares at any price'],ans:1,exp:'A Call = right to BUY at the strike. You profit when stock price rises above it.'},
-    {q:'RSI above 70 indicates the asset is...',opts:['Undervalued — a buying opportunity','In a confirmed downtrend','Overbought — potential pullback ahead','At perfectly fair value'],ans:2,exp:'RSI above 70 = overbought. Price has moved too far too fast — pullback is more likely.'},
-    {q:'VWAP stands for...',opts:['Volatile Weighted Asset Price','Volume Weighted Average Price','Variance Within Average Position','Volume Width Analysis Price'],ans:1,exp:'VWAP = Volume Weighted Average Price. It represents the fair average price at which volume has traded all day.'},
-    {q:"ScalpClock's HARD signal means...",opts:['A very aggressive, risky trade','RSI, VWAP, and volume all align — highest confidence','Buy at market open regardless','Hold And Retain Direction'],ans:1,exp:'HARD requires three-factor confluence: RSI oversold/overbought + VWAP distance + volume surge all pointing the same direction.'},
-    {q:'Put options profit when the stock price...',opts:['Goes up significantly','Stays flat','Goes down','Remains above the strike'],ans:2,exp:'Puts = right to sell. If price falls below the strike, the put becomes valuable. You profit from declines.'},
-  ]},
-  risk:{name:'Risk Management',icon:'🛡️',questions:[
-    {q:'What minimum risk:reward ratio do most professionals target?',opts:['1:1','1:2','2:1','0.5:1'],ans:1,exp:'1:2 minimum means even a 40% win rate is profitable. Most retail traders take 1:1 or worse.'},
-    {q:"Where should you place your stop-loss on a Hammer pattern?",opts:['At the open of the hammer','Below the hammer\'s low','5% below current price','At the prior day\'s close'],ans:1,exp:'The hammer\'s low is where buyers defended. If price breaks below it, the bullish thesis is invalid — exit.'},
-    {q:"'Confluence' in trading means...",opts:['Trading multiple assets simultaneously','Multiple indicators all pointing the same direction','Using more than 10 indicators','A pattern that only occurs at market open'],ans:1,exp:'Confluence = multiple signals aligning. More factors that agree = higher probability edge.'},
-    {q:'When should you NOT take a trade?',opts:['When RSI is exactly 50','When signals appear in low volume or choppy conditions','During market open hours','When price is above VWAP'],ans:1,exp:'Low volume = unreliable signals and wider spreads. Wait for clear setups.'},
-    {q:'What does cutting losses quickly protect against?',opts:['Missing future profits','Account damage from large losses overwhelming many small wins','Paying too many commissions','Entering positions too early'],ans:1,exp:'One large unmanaged loss can wipe out 10 winning trades. Cutting losses is the most important survival habit.'},
-  ]},
-  patterns:{name:'Chart Patterns',icon:'🔍',questions:[
-    {q:'A Bull Flag forms after...',opts:['A consolidation at a key level','A strong upward move — the pole','A Double Bottom breakout','A Bearish Engulfing candle'],ans:1,exp:'The flag is the consolidation AFTER the pole (the initial strong move). The flag breakout is the trade.'},
-    {q:'A Double Top is typically a...',opts:['Bullish continuation signal','Bearish reversal pattern','Volume confirmation signal','Neutral indecision signal'],ans:1,exp:'Two peaks at same level = buyers failed twice. When price breaks the neckline, reversal is confirmed.'},
-    {q:'Three Black Crows indicates...',opts:['Bullish reversal','Market indecision','Strong bearish momentum over 3 consecutive sessions','A gap pattern'],ans:2,exp:'Three consecutive bearish candles each closing near the low = sellers in complete control.'},
-    {q:'An Inside Bar means...',opts:['Price broke through support','The candle range is entirely within the prior candle — volatility is coiling','A bearish-only pattern','Two candles of identical size'],ans:1,exp:'Inside bar = compression. Price coiling inside prior range = building energy for a breakout. Trade the breakout.'},
-    {q:'A Gap Up on heavy volume signals...',opts:['A selling opportunity — fade the gap','Strong overnight demand — buyers were aggressive before the bell','Market maker manipulation','Very low liquidity'],ans:1,exp:'Gaps on heavy volume = real demand. Buyers wanted in so badly they paid up overnight. Often a strong continuation signal.'},
-  ]},
+function xpForLevel(lvl) {
+  let total = 0;
+  for (let i = 1; i < lvl; i++) total += 100 + (i - 1) * 50;
+  return total;
+}
+function levelFromXP(xp) {
+  let lvl = 1;
+  while (lvl < 20 && xp >= xpForLevel(lvl + 1)) lvl++;
+  return lvl;
+}
+function levelTitle(lvl) { return LV_TITLES[Math.min(lvl - 1, LV_TITLES.length - 1)]; }
+
+/* ── STORAGE ── */
+const LS = {
+  get:(k,d)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch{return d;}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+};
+const getXP=()=>LS.get('sc_learn_xp',0);
+const addXP=n=>LS.set('sc_learn_xp',getXP()+n);
+const getDone=()=>LS.get('sc_lessons_done',[]);
+const markDone=d=>{const a=getDone();if(!a.includes(d)){a.push(d);LS.set('sc_lessons_done',a);}};
+const isDone=d=>getDone().includes(d);
+const getEarned=()=>LS.get('sc_earned_badges',[]);
+const earnBadge=id=>{const b=getEarned();if(!b.includes(id)){b.push(id);LS.set('sc_earned_badges',b);return true;}return false;};
+const dateStr=(d=new Date())=>d.toISOString().slice(0,10);
+const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dateStr(d);};
+
+function getStreak() {
+  const today=dateStr(),last=LS.get('sc_streak_date',''),cnt=LS.get('sc_streak_count',0);
+  if(last===today||last===yesterday()) return cnt;
+  return 0;
+}
+function bumpStreak() {
+  const today=dateStr(),last=LS.get('sc_streak_date','');
+  let cnt=LS.get('sc_streak_count',0);
+  if(last===today) return cnt;
+  cnt=last===yesterday()?cnt+1:1;
+  LS.set('sc_streak_date',today);LS.set('sc_streak_count',cnt);return cnt;
+}
+
+/* ── CURRICULUM ── */
+const W1 = {
+  num:1,title:'Foundations of Trading',
+  days:[
+    {icon:'📖',category:'Foundations',title:'What Is a Stock? What Is an Option?',
+     learn:`<p>A <strong>stock</strong> is a small piece of ownership in a company. When you buy 1 share of Apple, you own a tiny fraction of Apple Inc. The price goes up when more people want to buy it and down when more want to sell.</p>
+<p>An <strong>option</strong> is a contract that gives you the <strong>right — but not the obligation</strong> — to buy or sell 100 shares of stock at a specific price, before a specific date.</p>
+<div class="hbox">Think of an option like a movie ticket. The ticket gives you the right to see the movie on Saturday. You can use it or skip it. Either way, you only paid for the ticket.</div>
+<p>Two main types: a <strong>Call option</strong> profits when the stock goes UP. A <strong>Put option</strong> profits when the stock goes DOWN.</p>`,
+     watchTitle:'Stock vs Option: Risk & Reward',watchCaption:'Stock price moves $10 — stock owner gains $10. Option buyer controls 100 shares for a fraction of the cost.',watchData:[40,41,42,40,43,45,44,46,48,47,49,51,50,52,54],
+     practice:{scenario:'You believe Apple stock will rise from $200 to $220. You have $600. Buy 3 shares ($600), or 1 call option contract at $2/share (controls 100 shares)?',options:['Buy 3 shares of Apple stock','Buy 1 Apple call option contract','Wait and do nothing'],correct:1,feedback:['Stock is safe, but you only profit from 3 shares. If Apple rises $20, you make $60 total.','Correct! One call option controls 100 shares. If Apple rises $20, your option could multiply — 100× leverage potential. High risk, high reward.','Sometimes valid, but with conviction a call option captures the move with leverage.']},
+     quiz:[
+      {q:'What does owning 1 share of stock mean?',opts:['You can borrow money from the company','You own a tiny piece of the company','You have the right to buy 100 more shares','You are guaranteed a dividend'],ans:1,exp:'A share of stock represents fractional ownership in a company.'},
+      {q:'What is a call option?',opts:['A right to sell 100 shares at a set price','A right to buy 100 shares at a set price','A type of stock dividend','An order to buy shares immediately'],ans:1,exp:'A call option gives the buyer the right (not obligation) to purchase 100 shares at the strike price before expiration.'},
+      {q:'One options contract controls how many shares?',opts:['1','10','100','1000'],ans:2,exp:'Standard US equity options contracts always represent 100 shares.'},
+      {q:'Which option type profits when a stock falls?',opts:['Call option','Put option','Covered call','Long stock'],ans:1,exp:'Put options increase in value when the underlying stock falls.'},
+      {q:'What is the main advantage of options over stock?',opts:['Options always make money','Options require no capital','Options provide leverage — control more shares for less money','Options never expire'],ans:2,exp:'Options let you control 100 shares for a fraction of the cost. This is called leverage.'},
+    ]},
+    {icon:'⏰',category:'Foundations',title:'Market Hours & When Stocks Move',
+     learn:`<p>The US stock market officially opens at <strong>9:30 AM Eastern Time</strong> and closes at <strong>4:00 PM Eastern Time</strong>, Monday through Friday.</p>
+<p>The most volatile times are <strong>the open (9:30–10:30 AM)</strong> and <strong>the close (3:00–4:00 PM)</strong>. This is when institutions, algorithms, and retail traders are all active simultaneously.</p>
+<div class="hbox">Scalp traders love the first 30 minutes. Volume is highest, spreads are tight, and big moves happen fast. But it's also the most dangerous time for beginners.</div>
+<p><strong>Pre-market</strong> (4 AM–9:30 AM) and <strong>after-hours</strong> (4 PM–8 PM) also exist, but options can't be traded in these sessions.</p>`,
+     watchTitle:'Intraday Volume Curve',watchCaption:'Volume spikes at open and close — the "U-shape" is a hallmark of market microstructure.',watchData:[80,72,60,50,42,38,36,35,37,40,45,55,70,85,95],
+     practice:{scenario:"It's 9:35 AM ET on a Tuesday. You see a stock gapping up 4% from yesterday's close on heavy volume. What type of session is this?",options:['Pre-market session','Regular market hours — the open','After-hours session','Weekend trading'],correct:1,feedback:['Pre-market is before 9:30 AM ET. At 9:35 AM the regular session is already open.','Correct! 9:35 AM ET is during regular market hours, specifically the opening volatility window.','After-hours begins at 4:00 PM ET.','US stock markets are closed on weekends.']},
+     quiz:[
+      {q:'What time does the US stock market officially open?',opts:['8:00 AM ET','9:00 AM ET','9:30 AM ET','10:00 AM ET'],ans:2,exp:'The NYSE and NASDAQ open at 9:30 AM Eastern Time every trading day.'},
+      {q:'Which period typically has the highest trading volume?',opts:['11 AM – 1 PM midday','Pre-market only','The open (9:30–10:30 AM) and close (3–4 PM)','After-hours session'],ans:2,exp:'The classic U-shape volume curve shows peaks at open and close.'},
+      {q:'Can you trade options during pre-market hours?',opts:['Yes, options trade 24/7','Yes, but only index options','No, options only trade during regular market hours','No, options only trade at close'],ans:2,exp:'Options markets are only open during regular trading hours (9:30 AM–4:00 PM ET).'},
+      {q:'What does "the close" refer to?',opts:['When a stock hits its day low','The last 30–60 minutes of the trading session','When a trade is exited at a profit','The pre-market session'],ans:1,exp:'The close refers to the final hour of trading, especially 3–4 PM ET.'},
+      {q:'After-hours trading runs from:',opts:['8 PM to midnight','4 PM to approximately 8 PM ET','Midnight to 4 AM ET','4 AM to 9:30 AM ET'],ans:1,exp:'After-hours trading runs from 4 PM to approximately 8 PM ET.'},
+    ]},
+    {icon:'📊',category:'Charting',title:'Reading a Candlestick: Green, Red, Wicks',
+     learn:`<p>A <strong>candlestick</strong> shows 4 pieces of information for one time period: the <strong>Open</strong>, <strong>High</strong>, <strong>Low</strong>, and <strong>Close</strong> price.</p>
+<p>A <strong>green candle</strong> means the price closed HIGHER than it opened — buyers won. A <strong>red candle</strong> means sellers won.</p>
+<div class="hbox">The <strong>body</strong> (thick part) = distance between open and close. The <strong>wick</strong> (thin line) = how far price temporarily went beyond that range. Long wicks signal rejection.</div>
+<p>Big body = strong directional move. Tiny body with long wicks = indecision, potential reversal zone.</p>`,
+     watchTitle:'Anatomy of a Candlestick',watchCaption:'Green = bullish. Red = bearish. Wicks show intraday extremes and rejection levels.',watchData:[48,50,49,53,51,55,54,52,50,48,50,52,54,56,55],
+     practice:{scenario:"You see a 5-min candle: opened at $450.10, closed at $450.15 — tiny body — but with an upper wick reaching $452.50 and lower wick to $449.80. What does this tell you?",options:['Strong bullish move — buy immediately','Indecision: price tried $452.50 but got rejected — potential bearish signal','Price crashed — clear sell signal','Normal candle — no information'],correct:1,feedback:['The body is only $0.05. That is NOT a strong move. Look at the whole candle.','Correct! The massive upper wick shows sellers pushed price back from $452.50 to close near the open — a shooting star/doji pattern, often a reversal warning.','There was no crash. The close is near the open.','Every candle tells a story. This one shows indecision — critical information.']},
+     quiz:[
+      {q:'What does the BODY of a candlestick represent?',opts:['The highest price of the period','The range between high and low','The range between open and close','The volume traded'],ans:2,exp:'The candle body shows the distance between opening and closing price.'},
+      {q:'A red/bearish candlestick means:',opts:['Price closed higher than it opened','Volume was below average','Price closed lower than it opened','The stock will fall tomorrow'],ans:2,exp:'A red candle means sellers pushed price below the opening level by the close.'},
+      {q:'A long upper wick usually signals:',opts:['Strong bullish momentum continuing','Price was rejected from higher levels','Extremely high volume','The stock is about to split'],ans:1,exp:'Long upper wicks show sellers pushed price back down before close — selling pressure/rejection.'},
+      {q:'OHLC stands for:',opts:['Order, Hold, Limit, Cancel','Open, High, Low, Close','Only closing prices','Opening price and volume only'],ans:1,exp:'OHLC = Open, High, Low, Close. These four data points make up every standard candlestick.'},
+      {q:'A doji (tiny body, long wicks on both sides) typically indicates:',opts:['Strong uptrend confirmation','Indecision between buyers and sellers','A guaranteed reversal','High-volume breakout'],ans:1,exp:'A doji shows the open and close are nearly identical — balance/indecision that often precedes a reversal.'},
+    ]},
+    {icon:'📉',category:'Charting',title:'Support & Resistance: Where Price Respects Levels',
+     learn:`<p><strong>Support</strong> is a price level where buyers have historically shown up and stopped a decline — a floor.</p>
+<p><strong>Resistance</strong> is the opposite: a ceiling where sellers take control and push price back down.</p>
+<div class="hbox">Key insight: <strong>Old resistance becomes new support</strong> after a breakout. Once a stock breaks above $50 convincingly, that $50 level often acts as support on pullbacks.</div>
+<p>Support and resistance are zones, not exact lines. A stock may dip slightly below before bouncing — a <strong>wick below support</strong> is a normal level test.</p>`,
+     watchTitle:'Support & Resistance in Action',watchCaption:'Price bounces off the same level three times before finally breaking above resistance.',watchData:[54,52,50,51,50,51,50,52,54,53,54,55,57,56,58],
+     practice:{scenario:"SPY has bounced off $445 three times over the past week. Now it's approaching $445 from above (currently at $446). What is $445 most likely, and what might you expect?",options:['$445 is resistance — expect a breakout above it','$445 is support — price may bounce here again','$445 has no significance','$445 is a guaranteed buy signal'],correct:1,feedback:['Resistance is above current price. $445 is below where price is trading.','Correct! Three bounces makes $445 strong support. Traders watch for a bounce or hold above this level as a potential entry.','Three tests of the same level is significant price memory.','Support levels are high-probability zones, not guarantees. Always use a stop loss.']},
+     quiz:[
+      {q:'Support is best described as:',opts:['A level where sellers dominate','A price ceiling hard to break above','A price floor where buyers historically appear','The average closing price over 20 days'],ans:2,exp:'Support is where buying demand has historically exceeded selling pressure.'},
+      {q:'What happens when a stock breaks above resistance?',opts:['The resistance becomes stronger','The level often becomes new support','Price immediately reverses','Nothing changes'],ans:1,exp:'Role reversal: broken resistance becomes new support because traders buy pullbacks to that level.'},
+      {q:'A "wick below support" means:',opts:['Support has definitively failed','Price briefly dipped below support before recovering — a normal test','Volume has disappeared','The stock is in a downtrend'],ans:1,exp:'Price often probes slightly below support (stop-hunting), then reverses. A wick below with strong close above is often bullish.'},
+      {q:'If a stock bounced off $100 four times, what is $100?',opts:['A resistance level','A support level','An arbitrary price','The stock\'s 52-week high'],ans:1,exp:'Multiple bounces confirm it as strong support. More tests + holds = more significant the level.'},
+      {q:'Resistance is located:',opts:['Below current price','At the current price','Above the current price','At the 200-day moving average only'],ans:2,exp:'Resistance is a price level ABOVE current price where sellers have historically pushed price back down.'},
+    ]},
+    {icon:'📈',category:'Charting',title:'Trend Lines: Uptrends, Downtrends, and Sideways',
+     learn:`<p>A market can only do three things: go <strong>up</strong>, go <strong>down</strong>, or go <strong>sideways</strong>. Identifying the trend is the first job of any trader.</p>
+<p>An <strong>uptrend</strong> is a series of <strong>higher highs and higher lows</strong>. Trade in the direction of the trend — "the trend is your friend."</p>
+<p>A <strong>downtrend</strong> is the reverse: <strong>lower highs and lower lows</strong>. Don't buy falling knives trying to catch the bottom.</p>
+<div class="hbox">A <strong>trend line</strong> connects at least 2–3 swing lows in an uptrend (or highs in a downtrend). More touches = stronger line. A break is a warning signal.</div>`,
+     watchTitle:'Higher Highs & Higher Lows',watchCaption:'Uptrend confirmed: each pullback (higher low) holds above the previous, and each rally makes a new high.',watchData:[40,42,41,44,43,46,44,47,46,49,47,50,49,52,51],
+     practice:{scenario:'Daily chart of a stock: Day 1 high $100, Day 3 high $98, Day 5 high $95, Day 7 high $92. Each rally is weaker. What pattern is this?',options:['A strong uptrend — buy aggressively','A sideways consolidation — wait for direction','A downtrend with lower highs — be cautious','A bullish flag — great buy'],correct:2,feedback:['The highs are getting LOWER. This is the opposite of an uptrend.','Sideways consolidation would have highs at approximately the same level.','Correct! Lower highs is the definition of a downtrend. Each rally attempt is weaker — sellers are in control. Not a place to be a buyer without reversal confirmation.','A flag would be tight consolidation after a sharp move up. This is a series of lower highs across days — a downtrend.']},
+     quiz:[
+      {q:'An uptrend is defined by:',opts:['Price moving sideways','Lower highs and lower lows','Higher highs and higher lows','Price staying above the 50-day MA'],ans:2,exp:'An uptrend requires both higher highs AND higher lows.'},
+      {q:'"The trend is your friend" means:',opts:['Always trade with friends','The current market direction is the highest-probability trade direction','Markets always trend upward','You should always buy uptrending stocks'],ans:1,exp:'Trading in the direction of the established trend gives you the highest probability of success.'},
+      {q:'How many points are needed to draw a valid trend line?',opts:['At least 1','At least 2 (confirmed by a 3rd touch)','Exactly 5','10 or more'],ans:1,exp:'You need at least 2 points, but a 3rd touch that holds validates it. More touches = stronger trend line.'},
+      {q:'A downtrend shows:',opts:['Higher highs and higher lows','Lower highs and lower lows','Flat highs with rising lows','Random price movement'],ans:1,exp:'A downtrend is characterized by lower highs and lower lows.'},
+      {q:'When a trend line breaks, it signals:',opts:['Immediately reverse your entire position','A warning that momentum may be shifting — confirm before acting','Nothing — ignore trend line breaks','An automatic sell signal every time'],ans:1,exp:'Trend line breaks are warning signals. Confirm with volume, candle structure, or a retest before acting.'},
+    ]},
+    {icon:'🔢',category:'Indicators',title:'Volume: The Most Important Indicator',
+     learn:`<p><strong>Volume</strong> is the number of shares (or contracts) traded in a given period. It cannot be faked — it shows real money moving in real time.</p>
+<p>High volume confirms a move. Low volume makes a move suspicious. Breaking to a new high on 3× average volume? Strong. Same breakout on half the average? Likely to fail.</p>
+<div class="hbox">Rule: <strong>Volume leads price</strong>. Unusually high volume often appears before a big price move. Watch for volume spikes when the stock is "quiet" — smart money may be positioning.</div>
+<p><strong>On-Balance Volume (OBV)</strong> adds volume on up days and subtracts it on down days. Rising OBV with rising price = healthy trend. Diverging OBV = warning of weakness ahead.</p>`,
+     watchTitle:'Volume Spike Before Breakout',watchCaption:'Volume surges above average before the price breaks resistance — a sign of institutional accumulation.',watchData:[35,37,36,38,40,45,60,75,90,85,70,60,55,50,48],
+     practice:{scenario:"A stock is at $49.80, just below resistance at $50. Over the last 3 candles, volume spiked to 4× the 20-day average while price barely moved. What might this signal?",options:['Nothing — volume spikes are random','Sellers are dumping shares — sell','Large buyers absorbing supply at $50 — potential breakout brewing','The stock is about to crash'],correct:2,feedback:['Volume spikes near key levels are rarely random. They represent significant order flow.','If sellers were dumping, price would be falling. Price stable near resistance with surging volume = absorption, not selling.','Correct! Large volume at resistance with stable price means buyers are absorbing every share sellers offer. When sellers run out, the breakout happens.','A crash shows high volume AND falling price. High volume with price holding near highs is accumulation — the opposite.']},
+     quiz:[
+      {q:'What does high volume on a price breakout indicate?',opts:['The breakout is likely to fail','The move lacks conviction','Strong participation — the breakout is more likely genuine','Nothing meaningful'],ans:2,exp:'High-volume breakouts have more institutional participation and statistically follow through more often.'},
+      {q:'"Volume leads price" means:',opts:['Price always rises before volume increases','Unusual volume often appears before significant price moves','Volume and price always move together','Ignore price and only watch volume'],ans:1,exp:'Volume often shows institutional positioning before price reacts. Abnormal volume in a quiet stock can signal something ahead.'},
+      {q:'OBV falling while price rises signals:',opts:['A healthy uptrend','A hidden volume surge','Bearish divergence — potential weakness ahead','The stock is about to split'],ans:2,exp:'When OBV falls while price rises, more volume occurs on down days — a bearish divergence that often precedes reversal.'},
+      {q:'A stock breaks to a new 52-week high on very low volume. This is:',opts:['A guaranteed continuation signal','Suspicious — breakout may fail','A rare but strong signal','Not worth analyzing'],ans:1,exp:'Low-volume breakouts lack conviction. Without institutional participation, the stock often falls back below the breakout level.'},
+      {q:'Average volume is 1M shares/day. Today it trades 5M. This is:',opts:['Normal fluctuation','5× relative volume — significantly elevated, worth investigating','A sign the stock will fall','Only relevant for penny stocks'],ans:1,exp:'5× relative volume (RVOL) is a major alert. Something significant is happening — news, institutional activity, or a technical trigger.'},
+    ]},
+    {icon:'👑',category:'Boss Battle',isBoss:true,title:'Week 1 Boss Battle — Foundations Review',
+     learn:`<p>You've completed Week 1! You now know the basics that most retail traders never truly internalize.</p>
+<p>Let's review what you've learned:</p>
+<ul>
+<li><strong>Stocks</strong> = ownership. <strong>Options</strong> = the right to buy/sell 100 shares at a set price.</li>
+<li><strong>Market hours</strong>: 9:30 AM–4:00 PM ET. Highest volatility at open and close.</li>
+<li><strong>Candlesticks</strong>: Body = open-to-close range. Wicks = intraday extremes.</li>
+<li><strong>Support & Resistance</strong>: Floors and ceilings where price has historically reacted.</li>
+<li><strong>Trend</strong>: Higher highs/lows = uptrend. Lower highs/lows = downtrend.</li>
+<li><strong>Volume</strong>: Confirms moves. High volume on breakouts = strong. Low volume = suspect.</li>
+</ul>
+<div class="hbox">This Boss Battle has 10 questions covering all of Week 1. You need 80% (8/10) to pass. Good luck!</div>`,
+     watchTitle:'Week 1 Concepts Combined',watchCaption:'This chart shows an uptrend with volume confirmation and a resistance breakout — all Week 1 concepts in one view.',watchData:[42,44,43,45,44,47,46,48,47,50,55,60,58,62,65],
+     practice:{scenario:'Describe the chart above using at least 3 concepts from Week 1.',options:['Uptrend breaking resistance on high volume — bullish','Downtrend with low volume near support','Sideways consolidation — no clear trend','Random price movement'],correct:0,feedback:['Correct! You identified the uptrend, the resistance breakout, and volume context — exactly how a trader reads a chart.','The chart shows rising prices (uptrend), not a downtrend.','The chart clearly trends higher with a breakout — directional, not sideways.','Every chart tells a story to the trained eye.']},
+     quiz:[
+      {q:'An option gives you the right to buy or sell how many shares?',opts:['1','10','100','1000'],ans:2,exp:'One standard US equity options contract represents 100 shares.'},
+      {q:'The most volatile trading session is typically:',opts:['11 AM – 1 PM midday','Pre-market 6–9 AM','The first and last 30–60 minutes of the session','Saturday morning'],ans:2,exp:'The open (9:30–10:30 AM) and close (3:00–4:00 PM) are the highest-volume, highest-volatility periods.'},
+      {q:"A candlestick's wick represents:",opts:['The difference between open and close','The average price for the period','The price extremes during that time period','The volume traded'],ans:2,exp:'Wicks show the intraday highs and lows — how far price moved outside the open-to-close range.'},
+      {q:'Old resistance that is broken becomes:',opts:['Stronger resistance','New support','An irrelevant level','The 52-week high'],ans:1,exp:'Role reversal: broken resistance becomes support because traders buy pullbacks to that level.'},
+      {q:'Higher highs and higher lows define a:',opts:['Downtrend','Sideways consolidation','Uptrend','Bearish channel'],ans:2,exp:'An uptrend is technically defined as a series of higher highs and higher lows.'},
+      {q:'A breakout on 0.5× average volume (half normal volume) is:',opts:['Very strong and reliable','Suspicious and may fail','Extremely rare','Only valid for large-caps'],ans:1,exp:'Low-volume breakouts lack institutional participation and frequently fail.'},
+      {q:'A call option profits when:',opts:['The stock falls','The stock stays flat','The stock rises','Volatility decreases'],ans:2,exp:'Call options increase in value as the underlying stock rises above the strike price.'},
+      {q:'Pre-market trading (before 9:30 AM ET) typically has:',opts:['Higher volume than regular session','Normal spreads','Thinner liquidity and wider spreads','Options trading available'],ans:2,exp:'Pre-market has significantly lower volume and wider spreads. Options cannot be traded pre-market.'},
+      {q:'A doji candle signals:',opts:['Strong bullish momentum','Strong bearish momentum','Indecision between buyers and sellers','High volume'],ans:2,exp:'A doji shows neither buyers nor sellers could establish control — often signals potential reversal.'},
+      {q:'On-Balance Volume (OBV) measures:',opts:['Percentage of green vs red candles','Cumulative volume flow — adding on up days, subtracting on down days','The 20-day average volume','Market cap changes'],ans:1,exp:'OBV tracks volume flow. Rising OBV with rising price confirms the trend; divergence warns of reversal.'},
+    ]},
+  ]
 };
 
-// ─── BADGES ──────────────────────────────────────────────────
-var BADGES = [
-  {id:'first_step',icon:'🔰',name:'First Step',desc:'Complete your first lesson',check:function(s){return s.lessonsDone>=1;}},
-  {id:'eager',icon:'📖',name:'Eager Learner',desc:'Complete 5 lessons',check:function(s){return s.lessonsDone>=5;}},
-  {id:'course_done',icon:'🎓',name:'Course Complete',desc:'Finish any full course',check:function(s){return s.courseDone>=1;}},
-  {id:'quiz_rookie',icon:'⚡',name:'Quiz Rookie',desc:'Complete your first quiz',check:function(s){return s.quizzesDone>=1;}},
-  {id:'sharp_eye',icon:'🎯',name:'Sharp Eye',desc:'Score 100% on any quiz',check:function(s){return s.perfectQuiz>=1;}},
-  {id:'on_fire',icon:'🔥',name:'On Fire',desc:'3-day learning streak',check:function(s){return s.streak>=3;}},
-  {id:'week_warrior',icon:'🌟',name:'Week Warrior',desc:'7-day learning streak',check:function(s){return s.streak>=7;}},
-  {id:'bull_reader',icon:'📈',name:'Bull Reader',desc:'Study 5 bullish patterns in Replay',check:function(s){return s.replayBull>=5;}},
-  {id:'bear_reader',icon:'📉',name:'Bear Reader',desc:'Study 5 bearish patterns in Replay',check:function(s){return s.replayBear>=5;}},
-  {id:'xp_hunter',icon:'⚡',name:'XP Hunter',desc:'Earn 500 total XP',check:function(s){return s.totalXP>=500;}},
-  {id:'thousand',icon:'💎',name:'1K Club',desc:'Earn 1,000 total XP',check:function(s){return s.totalXP>=1000;}},
-  {id:'chart_master',icon:'🏆',name:'Chart Master',desc:'Complete all 5 courses',check:function(s){return s.courseDone>=5;}},
+/* Week defs for weeks 2–52 */
+const WEEK_DEFS = [
+  {n:2,t:'Moving Averages & Momentum',d:['9-EMA: The Scalper\'s Best Friend','20-EMA vs 50-SMA: Short vs Medium Term','The 200-Day MA: Bull vs Bear Market Line','MA Crossovers: Golden Cross & Death Cross','MACD: Momentum Shifts Made Visual','RSI: Overbought & Oversold Levels','Week 2 Boss Battle'],c:'Indicators'},
+  {n:3,t:'Options Mechanics',d:['Strike Price: In-the-Money vs Out-of-the-Money','Expiration Dates: Weekly vs Monthly Options','The Premium: What You\'re Paying For','Intrinsic Value vs Time Value','Delta: How Much Does Your Option Move?','Theta: Time Decay — The Silent Killer','Week 3 Boss Battle'],c:'Options'},
+  {n:4,t:'Options Greeks',d:['Gamma: How Delta Changes','Vega: Volatility\'s Effect on Premium','Rho: Interest Rate Impact','IV: Implied Volatility Explained','IV Rank & IV Percentile','Volatility Crush After Earnings','Week 4 Boss Battle'],c:'Greeks'},
+  {n:5,t:'Chart Patterns I',d:['Bull Flag: Momentum\'s Pause','Bear Flag: Dead Cat Bounce Warning','Cup & Handle: The Classic Breakout','Head & Shoulders: Classic Reversal','Double Top & Double Bottom','Ascending & Descending Triangles','Week 5 Boss Battle'],c:'Patterns'},
+  {n:6,t:'Chart Patterns II',d:['Wedge Patterns: Rising & Falling','Pennants vs Flags','Gap Up & Gap Fill Strategy','Island Reversal Pattern','Three Drives Pattern','Measured Move Targets','Week 6 Boss Battle'],c:'Patterns'},
+  {n:7,t:'Scalping Fundamentals',d:['What Is Scalping?','Level 2 & Order Flow Basics','Bid-Ask Spread & Slippage','Tape Reading Introduction','Hot Keys & Platform Speed','Scalp Entry Techniques','Week 7 Boss Battle'],c:'Scalping'},
+  {n:8,t:'Risk Management I',d:['Position Sizing: Never Risk More Than 1%','The Stop Loss: Where to Put It','Risk:Reward Ratio Explained','Max Daily Loss Rules','Account Size & Trade Size Math','PDT Rule: Pattern Day Trader Rules','Week 8 Boss Battle'],c:'Risk Mgmt'},
+  {n:9,t:'Options Strategies I',d:['Buying Calls: Basic Bullish Play','Buying Puts: Basic Bearish Play','Covered Calls: Income on Stock You Own','Cash-Secured Puts: Getting Paid to Buy','Protective Puts: Insurance for Your Shares','Long Straddle: Playing a Big Move','Week 9 Boss Battle'],c:'Strategies'},
+  {n:10,t:'Options Strategies II',d:['Bull Call Spread: Defined Risk Bullish','Bear Put Spread: Defined Risk Bearish','Iron Condor: Collect Premium in Range','Credit Spreads vs Debit Spreads','Calendar Spread: Playing Time','Diagonal Spread: Poor Man\'s Covered Call','Week 10 Boss Battle'],c:'Strategies'},
+  {n:11,t:'The Open: First 30 Minutes',d:['Pre-Market Gappers: Finding Plays','Gap & Go vs Gap & Fill','Opening Drive: Reading the First 5 Candles','Fade the Open Strategy','VWAP at the Open','First Candle Range Breakout','Week 11 Boss Battle'],c:'Market Open'},
+  {n:12,t:'VWAP Mastery',d:['What Is VWAP?','VWAP as Support & Resistance','VWAP Reclaim & Rejection','Standard Deviations of VWAP','Anchored VWAP (AVWAP)','VWAP vs MVWAP','Week 12 Boss Battle'],c:'VWAP'},
+  {n:13,t:'Market Structure',d:['Market Structure: Swing Highs & Lows','Break of Structure (BOS) Explained','Liquidity Zones: Where Orders Hide','Fair Value Gaps (FVG)','Order Blocks: Institutional Footprints','Displacement & Impulse Moves','Week 13 Boss Battle'],c:'Structure'},
+  {n:14,t:'Sector Rotation & Market Breadth',d:['11 S&P Sectors Explained','Sector Rotation Strategy','Advance-Decline Line','New Highs vs New Lows','Put/Call Ratio','VIX: The Fear Index','Week 14 Boss Battle'],c:'Sectors'},
+  {n:15,t:'Earnings Trading',d:['What Happens at Earnings?','IV Crush: The Options Trader\'s Trap','Strangle Before Earnings Strategy','Covered Calls to Hedge Earnings','Earnings Gaps: Fade or Follow?','Post-Earnings Drift (PEAD)','Week 15 Boss Battle'],c:'Earnings'},
+  {n:16,t:'News & Catalysts',d:['Economic Calendar: What Moves Markets','Fed Meetings & Rate Decisions','CPI, PPI & Inflation Data','Jobs Report (NFP) Trading','Sector-Specific Catalysts','Trading FDA Approvals & Rejections','Week 16 Boss Battle'],c:'News'},
+  {n:17,t:'Level 2 & Order Flow',d:['Reading Level 2 Like a Pro','Market Makers & Their Role','Spoofing & Layering Patterns','Dark Pools & Institutional Flow','Block Trades: Following Smart Money','Order Flow Divergence','Week 17 Boss Battle'],c:'Order Flow'},
+  {n:18,t:'Psychology I',d:['FOMO: The Trader\'s Worst Enemy','Revenge Trading: How Accounts Die','Confirmation Bias in Trading','Anchoring Bias: Stuck on a Price','Loss Aversion: Why We Hold Losers','Overconfidence After a Win Streak','Week 18 Boss Battle'],c:'Psychology'},
+  {n:19,t:'Psychology II',d:['The Trading Journal: Your Secret Weapon','Post-Trade Review Process','Identifying Your Emotional Triggers','The Pre-Market Routine of Top Traders','Managing Drawdowns Mentally','Building Discipline: The 90-Day Rule','Week 19 Boss Battle'],c:'Psychology'},
+  {n:20,t:'Advanced Chart Reading',d:['Multi-Timeframe Analysis','Higher Timeframe Bias','The 5-Minute Trend Within the Daily','Compression Setups Before Breakouts','Range Days vs Trend Days','Identifying Today\'s Market Character','Week 20 Boss Battle'],c:'Charts'},
+  {n:21,t:'SPY & Index Trading',d:['Why SPY Moves Everything','Futures: /ES & /MES','SPY vs QQQ: Tech-Heavy vs Broad','Index Options: SPX vs SPY','0DTE Options: What You Need to Know','Gamma Exposure (GEX) Basics','Week 21 Boss Battle'],c:'Indexes'},
+  {n:22,t:'Momentum Trading',d:['What Makes a Stock "In Play"?','Relative Strength During Market Weakness','Float & Short Float Impact','Catalyst-Driven Momentum','The 3-Push Exhaustion Pattern','Momentum Reversal Signals','Week 22 Boss Battle'],c:'Momentum'},
+  {n:23,t:'Short Selling',d:['What Is Short Selling?','Locating Shares to Short','Short Squeeze Mechanics','High Short Interest Stocks','Days to Cover Ratio','Short Selling Risk: Unlimited Upside','Week 23 Boss Battle'],c:'Short Selling'},
+  {n:24,t:'Futures & Commodities',d:['What Are Futures Contracts?','Crude Oil (CL) Basics','Gold (GC) as a Safe Haven','Natural Gas Volatility','Futures Rollover Dates','Futures vs Stocks: Key Differences','Week 24 Boss Battle'],c:'Futures'},
+  {n:25,t:'Crypto for Traders',d:['Bitcoin Basics for Stock Traders','Crypto Correlation to QQQ','On-Chain Metrics Overview','Crypto Options: Basics','Liquidation Cascades','Crypto vs Stock Risk Profile','Week 25 Boss Battle'],c:'Crypto'},
+  {n:26,t:'Mid-Year Review',d:['Recap: Charting Mastery','Recap: Options Strategies','Recap: Market Microstructure','Recap: Psychology & Discipline','Recap: Advanced Strategies','Your Trading Plan Template','Week 26 Boss Battle — Mid-Year Exam'],c:'Review'},
+  {n:27,t:'Advanced Options I',d:['Ratio Spreads','Broken Wing Butterfly','Jade Lizard Strategy','Short Strangle Management','Rolling Options Positions','Early Exercise: When & Why','Week 27 Boss Battle'],c:'Options Adv.'},
+  {n:28,t:'Advanced Options II',d:['Gamma Scalping','Delta Hedging Basics','Volatility Surface Reading','Skew: Why Puts Are More Expensive','Correlation & Portfolio Greeks','Options Market Making Insight','Week 28 Boss Battle'],c:'Options Adv.'},
+  {n:29,t:'Swing Trading',d:['Swing vs Day Trading','Multi-Day Setups','Weekly Options for Swing Trades','Earnings Swing Plays','Overnight Risk Management','Swing Trade Position Sizing','Week 29 Boss Battle'],c:'Swing'},
+  {n:30,t:'Tape Reading Advanced',d:['Reading the Bid Stack','Iceberg Orders Identification','Stop Clusters on Level 2','Momentum Ignition Pattern','Absorption & Exhaustion','Combining Tape with Charts','Week 30 Boss Battle'],c:'Tape'},
+  {n:31,t:'Algorithmic Trading Basics',d:['What Are Algos?','VWAP & TWAP Algorithms','Momentum Algorithms','Mean-Reversion Algorithms','How to Trade Against Algos','Identifying Algorithmic Levels','Week 31 Boss Battle'],c:'Algos'},
+  {n:32,t:'Pairs Trading',d:['Correlation Between Stocks','Creating a Pairs Trade','Cointegration vs Correlation','Sector Pairs: XOM vs CVX','Statistical Arbitrage Intro','Risk in Pairs Trading','Week 32 Boss Battle'],c:'Pairs'},
+  {n:33,t:'Portfolio Management',d:['Building a Trading Portfolio','Beta-Weighted Hedging','Sector Exposure Management','Correlation Risk in Portfolios','Tax-Loss Harvesting Basics','The Kelly Criterion','Week 33 Boss Battle'],c:'Portfolio'},
+  {n:34,t:'Market Profile',d:['Value Area Explained','Point of Control (POC)','Initial Balance: First Hour','Single Prints & Gap Filling','Profile Shape: D, B, P Profiles','Combining Market Profile with Candles','Week 34 Boss Battle'],c:'Market Profile'},
+  {n:35,t:'Fibonacci & Harmonics',d:['Fibonacci Retracements','Key Fib Levels: .382, .5, .618','Fibonacci Extensions for Targets','Harmonic Patterns Overview','Gartley & Bat Patterns','Crab & Cypher Patterns','Week 35 Boss Battle'],c:'Fibonacci'},
+  {n:36,t:'Supply & Demand Zones',d:['Supply vs Resistance','Demand vs Support','How Zones Are Created','Freshness of a Zone','Confluence: Zones + Other Indicators','Zone Entry Technique','Week 36 Boss Battle'],c:'Supply/Demand'},
+  {n:37,t:'Seasonality',d:['January Effect','Sell in May & Go Away?','September Effect','Options Expiration Week (OpEx)','Triple Witching Day','Santa Claus Rally','Week 37 Boss Battle'],c:'Seasonality'},
+  {n:38,t:'Macroeconomics for Traders',d:['Interest Rates & Stocks','Yield Curve: Normal vs Inverted','Dollar Index (DXY) Impact','Global Markets Correlation','Quantitative Easing & Tightening','Recession Indicators for Traders','Week 38 Boss Battle'],c:'Macro'},
+  {n:39,t:'Advanced Risk Management',d:['Dynamic Position Sizing','Value at Risk (VaR) Simplified','Max Adverse Excursion (MAE)','Portfolio Heat Management','Stress Testing Your Trades','The 3% Monthly Rule','Week 39 Boss Battle'],c:'Risk Mgmt'},
+  {n:40,t:'Building Your Strategy',d:['Defining Your Edge','Backtesting Basics','Forward Testing vs Paper Trading','Building a Playbook','When to Override Your Rules','Strategy Evolution Over Time','Week 40 Boss Battle'],c:'Strategy'},
+  {n:41,t:'Trading Full-Time',d:['Income Requirements Planning','Scaling a Trading Account','Managing Multiple Accounts','Tax Considerations (Trader Status)','Prop Firms vs Personal Account','Building a Trading Business','Week 41 Boss Battle'],c:'Full-Time'},
+  {n:42,t:'Mentorship & Community',d:['Finding a Good Mentor','Learning from Trade Reviews','Building a Trading Circle','Avoiding Gurus & Scammers','Contributing to a Trading Community','Teaching to Deepen Understanding','Week 42 Boss Battle'],c:'Community'},
+  {n:43,t:'Advanced Psychology',d:['Flow State in Trading','Meditation & Mental Performance','Physical Health & Trading Performance','Sleep & Decision Quality','Managing a Losing Month','Identity vs Results','Week 43 Boss Battle'],c:'Psychology'},
+  {n:44,t:'High-Frequency Setups',d:['The 1-Minute Scalp Setup','The 5-Minute Breakout','The 15-Minute Opening Range','The 30-Minute Reclaim','VWAP Bounce Scalp','HOD/LOD Break Scalp','Week 44 Boss Battle'],c:'Scalping'},
+  {n:45,t:'SPX 0DTE Mastery',d:['0DTE Risk: What Can Go Wrong','0DTE Gamma Risk','Time of Day for 0DTE','0DTE Spread vs Naked','0DTE with VIX Context','0DTE Exit Rules','Week 45 Boss Battle'],c:'0DTE'},
+  {n:46,t:'Institutional Footprints',d:['How Institutions Accumulate','Dark Pool Activity & Reports','Unusual Options Activity (UOA)','Block Trade Analysis','COT Report Basics','Following Smart Money Safely','Week 46 Boss Battle'],c:'Institutional'},
+  {n:47,t:'Live Market Simulation',d:['Simulated Open: Gap & Go Day','Simulated Trend Day','Simulated Reversal Day','Simulated Choppy Day','Simulated Earnings Day','Simulated News Event Day','Week 47 Boss Battle'],c:'Simulation'},
+  {n:48,t:'Advanced Charting Tools',d:['Volume Profile: POC & VAH/VAL','Heatmaps: Where Orders Live','Footprint Charts','Cumulative Delta','Time & Sales Mastery','Combining All Tools','Week 48 Boss Battle'],c:'Tools'},
+  {n:49,t:"Your Edge: What Makes You Different?",d:['Defining Your Niche','Time of Day Specialization','Sector Specialization','Instrument Specialization','Personality & Trading Style','Your Unique Edge Statement','Week 49 Boss Battle'],c:'Edge'},
+  {n:50,t:'Year-End Review & Taxes',d:['Wash Sale Rule for Traders','Mark-to-Market Election','Section 1256 Contracts','Tax Software for Traders','Year-End Portfolio Review','Setting Goals for Year 2','Week 50 Boss Battle'],c:'Taxes'},
+  {n:51,t:'Preparing for Year 2',d:['Advanced Strategy Roadmap','Prop Firm Evaluation Prep','Series 65: Should You Get Licensed?','Building a Track Record','Investor Relations Basics','Scaling Capital: Real Pathways','Week 51 Boss Battle'],c:'Year 2'},
+  {n:52,t:'Day 365: Market Master',d:['The Trader You Were vs The Trader You Are','Your Personal Trading Manifesto','10 Habits of Elite Traders','Building Wealth Through Trading','Paying It Forward: Teach Someone Else','Day 365: The Final Boss Battle','Day 365 — Market Master Certification'],c:'Mastery'},
 ];
 
-// ─── TOOLS ───────────────────────────────────────────────────
-var TOOLS = [
-  {icon:'📊',name:'ScalpCharts',desc:'Live candlestick charts with pattern detection, SampsonX confidence, and AI candle coach.',href:'/scalpchart.html',tag:'Live'},
-  {icon:'⏱',name:'ScalpExit',desc:'Exit assistant with profit clock, trailing stops, and probability-based exit signals.',href:'/exitassistant.html',tag:'Live'},
-  {icon:'⚡',name:'ScalpSignals',desc:'Real-time RSI + VWAP + volume signals for 20 tickers. HARD = highest confluence.',href:'/',tag:'Live'},
-  {icon:'🔍',name:'ScalpScanner',desc:'Pattern scanner inside ScalpCharts. Detects 20+ candlestick patterns as they form.',href:'/scalpchart.html',tag:'Live'},
-  {icon:'📅',name:'Chart Replay',desc:'Replay any historical chart candle by candle. Practice patterns and earn XP.',href:'/scalpchart.html?tab=replay',tag:'Learn'},
-  {icon:'👁',name:'ScalpWatchlist',desc:'Your personal watchlist — track up to 5 tickers from your dashboard.',href:'/dashboard.html',tag:'Dashboard'},
-  {icon:'📚',name:'Learn Hub',desc:'Lessons, quizzes, challenges, badges and progress. The Duolingo of options trading.',href:'/learn.html',tag:'You are here',active:true},
-  {icon:'⚙️',name:'Account / Pro',desc:'Manage your subscription, view plan details, and access all Pro features.',href:'/dashboard.html',tag:'Account'},
+function buildStubWeek(def) {
+  return {
+    num: def.n, title: def.t,
+    days: def.d.map((title, i) => ({
+      icon: i === 6 ? (def.n === 52 ? '🏆' : '👑') : ['📖','📊','📈','🔍','⚙️','🎯'][i % 6],
+      category: def.c, title, isBoss: i === 6, stub: true,
+    }))
+  };
+}
+
+const CURRICULUM = [W1, ...WEEK_DEFS.map(buildStubWeek)];
+const ALL_DAYS = [];
+CURRICULUM.forEach(w => w.days.forEach(d => ALL_DAYS.push({...d, week: w.num, weekTitle: w.title})));
+
+/* ── BADGES ── */
+const BADGES = [
+  {id:'first_step', icon:'🌱',name:'First Step',  desc:'Complete Day 1'},
+  {id:'week_one',   icon:'📅',name:'Week One',     desc:'Complete Days 1–7'},
+  {id:'on_fire',    icon:'🔥',name:'On Fire',      desc:'3-day streak'},
+  {id:'week_warrior',icon:'⚔️',name:'Week Warrior',desc:'7-day streak'},
+  {id:'diamond',    icon:'💎',name:'Diamond',      desc:'30-day streak'},
+  {id:'perfect',    icon:'💯',name:'Perfect Score',desc:'100% on a quiz'},
+  {id:'speed',      icon:'⚡',name:'Speed Demon',  desc:'Lesson under 4 min'},
+  {id:'day10',      icon:'🥉',name:'Day 10',       desc:'Complete Day 10'},
+  {id:'day30',      icon:'🥈',name:'Day 30',       desc:'Complete Day 30'},
+  {id:'day100',     icon:'🥇',name:'Day 100',      desc:'Complete Day 100'},
+  {id:'day365',     icon:'🏆',name:'Market Master',desc:'Complete all 365 days'},
+  {id:'boss_slayer',icon:'👑',name:'Boss Slayer',  desc:'Pass a Boss Battle'},
+  {id:'xp500',      icon:'⚗️',name:'XP 500',       desc:'Earn 500 total XP'},
+  {id:'xp2000',     icon:'🔮',name:'XP 2000',      desc:'Earn 2000 total XP'},
+  {id:'eagle_eye',  icon:'🦅',name:'Eagle Eye',    desc:'Pass 3 quizzes first try'},
 ];
 
-// ─── CHALLENGES ──────────────────────────────────────────────
-var DAILY_CHALLENGES = [
-  {id:'dc_quiz',icon:'🧠',title:'Daily Quiz',desc:'Complete any quiz. Tests rotate daily to keep your knowledge sharp.',xp:75,badge:'green',action:'quiz'},
-  {id:'dc_replay',icon:'📅',title:'Chart Replay Session',desc:'Open ScalpCharts Replay, load a historical chart, and identify patterns. XP is tracked inside the chart.',xp:100,badge:'',action:'replay'},
-  {id:'dc_lesson',icon:'📖',title:'Complete a Lesson',desc:"Finish any lesson you have not completed yet. Even one counts toward your streak.",xp:50,badge:'green',action:'lesson'},
-  {id:'dc_streak',icon:'🔥',title:'Keep Your Streak',desc:"Coming back every day is the challenge. Your streak keeps growing as long as you show up.",xp:25,badge:'orange',action:'streak'},
-];
+/* ── STATE ── */
+let currentDay = 1;
+let modalStep = 0;
+let modalLesson = null;
+let quizState = {current:0,answers:[],startTime:0};
+let practiceAnswered = false;
+let earnedThisLesson = [];
 
-// ─── UTILS ───────────────────────────────────────────────────
-function today() { return new Date().toDateString(); }
-
-function getState() {
-  var lessonsDone = JSON.parse(localStorage.getItem('sc_lessons_done') || '{}');
-  var quizHistory = JSON.parse(localStorage.getItem('sc_quiz_history') || '{}');
-  var replayProg  = JSON.parse(localStorage.getItem('sc_replay_progress') || '{}');
-  var learnXP     = parseInt(localStorage.getItem('sc_learn_xp') || '0');
-  var replayXP    = parseInt(localStorage.getItem('sc_replay_xp') || '0');
-  var streak      = parseInt(localStorage.getItem('sc_streak_count') || '0');
-
-  var doneCount   = Object.values(lessonsDone).filter(Boolean).length;
-  var courseDone  = COURSES.filter(function(c){return c.lessons.every(function(l){return lessonsDone[l.id];});}).length;
-  var quizzesDone = Object.keys(quizHistory).length;
-  var perfectQuiz = Object.values(quizHistory).filter(function(q){return q.score===q.total;}).length;
-
-  var rpKeys = Object.keys(replayProg);
-  var replayBull = 0, replayBear = 0;
-  rpKeys.forEach(function(k){
-    var lo = k.toLowerCase();
-    if (lo.indexOf('bull')>=0||lo.indexOf('engulf')>=0||lo.indexOf('morning')>=0||lo.indexOf('hammer')>=0||lo.indexOf('soldier')>=0) replayBull += (replayProg[k].c||0);
-    if (lo.indexOf('bear')>=0||lo.indexOf('shoot')>=0||lo.indexOf('evening')>=0||lo.indexOf('crow')>=0||lo.indexOf('top')>=0) replayBear += (replayProg[k].c||0);
-  });
-
-  return {lessonsDone:doneCount, quizHistory:quizHistory, replayProg:replayProg,
-          learnXP:learnXP, replayXP:replayXP, streak:streak,
-          totalXP:learnXP+replayXP, courseDone:courseDone, quizzesDone:quizzesDone,
-          perfectQuiz:perfectQuiz, replayBull:replayBull, replayBear:replayBear,
-          lessonsDoneMap:lessonsDone};
+/* ── INIT ── */
+function init() {
+  updateNav();
+  const done = getDone();
+  currentDay = Math.min(done.length + 1, 365);
+  renderHeroStats();
+  renderLevelBar();
+  renderTodayCard();
+  renderPath();
+  renderBadges();
 }
 
-function xpLevel(xp) {
-  var levels = [0,100,250,500,1000,2000,3500];
-  for (var i=levels.length-1;i>=0;i--) {
-    if (xp>=levels[i]) {
-      var nextXP = levels[i+1] || levels[i]+2000;
-      return {level:i+1, cur:xp-levels[i], need:nextXP-levels[i]};
-    }
-  }
-  return {level:1,cur:xp,need:100};
+function updateNav() {
+  const xp=getXP(),lvl=levelFromXP(xp);
+  const thisXP=xpForLevel(lvl),nextXP=xpForLevel(lvl+1);
+  const pct=lvl>=20?100:Math.round((xp-thisXP)/(nextXP-thisXP)*100);
+  document.getElementById('nav-streak').textContent=getStreak();
+  document.getElementById('nav-xp').textContent=xp;
+  document.getElementById('nav-xp-fill').style.width=pct+'%';
 }
 
-function checkStreak() {
-  var t = today();
-  var last = localStorage.getItem('sc_streak_date');
-  var count = parseInt(localStorage.getItem('sc_streak_count') || '0');
-  if (last === t) return count;
-  var yesterday = new Date(Date.now()-86400000).toDateString();
-  count = (last===yesterday) ? count+1 : 1;
-  localStorage.setItem('sc_streak_date', t);
-  localStorage.setItem('sc_streak_count', count);
-  return count;
+function renderHeroStats() {
+  const xp=getXP(),lvl=levelFromXP(xp),done=getDone(),streak=getStreak();
+  document.getElementById('stat-day').textContent=Math.min(done.length+1,365);
+  document.getElementById('stat-streak').textContent='🔥 '+streak;
+  document.getElementById('stat-xp').textContent=xp;
+  document.getElementById('stat-level').textContent=lvl;
+  document.getElementById('stat-level-name').textContent=levelTitle(lvl);
 }
 
-function addXP(amount, label) {
-  var cur = parseInt(localStorage.getItem('sc_learn_xp') || '0');
-  localStorage.setItem('sc_learn_xp', cur + amount);
-  showToast('+' + amount + ' XP — ' + label);
-  renderXPStrip();
-  if (document.getElementById('tab-progress').classList.contains('active')) renderProgress();
-  checkBadges();
+function renderLevelBar() {
+  const xp=getXP(),lvl=levelFromXP(xp);
+  const thisXP=xpForLevel(lvl),nextXP=xpForLevel(lvl+1);
+  const pct=lvl>=20?100:Math.round((xp-thisXP)/(nextXP-thisXP)*100);
+  document.getElementById('lv-title').textContent=levelTitle(lvl);
+  document.getElementById('lv-num').textContent='Level '+lvl;
+  document.getElementById('lv-fill').style.width=pct+'%';
+  document.getElementById('lv-xp-label').textContent=lvl>=20?'Max level reached!':`${xp-thisXP} / ${nextXP-thisXP} XP to next level`;
 }
 
-// ─── XP STRIP ────────────────────────────────────────────────
-function renderXPStrip() {
-  var s = getState();
-  var lv = xpLevel(s.totalXP);
-  document.getElementById('xpLevelLabel').textContent = 'Level ' + lv.level;
-  document.getElementById('xpCurrent').textContent = s.totalXP + ' XP';
-  document.getElementById('xpNext').textContent = 'Lv ' + (lv.level+1);
-  document.getElementById('xpFill').style.width = Math.min(100, lv.cur/lv.need*100).toFixed(1) + '%';
-  document.getElementById('streakBadge').textContent = '🔥 ' + s.streak + ' Day Streak';
-  var done = JSON.parse(localStorage.getItem('sc_challenges_'+today())||'[]');
-  document.getElementById('dailyBadge').textContent = '📅 ' + done.length + '/3 Daily Goals';
+function renderTodayCard() {
+  const day=ALL_DAYS[currentDay-1];
+  if(!day) return;
+  document.getElementById('today-cat').textContent=day.category;
+  document.getElementById('today-icon').textContent=day.icon;
+  document.getElementById('today-day-label').textContent=`Day ${currentDay} · Week ${day.week}`;
+  document.getElementById('today-lesson-title').textContent=day.title;
+  document.getElementById('today-cta').textContent=isDone(currentDay)?'Replay →':'Start Lesson →';
 }
 
-// ─── LESSONS ─────────────────────────────────────────────────
-function renderLessons() {
-  var lessonsDone = JSON.parse(localStorage.getItem('sc_lessons_done') || '{}');
-  var totalLessons = COURSES.reduce(function(t,c){return t+c.lessons.length;},0);
-  var dayIdx = Math.floor(Date.now()/86400000) % totalLessons;
-  var li=0, dailyLesson=null, dailyCourse=null;
-  outer: for(var ci=0;ci<COURSES.length;ci++){for(var li2=0;li2<COURSES[ci].lessons.length;li2++){if(li===dayIdx){dailyLesson=COURSES[ci].lessons[li2];dailyCourse=COURSES[ci];break outer;}li++;}}
-
-  if (dailyLesson) {
-    document.getElementById('dlTitle').textContent = dailyLesson.title;
-    document.getElementById('dlMeta').textContent = dailyCourse.name + ' · ' + dailyLesson.xp + ' XP';
-    document.getElementById('dlXP').textContent = lessonsDone[dailyLesson.id] ? '✅ Completed' : '+' + dailyLesson.xp + ' XP on completion';
-    var dlBtn = document.getElementById('dlBtn');
-    if (lessonsDone[dailyLesson.id]) { dlBtn.textContent='✅ Done'; dlBtn.className='btn-lesson done'; }
-    else { dlBtn.textContent='Start Lesson →'; dlBtn.className='btn-lesson'; }
-    window._dailyLesson = dailyLesson; window._dailyCourse = dailyCourse;
-  }
-
-  var grid = document.getElementById('coursesGrid');
-  grid.innerHTML = COURSES.map(function(c){
-    var done = c.lessons.filter(function(l){return lessonsDone[l.id];}).length;
-    var pct = Math.round(done/c.lessons.length*100);
-    return '<div class="course-card" onclick="openCourse(\''+c.id+'\')">'
-      +'<div class="course-icon">'+c.icon+'</div>'
-      +'<div class="course-name">'+c.name+'</div>'
-      +'<div class="course-desc">'+c.desc+'</div>'
-      +'<div class="course-progress-bar"><div class="course-fill" style="width:'+pct+'%"></div></div>'
-      +'<div class="course-meta"><span>'+done+'/'+c.lessons.length+' lessons</span><span>'+pct+'%</span></div>'
-      +'</div>';
-  }).join('');
-}
-
-function openCourse(id) {
-  var course = COURSES.find(function(c){return c.id===id;});
-  if (!course) return;
-  var lessonsDone = JSON.parse(localStorage.getItem('sc_lessons_done') || '{}');
-  var grid = document.getElementById('coursesGrid');
-  var backBtn = '<div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-bottom:4px;">'
-    +'<button onclick="renderLessons()" style="background:none;border:1px solid var(--line);border-radius:8px;padding:6px 14px;color:var(--t55);cursor:pointer;font-family:var(--body);">← All Courses</button>'
-    +'<div style="font-family:var(--disp);font-weight:700;font-size:1.15rem;">'+course.icon+' '+course.name+'</div>'
-    +'</div>';
-  var items = '<div class="lesson-list" style="grid-column:1/-1;">'
-    + course.lessons.map(function(l,i){
-        return '<div class="lesson-item '+(lessonsDone[l.id]?'done':'')+'" onclick="openLessonById(\''+l.id+'\',\''+course.id+'\')">'
-          +'<div class="lesson-num">'+String(i+1).padStart(2,'0')+'</div>'
-          +'<div class="lesson-check '+(lessonsDone[l.id]?'done':'')+'">'+( lessonsDone[l.id]?'✓':'')+'</div>'
-          +'<div class="lesson-title">'+l.title+'</div>'
-          +'<div class="lesson-xp">+'+l.xp+' XP</div>'
-          +'</div>';
-      }).join('')
-    +'</div>';
-  grid.innerHTML = backBtn + items;
-}
-
-var currentLesson = null;
-function openLessonById(lid, cid) {
-  var course = COURSES.find(function(c){return c.id===cid;});
-  var lesson = course && course.lessons.find(function(l){return l.id===lid;});
-  if (lesson && course) openLesson(lesson, course);
-}
-function openDailyLesson() { if (window._dailyLesson) openLesson(window._dailyLesson, window._dailyCourse); }
-
-function openLesson(lesson, course) {
-  currentLesson = {lesson:lesson, course:course};
-  var lessonsDone = JSON.parse(localStorage.getItem('sc_lessons_done') || '{}');
-  document.getElementById('lmEyebrow').textContent = course.name;
-  document.getElementById('lmTitle').textContent = lesson.title;
-  document.getElementById('lmBody').innerHTML = lesson.content;
-  document.getElementById('lmXP').textContent = lessonsDone[lesson.id] ? '✅ Already completed' : '+' + lesson.xp + ' XP on completion';
-  var btn = document.getElementById('lmBtn');
-  if (lessonsDone[lesson.id]) { btn.textContent='✅ Completed'; btn.className='btn-complete done'; }
-  else { btn.textContent='✅ Mark Complete'; btn.className='btn-complete'; }
-  document.getElementById('lessonOverlay').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLesson() { document.getElementById('lessonOverlay').style.display='none'; document.body.style.overflow=''; }
-function closeLessonIfBg(e) { if (e.target===document.getElementById('lessonOverlay')) closeLesson(); }
-
-function completeLesson() {
-  if (!currentLesson) return;
-  var lesson = currentLesson.lesson;
-  var lessonsDone = JSON.parse(localStorage.getItem('sc_lessons_done') || '{}');
-  if (lessonsDone[lesson.id]) { closeLesson(); return; }
-  lessonsDone[lesson.id] = true;
-  localStorage.setItem('sc_lessons_done', JSON.stringify(lessonsDone));
-  localStorage.setItem('sc_last_lesson_date', today());
-  closeLesson();
-  addXP(lesson.xp, lesson.title);
-  renderLessons();
-  checkBadges();
-}
-
-// ─── CHALLENGES ──────────────────────────────────────────────
-function renderChallenges() {
-  var done = JSON.parse(localStorage.getItem('sc_challenges_'+today()) || '[]');
-  var grid = document.getElementById('challengeGrid');
-  grid.innerHTML = DAILY_CHALLENGES.map(function(ch,i){
-    var isDone = done.indexOf(ch.id) >= 0;
-    var featured = i===0 ? ' featured' : '';
-    var btnClass = isDone ? 'done' : (ch.action==='replay' ? 'secondary' : '');
-    var btnTxt = isDone ? '✅ Complete' : (ch.action==='replay' ? 'Open Chart Replay →' : 'Start →');
-    var onclick = isDone ? '' : getChAction(ch);
-    return '<div class="challenge-card'+featured+'">'
-      +'<div class="ch-badge '+(ch.badge==='green'?'green':'')+'">'+(isDone?'✅':'⭐')+' Daily</div>'
-      +'<div class="ch-title">'+ch.icon+' '+ch.title+'</div>'
-      +'<div class="ch-desc">'+ch.desc+'</div>'
-      +'<div class="ch-xp">+'+ch.xp+' XP</div>'
-      +'<button class="btn-ch '+btnClass+'" '+(onclick?'onclick="'+onclick+'"':'')+'>'+btnTxt+'</button>'
-      +'</div>';
-  }).join('');
-}
-
-function getChAction(ch) {
-  if (ch.action==='replay') return "completeChallenge('"+ch.id+"',"+ch.xp+");window.location.href='/scalpchart.html?tab=replay';";
-  if (ch.action==='quiz') return "switchLearnTab('quizzes');completeChallenge('"+ch.id+"',"+ch.xp+");";
-  if (ch.action==='lesson') return "switchLearnTab('lessons');completeChallenge('"+ch.id+"',"+ch.xp+");";
-  return "completeChallenge('"+ch.id+"',"+ch.xp+");";
-}
-
-function completeChallenge(id, xp) {
-  var done = JSON.parse(localStorage.getItem('sc_challenges_'+today()) || '[]');
-  if (done.indexOf(id) < 0) {
-    done.push(id);
-    localStorage.setItem('sc_challenges_'+today(), JSON.stringify(done));
-    if (xp > 0) addXP(xp, 'Challenge Complete');
-    renderChallenges();
-    renderXPStrip();
-  }
-}
-
-// ─── QUIZZES ─────────────────────────────────────────────────
-var activeQuiz = null, qIdx = 0, qScore = 0, qAnswered = false;
-
-function renderQuizCats() {
-  var history = JSON.parse(localStorage.getItem('sc_quiz_history') || '{}');
-  var cats = document.getElementById('quizCats');
-  cats.innerHTML = Object.keys(QUIZZES).map(function(key){
-    var q = QUIZZES[key];
-    var best = history[key];
-    var scoreStr = best ? 'Best: '+best.score+'/'+best.total : 'Not taken';
-    return '<div class="quiz-cat-btn '+(activeQuiz===key?'active':'')+'" onclick="startQuiz(\''+key+'\')">'
-      +'<div class="qcat-icon">'+q.icon+'</div>'
-      +'<div class="qcat-name">'+q.name+'</div>'
-      +'<div class="qcat-score">'+scoreStr+'</div>'
-      +'</div>';
-  }).join('');
-}
-
-function startQuiz(key) { activeQuiz=key; qIdx=0; qScore=0; qAnswered=false; renderQuizCats(); renderQuestion(); }
-
-function renderQuestion() {
-  var quiz = QUIZZES[activeQuiz];
-  var q = quiz.questions[qIdx];
-  var total = quiz.questions.length;
-  var pct = (qIdx/total*100).toFixed(0);
-  document.getElementById('quizArea').innerHTML =
-    '<div class="quiz-progress-row">'
-    +'<div class="quiz-prog-label">Question '+(qIdx+1)+' of '+total+'</div>'
-    +'<div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:'+pct+'%"></div></div>'
-    +'<div class="quiz-prog-label">'+qScore+'/'+qIdx+' correct</div>'
-    +'</div>'
-    +'<div class="quiz-q-text">'+q.q+'</div>'
-    +'<div class="quiz-opts">'
-    +q.opts.map(function(o,i){return '<button class="quiz-opt" id="qopt'+i+'" onclick="answerQ('+i+')">'+String.fromCharCode(65+i)+') '+o+'</button>';}).join('')
-    +'</div>'
-    +'<div class="quiz-result-box" id="qResultBox"></div>'
-    +'<button class="btn-quiz-next" id="qNextBtn" onclick="nextQuestion()">'+(qIdx+1<total?'Next Question →':'See Results')+'</button>';
-}
-
-function answerQ(idx) {
-  if (qAnswered) return;
-  qAnswered = true;
-  var quiz = QUIZZES[activeQuiz];
-  var q = quiz.questions[qIdx];
-  var correct = idx === q.ans;
-  if (correct) qScore++;
-  document.querySelectorAll('.quiz-opt').forEach(function(b,i){
-    b.disabled = true;
-    if (i===q.ans) b.classList.add('correct');
-    else if (i===idx && !correct) b.classList.add('wrong');
-  });
-  var box = document.getElementById('qResultBox');
-  box.className = 'quiz-result-box show ' + (correct?'correct':'wrong');
-  box.innerHTML = '<strong>'+(correct?'✅ Correct!':'❌ Not quite.')+'</strong> '+q.exp;
-  document.getElementById('qNextBtn').classList.add('show');
-  if (correct) addXP(25, 'Quiz answer');
-}
-
-function nextQuestion() { qIdx++; qAnswered=false; if(qIdx>=QUIZZES[activeQuiz].questions.length){showQuizResult();return;} renderQuestion(); }
-
-function showQuizResult() {
-  var quiz = QUIZZES[activeQuiz];
-  var pct = Math.round(qScore/quiz.questions.length*100);
-  var history = JSON.parse(localStorage.getItem('sc_quiz_history') || '{}');
-  var prev = history[activeQuiz];
-  if (!prev || qScore > prev.score) {
-    history[activeQuiz] = {score:qScore, total:quiz.questions.length, date:today()};
-    localStorage.setItem('sc_quiz_history', JSON.stringify(history));
-  }
-  checkBadges();
-  var medals = pct===100?'🏆':pct>=80?'🥈':pct>=60?'🥉':'📚';
-  document.getElementById('quizArea').innerHTML =
-    '<div class="quiz-done-screen">'
-    +'<div class="quiz-score-big">'+medals+' '+pct+'%</div>'
-    +'<div class="quiz-done-title">'+(pct===100?'Perfect score!':pct>=80?'Great work!':pct>=60?'Good effort!':'Keep practicing!')+'</div>'
-    +'<div class="quiz-done-sub">'+qScore+' of '+quiz.questions.length+' correct · '+(qScore*25)+' XP earned this round</div>'
-    +'<button class="btn-quiz-retry" onclick="startQuiz(\''+activeQuiz+'\')">Retry Quiz</button>'
-    +'<button class="btn-lesson" onclick="switchLearnTab(\'achievements\')" style="margin-top:0;">View Badges →</button>'
-    +'</div>';
-  renderQuizCats();
-}
-
-// ─── ACHIEVEMENTS ────────────────────────────────────────────
-function renderBadges() {
-  var s = getState();
-  var grid = document.getElementById('badgeGrid');
-  grid.innerHTML = BADGES.map(function(b){
-    var earned = b.check(s);
-    return '<div class="badge-card '+(earned?'earned':'locked')+'">'
-      +'<span class="badge-icon">'+b.icon+'</span>'
-      +'<div class="badge-name">'+b.name+'</div>'
-      +'<div class="badge-desc">'+b.desc+'</div>'
-      +(earned?'<div class="badge-earned-tag">✅ EARNED</div>':'')
-      +'</div>';
-  }).join('');
-}
-
-function checkBadges() {
-  var s = getState();
-  var prev = JSON.parse(localStorage.getItem('sc_earned_badges') || '[]');
-  var now = BADGES.filter(function(b){return b.check(s);}).map(function(b){return b.id;});
-  var newOnes = now.filter(function(id){return prev.indexOf(id)<0;});
-  if (newOnes.length) {
-    localStorage.setItem('sc_earned_badges', JSON.stringify(now));
-    newOnes.forEach(function(id){
-      var b = BADGES.find(function(b){return b.id===id;});
-      if (b) showToast(b.icon+' Badge Unlocked: '+b.name);
+function renderPath() {
+  const container=document.getElementById('path-container');
+  container.innerHTML='';
+  const done=getDone();
+  CURRICULUM.forEach(week=>{
+    const offset=(week.num-1)*7;
+    const completedInWeek=week.days.filter((_,i)=>done.includes(offset+i+1)).length;
+    const isCurrentWeek=currentDay>offset&&currentDay<=offset+7;
+    const section=document.createElement('div');
+    section.className='week-section';
+    const header=document.createElement('div');
+    header.className='week-header'+(isCurrentWeek?' open':'');
+    header.innerHTML=`<h3>Week ${week.num}: ${week.title}</h3><span class="w-meta">${completedInWeek}/${week.days.length}</span><span class="w-chev">▼</span>`;
+    const daysDiv=document.createElement('div');
+    daysDiv.className='week-days';
+    daysDiv.style.display=isCurrentWeek?'grid':'none';
+    week.days.forEach((day,i)=>{
+      const dayNum=offset+i+1;
+      const isCurrentD=dayNum===currentDay;
+      const isDoneD=done.includes(dayNum);
+      const isLocked=dayNum>currentDay;
+      const node=document.createElement('div');
+      node.className='day-node';
+      node.onclick=()=>{if(!isLocked)startLesson(dayNum);};
+      const circle=document.createElement('div');
+      let cls='day-circle';
+      if(day.isBoss)cls+=' boss';
+      if(isDoneD)cls+=' done';
+      else if(isCurrentD)cls+=' current';
+      else if(isLocked)cls+=' locked';
+      circle.className=cls;
+      circle.textContent=isDoneD?'':dayNum;
+      const label=document.createElement('div');
+      label.className='day-label';
+      label.textContent=day.title.length>22?day.title.slice(0,20)+'…':day.title;
+      node.appendChild(circle);node.appendChild(label);
+      daysDiv.appendChild(node);
     });
-    renderBadges();
-  }
-}
-
-// ─── PROGRESS ────────────────────────────────────────────────
-function renderProgress() {
-  var s = getState();
-  var lv = xpLevel(s.totalXP);
-  document.getElementById('progTotalXP').textContent = s.totalXP.toLocaleString();
-  document.getElementById('progLessons').textContent = s.lessonsDone;
-  document.getElementById('progQuizzes').textContent = s.quizzesDone;
-  document.getElementById('progLevel').textContent = 'Lv ' + lv.level;
-  document.getElementById('progXPToNext').textContent = (lv.need-lv.cur) + ' XP to Level ' + (lv.level+1);
-  document.getElementById('progXPFill').style.width = Math.min(100, lv.cur/lv.need*100).toFixed(1) + '%';
-  document.getElementById('progXPLabel').textContent = lv.cur + ' / ' + lv.need + ' XP';
-  document.getElementById('progStreak').textContent = '🔥 ' + s.streak + (s.streak!==1?' days':' day');
-
-  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var streakDays = document.getElementById('streakDays');
-  streakDays.innerHTML = Array.from({length:7},function(_,i){
-    var d = new Date(Date.now()-(6-i)*86400000);
-    var isToday = d.toDateString()===today();
-    return '<div class="streak-dot '+(isToday?'done':'')+'"><div>'+(isToday?'✓':days[d.getDay()][0])+'</div><div class="streak-dot-label">'+days[d.getDay()]+'</div></div>';
-  }).join('');
-
-  var lessonsDone = JSON.parse(localStorage.getItem('sc_lessons_done') || '{}');
-  document.getElementById('courseProgressList').innerHTML = COURSES.map(function(c){
-    var done = c.lessons.filter(function(l){return lessonsDone[l.id];}).length;
-    var pct = Math.round(done/c.lessons.length*100);
-    return '<div class="mastery-row">'
-      +'<div class="mastery-name">'+c.icon+' '+c.name+'</div>'
-      +'<div class="mastery-track"><div class="mastery-fill" style="width:'+pct+'%"></div></div>'
-      +'<div class="mastery-pct">'+pct+'%</div>'
-      +'</div>';
-  }).join('');
-
-  var replayProg = JSON.parse(localStorage.getItem('sc_replay_progress') || '{}');
-  var rpKeys = Object.keys(replayProg).sort(function(a,b){
-    return (replayProg[b].c/(replayProg[b].t||1)) - (replayProg[a].c/(replayProg[a].t||1));
+    header.onclick=()=>{const o=header.classList.toggle('open');daysDiv.style.display=o?'grid':'none';};
+    section.appendChild(header);section.appendChild(daysDiv);
+    container.appendChild(section);
   });
-  var masteryEl = document.getElementById('masteryList');
-  if (!rpKeys.length) {
-    masteryEl.innerHTML = '<div style="font-size:.84rem;color:var(--t30);font-style:italic;">No replay data yet. <a href="/scalpchart.html?tab=replay" style="color:var(--green);">Start a Replay session →</a></div>';
-  } else {
-    masteryEl.innerHTML = rpKeys.slice(0,8).map(function(k){
-      var c=replayProg[k].c||0, t=replayProg[k].t||1;
-      var pct = Math.round(c/t*100);
-      return '<div class="mastery-row">'
-        +'<div class="mastery-name">'+k+'</div>'
-        +'<div class="mastery-track"><div class="mastery-fill" style="width:'+pct+'%"></div></div>'
-        +'<div class="mastery-pct">'+pct+'%</div>'
-        +'</div>';
-    }).join('');
+}
+
+function renderBadges() {
+  const earned=getEarned();
+  document.getElementById('badge-count-pill').textContent=earned.length+' Earned';
+  const grid=document.getElementById('badges-grid');
+  grid.innerHTML='';
+  BADGES.forEach(b=>{
+    const card=document.createElement('div');
+    card.className='badge-card '+(earned.includes(b.id)?'earned':'locked');
+    card.innerHTML=`<div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ── LESSON FLOW ── */
+function startLesson(dayNum) {
+  const lesson=ALL_DAYS[dayNum-1];
+  if(!lesson)return;
+  modalLesson=lesson;
+  modalStep=0;
+  earnedThisLesson=[];
+  quizState={current:0,answers:[],startTime:Date.now()};
+  practiceAnswered=false;
+  document.getElementById('modal-overlay').classList.add('open');
+  renderModalStep();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalLesson=null;
+}
+
+function renderModalStep() {
+  const steps=['Learn','Watch','Practice','Quiz','Reward'];
+  document.getElementById('step-dots').innerHTML=steps.map((_,i)=>
+    `<div class="dot ${i<modalStep?'done':i===modalStep?'active':''}"></div>`).join('');
+  const body=document.getElementById('modal-body');
+  const footer=document.getElementById('modal-footer');
+  if(modalStep===0)renderLearnStep(body,footer);
+  else if(modalStep===1)renderWatchStep(body,footer);
+  else if(modalStep===2)renderPracticeStep(body,footer);
+  else if(modalStep===3)renderQuizStep(body,footer);
+  else renderRewardStep(body,footer);
+}
+
+function renderLearnStep(body,footer) {
+  const l=modalLesson;
+  body.innerHTML=`<div class="step-tag">Step 1 of 5 · Learn</div>
+<div class="step-title">${l.title}</div>
+<div class="step-content">${l.stub?`<p>This lesson covers <strong>${l.title}</strong> — part of the <em>${l.weekTitle}</em> curriculum.</p><p>Complete earlier lessons to advance to this day's full content.</p><div class="hbox">Keep your streak alive to unlock detailed lesson content, quizzes, and rewards as you progress.</div>`:l.learn}</div>`;
+  footer.innerHTML=`<button class="btn-p" onclick="nextStep()">Next: Watch a Chart →</button>`;
+}
+
+function buildSVGChart(data) {
+  const w=560,h=140,pad=16,min=Math.min(...data)-2,max=Math.max(...data)+2;
+  const xStep=(w-pad*2)/(data.length-1);
+  const y=v=>h-pad-((v-min)/(max-min))*(h-pad*2);
+  const pts=data.map((v,i)=>`${pad+i*xStep},${y(v)}`).join(' ');
+  const area=data.map((v,i)=>`${pad+i*xStep},${y(v)}`).join(' L ');
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#16d97e" stop-opacity="0.3"/>
+<stop offset="100%" stop-color="#16d97e" stop-opacity="0"/>
+</linearGradient></defs>
+<path d="M ${area} L ${pad+(data.length-1)*xStep},${h-pad} L ${pad},${h-pad} Z" fill="url(#cg)"/>
+<polyline points="${pts}" fill="none" stroke="#16d97e" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+${data.map((v,i)=>i===data.length-1?`<circle cx="${pad+i*xStep}" cy="${y(v)}" r="4" fill="#16d97e"/>`:''). join('')}
+</svg>`;
+}
+
+function renderWatchStep(body,footer) {
+  const l=modalLesson;
+  const data=l.watchData||[40,42,44,43,45,47,46,48,50,49,51,53,52,54,56];
+  body.innerHTML=`<div class="step-tag">Step 2 of 5 · Watch</div>
+<div class="step-title">${l.watchTitle||'Chart Example'}</div>
+<div class="step-content"><p>Study this chart carefully before moving to practice:</p></div>
+<div class="chart-wrap">${buildSVGChart(data)}</div>
+<p class="chart-caption">${l.watchCaption||'Observe how price moves and what it tells you.'}</p>`;
+  footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" onclick="nextStep()">Next: Practice →</button>`;
+}
+
+function renderPracticeStep(body,footer) {
+  const l=modalLesson;
+  const p=l.practice||{scenario:'Based on what you learned, which action would you take?',options:['Buy','Sell','Hold'],correct:0,feedback:['Correct!','Not quite.','Not quite.']};
+  practiceAnswered=false;
+  body.innerHTML=`<div class="step-tag">Step 3 of 5 · Practice</div>
+<div class="step-title">Apply It</div>
+<div class="scenario-box">
+<p>${p.scenario}</p>
+<div class="practice-actions" id="pa">${p.options.map((o,i)=>`<button class="practice-btn" onclick="answerPractice(${i})">${o}</button>`).join('')}</div>
+<div class="practice-fb" id="pfb"></div>
+</div>`;
+  footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" id="pnext" style="display:none" onclick="nextStep()">Next: Quiz →</button>`;
+}
+
+function answerPractice(idx) {
+  if(practiceAnswered)return;
+  practiceAnswered=true;
+  const p=modalLesson.practice;
+  document.querySelectorAll('.practice-btn').forEach((b,i)=>b.classList.add(i===p.correct?'correct':'wrong'));
+  const fb=document.getElementById('pfb');
+  fb.className='practice-fb '+(idx===p.correct?'correct':'wrong');
+  fb.textContent=p.feedback[idx];fb.style.display='block';
+  document.getElementById('pnext').style.display='inline-block';
+}
+
+function renderQuizStep(body,footer) {
+  const l=modalLesson,qs=l.quiz;
+  if(!qs||qs.length===0){
+    body.innerHTML='<div class="step-tag">Step 4 of 5 · Quiz</div><p style="color:var(--t70);margin-top:16px;">No quiz for this lesson. Nice work!</p>';
+    footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" onclick="finishLesson()">Finish →</button>`;
+    return;
+  }
+  if(quizState.current>=qs.length){renderQuizResults(body,footer);return;}
+  const q=qs[quizState.current];
+  const letters=['A','B','C','D'];
+  body.innerHTML=`<div class="step-tag">Step 4 of 5 · Quiz</div>
+<div class="quiz-progress">Question ${quizState.current+1} of ${qs.length}</div>
+<div class="quiz-q">${q.q}</div>
+<div class="quiz-opts" id="qopts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})"><span class="ol">${letters[i]}</span><span>${o}</span></button>`).join('')}</div>
+<div class="quiz-exp" id="qexp"></div>`;
+  footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" id="qnext" style="display:none" onclick="nextQuestion()">Next Question →</button>`;
+}
+
+function answerQuiz(idx) {
+  const q=modalLesson.quiz[quizState.current];
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.add('answered'));
+  document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+  if(idx!==q.ans)document.querySelectorAll('.quiz-opt')[idx].classList.add('wrong');
+  const correct=idx===q.ans;
+  quizState.answers.push({q:quizState.current,correct});
+  const exp=document.getElementById('qexp');
+  exp.className='quiz-exp show '+(correct?'correct':'wrong');
+  exp.textContent=(correct?'✓ Correct! ':'✗ Not quite. ')+q.exp;
+  const nxt=document.getElementById('qnext');
+  nxt.style.display='inline-block';
+  nxt.textContent=quizState.current+1<modalLesson.quiz.length?'Next Question →':'See Results →';
+}
+
+function nextQuestion(){quizState.current++;renderQuizStep(document.getElementById('modal-body'),document.getElementById('modal-footer'));}
+
+function renderQuizResults(body,footer) {
+  const qs=modalLesson.quiz,total=qs.length;
+  const correct=quizState.answers.filter(a=>a.correct).length;
+  const pct=Math.round(correct/total*100),passed=pct>=80;
+  if(passed){
+    body.innerHTML=`<div class="step-tag">Step 4 of 5 · Quiz</div>
+<p style="font-size:.85rem;color:var(--t45);margin-bottom:8px;">Score: ${correct}/${total} (${pct}%) — <span style="color:var(--green);font-weight:600;">PASSED ✓</span></p>
+<p style="font-size:.88rem;color:var(--t70);">Excellent! You scored ${pct}% and cleared the quiz.</p>`;
+    footer.innerHTML=`<button class="btn-p" onclick="finishLesson()">Claim Reward →</button>`;
+  }else{
+    body.innerHTML=`<div class="step-tag">Step 4 of 5 · Quiz</div>
+<p style="font-size:.85rem;color:var(--t45);margin-bottom:12px;">Score: ${correct}/${total} (${pct}%)</p>
+<div class="quiz-fail">You need 80% to pass (${Math.ceil(total*.8)}/${total} correct). You got ${correct}/${total}. Review the lesson and try again.</div>`;
+    footer.innerHTML=`<button class="btn-s" onclick="retryQuiz()">Retry Quiz</button><button class="btn-p" onclick="prevStep()">← Review Lesson</button>`;
   }
 }
 
-// ─── TOOLS ───────────────────────────────────────────────────
-function renderTools() {
-  var grid = document.getElementById('toolsGrid');
-  grid.innerHTML = TOOLS.map(function(t){
-    return '<a class="tool-card '+(t.active?'active-tool':'')+'" href="'+t.href+'">'
-      +'<div class="tool-icon">'+t.icon+'</div>'
-      +'<div class="tool-name">'+t.name+'</div>'
-      +'<div class="tool-desc">'+t.desc+'</div>'
-      +'<div class="tool-tag">'+t.tag+'</div>'
-      +'</a>';
-  }).join('');
+function retryQuiz(){quizState.current=0;quizState.answers=[];renderQuizStep(document.getElementById('modal-body'),document.getElementById('modal-footer'));}
+function finishLesson(){modalStep=4;renderModalStep();}
+
+function renderRewardStep(body,footer) {
+  computeRewards();
+  const xpEarned=earnedThisLesson.reduce((s,e)=>s+(e.xp||0),0);
+  const newBadges=earnedThisLesson.filter(e=>e.badge);
+  body.innerHTML=`<div class="step-tag">Step 5 of 5 · Reward</div>
+<div class="reward-center">
+<div class="reward-emoji">🎉</div>
+<div class="reward-xp" id="rxp">+0 XP</div>
+<div class="reward-xp-label">Experience Earned</div>
+${newBadges.length?`<div class="reward-badges">${newBadges.map(b=>`<div class="reward-badge"><div class="rb-icon">${b.badgeIcon}</div><div class="rb-name">${b.badgeName}</div></div>`).join('')}</div>`:''}
+<div class="reward-breakdown">${earnedThisLesson.filter(e=>e.xp).map(e=>`<div class="reward-line">${e.label} <span>+${e.xp} XP</span></div>`).join('')}</div>
+</div>`;
+  animateXP(0,xpEarned,'rxp');
+  footer.innerHTML=`<button class="btn-p" onclick="closeModal();init();">Continue →</button>`;
 }
 
-// ─── TAB SWITCHING ───────────────────────────────────────────
-function switchLearnTab(tab) {
-  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab);});
-  document.getElementById('tab-'+tab).classList.add('active');
-  if (tab==='quizzes') renderQuizCats();
-  if (tab==='achievements') renderBadges();
-  if (tab==='progress') renderProgress();
-  if (tab==='tools') renderTools();
-  if (tab==='challenges') renderChallenges();
+function animateXP(from,to,id) {
+  const el=document.getElementById(id);if(!el)return;
+  const dur=800,start=performance.now();
+  const frame=now=>{const t=Math.min((now-start)/dur,1);el.textContent='+'+Math.round(from+(to-from)*t)+' XP';if(t<1)requestAnimationFrame(frame);};
+  requestAnimationFrame(frame);
 }
 
-// ─── TOAST ───────────────────────────────────────────────────
-function showToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');}, 2800);
+function computeRewards() {
+  earnedThisLesson=[];
+  const l=modalLesson,qs=l.quiz||[];
+  const total=qs.length,correct=quizState.answers.filter(a=>a.correct).length;
+  const pct=total>0?correct/total:1;
+  const elapsed=(Date.now()-quizState.startTime)/60000;
+  earnedThisLesson.push({label:'Lesson Complete',xp:50});
+  if(total>0&&pct>=1)earnedThisLesson.push({label:'Perfect Score!',xp:20});
+  if(total>0&&pct>=0.8&&quizState.answers.length===total)earnedThisLesson.push({label:'First Try Pass',xp:10});
+  if(elapsed<4&&elapsed>0)earnedThisLesson.push({label:'Speed Bonus (<4min)',xp:5});
+  earnedThisLesson.push({label:'Daily Bonus',xp:15});
+  const totalXP=earnedThisLesson.reduce((s,e)=>s+(e.xp||0),0);
+  addXP(totalXP);
+  const dayNum=ALL_DAYS.indexOf(l)+1;
+  markDone(dayNum);
+  const newStreak=bumpStreak();
+  const xp=getXP();
+  const done=getDone();
+  if(dayNum===1&&earnBadge('first_step'))earnedThisLesson.push({badge:true,badgeIcon:'🌱',badgeName:'First Step'});
+  if(done.length>=7&&earnBadge('week_one'))earnedThisLesson.push({badge:true,badgeIcon:'📅',badgeName:'Week One'});
+  if(newStreak>=3&&earnBadge('on_fire'))earnedThisLesson.push({badge:true,badgeIcon:'🔥',badgeName:'On Fire'});
+  if(newStreak>=7&&earnBadge('week_warrior'))earnedThisLesson.push({badge:true,badgeIcon:'⚔️',badgeName:'Week Warrior'});
+  if(newStreak>=30&&earnBadge('diamond'))earnedThisLesson.push({badge:true,badgeIcon:'💎',badgeName:'Diamond'});
+  if(pct>=1&&total>0&&earnBadge('perfect'))earnedThisLesson.push({badge:true,badgeIcon:'💯',badgeName:'Perfect Score'});
+  if(elapsed<4&&elapsed>0&&earnBadge('speed'))earnedThisLesson.push({badge:true,badgeIcon:'⚡',badgeName:'Speed Demon'});
+  if(done.length>=10&&earnBadge('day10'))earnedThisLesson.push({badge:true,badgeIcon:'🥉',badgeName:'Day 10'});
+  if(done.length>=30&&earnBadge('day30'))earnedThisLesson.push({badge:true,badgeIcon:'🥈',badgeName:'Day 30'});
+  if(done.length>=100&&earnBadge('day100'))earnedThisLesson.push({badge:true,badgeIcon:'🥇',badgeName:'Day 100'});
+  if(done.length>=365&&earnBadge('day365'))earnedThisLesson.push({badge:true,badgeIcon:'🏆',badgeName:'Market Master'});
+  if(l.isBoss&&earnBadge('boss_slayer'))earnedThisLesson.push({badge:true,badgeIcon:'👑',badgeName:'Boss Slayer'});
+  if(xp>=500&&earnBadge('xp500'))earnedThisLesson.push({badge:true,badgeIcon:'⚗️',badgeName:'XP 500'});
+  if(xp>=2000&&earnBadge('xp2000'))earnedThisLesson.push({badge:true,badgeIcon:'🔮',badgeName:'XP 2000'});
 }
 
-// ─── AUTO-TAB FROM URL ───────────────────────────────────────
-(function(){
-  var urlTab = new URLSearchParams(window.location.search).get('tab');
-  if (urlTab && document.getElementById('tab-'+urlTab)) switchLearnTab(urlTab);
-})();
+function nextStep(){if(modalStep<4){modalStep++;renderModalStep();}}
+function prevStep(){if(modalStep>0){modalStep--;renderModalStep();}}
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').style.display='block';}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').style.display='none';}
 
-// ─── INIT ────────────────────────────────────────────────────
-checkStreak();
-renderXPStrip();
-renderLessons();
-renderChallenges();
+init();
 </script>
-<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>
