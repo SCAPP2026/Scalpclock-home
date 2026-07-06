@@ -568,14 +568,14 @@ document.addEventListener('click',function(e){
 // Ticker tape
 (function(){
   const syms=['SPY','QQQ','AAPL','TSLA','NVDA','AMD','META'];
-  const fb={SPY:'583.42',QQQ:'510.18',AAPL:'227.63',TSLA:'248.90',NVDA:'138.55',AMD:'172.80',META:'605.40'};
+  const fb={SPY:'750.00',QQQ:'724.00',AAPL:'309.00',TSLA:'320.00',NVDA:'145.00',AMD:'175.00',META:'720.00'};
   function set(sym,price,chg){
     const cls=chg>=0?'up':'dn',arrow=chg>=0?'▲':'▼';
     const txt='$'+parseFloat(price).toFixed(2)+' '+arrow+Math.abs(chg).toFixed(2)+'%';
     ['','2'].forEach(s=>{const el=document.getElementById('t-'+sym+s);if(el){el.textContent=txt;el.className=cls;}});
   }
   syms.forEach(s=>set(s,fb[s],0));
-  syms.forEach(s=>fetch('/api/price?symbol='+s).then(r=>r.json()).then(d=>{if(d&&d.price)set(s,d.price,d.change_pct||0);}).catch(()=>{}));
+  syms.forEach(s=>fetch('/api/price?symbol='+s).then(r=>r.json()).then(d=>{if(d&&d.price)set(s,d.price,d.changePct||0);}).catch(()=>{}));
 })();
 
 // ─── HERO CANVAS ───────────────────────────────────────────────

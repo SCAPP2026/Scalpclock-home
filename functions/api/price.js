@@ -14,27 +14,33 @@ export async function onRequest(context) {
   };
 
   try {
-    // Latest trade gives the most recent execution price — no bar-close lag
-    const [tradeRes, quoteRes] = await Promise.all([
+    // Fetch trade, quote, and last 2 daily bars in parallel for changePct
+    const [tradeRes, quoteRes, dailyRes] = await Promise.all([
       fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/trades/latest?feed=iex`, { headers }),
       fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/quotes/latest?feed=iex`, { headers }),
+      fetch(`https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/bars?timeframe=1Day&limit=2&sort=desc&feed=iex`, { headers }),
     ]);
 
     const tradeData = tradeRes.ok ? await tradeRes.json() : null;
     const quoteData = quoteRes.ok ? await quoteRes.json() : null;
+    const dailyData = dailyRes.ok ? await dailyRes.json() : null;
 
     const price  = tradeData?.trade?.p ?? null;
     const ts     = tradeData?.trade?.t ?? null;
     const bid    = quoteData?.quote?.bp ?? null;
     const ask    = quoteData?.quote?.ap ?? null;
-    // Mid-point of bid/ask as a cross-check when available
     const mid    = (bid && ask) ? +((bid + ask) / 2).toFixed(2) : null;
+
+    // Previous session close for % change calculation
+    const dailyBars = dailyData?.bars ?? [];
+    const prevClose = dailyBars.length >= 2 ? dailyBars[1].c : (dailyBars.length === 1 ? dailyBars[0].c : null);
+    const changePct = (price && prevClose) ? +((price - prevClose) / prevClose * 100).toFixed(2) : null;
 
     if (!price) {
       return json({ error: `No trade data for ${symbol}` }, 404);
     }
 
-    return json({ symbol, price, mid, bid, ask, ts });
+    return json({ symbol, price, mid, bid, ask, ts, changePct, prevClose });
   } catch (e) {
     return json({ error: e.message }, 500);
   }

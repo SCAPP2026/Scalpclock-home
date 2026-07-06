@@ -15,7 +15,7 @@ export async function onRequest(context) {
   };
 
   const now      = new Date();
-  const startISO = new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString();
+  const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
 
   // Option symbols arrive as "O:SOFI260702P00017000" (OCC/Polygon format).
   // Extract the underlying ticker so we can fetch stock bars for RSI/ATR/velocity.
