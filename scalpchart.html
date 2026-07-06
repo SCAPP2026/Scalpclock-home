@@ -957,7 +957,7 @@
         <div id="rpChartEl"></div>
         <div class="rp-overlay" id="rpOverlay">
           <div style="font-size:2rem">📊</div>
-          <p>Pick a symbol and press <strong>Load Chart</strong> to start replay.</p>
+          <p>Type a stock symbol above and press <strong>Load Chart</strong> to begin.</p>
         </div>
       </div>
       <!-- Replay bar -->
@@ -999,9 +999,9 @@
       <div id="rpEduContent">
         <div class="rp-edu-default">
           <div class="rp-edu-icon">📚</div>
-          <div class="rp-edu-title">Replay Ready</div>
-          <div class="rp-edu-sub">Load a chart, then press ▶ to advance candle by candle. Click any detected pattern to see the full educational breakdown.</div>
-          <div class="rp-edu-tip"><strong>How it works:</strong><br>1. Pick a symbol + date range<br>2. Press ▶ Play or ⏩ to reveal candles<br>3. Click any pattern chip to learn why it formed<br>4. Predict the next move and earn XP</div>
+          <div class="rp-edu-title">Ready to Replay</div>
+          <div class="rp-edu-sub">Load any stock chart, then press ▶ to reveal one bar at a time — like rewinding the market. When a pattern badge appears, tap it to learn what it means in plain English.</div>
+          <div class="rp-edu-tip"><strong>How it works:</strong><br>1. Type a ticker (like SPY or AAPL) and choose a date range<br>2. Press ▶ to play — bars appear one at a time<br>3. When a pattern badge shows up, tap it to learn what happened and why<br>4. Predict what happens next and earn XP for every correct call</div>
         </div>
       </div>
     </div>
@@ -1012,13 +1012,13 @@
     <div class="rp-prog-title">📊 Learning Progress</div>
     <div class="rp-prog-stats">
       <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatXP">0</div><div class="rp-prog-lbl">Total XP</div></div>
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatAcc">—</div><div class="rp-prog-lbl">Quiz Accuracy</div></div>
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatPats">0</div><div class="rp-prog-lbl">Patterns Studied</div></div>
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatStreak">0</div><div class="rp-prog-lbl">Correct Streak</div></div>
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatAcc">—</div><div class="rp-prog-lbl">Prediction Accuracy</div></div>
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatPats">0</div><div class="rp-prog-lbl">Patterns Seen</div></div>
+      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatStreak">0</div><div class="rp-prog-lbl">Win Streak</div></div>
     </div>
     <div class="rp-mastery">
       <div class="rp-mastery-title">Pattern Mastery</div>
-      <div class="rp-mastery-grid" id="rpMasteryGrid"><div class="rp-mastery-empty">No patterns studied yet — make your first prediction!</div></div>
+      <div class="rp-mastery-grid" id="rpMasteryGrid"><div class="rp-mastery-empty">No patterns seen yet — load a chart and start predicting!</div></div>
     </div>
   </div>
 </div><!-- /replayPanel -->
@@ -2235,201 +2235,201 @@ function switchTab(tab) {
 // ─── REPLAY BOOK (pattern education) ─────────────────────────
 const BOOK = {
   'Bullish Engulfing': { signal:'bullish', confidence:82,
-    definition:'A large green candle completely engulfs the previous red candle.',
-    psychology:'Buyers overwhelmed sellers, reversing the entire prior session\'s move.',
-    buyers:'Entered aggressively after sellers created a dip.',
-    sellers:'Caught off-guard; short sellers forced to cover.',
-    successRate:'63%', entry:'Next candle open', stop:'Below the engulfing candle low', target:'Next resistance (2–3% above)', rr:'1:2',
-    best:['Near support levels','After extended downtrend','Volume above 20-day average'],
-    mistakes:['Trading without nearby support','Ignoring volume — low volume = weak signal'],
-    confirm:['Volume spike on engulfing candle','RSI bouncing from oversold'],
+    definition:'A big green candle that completely swallows the previous red candle. Buyers stepped in hard and reversed the entire prior day\'s move in one session.',
+    psychology:'Yesterday sellers were winning. Today buyers came in so aggressively they wiped out the entire red candle and added more on top. Control shifted — fast.',
+    buyers:'Jumped in after the dip and drove price all the way back up past where the day started.',
+    sellers:'Got blindsided. Those betting on lower prices had to close their trades and take a loss.',
+    successRate:'63%', entry:'When the next candle opens (the morning after the big green candle)', stop:'Just below the bottom of the big green candle', target:'2–3% above — the next area where sellers appeared before', rr:'1:2',
+    best:['Right at a price level where buyers have stepped in before (support)','After the stock has been falling for a few days','Volume today is higher than a normal day — more people are convinced'],
+    mistakes:['Buying without a support level nearby — you need something to lean on','Volume is weak on the green candle — fewer people believe it, it may not follow through'],
+    confirm:['Big volume spike on the green candle','RSI bouncing up from a very low reading (below 30)'],
     quote:'The market tried to go lower, buyers said no — loudly.',
   },
   'Bearish Engulfing': { signal:'bearish', confidence:80,
-    definition:'A large red candle engulfs the prior green candle entirely.',
-    psychology:'Sellers overwhelmed buyers, taking back the entire prior session\'s gain.',
-    buyers:'Exhausted — couldn\'t push higher. Bears seized the moment.',
-    sellers:'Entered with force after a rally attempt failed.',
-    successRate:'61%', entry:'Next candle open', stop:'Above the engulfing candle high', target:'Next support (2–3% below)', rr:'1:2',
-    best:['Near resistance','After extended uptrend','Volume confirmation'],
-    mistakes:['Ignoring overall trend','Entering without a clear resistance level'],
-    confirm:['RSI overbought','Volume above average'],
+    definition:'A big red candle that completely swallows the previous green candle. Sellers took over and erased all of yesterday\'s gains — and then some.',
+    psychology:'Yesterday buyers were winning. Today sellers piled in and reversed everything. Power shifted to sellers in one session.',
+    buyers:'Ran out of energy. They pushed higher but sellers overwhelmed them completely.',
+    sellers:'Saw the failed rally and pounced. Drove price all the way down past the prior day\'s open.',
+    successRate:'61%', entry:'When the next candle opens (the morning after the big red candle)', stop:'Just above the top of the big red candle', target:'2–3% below — the next area where buyers showed up before', rr:'1:2',
+    best:['Near a price level where sellers have appeared before (resistance)','After the stock has been rising for several days','Volume picked up on the big red candle — more people are selling'],
+    mistakes:['Ignoring what the overall market is doing — a rising market can override this','Shorting without a clear resistance level above the candle'],
+    confirm:['RSI is very high (above 70) — the stock is overheated','Volume is above its recent average'],
     quote:'Distribution often looks like just one big red candle.',
   },
   'Doji': { signal:'neutral', confidence:65,
-    definition:'Open and close are virtually identical — the market couldn\'t decide.',
-    psychology:'Perfect balance between buyers and sellers. Indecision before a potential shift.',
-    buyers:'Attempted to push higher but gave it all back by close.',
-    sellers:'Attempted to push lower but also failed to hold gains.',
-    successRate:'55%', entry:'Wait for next candle direction', stop:'Outside the doji range', target:'1–2% in breakout direction', rr:'1:1.5',
-    best:['After a strong trend','At key S/R levels','High volume doji = stronger signal'],
-    mistakes:['Trading every doji regardless of context','No confirmation candle'],
-    confirm:['High volume','Located at key S/R','Followed by strong directional candle'],
+    definition:'The price opened and closed at almost the exact same level. The market went up, went down, and ended right where it started. Total standoff.',
+    psychology:'Buyers and sellers fought all day and neither side won. This kind of indecision often shows up right before a big move in one direction — the calm before the storm.',
+    buyers:'Pushed price up during the day but couldn\'t hold it at the close.',
+    sellers:'Pushed price down during the day but also couldn\'t hold their gains.',
+    successRate:'55%', entry:'Wait for the next candle — if it\'s green, buy. If it\'s red, don\'t.', stop:'Just outside the full range (high to low) of the doji candle', target:'1–2% in whichever direction the next candle breaks', rr:'1:1.5',
+    best:['After a strong run up or down — the trend is getting tired','At a price level the market has reacted to before','High volume on the doji makes the indecision more meaningful'],
+    mistakes:['Trading every doji you see — most don\'t matter without the right context','Not waiting for the next candle to show direction — never guess blindly'],
+    confirm:['High volume shows real indecision, not just a slow day','Located at a key support or resistance price level','The next candle breaks cleanly in one direction with conviction'],
     quote:'When the market takes a breath, be ready to run.',
   },
   'Hammer': { signal:'bullish', confidence:72,
-    definition:'Small body at the top, long lower wick — buyers rejected lower prices.',
-    psychology:'Sellers pushed price down hard, but buyers stepped in and drove it back up.',
-    buyers:'Absorbed all selling pressure and closed near the open.',
-    sellers:'Dominated early but lost complete control by close.',
-    successRate:'60%', entry:'Open of next green candle', stop:'Below the hammer low', target:'Top of prior consolidation', rr:'1:2',
-    best:['After a downtrend','At known support','With volume surge'],
-    mistakes:['Trading without a prior downtrend','Missing the volume confirmation'],
-    confirm:['Volume spike','Next candle closes bullish','RSI below 30'],
+    definition:'Small candle body at the top, long shadow below. Price fell hard during the session but buyers stepped in and dragged it almost all the way back up by the close.',
+    psychology:'Sellers tried to push price way down — but buyers absorbed everything and closed it near the open. A clear "we don\'t want to go lower" signal.',
+    buyers:'Waited for the dip, bought everything sellers threw at them, and closed near the top of the candle.',
+    sellers:'Had control early in the session but completely lost it by the close.',
+    successRate:'60%', entry:'When the next candle opens green (confirms the bounce)', stop:'Just below the bottom of the long shadow', target:'The top of the previous price range where sellers appeared', rr:'1:2',
+    best:['After the stock has been falling — there needs to be a prior drop','At a price level where buyers have appeared before','Volume is higher than usual — strong conviction behind the bounce'],
+    mistakes:['Buying a hammer when the stock hasn\'t been falling first — there\'s no reversal without a prior trend','Skipping the volume check — a hammer on thin volume is weak and often fails'],
+    confirm:['Volume spike on the hammer candle — shows real buying interest','The very next candle closes green — confirms the bounce','RSI is below 30 (the stock is oversold — ripe for a bounce)'],
     quote:'The lower the shadow, the louder the rejection.',
   },
   'Shooting Star': { signal:'bearish', confidence:70,
-    definition:'Small body at the bottom, long upper wick — buyers failed to hold gains.',
-    psychology:'Price was pushed high but completely rejected. Bears took over.',
-    buyers:'Pushed aggressively intraday but were unable to hold any of it.',
-    sellers:'Absorbed all buying pressure and closed near the open.',
-    successRate:'59%', entry:'Open of next red candle', stop:'Above the star high', target:'Prior support level', rr:'1:2',
-    best:['After an uptrend','At resistance','Volume above average'],
-    mistakes:['Ignoring the prior uptrend context','No resistance nearby'],
-    confirm:['Volume spike','Next candle closes bearish'],
+    definition:'Small candle body at the bottom, long shadow above. Price shot way up during the session but got slammed back down, closing near where it opened.',
+    psychology:'Buyers pushed hard but sellers stepped in at the highs and crushed price back down. A clear "we don\'t want to go higher" signal.',
+    buyers:'Pushed aggressively during the session but gave everything back by the close. Completely exhausted.',
+    sellers:'Absorbed all the buying at the highs and drove price back to the open. Total control.',
+    successRate:'59%', entry:'When the next candle opens red (confirms the rejection)', stop:'Just above the top of the long shadow', target:'The bottom of the previous price range where buyers appeared', rr:'1:2',
+    best:['After the stock has been rising — needs a prior uptrend to reverse','Near a price level where sellers have appeared before','Volume above average — more conviction behind the rejection'],
+    mistakes:['Shorting when price hasn\'t been going up first — no uptrend means no reversal setup','No resistance level nearby makes it much harder to justify'],
+    confirm:['Volume spike on the shooting star candle — sellers meant it','Next candle closes red — confirms the rejection is real'],
     quote:'The market reached for the sky — and was handed back down.',
   },
   'Morning Star': { signal:'bullish', confidence:75,
-    definition:'Three-candle reversal: big red, small-bodied star, then big green above the midpoint of the first candle.',
-    psychology:'Sellers were exhausted, then indecision set in, then buyers overpowered.',
-    buyers:'Stepped in decisively after the indecision gap.',
-    sellers:'Lost momentum after the first candle — couldn\'t follow through.',
-    successRate:'68%', entry:'Close of the third bullish candle', stop:'Below the star low', target:'Prior resistance', rr:'1:2.5',
-    best:['After downtrend','At major support','Large third candle body'],
-    mistakes:['Too small a third candle','No gap between candles'],
-    confirm:['Gap between candles','Volume rising on third candle'],
+    definition:'A 3-candle bottom reversal: one big red candle, then a tiny candle that barely moved, then a big green candle that recovers most of the first day\'s losses.',
+    psychology:'Act 1: sellers exhaust themselves. Act 2: nobody knows what happens next. Act 3: buyers take over decisively. Three days, one story — the bottom is in.',
+    buyers:'Showed up big on day 3. The large green candle is their declaration that they\'re in charge.',
+    sellers:'Burned themselves out after the first red candle and couldn\'t follow through on day 2.',
+    successRate:'68%', entry:'After the third (green) candle closes', stop:'Just below the bottom of the tiny middle candle', target:'The last price level where selling appeared above', rr:'1:2.5',
+    best:['After the stock has been falling for a while','Near a major floor price (support level)','The third green candle should be large — the bigger the candle, the stronger the signal'],
+    mistakes:['Third candle is tiny — if buyers didn\'t commit, the signal is weak','No separation between the middle candle and the others makes it less reliable'],
+    confirm:['Small gap between the candles (they don\'t fully overlap)','Volume increases on the third candle — buyers are showing up in force'],
     quote:'A three-act play: exhaustion, doubt, then resolution.',
   },
   'Evening Star': { signal:'bearish', confidence:73,
-    definition:'Three-candle top reversal: big green, small star, then big red below the midpoint of the first.',
-    psychology:'Buyers were exhausted at the top. Indecision, then sellers piled in.',
-    buyers:'Failed to follow through after the strong green candle.',
-    sellers:'Used the pause to overwhelm buyers completely.',
-    successRate:'66%', entry:'Close of the third bearish candle', stop:'Above the star high', target:'Prior support', rr:'1:2',
-    best:['After uptrend','At major resistance','Large third candle'],
-    mistakes:['Ignoring the trend context','Acting on too small a star body'],
-    confirm:['Volume surge on third candle','RSI overbought'],
+    definition:'A 3-candle top reversal: one big green candle, then a tiny middle candle, then a big red candle that gives back most of the first day\'s gains.',
+    psychology:'Act 1: buyers run out of steam. Act 2: nobody commits. Act 3: sellers take over hard. Three days, one story — the top is in.',
+    buyers:'Couldn\'t follow through after the strong green candle. The rally ran out of fuel.',
+    sellers:'Used the hesitation to pile in. Once buyers gave up, they drove price down hard.',
+    successRate:'66%', entry:'After the third (red) candle closes', stop:'Just above the top of the tiny middle candle', target:'The last price level where buying appeared below', rr:'1:2',
+    best:['After the stock has been rising','Near a major ceiling price (resistance level)','The third red candle should be large — size confirms seller commitment'],
+    mistakes:['Ignoring whether the stock was actually in an uptrend before this pattern','Middle candle should be very small — if it\'s large, the signal weakens significantly'],
+    confirm:['Volume surges on the third (red) candle — sellers are serious','RSI is high (above 70) — the stock is overbought and ripe for a pullback'],
     quote:'Tops are made quietly — until they aren\'t.',
   },
   'Inside Bar': { signal:'neutral', confidence:68,
-    definition:'Current candle is contained entirely within the prior candle\'s range — a pause in volatility.',
-    psychology:'The market is coiling. Breakout in either direction is coming.',
-    buyers:'Not committing until direction is clear.',
-    sellers:'Not committing either — consolidation phase.',
-    successRate:'58%', entry:'Breakout above or below the mother bar', stop:'Opposite side of the mother bar', target:'100% of mother bar range projected', rr:'1:2',
-    best:['After a trend','On daily chart at key levels','Multiple inside bars in a row'],
-    mistakes:['Trading the inside bar itself (wait for breakout)','Ignoring trend direction'],
-    confirm:['Volume expansion on breakout','RSI confirming direction'],
+    definition:'Today\'s entire candle fits inside yesterday\'s range. The high is lower and the low is higher than yesterday. The market is holding its breath before a move.',
+    psychology:'Neither buyers nor sellers want to commit. Both sides are waiting. This pause almost always ends with a breakout — the only question is which way.',
+    buyers:'Not ready to push yet. Waiting for a reason to act.',
+    sellers:'Same — staying patient. Both sides in a standoff.',
+    successRate:'58%', entry:'When price breaks out above or below yesterday\'s full range — don\'t enter before', stop:'On the opposite side of yesterday\'s full candle range', target:'Project the full size of yesterday\'s candle from the breakout point', rr:'1:2',
+    best:['After a clear trend — the pause has direction behind it','On a daily chart at a key price level','Multiple inside bars stacked together = even bigger energy building up'],
+    mistakes:['Trading the inside bar itself — always wait for the breakout, never enter during the pause','Ignoring which direction the trend was going before the pause — trend context matters'],
+    confirm:['Volume expands on the breakout — that\'s what makes it real, not a fake-out','RSI confirms the direction of the move'],
     quote:'Compression precedes explosion.',
   },
   'Double Top': { signal:'bearish', confidence:77,
-    definition:'Price forms two peaks at nearly the same level, then fails — a reversal warning.',
-    psychology:'Buyers tried twice to break resistance and couldn\'t. Sellers are in control.',
-    buyers:'Exhausted after two attempts. Smart money selling into the rallies.',
-    sellers:'Absorbing every push higher, waiting for the breakdown.',
-    successRate:'72%', entry:'Break below the neckline (valley between the peaks)', stop:'Above the second top', target:'Neckline − height of the pattern', rr:'1:2',
-    best:['At prior highs','RSI divergence','Volume declining on second peak'],
-    mistakes:['Entering before the neckline breaks','Ignoring volume divergence'],
-    confirm:['Neckline break on volume','RSI bearish divergence'],
+    definition:'Price hits a high, pulls back, rallies to that same high again — and fails the second time. Two peaks at the same ceiling. A classic reversal warning.',
+    psychology:'Buyers tried twice to push through the same price and couldn\'t do it either time. Sellers are camped at that level. This standoff often ends with a drop.',
+    buyers:'Out of fuel after two failed attempts at the same ceiling. Selling pressure is building.',
+    sellers:'Absorbing every push higher, building a short position, waiting for the breakdown.',
+    successRate:'72%', entry:'When price breaks below the lowest point between the two peaks (called the "neckline")', stop:'Just above the second peak (the second top)', target:'Measure the height from the neckline to the peaks — drop that same distance below the neckline', rr:'1:2',
+    best:['At a price level the stock has struggled to get above before','RSI was lower on the second peak than the first — buyers are weakening','Volume dropped on the second peak — fewer buyers showing up the second time'],
+    mistakes:['Shorting before price actually breaks the neckline — wait for the break, don\'t anticipate it','Not checking if RSI shows weaker momentum on the second peak (divergence)'],
+    confirm:['Price breaks below the neckline on solid volume — confirms the pattern','RSI shows lower highs while price shows equal highs — classic bearish divergence'],
     quote:'The second attempt at resistance is a confession of weakness.',
   },
   'Double Bottom': { signal:'bullish', confidence:79,
-    definition:'Price forms two troughs at similar levels — strong support holding twice.',
-    psychology:'Sellers tried twice to break the low and failed. Buyers are absorbing.',
-    buyers:'Building a base — each dip is bought aggressively.',
-    sellers:'Losing conviction after the second failed breakdown.',
-    successRate:'74%', entry:'Break above the neckline', stop:'Below the second bottom', target:'Neckline + height of the pattern', rr:'1:2',
-    best:['At prior lows','RSI bullish divergence','Volume increasing on second trough'],
-    mistakes:['Entering before neckline break','Missing volume confirmation'],
-    confirm:['Neckline break','RSI rising','Volume surge'],
+    definition:'Price drops to a low, bounces, drops to that same low again — and holds the second time. Two floors at the same level. A classic bullish reversal.',
+    psychology:'Sellers tried twice to push below the same price and failed both times. Buyers keep defending that level. This standoff often ends with a rally.',
+    buyers:'Building a base — every dip to this level gets bought aggressively.',
+    sellers:'Losing confidence after two failed breakdowns. Running low on conviction.',
+    successRate:'74%', entry:'When price breaks above the highest point between the two lows (called the "neckline")', stop:'Just below the second bottom (second low)', target:'Measure the height from the bottoms to the neckline — add that same distance above the neckline', rr:'1:2',
+    best:['At a price level the stock has bounced from before','RSI was higher on the second dip than the first — sellers are weakening','Volume increased on the second dip — more buyers stepping up'],
+    mistakes:['Buying before price breaks the neckline — wait for the confirmation, not just the second dip','Missing the volume surge on the breakout — it\'s the signal that separates real from fake'],
+    confirm:['Price breaks above the neckline on volume — that\'s the trigger','RSI is rising — confirms upward momentum','Volume surges on the breakout — buyers are committing'],
     quote:'Support held twice. That\'s not luck, that\'s a floor.',
   },
   'Bull Flag': { signal:'bullish', confidence:80,
-    definition:'Strong upward pole followed by a tight, sideways-to-slightly-down consolidation channel.',
-    psychology:'After a fast move, bulls let weak holders shake out before the next leg.',
-    buyers:'Patiently accumulating during consolidation, positioning for the breakout.',
-    sellers:'Trimming profits, but can\'t push price meaningfully lower.',
-    successRate:'68%', entry:'Break above the flag high', stop:'Below the flag low', target:'Flag breakout + pole height', rr:'1:3',
-    best:['Strong volume on the pole','Tight, orderly consolidation','Volume drops during flag'],
-    mistakes:['Flags that angle upward (that\'s a wedge, not a flag)','Low-volume pole'],
-    confirm:['Volume surge on breakout','Price closes above flag high'],
+    definition:'A fast, strong price spike straight up (the pole), followed by a calm sideways drift (the flag). Like a flag on a pole. Momentum is just resting before the next leg up.',
+    psychology:'Price shot up fast. Early buyers are locking in some profit — but not enough sellers to actually reverse it. Just a pause before the next push higher.',
+    buyers:'Accumulating patiently during the quiet drift, ready to push again on the breakout.',
+    sellers:'Taking a little profit, but can\'t push price meaningfully lower. Not in control.',
+    successRate:'68%', entry:'When price breaks above the top of the sideways drift', stop:'Below the bottom of the drift channel', target:'Add the length of the original spike (pole) to the breakout point', rr:'1:3',
+    best:['The initial spike happened on high volume — real momentum, not a fluke','The sideways drift is calm and tight — no wild swings','Volume is low during the drift — that\'s healthy, like the market catching its breath'],
+    mistakes:['If the "flag" portion slopes upward instead of sideways or slightly down, it\'s a different (weaker) pattern','A pole that happened on weak volume makes the whole setup unreliable'],
+    confirm:['Volume surges when price breaks above the flag — buyers returning','Price closes above the top of the drift channel — the breakout is real'],
     quote:'Flags are where momentum rests before it resumes.',
   },
   'Bear Flag': { signal:'bearish', confidence:78,
-    definition:'Strong downward pole followed by a tight, sideways-to-slightly-up consolidation.',
-    psychology:'Brief relief rally trapping longs, then continuation of the downtrend.',
-    buyers:'Caught in a dead-cat bounce — will be punished when breakdown resumes.',
-    sellers:'Patiently waiting for the relief rally to exhaust itself.',
-    successRate:'66%', entry:'Break below the flag low', stop:'Above the flag high', target:'Flag breakdown − pole height', rr:'1:2.5',
-    best:['Strong volume on the pole','Flag is relatively shallow'],
-    mistakes:['Chasing the pole','Ignoring market-wide trend'],
-    confirm:['Volume surge on breakdown'],
+    definition:'A fast drop (the pole), then a shallow bounce upward (the flag). The bounce looks like relief — but it\'s usually a trap that resets before more selling continues.',
+    psychology:'Price tanked. Now a few buyers think it\'s cheap. But sellers are just waiting for the bounce to run out so they can push lower again.',
+    buyers:'Caught in a false recovery. When the bounce fades, they\'ll be selling at a loss.',
+    sellers:'Being patient. They\'ll resume selling as soon as buyers give up.',
+    successRate:'66%', entry:'When price breaks below the bottom of the bounce', stop:'Above the top of the bounce', target:'Subtract the length of the original drop (pole) from the breakdown point', rr:'1:2.5',
+    best:['The initial drop happened on strong volume — real selling pressure behind it','The bounce is shallow and quiet — not a strong counter-move'],
+    mistakes:['Trying to buy the bounce — that\'s exactly the trap this pattern sets for people','Ignoring whether the overall market is also falling — a weak market makes bear flags worse'],
+    confirm:['Volume surges when price breaks below the flag low — the continuation is confirmed'],
     quote:'Hope turns into a trap when the trend is still down.',
   },
   'Three White Soldiers': { signal:'bullish', confidence:88,
-    definition:'Three consecutive bullish candles, each opening within the prior body and closing near its high.',
-    psychology:'Sustained, committed buying pressure over multiple sessions.',
-    buyers:'Systematic, institutional-style accumulation. No hesitation.',
-    sellers:'Completely overwhelmed for three straight sessions.',
-    successRate:'78%', entry:'Open after the third candle', stop:'Below the first soldier low', target:'Prior resistance', rr:'1:2',
-    best:['After a downtrend','Each candle bigger than the last','Volume increasing each session'],
-    mistakes:['Entering after huge gap-up open','Not checking for overbought conditions'],
-    confirm:['Volume rising each day','RSI trending up from oversold'],
+    definition:'Three big green candles in a row — each one opens near the last close and closes near its high. Three straight sessions of committed buying.',
+    psychology:'Three days of relentless buying is not random. This pattern often signals an institution — a big fund or bank — is accumulating shares. They have a lot to buy.',
+    buyers:'Systematic and unwavering. Three straight sessions of dominant control — no backing down.',
+    sellers:'Tried to push back each session and failed every single time. Completely overwhelmed.',
+    successRate:'78%', entry:'When the market opens after the third green candle', stop:'Below the low of the very first candle in the pattern', target:'The last price level where sellers appeared above', rr:'1:2',
+    best:['After the stock has been falling — buyers are genuinely taking over','Each candle is at least as big as the one before','Volume increases with each session — more conviction each day'],
+    mistakes:['Don\'t chase if the stock already surged too far — wait for a pullback','Check that the stock isn\'t already extremely overbought before buying in'],
+    confirm:['Volume rises each day — increasing commitment','RSI trending upward from a low reading — momentum confirmed'],
     quote:'Three days of commitment is more than noise.',
   },
   'Three Black Crows': { signal:'bearish', confidence:86,
-    definition:'Three consecutive bearish candles, each opening within the prior body and closing near its low.',
-    psychology:'Sustained, committed selling over three sessions — a distribution pattern.',
-    buyers:'Trying to push back each day and failing completely.',
-    sellers:'In total control. Methodical takedown of price.',
-    successRate:'76%', entry:'Open after the third candle', stop:'Above the first crow high', target:'Prior support', rr:'1:2',
-    best:['After an uptrend','Each candle closes near its low','Volume confirming'],
-    mistakes:['Ignoring if already at support','Not checking for oversold conditions'],
-    confirm:['Volume trend','RSI declining'],
+    definition:'Three big red candles in a row — each opens near the last close and closes near its low. Three straight sessions of committed selling.',
+    psychology:'Three days of relentless red is not panic — it\'s systematic. This usually means a large institution is exiting a position. They have a lot to sell.',
+    buyers:'Tried to rally each session and failed every time. Three failed attempts.',
+    sellers:'In total control. Patient and methodical — they have a lot to sell and they\'re in no rush.',
+    successRate:'76%', entry:'When the market opens after the third red candle', stop:'Above the high of the very first candle in the pattern', target:'The last price level where buyers appeared below', rr:'1:2',
+    best:['After the stock has been rising — sellers are genuinely taking over','Each candle closes near its low for the day — strong follow-through','Volume backs up the selling — more conviction each day'],
+    mistakes:['Don\'t short into a major support level — the selling may pause or reverse right there','If the stock has already fallen a long way, it may be oversold and bounce hard'],
+    confirm:['Volume trend confirms the selling is real and sustained','RSI is declining — confirms downward momentum'],
     quote:'Three consecutive failures to hold the high is a verdict.',
   },
   'Gap Up': { signal:'bullish', confidence:70,
-    definition:'Price opens meaningfully above the prior close — strong overnight demand.',
-    psychology:'News, earnings, or macro catalyst created a surge of buy orders overnight.',
-    buyers:'Pre-market buyers willing to pay up significantly for entry.',
-    sellers:'Suddenly on the wrong side — must either hold or take losses.',
-    successRate:'60%', entry:'Pullback to the gap edge if it holds', stop:'Below the gap', target:'Prior resistance levels', rr:'1:2',
-    best:['On earnings beat','Volume far above average','Gap holds as support intraday'],
-    mistakes:['Chasing immediately at open','Ignoring if gap fills quickly'],
-    confirm:['Gap holds as support','Volume above average'],
+    definition:'The stock opened today noticeably higher than where it closed yesterday — the chart has a blank space (a "gap"). Strong overnight demand, usually from earnings or news.',
+    psychology:'Something happened after hours and buyers rushed to own it before anyone else. They were willing to pay significantly more just to get in. Sellers on the wrong side suddenly have a big problem.',
+    buyers:'Pre-market buyers paid up to get a position before the open. They\'re in control.',
+    sellers:'Caught completely off-guard. Anyone betting on lower prices is hurting.',
+    successRate:'60%', entry:'Wait for a small pullback toward the gap edge — buy if the price holds above it', stop:'Below the bottom of the gap (if price falls into the gap, the setup broke)', target:'The next resistance level above', rr:'1:2',
+    best:['Caused by a strong earnings report or very positive news','Volume is much higher than a normal day — real demand','The gap doesn\'t fill immediately — it holds as a new floor'],
+    mistakes:['Don\'t buy immediately at the open — wait to see if the gap holds first','If price falls back to fill the gap within the first hour, that\'s a warning that the move is reversing'],
+    confirm:['The gap area holds as support — any dip to it gets bought','Volume is elevated throughout the session, not just at the open'],
     quote:'Gaps tell you where demand overwhelmed supply before the bell.',
   },
   'Gap Down': { signal:'bearish', confidence:68,
-    definition:'Price opens meaningfully below the prior close — strong overnight selling pressure.',
-    psychology:'Negative catalyst drove aggressive sellers before the open.',
-    buyers:'Caught off-guard. Scrambling to exit.',
-    sellers:'Taking advantage of trapped longs and selling aggressively.',
-    successRate:'58%', entry:'Failed bounce back toward the gap', stop:'Above the gap', target:'Prior support levels', rr:'1:2',
-    best:['On earnings miss or bad news','Gap holds as resistance','Confirmed by volume'],
-    mistakes:['Shorting into support','Gap fills completely within first 30 minutes'],
-    confirm:['Gap holds as resistance intraday','Volume above average'],
+    definition:'The stock opened today noticeably below where it closed yesterday — the chart has a blank space downward. Strong overnight selling, usually from bad news or a bad earnings report.',
+    psychology:'Bad news hit after hours and sellers rushed to get out before the market opened. Anyone holding from yesterday is immediately underwater with no way to sell at yesterday\'s price.',
+    buyers:'Caught completely off-guard. Holders from yesterday are already sitting on losses.',
+    sellers:'Taking full advantage of trapped buyers. Selling hard into every small bounce.',
+    successRate:'58%', entry:'Wait for a small bounce toward the gap — short (or avoid buying) if it gets rejected at the gap', stop:'Above the top of the gap', target:'The next support level below', rr:'1:2',
+    best:['Caused by a bad earnings report or clear negative news','The gap doesn\'t fill — price can\'t get back above it','Volume is elevated, confirming the selling is real and sustained'],
+    mistakes:['Don\'t short into a major support level — selling may stop or reverse right there','If the gap fills completely within the first 30 minutes, the setup has reversed — don\'t short'],
+    confirm:['The gap acts as resistance — any bounce back toward it gets sold','Volume remains above average throughout the day'],
     quote:'Bad news gaps down. The question is: is the bad news already priced in?',
   },
   'Uptrend': { signal:'bullish', confidence:75,
-    definition:'20-day SMA is at least 2% above the 40-day SMA — price is in a confirmed uptrend.',
-    psychology:'Buyers have been consistently more aggressive than sellers over 6+ weeks.',
-    buyers:'In control of the narrative. Each dip is bought.',
-    sellers:'Can slow it temporarily but haven\'t been able to reverse it.',
-    successRate:'72%', entry:'Buy dips to the 20-day moving average', stop:'Below the 40-day SMA', target:'Prior swing high', rr:'1:2',
-    best:['Strong sector','Broad market uptrend','Volume expanding on up days'],
-    mistakes:['Chasing after parabolic moves','Ignoring sector rotation signals'],
-    confirm:['Price above both 20 and 50-day SMA','Higher highs and higher lows'],
+    definition:'The stock has been making higher highs and higher lows over time. Every dip gets bought. Buyers are consistently winning the daily tug-of-war.',
+    psychology:'Week after week, buyers are more aggressive than sellers. The overall direction is up. The smart move is to trade with that direction, not against it.',
+    buyers:'In charge. Every dip gets bought — often by large funds and institutions.',
+    sellers:'Can slow the move temporarily but haven\'t been able to turn it around.',
+    successRate:'72%', entry:'Buy dips — when price pulls back to its 20-day average and holds', stop:'If price closes below the 40-day average, the uptrend may be breaking', target:'The most recent swing high (last notable peak)', rr:'1:2',
+    best:['The stock\'s sector is also strong — a rising tide lifts all boats','The overall market is also in an uptrend','Volume is higher on up days than down days — buyers are more enthusiastic'],
+    mistakes:['Buying after a stock has shot straight up (parabolic move) — you\'re too late at that point','Ignoring when the trend starts showing signs of weakening or slowing down'],
+    confirm:['Price is above both its 20-day and 50-day moving averages','Each pullback stops higher than the last pullback (higher lows forming)'],
     quote:'Trend is your friend — until it isn\'t. Know where it ends.',
   },
   'Downtrend': { signal:'bearish', confidence:75,
-    definition:'20-day SMA is at least 2% below the 40-day SMA — price is in a confirmed downtrend.',
-    psychology:'Sellers have been consistently more aggressive than buyers over 6+ weeks.',
-    buyers:'Losing every counter-rally attempt. Sell-the-bounce mentality.',
-    sellers:'In complete control. Every bounce is sold aggressively.',
-    successRate:'70%', entry:'Short the bounces to the 20-day SMA', stop:'Above the 40-day SMA', target:'Prior swing low', rr:'1:2',
-    best:['Weak sector','Broad market downtrend','Volume expanding on down days'],
-    mistakes:['Shorting into major support','Ignoring when trend starts to slow'],
-    confirm:['Price below both 20 and 50-day SMA','Lower highs and lower lows'],
+    definition:'The stock has been making lower highs and lower lows over time. Every bounce gets sold. Sellers are consistently winning the daily tug-of-war.',
+    psychology:'Week after week, sellers are more aggressive than buyers. The path of least resistance is down. Every small bounce is just an opportunity for sellers to add more pressure.',
+    buyers:'Losing every rally attempt. Every little pop gets sold back into.',
+    sellers:'Fully in control. Every small bounce is a chance to sell at a better price.',
+    successRate:'70%', entry:'Sell bounces — when price rallies back toward its 20-day average and stalls', stop:'If price closes above the 40-day average, the downtrend may be breaking', target:'The most recent swing low (last notable trough)', rr:'1:2',
+    best:['The stock\'s sector is also weak — the whole group is struggling','The overall market is also falling','Volume is higher on down days than up days — sellers are more aggressive'],
+    mistakes:['Shorting into a big support level — selling can pause or reverse hard right there','Ignoring when the trend starts to flatten or slow down — that\'s often an early warning it\'s ending'],
+    confirm:['Price is below both its 20-day and 50-day moving averages','Each bounce makes a lower high than the last bounce (lower highs forming)'],
     quote:'In a downtrend, every bounce is a gift to the short side.',
   },
 };
@@ -2641,7 +2641,7 @@ function rpAutoShowPat(){if(rpReplayIdx<1)return;const pts=detectAt(rpAllCandles
 // ─── PATTERN CHIPS ───────────────────────────────────────────
 function rpRenderChips(patterns){
   const el=document.getElementById('rpChips');
-  if(!patterns.length){el.innerHTML='<span class="rp-no-chips">No notable patterns at this candle</span>';return;}
+  if(!patterns.length){el.innerHTML='<span class="rp-no-chips">No patterns spotted here — keep going</span>';return;}
   el.innerHTML=patterns.map(p=>{const info=BOOK[p.name],cls=info?info.signal:'neutral';return`<span class="rp-chip ${cls}" onclick="rpShowEdu([{name:'${p.name}',conf:${p.conf}}],rpAllCandles,rpReplayIdx-1)">${p.name} <small>${p.conf}%</small></span>`;}).join('');
 }
 
@@ -2658,18 +2658,18 @@ function rpShowEdu(patterns,candles,idx){
       <span class="rp-edu-conf">${info.confidence}% confidence</span>
     </div>
     <div class="rp-edu-body">
-      <div><div class="rp-edu-sec-lbl">📖 Definition</div><div class="rp-edu-sec-txt">${info.definition}</div></div>
-      <div><div class="rp-edu-sec-lbl">🧠 Psychology</div><div class="rp-edu-sec-txt">${info.psychology}</div></div>
-      <div><div class="rp-edu-sec-lbl">📊 Trade Setup</div>
+      <div><div class="rp-edu-sec-lbl">📖 What Is This?</div><div class="rp-edu-sec-txt">${info.definition}</div></div>
+      <div><div class="rp-edu-sec-lbl">🧠 What's Happening</div><div class="rp-edu-sec-txt">${info.psychology}</div></div>
+      <div><div class="rp-edu-sec-lbl">📊 How to Trade It</div>
         <div class="rp-edu-grid">
-          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Entry</div><div class="rp-edu-stat-val">${info.entry}</div></div>
-          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Stop</div><div class="rp-edu-stat-val">${info.stop}</div></div>
-          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Target</div><div class="rp-edu-stat-val">${info.target}</div></div>
-          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Success Rate</div><div class="rp-edu-stat-val" style="color:var(--accent)">${info.successRate}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">When to Enter</div><div class="rp-edu-stat-val">${info.entry}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Get Out If Wrong</div><div class="rp-edu-stat-val">${info.stop}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Profit Goal</div><div class="rp-edu-stat-val">${info.target}</div></div>
+          <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Win Rate</div><div class="rp-edu-stat-val" style="color:var(--accent)">${info.successRate}</div></div>
         </div>
       </div>
-      <div><div class="rp-edu-sec-lbl">✅ Best Conditions</div><ul class="rp-edu-list">${(info.best||[]).map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      <div><div class="rp-edu-sec-lbl">❌ Common Mistakes</div><ul class="rp-edu-list">${(info.mistakes||[]).map(x=>`<li class="bad">${x}</li>`).join('')}</ul></div>
+      <div><div class="rp-edu-sec-lbl">✅ When It Works Best</div><ul class="rp-edu-list">${(info.best||[]).map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><div class="rp-edu-sec-lbl">❌ Traps to Avoid</div><ul class="rp-edu-list">${(info.mistakes||[]).map(x=>`<li class="bad">${x}</li>`).join('')}</ul></div>
       <div class="rp-edu-quote"><p>${info.quote}</p></div>
     </div>
     <div class="rp-quiz" id="rpQuizSection">${rpBuildQuiz(info,candles,idx)}</div>
@@ -2711,7 +2711,7 @@ function rpUpdateProgressUI(){
   document.getElementById('rpStatStreak').textContent=rpStreak;
   const grid=document.getElementById('rpMasteryGrid');
   const keys=Object.keys(rpProgress).sort((a,b)=>(rpProgress[b].c/(rpProgress[b].t||1))-(rpProgress[a].c/(rpProgress[a].t||1)));
-  if(!keys.length){grid.innerHTML='<div class="rp-mastery-empty">No patterns studied yet.</div>';return;}
+  if(!keys.length){grid.innerHTML='<div class="rp-mastery-empty">No patterns seen yet — make your first prediction!</div>';return;}
   grid.innerHTML=keys.map(k=>{const{c,t}=rpProgress[k],pct=t?Math.round(c/t*100):0;return`<div class="rp-mastery-row"><div class="rp-mastery-name">${k}<span>${pct}%</span></div><div class="rp-mastery-track"><div class="rp-mastery-fill" style="width:${pct}%"></div></div></div>`;}).join('');
 }
 
