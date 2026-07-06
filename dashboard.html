@@ -385,10 +385,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="link-title">ScalpExit</div>
       <div class="link-desc">Profit clock, trailing stops, and probability-based exit signals.</div>
     </a>
-    <a class="link-card" href="/#signals">
+    <a class="link-card" href="/scalpchart.html">
       <div class="link-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <div class="link-title">ScalpSignals</div>
-      <div class="link-desc">Real-time RSI + VWAP + volume signals for 20 tickers.</div>
+      <div class="link-desc">Real-time RSI + VWAP + volume signals — live inside ScalpCharts.</div>
     </a>
     <a class="link-card" href="/scalpchart.html">
       <div class="link-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
@@ -646,9 +646,9 @@ function fmtPnl(n) {
 }
 
 async function init() {
-  if (!sb) { window.location.href = '/login'; return; }
+  if (!sb) { window.location.href = '/login.html'; return; }
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) { window.location.href = '/login'; return; }
+  if (!session) { window.location.href = '/login.html'; return; }
 
   const user = session.user;
   _uid = user.id;

@@ -830,7 +830,7 @@
     </div>
     <button class="btn" onclick="loadTicker()">Load</button>
     <div class="live-dot" id="liveDot"></div>
-    <span style="font-size:11px;color:var(--muted)">LIVE</span>
+    <span id="dataStatusLabel" style="font-size:11px;color:var(--muted)">LIVE</span>
   </div>
   <div class="price-display">
     <div class="price-main" id="priceMain">—</div>
@@ -1255,11 +1255,18 @@ async function loadTicker() {
   clearInterval(priceInterval);
 
   const fresh = await fetchRealCandles(ticker, currentTF);
+  const statusLabel = document.getElementById('dataStatusLabel');
+  const liveDot = document.getElementById('liveDot');
   if (fresh && fresh.length > 0) {
     candles = fresh;
+    if (statusLabel) { statusLabel.textContent = 'LIVE'; statusLabel.style.color = ''; }
+    if (liveDot) liveDot.style.background = '';
   } else {
     basePrice = TICKERS[ticker] || 100 + Math.random() * 400;
     candles = seedCandles(basePrice);
+    if (statusLabel) { statusLabel.textContent = 'DEMO — API offline'; statusLabel.style.color = '#f5a623'; }
+    if (liveDot) liveDot.style.background = '#f5a623';
+    document.getElementById('alert-feed').innerHTML += '<div style="padding:6px 12px;font-size:11px;color:#f5a623;border-bottom:1px solid var(--border);">⚠️ Live data unavailable — showing sample chart. Market may be closed or API key not configured.</div>';
   }
   currentPrice = candles[candles.length - 1].close;
   resizeCanvases();
@@ -1315,7 +1322,10 @@ function startPricePoller() {
         const open = candles.length ? candles[0].open : data.price;
         updatePrice(data.price, open);
       }
-    } catch (e) { /* silent — bar refresh still covers price */ }
+    } catch (e) {
+      const sl = document.getElementById('dataStatusLabel');
+      if (sl && sl.textContent === 'LIVE') { sl.textContent = 'STALE'; sl.style.color = '#f5a623'; }
+    }
   }
   fetchLivePrice(); // immediate tick
   priceInterval = setInterval(fetchLivePrice, 5000);

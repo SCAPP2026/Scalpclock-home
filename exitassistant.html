@@ -2278,7 +2278,7 @@
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const { data: { session } } = await _sb.auth.getSession();
   clearTimeout(_authFallback);
-  if (!session) { window.location.href = '/login?from=/exitassistant'; return; }
+  if (!session) { window.location.href = '/login.html?from=/exitassistant.html'; return; }
   document.body.style.visibility = 'visible';
 })();
 
@@ -3336,6 +3336,10 @@ async function refresh() {
     }
   } catch (_) {
     markPriceStale();
+    const liveText = document.querySelector('.live-text');
+    if (liveText) { liveText.textContent = 'OFFLINE'; liveText.style.color = '#f5a623'; }
+    const liveDot = document.querySelector('.live-dot');
+    if (liveDot) liveDot.style.background = '#f5a623';
   }
 }
 
@@ -3346,6 +3350,9 @@ function markPriceStale() {
   if (_lastPriceUpdate > 0 && age > 30) {
     staleEl.style.display = 'inline';
     staleEl.textContent = age > 120 ? `${Math.round(age/60)}m stale` : `${age}s stale`;
+  } else if (_lastPriceUpdate === 0) {
+    staleEl.style.display = 'inline';
+    staleEl.textContent = 'No live data — market may be closed';
   }
 }
 
