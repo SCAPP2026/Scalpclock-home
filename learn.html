@@ -272,7 +272,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,10,8,.92);backdrop-filte
     <div class="today-info">
       <div class="today-day" id="today-day-label">Day 1 · Week 1</div>
       <div class="today-title" id="today-lesson-title">What Is a Stock? What Is an Option?</div>
-      <div class="today-meta">~5 min · <span>5 quiz questions</span> · <span>+50 XP</span></div>
+      <div class="today-meta" id="today-meta">~5 min · <span>5 quiz questions</span> · <span>+50 XP</span></div>
     </div>
     <button class="today-cta" id="today-cta">Start Lesson →</button>
   </div>
@@ -605,6 +605,9 @@ function renderTodayCard() {
   document.getElementById('today-day-label').textContent=`Day ${currentDay} · Week ${day.week}`;
   document.getElementById('today-lesson-title').textContent=day.title;
   document.getElementById('today-cta').textContent=isDone(currentDay)?'Replay →':'Start Lesson →';
+  const qCount=day.quiz?day.quiz.length:0;
+  const qText=qCount===0?'No quiz':`${qCount} quiz question${qCount!==1?'s':''}`;
+  document.getElementById('today-meta').innerHTML=`~5 min · <span>${qText}</span> · <span>+50 XP</span>`;
 }
 
 function renderPath() {
@@ -870,7 +873,7 @@ function computeRewards() {
   if(done.length>=10&&earnBadge('day10'))earnedThisLesson.push({badge:true,badgeIcon:'🥉',badgeName:'Day 10'});
   if(done.length>=30&&earnBadge('day30'))earnedThisLesson.push({badge:true,badgeIcon:'🥈',badgeName:'Day 30'});
   if(done.length>=100&&earnBadge('day100'))earnedThisLesson.push({badge:true,badgeIcon:'🥇',badgeName:'Day 100'});
-  if(done.length>=365&&earnBadge('day365'))earnedThisLesson.push({badge:true,badgeIcon:'🏆',badgeName:'Market Master'});
+  if(done.length>=364&&earnBadge('day365'))earnedThisLesson.push({badge:true,badgeIcon:'🏆',badgeName:'Market Master'});
   if(l.isBoss&&earnBadge('boss_slayer'))earnedThisLesson.push({badge:true,badgeIcon:'👑',badgeName:'Boss Slayer'});
   if(xp>=500&&earnBadge('xp500'))earnedThisLesson.push({badge:true,badgeIcon:'⚗️',badgeName:'XP 500'});
   if(xp>=2000&&earnBadge('xp2000'))earnedThisLesson.push({badge:true,badgeIcon:'🔮',badgeName:'XP 2000'});
