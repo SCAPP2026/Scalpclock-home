@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Stop Guessing. Start Understanding.</title>
+<meta name="description" content="ScalpClock is an AI-powered trading coach that teaches you how to read charts one candle at a time. Powered by SampsonX.">
+<link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;visibility:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.10),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:var(--green);text-decoration:none;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1140px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-links a{font-size:.875rem;color:var(--t80);padding:7px 13px;border-radius:8px;transition:color .15s,background .15s;}
+.nav-links a:hover{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-cta{background:var(--green)!important;color:#070a08!important;font-weight:600;border-radius:8px;padding:7px 16px!important;}
+.nav-cta:hover{background:#12c470!important;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.ham span{display:block;width:22px;height:2px;background:var(--t80);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:80px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer.open{transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover{color:var(--text);background:var(--g-dim);}
+@media(max-width:720px){
+  .nav-links{display:none;}
+  .ham{display:flex;}
+  .nav-drawer{display:flex;}
+}
+
+/* TAPE */
+.tape-wrap{background:rgba(22,217,126,.05);border-bottom:1px solid var(--line);overflow:hidden;height:34px;display:flex;align-items:center;}
+.tape-inner{display:flex;gap:0;white-space:nowrap;animation:tape-scroll 28s linear infinite;}
+@keyframes tape-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tape-item{display:inline-flex;align-items:center;gap:8px;padding:0 28px;font-family:var(--disp);font-size:.82rem;font-weight:600;letter-spacing:.04em;color:var(--t55);}
+.tape-item .sym{color:var(--text);}
+.tape-item .up{color:var(--green);}
+.tape-item .dn{color:#ff6b6b;}
+.tape-sep{color:var(--line);font-size:1rem;}
+
+/* HERO */
+.hero{max-width:1140px;margin:0 auto;padding:80px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.hero-copy{}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:20px;}
+.hero-eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-family:var(--disp);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:.01em;margin-bottom:20px;}
+.hero h1 em{color:var(--green);font-style:normal;}
+.hero-sub{font-size:1.05rem;color:var(--t80);line-height:1.7;margin-bottom:36px;max-width:480px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{background:var(--green);color:#070a08;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-primary:hover{background:#12c470;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.95rem;padding:14px 24px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
+.btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
+
+/* HERO CHART WIDGET */
+.hero-widget{background:rgba(11,17,13,.9);border:1px solid rgba(22,217,126,.22);border-radius:18px;overflow:hidden;box-shadow:0 0 60px rgba(22,217,126,.10),0 24px 80px rgba(0,0,0,.5);}
+.hw-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);}
+.hw-title{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--text);}
+.hw-badge{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--green);background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.25);border-radius:20px;padding:4px 10px;}
+.hw-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+.hw-canvas{display:block;width:100%;}
+.hw-sampson{padding:12px 18px;border-top:1px solid var(--line);background:rgba(22,217,126,.04);}
+.hw-sx-label{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+.hw-sx-text{font-size:.82rem;color:var(--t80);line-height:1.5;}
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;gap:40px;padding:60px 20px 40px;}
+  .hero-widget{max-width:480px;}
+}
+
+/* SECTION BASE */
+.section{padding:80px 24px;max-width:1140px;margin:0 auto;}
+.sec-label{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:14px;}
+.sec-title{font-family:var(--disp);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;line-height:1.15;letter-spacing:.01em;margin-bottom:16px;}
+.sec-sub{font-size:1rem;color:var(--t80);line-height:1.7;max-width:600px;margin-bottom:48px;}
+
+/* WHY SCALPCLOCK */
+.why-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.why-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.why-card{background:rgba(14,22,16,.7);border:1px solid var(--line);border-radius:16px;padding:28px 26px;transition:border-color .2s,box-shadow .2s;}
+.why-card:hover{border-color:rgba(22,217,126,.3);box-shadow:0 0 30px rgba(22,217,126,.08);}
+.why-icon{width:44px;height:44px;border-radius:12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.2);display:grid;place-items:center;margin-bottom:18px;font-size:1.3rem;}
+.why-card h3{font-family:var(--disp);font-size:1.2rem;font-weight:700;margin-bottom:10px;}
+.why-card p{font-size:.875rem;color:var(--t80);line-height:1.65;}
+@media(max-width:700px){.why-grid{grid-template-columns:1fr;}}
+
+/* DEMO SECTION */
+.demo-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:start;}
+.demo-canvas-wrap{background:rgba(11,17,13,.9);border:1px solid rgba(22,217,126,.2);border-radius:16px;overflow:hidden;}
+.demo-c-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);}
+.demo-c-title{font-family:var(--disp);font-weight:700;font-size:.9rem;color:var(--text);}
+.demo-hint{font-size:.75rem;color:var(--t55);}
+#demoCanvas{display:block;width:100%;cursor:pointer;}
+.demo-panel{background:rgba(11,17,13,.9);border:1px solid rgba(22,217,126,.2);border-radius:16px;overflow:hidden;}
+.demo-p-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;}
+.demo-p-name{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--green);}
+.demo-p-body{padding:18px;}
+.demo-p-placeholder{color:var(--t55);font-size:.875rem;text-align:center;padding:40px 20px;line-height:1.7;}
+.dp-section{margin-bottom:18px;}
+.dp-section:last-child{margin-bottom:0;}
+.dp-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.dp-text{font-size:.83rem;color:var(--t80);line-height:1.6;}
+.dp-score-row{display:flex;align-items:center;gap:12px;}
+.dp-score-num{font-family:var(--disp);font-size:2rem;font-weight:700;color:var(--green);}
+.dp-score-grade{font-family:var(--disp);font-size:1.2rem;font-weight:700;padding:2px 10px;border-radius:6px;background:rgba(22,217,126,.15);color:var(--green);}
+.dp-bars{display:flex;flex-direction:column;gap:8px;}
+.dp-bar-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;}
+.dp-bar-name{font-size:.75rem;color:var(--t55);}
+.dp-bar-track{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;width:80px;}
+.dp-bar-fill{height:100%;border-radius:3px;background:var(--green);}
+@media(max-width:860px){.demo-wrap{grid-template-columns:1fr;}}
+
+/* COMPARISON */
+.comp-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.comp-in{max-width:900px;margin:0 auto;padding:80px 24px;}
+.comp-table{width:100%;border-collapse:collapse;margin-top:40px;}
+.comp-table th{padding:14px 20px;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t55);text-align:left;border-bottom:1px solid var(--line);}
+.comp-table th:nth-child(2){color:#ff6b6b;}
+.comp-table th:nth-child(3){color:var(--green);}
+.comp-table td{padding:14px 20px;font-size:.875rem;color:var(--t80);border-bottom:1px solid rgba(120,200,160,.06);vertical-align:middle;}
+.comp-table td:first-child{color:var(--text);font-weight:500;}
+.comp-table td:nth-child(2){color:#ff8888;}
+.comp-table td:nth-child(3){color:var(--green);}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table tr:hover td{background:var(--g-dim);}
+@media(max-width:600px){
+  .comp-table th,.comp-table td{padding:10px 12px;font-size:.8rem;}
+}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.feat-card{background:rgba(14,22,16,.6);border:1px solid var(--line);border-radius:14px;padding:24px 22px;transition:border-color .2s;}
+.feat-card:hover{border-color:rgba(22,217,126,.28);}
+.feat-icon{font-size:1.5rem;margin-bottom:14px;}
+.feat-card h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:8px;}
+.feat-card p{font-size:.83rem;color:var(--t55);line-height:1.6;}
+.feat-badge{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(255,165,0,.1);color:#ffb347;border:1px solid rgba(255,165,0,.2);margin-top:10px;}
+@media(max-width:860px){.feat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.feat-grid{grid-template-columns:1fr;}}
+
+/* LEARNING SECTION */
+.learn-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.learn-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
+.learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.learn-bullets{list-style:none;display:flex;flex-direction:column;gap:16px;margin-top:32px;}
+.learn-bullets li{display:flex;align-items:flex-start;gap:14px;font-size:.9rem;color:var(--t80);line-height:1.6;}
+.learn-bullets li::before{content:'✓';font-size:.85rem;font-weight:700;color:var(--green);background:rgba(22,217,126,.1);border-radius:50%;width:22px;height:22px;min-width:22px;display:grid;place-items:center;margin-top:1px;}
+.learn-example{background:rgba(14,22,16,.8);border:1px solid rgba(22,217,126,.2);border-radius:16px;overflow:hidden;}
+.le-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;}
+.le-name{font-family:var(--disp);font-weight:700;font-size:.9rem;color:var(--green);}
+.le-tag{font-size:.7rem;color:var(--t55);}
+.le-body{padding:18px;display:flex;flex-direction:column;gap:14px;}
+.le-block{padding:12px 14px;background:rgba(22,217,126,.04);border-radius:10px;border:1px solid rgba(22,217,126,.1);}
+.le-block-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+.le-block-text{font-size:.82rem;color:var(--t80);line-height:1.6;}
+@media(max-width:800px){.learn-grid{grid-template-columns:1fr;}}
+
+/* WHO IT'S FOR */
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.who-card{background:rgba(14,22,16,.6);border:1px solid var(--line);border-radius:16px;padding:28px 24px;transition:border-color .2s,box-shadow .2s;}
+.who-card:hover{border-color:rgba(22,217,126,.3);box-shadow:0 0 24px rgba(22,217,126,.07);}
+.who-tier{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:12px;}
+.who-card h3{font-family:var(--disp);font-size:1.2rem;font-weight:700;margin-bottom:10px;}
+.who-card p{font-size:.85rem;color:var(--t80);line-height:1.65;margin-bottom:16px;}
+.who-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.who-list li{font-size:.8rem;color:var(--t55);display:flex;align-items:flex-start;gap:8px;}
+.who-list li::before{content:'→';color:var(--green);font-weight:700;}
+@media(max-width:700px){.who-grid{grid-template-columns:1fr;}}
+
+/* FINAL CTA */
+.cta-section{text-align:center;padding:100px 24px;}
+.cta-section h2{font-family:var(--disp);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:.01em;margin-bottom:16px;}
+.cta-section p{font-size:1rem;color:var(--t80);line-height:1.7;max-width:520px;margin:0 auto 40px;}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
+.foot-in{max-width:1140px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line x1="9" y1="9" x2="9" y2="4.5"/>
+          <line x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/scalpchart.html">ScalpCharts</a>
+      <a href="/exitassistant.html">Exit Assistant</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/learn.html">Learn</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a class="nav-cta" href="/login.html?tab=signup">Start Free</a>
+    </nav>
+    <button class="ham" onclick="toggleDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/scalpchart.html" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/exitassistant.html" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/pricing.html" onclick="closeDrawer()">Pricing</a>
+  <a href="/learn.html" onclick="closeDrawer()">Learn</a>
+  <a href="/dashboard.html" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login.html?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<!-- TICKER TAPE -->
+<div class="tape-wrap">
+  <div class="tape-inner" id="tapeInner">
+    <span class="tape-item"><span class="sym">SPY</span>&nbsp;<span class="up" id="t-SPY">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">QQQ</span>&nbsp;<span class="up" id="t-QQQ">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">AAPL</span>&nbsp;<span class="up" id="t-AAPL">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">TSLA</span>&nbsp;<span class="up" id="t-TSLA">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">NVDA</span>&nbsp;<span class="up" id="t-NVDA">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">AMD</span>&nbsp;<span class="up" id="t-AMD">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">META</span>&nbsp;<span class="up" id="t-META">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">SPY</span>&nbsp;<span class="up" id="t-SPY2">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">QQQ</span>&nbsp;<span class="up" id="t-QQQ2">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">AAPL</span>&nbsp;<span class="up" id="t-AAPL2">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">TSLA</span>&nbsp;<span class="up" id="t-TSLA2">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">NVDA</span>&nbsp;<span class="up" id="t-NVDA2">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">AMD</span>&nbsp;<span class="up" id="t-AMD2">—</span></span>
+    <span class="tape-sep">·</span>
+    <span class="tape-item"><span class="sym">META</span>&nbsp;<span class="up" id="t-META2">—</span></span>
+    <span class="tape-sep">·</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section>
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">Live AI Analysis</div>
+      <h1>Stop Guessing.<br><em>Start Understanding.</em></h1>
+      <p class="hero-sub">Most traders stare at charts hoping for a signal. ScalpClock's AI coach SampsonX reads every candle, explains what the market is doing, and teaches you how to trade it — in plain English.</p>
+      <div class="hero-btns">
+        <a class="btn-primary" href="/login.html?tab=signup">Start Free →</a>
+        <a class="btn-ghost" href="#demo">Watch Demo</a>
+      </div>
+    </div>
+    <div class="hero-widget">
+      <div class="hw-header">
+        <span class="hw-title">SPY · 1m</span>
+        <span class="hw-badge">LIVE</span>
+      </div>
+      <canvas class="hw-canvas" id="heroCanvas" height="180"></canvas>
+      <div class="hw-sampson">
+        <div class="hw-sx-label">SampsonX</div>
+        <div class="hw-sx-text" id="heroSXText">Reading the chart…</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY SCALPCLOCK -->
+<div class="why-section">
+  <div class="why-in">
+    <div class="sec-label">Why ScalpClock</div>
+    <h2 class="sec-title">Built for traders who want to learn, not just guess</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">📚</div>
+        <h3>Learn While You Trade</h3>
+        <p>Every chart interaction teaches you something. SampsonX breaks down candle patterns, volume context, and momentum so each trade builds your knowledge.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🤖</div>
+        <h3>SampsonX AI Coach</h3>
+        <p>Your personal trading coach lives inside ScalpCharts. It scores every setup, explains what it sees, and gives you the confidence breakdown traders actually need.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">⚡</div>
+        <h3>Trade Faster</h3>
+        <p>Pattern alerts, confidence scores, and exit levels calculated automatically. Spend less time analyzing and more time executing with precision.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERACTIVE DEMO -->
+<section id="demo">
+  <div class="section">
+    <div class="sec-label">Interactive Demo</div>
+    <h2 class="sec-title">Click any candle. SampsonX explains it.</h2>
+    <p class="sec-sub">This is the actual ScalpCharts experience. Click a candle on the left to get a real AI coaching breakdown on the right.</p>
+    <div class="demo-wrap">
+      <div class="demo-canvas-wrap">
+        <div class="demo-c-header">
+          <span class="demo-c-title">DEMO · SPY 1m</span>
+          <span class="demo-hint">Tap any candle →</span>
+        </div>
+        <canvas id="demoCanvas" height="220"></canvas>
+      </div>
+      <div class="demo-panel">
+        <div class="demo-p-header">
+          <span class="demo-p-name">SampsonX</span>
+          <span style="font-size:.72rem;color:var(--t55);">AI Coach</span>
+        </div>
+        <div class="demo-p-body" id="demoPanel">
+          <div class="demo-p-placeholder">Click a candle on the chart to get your AI coaching breakdown from SampsonX.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<div class="comp-section">
+  <div class="comp-in">
+    <div class="sec-label">Why We're Different</div>
+    <h2 class="sec-title">Most platforms show data. We teach you to read it.</h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Other Platforms</th>
+          <th>ScalpClock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Candle Explanations</td><td>❌ Raw chart only</td><td>✅ Plain-English AI analysis</td></tr>
+        <tr><td>Trade Education</td><td>❌ Separate courses</td><td>✅ Built into every chart</td></tr>
+        <tr><td>AI Coaching</td><td>❌ None or generic</td><td>✅ SampsonX — candle by candle</td></tr>
+        <tr><td>Confidence Score</td><td>❌ Not available</td><td>✅ 5-category breakdown + grade</td></tr>
+        <tr><td>Pattern Intelligence</td><td>⚠️ Name only</td><td>✅ Stats, conditions, expected move</td></tr>
+        <tr><td>Learn Mode</td><td>❌ Not available</td><td>✅ Hide-future candle training</td></tr>
+        <tr><td>Exit Assistant</td><td>⚠️ Manual</td><td>✅ AI-calculated levels</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section>
+  <div class="section">
+    <div class="sec-label">Features</div>
+    <h2 class="sec-title">Everything a serious trader needs</h2>
+    <p class="sec-sub">Six core tools — designed around education first, execution second.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🕯️</div>
+        <h3>AI Candle Analysis</h3>
+        <p>SampsonX reads every candle and explains exactly what the market is communicating — body size, wicks, context, and what to expect next.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h3>Pattern Alerts</h3>
+        <p>Detect Engulfing, Morning Star, Doji, Hammer, and more patterns automatically. Each alert includes expected move % and ideal conditions.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Confidence Meter</h3>
+        <p>A 5-category breakdown scores Pattern Strength, Volume, Trend Alignment, Support/Resistance, and Momentum — with a letter grade per setup.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🚪</div>
+        <h3>Exit Assistant</h3>
+        <p>Stop guessing when to exit. ScalpExit calculates target levels, stop zones, and risk/reward ratios based on live price action.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h3>SampsonX Coach</h3>
+        <p>Your AI trading coach lives inside ScalpCharts. It writes Trader Notes, Trade Summaries, and Watch Levels for every setup you analyze.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎓</div>
+        <h3>Learn Mode</h3>
+        <p>Replay any chart one candle at a time. Guess the direction before the next candle reveals. Build real pattern recognition through practice.</p>
+        <a href="/learn.html" class="feat-badge" style="text-decoration:none;cursor:pointer;">Live Now →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING SECTION -->
+<div class="learn-section">
+  <div class="learn-in">
+    <div class="sec-label">Education First</div>
+    <h2 class="sec-title">The Market Finally Speaks English</h2>
+    <div class="learn-grid">
+      <div>
+        <p style="font-size:1rem;color:var(--t80);line-height:1.7;max-width:460px;">
+          Traditional charting tools show you the data. ScalpClock tells you what it means. Every feature is designed to make you a better trader — not just a faster one.
+        </p>
+        <ul class="learn-bullets">
+          <li>Understand why a candle formed, not just what it looks like</li>
+          <li>Know when volume confirms or undermines a pattern</li>
+          <li>Read trend alignment before committing to a trade</li>
+          <li>See support and resistance in context with price action</li>
+          <li>Build intuition through Learn Mode candle-by-candle practice</li>
+        </ul>
+      </div>
+      <div class="learn-example">
+        <div class="le-header">
+          <span class="le-name">SampsonX</span>
+          <span class="le-tag">· Example analysis</span>
+        </div>
+        <div class="le-body">
+          <div class="le-block">
+            <div class="le-block-label">Market Story</div>
+            <div class="le-block-text">📈 Strong bullish candle — buyers rejected the morning lows hard. Body covers 78% of the range, suggesting conviction. Volume confirms the move.</div>
+          </div>
+          <div class="le-block">
+            <div class="le-block-label">Pattern</div>
+            <div class="le-block-text">🔥 Bullish Engulfing detected — typical move +0.74% over 3 candles. Works best above VWAP with high volume. Conditions currently aligned.</div>
+          </div>
+          <div class="le-block">
+            <div class="le-block-label">What to Watch Next</div>
+            <div class="le-block-text">🎯 Target: $452.80 &nbsp;·&nbsp; Stop: $449.10 &nbsp;·&nbsp; Risk/Reward: 2.3R. Watch for volume confirmation on the next candle.</div>
+          </div>
+          <div class="le-block">
+            <div class="le-block-label">Trade Quality Score</div>
+            <div class="le-block-text">Score: <strong style="color:var(--green)">82/100 · B+</strong> — Strong pattern with volume confirmation. Trend aligned. Near key support.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHO IT'S FOR -->
+<section>
+  <div class="section">
+    <div class="sec-label">Who It's For</div>
+    <h2 class="sec-title">Whether you're new or experienced — ScalpClock meets you there</h2>
+    <p class="sec-sub"></p>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-tier">Beginner</div>
+        <h3>Just starting out</h3>
+        <p>You know what a candle looks like but don't know what it means. SampsonX teaches you the story behind every bar in real time.</p>
+        <ul class="who-list">
+          <li>Plain-English candle explanations</li>
+          <li>Pattern alerts with full context</li>
+          <li>Learn Mode to build intuition fast</li>
+        </ul>
+      </div>
+      <div class="who-card">
+        <div class="who-tier">Intermediate</div>
+        <h3>Trading but inconsistent</h3>
+        <p>You've been trading a while but struggle to know when a setup is actually good. The Confidence Score and Trade Quality Score cut through the noise.</p>
+        <ul class="who-list">
+          <li>5-category confidence breakdown</li>
+          <li>Trade Quality Score (0–100 + grade)</li>
+          <li>AI Trade Summary per setup</li>
+        </ul>
+      </div>
+      <div class="who-card">
+        <div class="who-tier">Advanced</div>
+        <h3>Scaling up speed</h3>
+        <p>You read charts well — you need faster analysis. ScalpClock automates the mental checklists so you can evaluate more setups in less time.</p>
+        <ul class="who-list">
+          <li>Instant Trader Notes generation</li>
+          <li>Key level calculations in seconds</li>
+          <li>Exit Assistant for precision sizing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="hero-eyebrow" style="justify-content:center;margin-bottom:20px;">No credit card required</div>
+  <h2>The Time to Profit Is Now</h2>
+  <p>Join traders who are learning to read the market — one candle at a time.</p>
+  <div class="cta-btns">
+    <a class="btn-primary" href="/login.html?tab=signup">Start Free →</a>
+    <a class="btn-ghost" href="/pricing.html">View Pricing</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart.html">ScalpCharts</a>
+      <a href="/exitassistant.html">Exit Assistant</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/learn.html">Learn</a>
+      <a href="/faq.html">FAQ</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/privacy.html">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice.</div>
+  </div>
+</footer>
+
+<script>
+// Page reveal (removed stale Supabase auth check — wrong project)
+document.body.style.visibility='visible';
+
+// Nav drawer
+function toggleDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
+function closeDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.ham'))d.classList.remove('open');
+});
+
+// Ticker tape
+(function(){
+  const syms=['SPY','QQQ','AAPL','TSLA','NVDA','AMD','META'];
+  const fb={SPY:'583.42',QQQ:'510.18',AAPL:'227.63',TSLA:'248.90',NVDA:'138.55',AMD:'172.80',META:'605.40'};
+  function set(sym,price,chg){
+    const cls=chg>=0?'up':'dn',arrow=chg>=0?'▲':'▼';
+    const txt='$'+parseFloat(price).toFixed(2)+' '+arrow+Math.abs(chg).toFixed(2)+'%';
+    ['','2'].forEach(s=>{const el=document.getElementById('t-'+sym+s);if(el){el.textContent=txt;el.className=cls;}});
+  }
+  syms.forEach(s=>set(s,fb[s],0));
+  syms.forEach(s=>fetch('/api/price?symbol='+s).then(r=>r.json()).then(d=>{if(d&&d.price)set(s,d.price,d.change_pct||0);}).catch(()=>{}));
+})();
+
+// ─── HERO CANVAS ───────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('heroCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const CANDLES=[
+    {o:558,h:562,l:556,c:561},{o:561,h:565,l:560,c:564},{o:564,h:566,l:562,c:563},
+    {o:563,h:568,l:561,c:567},{o:567,h:570,l:565,c:569},{o:569,h:572,l:567,c:571},
+    {o:571,h:574,l:570,c:570},{o:570,h:575,l:569,c:574},{o:574,h:577,l:572,c:576},
+    {o:576,h:579,l:574,c:578},{o:578,h:581,l:577,c:580},{o:580,h:583,l:578,c:582},
+  ];
+  let lc=582;
+  const MSGS=['Strong uptrend — buyers in control. Momentum favors continuation.','Volume confirming the breakout. Watch 583 for next resistance.','Bullish Engulfing forming. Trade quality score: 81/100.','VWAP holding as support. Trend alignment bullish across all timeframes.'];
+  let mi=0;
+  document.getElementById('heroSXText').textContent=MSGS[0];
+
+  function draw(){
+    const W=canvas.offsetWidth,H=180;
+    canvas.width=W;canvas.height=H;
+    const cs=[...CANDLES];
+    cs[cs.length-1]={...cs[cs.length-1],c:lc,h:Math.max(cs[cs.length-1].h,lc),l:Math.min(cs[cs.length-1].l,lc)};
+    const all=[].concat(...cs.map(c=>[c.h,c.l]));
+    const hi=Math.max(...all),lo=Math.min(...all);
+    const pad=4,n=cs.length,cw=Math.floor((W-pad*2)/n),gap=Math.max(2,Math.floor(cw*.18)),bw=cw-gap;
+    const toY=v=>pad+(hi-v)/(hi-lo)*(H-pad*2);
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(22,217,126,.07)';ctx.lineWidth=1;
+    for(let g=0;g<4;g++){const y=pad+g*(H-pad*2)/3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    cs.forEach((c,i)=>{
+      const x=pad+i*cw,bull=c.c>=c.o,col=bull?'#16d97e':'#ff6b6b';
+      ctx.strokeStyle=col;ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(x+bw/2,toY(c.h));ctx.lineTo(x+bw/2,toY(c.l));ctx.stroke();
+      ctx.fillStyle=col;
+      const y1=toY(Math.max(c.o,c.c)),bh=Math.max(2,Math.abs(toY(c.o)-toY(c.c)));
+      ctx.fillRect(x,y1,bw,bh);
+      if(i===n-1){
+        ctx.strokeStyle='rgba(22,217,126,.6)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+        const cy=toY(c.c);ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle='rgba(22,217,126,.9)';ctx.font='bold 10px Inter,sans-serif';
+        ctx.fillText('$'+c.c.toFixed(2),W-54,cy-5);
+      }
+    });
+  }
+
+  setInterval(()=>{
+    const d=(Math.random()-.38)*.8;
+    lc=Math.max(580,Math.min(585,+(lc+d).toFixed(2)));
+    draw();
+    mi=(mi+1)%MSGS.length;
+    document.getElementById('heroSXText').textContent=MSGS[mi];
+  },1400);
+  draw();
+  window.addEventListener('resize',draw);
+})();
+
+// ─── DEMO CANVAS ───────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('demoCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const DC=[
+    {o:450,h:453,l:448,c:452},{o:452,h:454,l:450,c:451},{o:451,h:455,l:450,c:454},
+    {o:454,h:457,l:453,c:456},{o:456,h:458,l:452,c:453},{o:453,h:454,l:449,c:450},
+    {o:450,h:453,l:449,c:452},{o:452,h:460,l:451,c:459},{o:459,h:462,l:457,c:461},
+    {o:461,h:463,l:460,c:460},{o:460,h:462,l:456,c:457},{o:457,h:459,l:456,c:458},
+    {o:458,h:465,l:457,c:464},{o:464,h:467,l:463,c:466},{o:466,h:468,l:464,c:467},
+    {o:467,h:471,l:466,c:470}
+  ];
+  let sel=null;
+  const DA=[
+    {st:'📉 Small bearish candle opening the session. Sellers testing the water — low conviction.',pa:'Indecision open',sc:42,gr:'D',bars:[40,38,45,42,35]},
+    {st:'📉 Follow-through sell but volume dropped off. This is a weak move — sellers not committed.',pa:'Weak bearish',sc:38,gr:'D',bars:[28,25,45,50,35]},
+    {st:'📈 Buyers stepped in with increasing volume. First sign of interest at this level.',pa:'Base building',sc:55,gr:'C',bars:[50,60,55,60,48]},
+    {st:'📈 Second consecutive bullish close. Volume growing. Momentum building here.',pa:'Bullish accumulation',sc:65,gr:'B-',bars:[62,70,65,60,65]},
+    {st:'📉 Sharp reversal on highest volume so far. Distribution signal — sellers overwhelmed buyers.',pa:'Bearish reversal',sc:60,gr:'C+',bars:[65,80,45,55,55]},
+    {st:'📉 Bearish continuation slowing. Candle body shrinking — sellers losing steam at support.',pa:'Weakening bearish',sc:52,gr:'C',bars:[50,55,50,65,40]},
+    {st:'📈 Buyers absorbed selling at support. Small green candle coiling for a move.',pa:'Support holding',sc:60,gr:'C+',bars:[55,58,60,75,55]},
+    {st:'🔥 BULLISH ENGULFING — buyers took complete control. Volume 3.2× average. This is the signal.',pa:'Bullish Engulfing',sc:88,gr:'A',bars:[92,95,85,82,88]},
+    {st:'📈 Follow-through after Engulfing. Buyers holding gains. Volume still elevated. Trend confirmed.',pa:'Bullish continuation',sc:80,gr:'B+',bars:[78,82,85,76,82]},
+    {st:'📉 Small doji after strong run. Buyers pausing — normal consolidation, not a reversal yet.',pa:'Consolidation doji',sc:58,gr:'C',bars:[55,45,72,65,55]},
+    {st:'📉 Volume spike on bearish candle. Profit-taking happening — watch if this becomes distribution.',pa:'Potential distribution',sc:55,gr:'C',bars:[52,68,65,55,48]},
+    {st:'📈 Small recovery, low volume. Likely just a pause. Trend still intact above $456.',pa:'Low-vol bounce',sc:52,gr:'C-',bars:[48,38,65,60,50]},
+    {st:'🚀 BREAKOUT — volume 3.8× average. Price exploded through resistance. Institutional buying.',pa:'Volume breakout',sc:92,gr:'A+',bars:[90,98,92,88,95]},
+    {st:'📈 Continuation of breakout. Buyers defending new support at $464. Volume confirming.',pa:'Breakout continuation',sc:82,gr:'A-',bars:[80,85,88,80,85]},
+    {st:'📈 Strong bullish close. Buyers adding on the dip. Higher highs pattern intact.',pa:'Higher high confirm',sc:78,gr:'B+',bars:[76,75,88,78,78]},
+    {st:'🎯 NEAR TARGET — large bullish candle approaching $470 resistance. Consider partial profit here.',pa:'Momentum into target',sc:85,gr:'A',bars:[82,88,90,78,90]}
+  ];
+  const BAR_NAMES=['Pattern','Volume','Trend','S/R','Momentum'];
+  function bc(v){return v>=75?'#16d97e':v>=50?'#ffc94d':'#ff6b6b';}
+
+  function showDemo(idx){
+    sel=idx;draw();
+    const a=DA[idx],panel=document.getElementById('demoPanel');
+    if(!panel)return;
+    panel.innerHTML=`
+      <div class="dp-section"><div class="dp-label">Market Story</div><div class="dp-text">${a.st}</div></div>
+      <div class="dp-section"><div class="dp-label">Pattern</div><div class="dp-text">${a.pa}</div></div>
+      <div class="dp-section">
+        <div class="dp-label">Trade Quality Score</div>
+        <div class="dp-score-row"><div class="dp-score-num">${a.sc}</div><div class="dp-score-grade">${a.gr}</div></div>
+        <div class="dp-bars" style="margin-top:10px;">
+          ${BAR_NAMES.map((n,i)=>`<div class="dp-bar-row"><div class="dp-bar-name">${n}</div><div class="dp-bar-track"><div class="dp-bar-fill" style="width:${a.bars[i]}%;background:${bc(a.bars[i])};"></div></div></div>`).join('')}
+        </div>
+      </div>
+      <div class="dp-section"><div class="dp-label">SampsonX</div><div class="dp-text">${a.sc>=80?'STRONG LONG. High confidence setup.':a.sc>=65?'Long bias — watch for volume to confirm.':a.sc>=50?'Neutral — wait for clearer signal.':'Avoid — low confidence setup.'}</div></div>
+    `;
+  }
+
+  function draw(){
+    const W=canvas.offsetWidth,H=220;
+    canvas.width=W;canvas.height=H;
+    const n=DC.length,all=[].concat(...DC.map(c=>[c.h,c.l]));
+    const hi=Math.max(...all),lo=Math.min(...all);
+    const pad=6,cw=Math.floor((W-pad*2)/n),gap=Math.max(2,Math.floor(cw*.2)),bw=cw-gap;
+    const toY=v=>pad+(hi-v)/(hi-lo)*(H-pad*2);
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(22,217,126,.06)';ctx.lineWidth=1;
+    for(let g=0;g<3;g++){const y=pad+g*(H-pad*2)/2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    DC.forEach((c,i)=>{
+      const x=pad+i*cw,bull=c.c>=c.o,isSel=i===sel;
+      const col=isSel?'#ffe066':bull?'#16d97e':'#ff6b6b';
+      if(isSel){ctx.fillStyle='rgba(255,224,102,.06)';ctx.fillRect(x-2,0,bw+4,H);}
+      ctx.strokeStyle=col;ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(x+bw/2,toY(c.h));ctx.lineTo(x+bw/2,toY(c.l));ctx.stroke();
+      ctx.fillStyle=col;
+      const y1=toY(Math.max(c.o,c.c)),bh=Math.max(2,Math.abs(toY(c.o)-toY(c.c)));
+      ctx.fillRect(x,y1,bw,bh);
+    });
+  }
+
+  function handle(e){
+    const rect=canvas.getBoundingClientRect();
+    const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+    const n=DC.length,pad=6,cw=Math.floor((canvas.offsetWidth-pad*2)/n);
+    const idx=Math.floor((cx-pad)/cw);
+    if(idx>=0&&idx<n)showDemo(idx);
+  }
+  canvas.addEventListener('click',handle);
+  canvas.addEventListener('touchstart',function(e){e.preventDefault();handle(e);},{passive:false});
+  draw();
+  window.addEventListener('resize',draw);
+})();
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+</script>
+</body>
+</html>

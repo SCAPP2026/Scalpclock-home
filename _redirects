@@ -1,0 +1,5 @@
+# Maintenance mode — redirect all pages to homepage
+# API functions are NOT affected (Cloudflare Functions take priority over _redirects)
+# To restore: delete this file and swap index.backup.html → index.html
+
+/*    /    302
