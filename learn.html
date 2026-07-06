@@ -555,6 +555,7 @@ let modalLesson = null;
 let quizState = {current:0,answers:[],startTime:0};
 let practiceAnswered = false;
 let earnedThisLesson = [];
+let rewardsComputed = false;
 
 /* ── INIT ── */
 function init() {
@@ -672,6 +673,7 @@ function startLesson(dayNum) {
   earnedThisLesson=[];
   quizState={current:0,answers:[],startTime:Date.now()};
   practiceAnswered=false;
+  rewardsComputed=false;
   document.getElementById('modal-overlay').classList.add('open');
   renderModalStep();
 }
@@ -774,6 +776,7 @@ function renderQuizStep(body,footer) {
 }
 
 function answerQuiz(idx) {
+  if(quizState.answers.some(a=>a.q===quizState.current))return;
   const q=modalLesson.quiz[quizState.current];
   document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.add('answered'));
   document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
@@ -803,7 +806,7 @@ function renderQuizResults(body,footer) {
     body.innerHTML=`<div class="step-tag">Step 4 of 5 · Quiz</div>
 <p style="font-size:.85rem;color:var(--t45);margin-bottom:12px;">Score: ${correct}/${total} (${pct}%)</p>
 <div class="quiz-fail">You need 80% to pass (${Math.ceil(total*.8)}/${total} correct). You got ${correct}/${total}. Review the lesson and try again.</div>`;
-    footer.innerHTML=`<button class="btn-s" onclick="retryQuiz()">Retry Quiz</button><button class="btn-p" onclick="prevStep()">← Review Lesson</button>`;
+    footer.innerHTML=`<button class="btn-s" onclick="retryQuiz()">Retry Quiz</button><button class="btn-p" onclick="goToStep(0)">← Review Lesson</button>`;
   }
 }
 
@@ -811,7 +814,7 @@ function retryQuiz(){quizState.current=0;quizState.answers=[];renderQuizStep(doc
 function finishLesson(){modalStep=4;renderModalStep();}
 
 function renderRewardStep(body,footer) {
-  computeRewards();
+  if(!rewardsComputed){computeRewards();rewardsComputed=true;}
   const xpEarned=earnedThisLesson.reduce((s,e)=>s+(e.xp||0),0);
   const newBadges=earnedThisLesson.filter(e=>e.badge);
   body.innerHTML=`<div class="step-tag">Step 5 of 5 · Reward</div>
@@ -841,7 +844,13 @@ function computeRewards() {
   const elapsed=(Date.now()-quizState.startTime)/60000;
   earnedThisLesson.push({label:'Lesson Complete',xp:50});
   if(total>0&&pct>=1)earnedThisLesson.push({label:'Perfect Score!',xp:20});
-  if(total>0&&pct>=0.8&&quizState.answers.length===total)earnedThisLesson.push({label:'First Try Pass',xp:10});
+  const firstTryPass=total>0&&pct>=0.8&&quizState.answers.length===total;
+  if(firstTryPass){
+    earnedThisLesson.push({label:'First Try Pass',xp:10});
+    const ftCount=LS.get('sc_quiz_first_try',0)+1;
+    LS.set('sc_quiz_first_try',ftCount);
+    if(ftCount>=3&&earnBadge('eagle_eye'))earnedThisLesson.push({badge:true,badgeIcon:'🦅',badgeName:'Eagle Eye'});
+  }
   if(elapsed<4&&elapsed>0)earnedThisLesson.push({label:'Speed Bonus (<4min)',xp:5});
   earnedThisLesson.push({label:'Daily Bonus',xp:15});
   const totalXP=earnedThisLesson.reduce((s,e)=>s+(e.xp||0),0);
@@ -869,6 +878,7 @@ function computeRewards() {
 
 function nextStep(){if(modalStep<4){modalStep++;renderModalStep();}}
 function prevStep(){if(modalStep>0){modalStep--;renderModalStep();}}
+function goToStep(n){modalStep=n;renderModalStep();}
 function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').style.display='block';}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').style.display='none';}
 
