@@ -671,7 +671,7 @@ function startLesson(dayNum) {
   modalLesson=lesson;
   modalStep=0;
   earnedThisLesson=[];
-  quizState={current:0,answers:[],startTime:Date.now()};
+  quizState={current:0,answers:[],startTime:Date.now(),attempt:0};
   practiceAnswered=false;
   rewardsComputed=false;
   document.getElementById('modal-overlay').classList.add('open');
@@ -810,7 +810,7 @@ function renderQuizResults(body,footer) {
   }
 }
 
-function retryQuiz(){quizState.current=0;quizState.answers=[];renderQuizStep(document.getElementById('modal-body'),document.getElementById('modal-footer'));}
+function retryQuiz(){quizState.current=0;quizState.answers=[];quizState.attempt++;renderQuizStep(document.getElementById('modal-body'),document.getElementById('modal-footer'));}
 function finishLesson(){modalStep=4;renderModalStep();}
 
 function renderRewardStep(body,footer) {
@@ -844,7 +844,7 @@ function computeRewards() {
   const elapsed=(Date.now()-quizState.startTime)/60000;
   earnedThisLesson.push({label:'Lesson Complete',xp:50});
   if(total>0&&pct>=1)earnedThisLesson.push({label:'Perfect Score!',xp:20});
-  const firstTryPass=total>0&&pct>=0.8&&quizState.answers.length===total;
+  const firstTryPass=total>0&&pct>=0.8&&quizState.answers.length===total&&quizState.attempt===0;
   if(firstTryPass){
     earnedThisLesson.push({label:'First Try Pass',xp:10});
     const ftCount=LS.get('sc_quiz_first_try',0)+1;
