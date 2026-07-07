@@ -24,6 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://unpkg.com/lightweight-charts@4.1.4/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 
@@ -819,7 +820,7 @@
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
 </head>
-<body>
+<body style="visibility:hidden">
 
 <header>
   <a class="logo" href="/">
@@ -2739,6 +2740,33 @@ function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('ope
 function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+
+(async function(){
+  const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+  const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { data:{ session } } = await _sb.auth.getSession();
+  if (!session) { window.location.href = '/login?from=/scalpchart'; return; }
+  const { data: rows } = await _sb.from('profiles').select('plan').eq('id', session.user.id).limit(1);
+  const plan = rows?.[0]?.plan || 'free';
+  if (plan === 'free' || plan === 'expired') {
+    document.body.style.visibility = 'visible';
+    const wall = document.createElement('div');
+    wall.id = 'proWall';
+    wall.innerHTML = `<div style="position:fixed;inset:0;z-index:9999;background:rgba(7,10,8,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:'Inter',system-ui,sans-serif;">
+      <div style="max-width:400px;background:rgba(14,22,16,.95);border:1px solid rgba(22,217,126,.35);border-radius:20px;padding:40px 32px;box-shadow:0 0 60px rgba(22,217,126,.12);">
+        <div style="font-size:2.4rem;margin-bottom:12px;">📊</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;color:#eef3f0;margin-bottom:8px;">ScalpCharts is a Pro Feature</div>
+        <div style="color:rgba(238,243,240,.55);font-size:.9rem;line-height:1.6;margin-bottom:24px;">Real-time candlestick charts, AI Trade Coach, pattern detection, and Chart Replay are included in your Pro plan.</div>
+        <a href="/pricing" style="display:block;background:#16d97e;color:#04150d;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;padding:13px 24px;border-radius:11px;text-decoration:none;margin-bottom:10px;">Upgrade to Pro — Start Free Trial</a>
+        <a href="/dashboard" style="display:block;color:rgba(22,217,126,.7);font-size:.85rem;padding:8px;">← Back to Dashboard</a>
+      </div>
+    </div>`;
+    document.body.appendChild(wall);
+    return;
+  }
+  document.body.style.visibility = 'visible';
+})();
 // Auto-switch to Replay tab when ?tab=replay is in the URL
 (function(){
   if(new URLSearchParams(window.location.search).get('tab')==='replay'){
