@@ -18,49 +18,57 @@ export async function onRequest(context) {
     GLD:'SPDR Gold ETF', BAC:'Bank of America', CVX:'Chevron', HOOD:'Robinhood Markets',
   };
 
-  const headers = {
+  const hdrs = {
     'APCA-API-KEY-ID':     KEY_ID,
     'APCA-API-SECRET-KEY': SECRET,
   };
-  const BASE = 'https://data.alpaca.markets/v2';
-
-  let marketOpen = false;
-  try {
-    const clockRes = await fetch('https://paper-api.alpaca.markets/v2/clock', { headers });
-    const clock = await clockRes.json();
-    marketOpen = clock.is_open;
-  } catch (e) { console.error('clock fetch failed:', e.message); }
+  const BASE    = 'https://data.alpaca.markets/v2';
+  const symList = SYMBOLS.join(',');
 
   const now      = new Date();
   const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
+  const prevISO  = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const todayStr = now.toISOString().slice(0, 10);
 
   async function safeJson(res) {
-    if (!res.ok) return {};
     try { return await res.json(); } catch { return {}; }
   }
 
-  async function fetchBars(symbol) {
-    const url = `${BASE}/stocks/${symbol}/bars?timeframe=5Min&start=${startISO}&limit=80&feed=iex`;
-    const res  = await fetch(url, { headers });
-    const data = await safeJson(res);
-    return data.bars || [];
-  }
+  // 1 request — 5-min bars for all symbols (last 5 days)
+  // 2 request — latest bar per symbol
+  // 3 request — prev-day daily bars
+  // clock = 4th (already exists)
+  // Total: 4 subrequests instead of 60
 
-  async function fetchLatestBar(symbol) {
-    const url  = `${BASE}/stocks/${symbol}/bars/latest?feed=iex`;
-    const res  = await fetch(url, { headers });
-    const data = await safeJson(res);
-    return data.bar || null;
-  }
+  let marketOpen = false;
+  let allBars = {}, latestBars = {}, prevCloseBars = {};
 
-  async function fetchPrevDayBar(symbol) {
-    const url  = `${BASE}/stocks/${symbol}/bars?timeframe=1Day&start=${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()}&limit=2&feed=iex`;
-    const res  = await fetch(url, { headers });
-    const data = await safeJson(res);
-    const bars = data.bars || [];
-    return bars.length >= 2 ? bars[bars.length - 2].c : null;
-  }
+  const [clockRes, barsRes, latestRes, prevRes] = await Promise.all([
+    fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=5Min&start=${startISO}&limit=1000&feed=iex&sort=asc`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars/latest?symbols=${symList}&feed=iex`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=3&feed=iex&sort=asc`, { headers: hdrs }),
+  ]);
+
+  try {
+    const clock = await safeJson(clockRes);
+    marketOpen = clock.is_open || false;
+  } catch (e) { console.error('clock error:', e.message); }
+
+  try {
+    const data = await safeJson(barsRes);
+    allBars = data.bars || {};
+  } catch (e) { console.error('bars error:', e.message); }
+
+  try {
+    const data = await safeJson(latestRes);
+    latestBars = data.bars || {};
+  } catch (e) { console.error('latest error:', e.message); }
+
+  try {
+    const data = await safeJson(prevRes);
+    prevCloseBars = data.bars || {};
+  } catch (e) { console.error('prev error:', e.message); }
 
   function calcRSI(bars, period = 14) {
     const closes = bars.map(b => b.c);
@@ -151,13 +159,12 @@ export async function onRequest(context) {
       confluence: 0 };
   }
 
-  const tickers = await Promise.all(SYMBOLS.map(async (sym) => {
+  const tickers = SYMBOLS.map(sym => {
     try {
-      const [bars, latestBar, prevClose] = await Promise.all([
-        fetchBars(sym),
-        fetchLatestBar(sym),
-        fetchPrevDayBar(sym),
-      ]);
+      const bars       = allBars[sym]    || [];
+      const latestBar  = latestBars[sym] || null;
+      const dayBars    = prevCloseBars[sym] || [];
+      const prevClose  = dayBars.length >= 2 ? dayBars[dayBars.length - 2].c : null;
 
       const recentBars = bars.slice(-30);
       const rsi        = calcRSI(recentBars);
@@ -186,7 +193,7 @@ export async function onRequest(context) {
     } catch (e) {
       return { symbol: sym, name: NAMES[sym], ok: false };
     }
-  }));
+  });
 
   return new Response(JSON.stringify({ marketOpen, asOf: new Date().toISOString(), tickers }), {
     headers: {
