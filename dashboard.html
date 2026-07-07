@@ -324,7 +324,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <div class="shell">
 
   <div class="welcome">
-    <h1>Welcome back, <span id="firstName">trader</span>.</h1>
+    <h1>Welcome back, <span id="firstName">trader</span></h1>
     <p>Here's your ScalpClock account overview.</p>
   </div>
 
@@ -653,10 +653,22 @@ async function init() {
   const user = session.user;
   _uid = user.id;
   const email = user.email || '';
-  const firstName = email.split('@')[0];
+  const meta = user.user_metadata || {};
+
+  function capName(s) {
+    return s ? s.trim().charAt(0).toUpperCase() + s.trim().slice(1).toLowerCase() : '';
+  }
+
+  let displayName;
+  if (meta.first_name || meta.last_name) {
+    displayName = [capName(meta.first_name), capName(meta.last_name)].filter(Boolean).join(' ');
+  } else {
+    const prefix = (email.split('@')[0] || '').replace(/[._]/g, ' ').trim();
+    displayName = prefix.split(/\s+/).map(capName).filter(Boolean).join(' ') || 'Trader';
+  }
 
   document.getElementById('userEmail').textContent = email;
-  document.getElementById('firstName').textContent = firstName;
+  document.getElementById('firstName').textContent = displayName;
   document.getElementById('accountEmail').textContent = email;
   document.getElementById('accountId').textContent = user.id.substring(0, 16) + '...';
   document.getElementById('emailVerified').textContent = user.email_confirmed_at ? '✓ Verified' : '✗ Not verified';

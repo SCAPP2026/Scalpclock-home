@@ -102,6 +102,16 @@ input::placeholder{color:var(--t30);}
 
     <!-- SIGN UP -->
     <div id="signup-form" class="form" style="display:none">
+      <div style="display:flex;gap:12px;">
+        <div class="field" style="flex:1">
+          <label>First Name</label>
+          <input type="text" id="su-fname" placeholder="Jane">
+        </div>
+        <div class="field" style="flex:1">
+          <label>Last Name</label>
+          <input type="text" id="su-lname" placeholder="Doe">
+        </div>
+      </div>
       <div class="field">
         <label>Email</label>
         <input type="email" id="su-email" placeholder="you@example.com">
@@ -164,16 +174,33 @@ async function signIn() {
   }
 }
 
+function capName(s) {
+  return s ? s.trim().charAt(0).toUpperCase() + s.trim().slice(1).toLowerCase() : '';
+}
+
 async function signUp() {
-  const email = document.getElementById('su-email').value.trim();
-  const pass  = document.getElementById('su-pass').value;
-  const pass2 = document.getElementById('su-pass2').value;
+  const firstName = document.getElementById('su-fname').value.trim();
+  const lastName  = document.getElementById('su-lname').value.trim();
+  const email     = document.getElementById('su-email').value.trim();
+  const pass      = document.getElementById('su-pass').value;
+  const pass2     = document.getElementById('su-pass2').value;
+  if (!firstName || !lastName) return showMsg('Please enter your first and last name.', 'error');
   if (!email || !pass) return showMsg('Please fill in all fields.', 'error');
   if (pass !== pass2) return showMsg('Passwords do not match.', 'error');
   if (pass.length < 6) return showMsg('Password must be at least 6 characters.', 'error');
   const btn = document.getElementById('su-btn');
   btn.disabled = true; btn.textContent = 'Creating account...';
-  const { data, error } = await sb.auth.signUp({ email, password: pass });
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password: pass,
+    options: {
+      data: {
+        first_name: capName(firstName),
+        last_name:  capName(lastName),
+        full_name:  capName(firstName) + ' ' + capName(lastName),
+      },
+    },
+  });
   if (error) {
     showMsg(error.message, 'error');
     btn.disabled = false; btn.textContent = 'Create Account';
