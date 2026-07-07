@@ -45,9 +45,9 @@ export async function onRequest(context) {
 
   const [clockRes, barsRes, latestRes, prevRes] = await Promise.all([
     fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=5Min&start=${startISO}&limit=1000&feed=iex&sort=asc`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=5Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
     fetch(`${BASE}/stocks/bars/latest?symbols=${symList}&feed=iex`, { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=3&feed=iex&sort=asc`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=1000&feed=iex&sort=asc`, { headers: hdrs }),
   ]);
 
   try {
