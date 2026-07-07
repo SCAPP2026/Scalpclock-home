@@ -23,7 +23,8 @@ export async function onRequest(context) {
     'APCA-API-SECRET-KEY': SECRET,
   };
   const BASE    = 'https://data.alpaca.markets/v2';
-  const symList = SYMBOLS.join(',');
+  const symListA = SYMBOLS.slice(0, 10).join(',');
+  const symListB = SYMBOLS.slice(10).join(',');
 
   const now      = new Date();
   const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
@@ -42,10 +43,12 @@ export async function onRequest(context) {
 
   let marketOpen = false;
   let allBars = {}, latestBars = {}, prevCloseBars = {};
+  const symList = SYMBOLS.join(',');
 
-  const [clockRes, barsRes, latestRes, prevRes] = await Promise.all([
+  const [clockRes, barsResA, barsResB, latestRes, prevRes] = await Promise.all([
     fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=5Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symListA}&timeframe=5Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symListB}&timeframe=5Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
     fetch(`${BASE}/stocks/bars/latest?symbols=${symList}&feed=iex`, { headers: hdrs }),
     fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=1000&feed=iex&sort=asc`, { headers: hdrs }),
   ]);
@@ -56,8 +59,9 @@ export async function onRequest(context) {
   } catch (e) { console.error('clock error:', e.message); }
 
   try {
-    const data = await safeJson(barsRes);
-    allBars = data.bars || {};
+    const dataA = await safeJson(barsResA);
+    const dataB = await safeJson(barsResB);
+    allBars = { ...(dataA.bars || {}), ...(dataB.bars || {}) };
   } catch (e) { console.error('bars error:', e.message); }
 
   try {
