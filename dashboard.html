@@ -444,7 +444,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
   <!-- SIGNAL PREVIEW -->
   <div class="section-title" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
-    Live Signal Preview
+    Scalp Signal Preview
     <span id="signalStatusBadge" style="font-family:var(--mono);font-size:.65rem;color:var(--t30);"></span>
   </div>
   <!-- Status log (shown to all) -->
@@ -463,7 +463,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
     <div class="sp-lock" id="signalLock">
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-      <div class="sp-lock-msg">Unlock Live Signals</div>
+      <div class="sp-lock-msg">Unlock Scalp Signals</div>
       <div class="sp-lock-sub">Get exact entry, stop-loss &amp; target with Pro — includes 7-day free trial.</div>
       <button type="button" class="sp-lock-btn" onclick="startCheckout()">Start Free Trial →</button>
     </div>
@@ -693,7 +693,7 @@ async function init() {
     const data = await res.json();
     document.getElementById('marketStatus').textContent = data.marketOpen ? 'OPEN' : 'CLOSED';
     document.getElementById('marketStatus').style.color = data.marketOpen ? 'var(--green)' : '#ff7a1a';
-    document.getElementById('marketSub').textContent = data.marketOpen ? 'Live signals active' : 'Pre/after market hours';
+    document.getElementById('marketSub').textContent = data.marketOpen ? 'Scalp signals active' : 'Pre/after market hours';
   } catch(e) {
     document.getElementById('marketStatus').textContent = '—';
   }
@@ -837,7 +837,7 @@ function showOnboardingBanner(isTrial) {
         ['📊','ScalpCharts','Tap any candle → AI coaching'],
         ['📅','Chart Replay','Rewind any chart, spot patterns, earn XP'],
         ['🚪','Exit Assistant','Know exactly when to exit'],
-        ['📡','Live Signals','Real-time entry &amp; exit alerts'],
+        ['📡','Scalp Signals','Real-time entry &amp; exit alerts'],
         ['📲','Push Notifications','Enable in browser settings'],
       ].map(([ico,title,desc]) =>
         `<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;">
@@ -1290,7 +1290,7 @@ function renderScorecard(closedTrades) {
     </div>`;
 }
 
-// ── Live Signals ──────────────────────────────────────────────────────────────
+// ── Scalp Signals ──────────────────────────────────────────────────────────────
 function signalLog(msg, color = 'var(--t55)') {
   const log = document.getElementById('signalLog');
   if (!log) return;
@@ -1314,7 +1314,7 @@ async function loadLiveSignals() {
     signalLog(`Subscription: ${label}`, plan === 'pro' || plan === 'trial' ? 'var(--green)' : 'var(--t55)');
   } catch(_) {}
 
-  signalLog('Loading live signals…');
+  signalLog('Loading scalp signals…');
 
   try {
     const t0  = Date.now();

@@ -89,7 +89,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="grid" id="statusGrid">
       <div class="card"><span class="dot pending" id="d-auth"></span><div><div class="card-label">Authentication</div><div class="card-val" id="v-auth">Checking…</div><div class="card-sub" id="s-auth"></div></div></div>
       <div class="card"><span class="dot pending" id="d-sub"></span><div><div class="card-label">Subscription</div><div class="card-val" id="v-sub">Checking…</div><div class="card-sub" id="s-sub"></div></div></div>
-      <div class="card"><span class="dot pending" id="d-signals"></span><div><div class="card-label">Live Signal API</div><div class="card-val" id="v-signals">Checking…</div><div class="card-sub" id="s-signals"></div></div></div>
+      <div class="card"><span class="dot pending" id="d-signals"></span><div><div class="card-label">Scalp Signal API</div><div class="card-val" id="v-signals">Checking…</div><div class="card-sub" id="s-signals"></div></div></div>
       <div class="card"><span class="dot pending" id="d-market"></span><div><div class="card-label">Market Status</div><div class="card-val" id="v-market">Checking…</div><div class="card-sub" id="s-market"></div></div></div>
       <div class="card"><span class="dot pending" id="d-historical"></span><div><div class="card-label">Market Data (Yahoo)</div><div class="card-val" id="v-historical">Checking…</div><div class="card-sub" id="s-historical"></div></div></div>
       <div class="card"><span class="dot pending" id="d-price"></span><div><div class="card-label">Price API (Alpaca)</div><div class="card-val" id="v-price">Checking…</div><div class="card-sub" id="s-price"></div></div></div>
@@ -243,8 +243,8 @@ async function checkSignals() {
 
     // Market status
     if (data.marketOpen !== undefined) {
-      setStatus('market', 'ok', data.marketOpen ? 'OPEN' : 'CLOSED', data.marketOpen ? 'Live signals active' : 'Pre/after hours');
-      log(`  Market: ${data.marketOpen ? 'OPEN — live signals active' : 'CLOSED'}`, data.marketOpen ? 'ok' : 'warn');
+      setStatus('market', 'ok', data.marketOpen ? 'OPEN' : 'CLOSED', data.marketOpen ? 'Scalp signals active' : 'Pre/after hours');
+      log(`  Market: ${data.marketOpen ? 'OPEN — scalp signals active' : 'CLOSED'}`, data.marketOpen ? 'ok' : 'warn');
     }
 
     // Render signal table
