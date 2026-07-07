@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About ScalpClock — The Time to Profit Is Now</title>
+<meta name="description" content="ScalpClock is more than a trading platform. Learn how the market works, build confidence, and become a smarter trader.">
+<link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/hero.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --gold:#f5a623;--gold-dim:rgba(245,166,35,.12);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;visibility:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.10),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:var(--green);text-decoration:none;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1140px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-links a{font-size:.875rem;color:var(--t80);padding:7px 13px;border-radius:8px;transition:color .15s,background .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{background:var(--green)!important;color:#070a08!important;font-weight:600;border-radius:8px;padding:7px 16px!important;}
+.nav-cta:hover{background:#12c470!important;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.ham span{display:block;width:22px;height:2px;background:var(--t80);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:80px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer.open{transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover{color:var(--text);background:var(--g-dim);}
+@media(max-width:720px){
+  .nav-links{display:none;}
+  .ham{display:flex;}
+  .nav-drawer{display:flex;}
+}
+
+/* HERO */
+.about-hero{max-width:820px;margin:0 auto;padding:88px 24px 56px;text-align:center;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:20px;}
+.hero-eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.about-hero h1{font-family:var(--disp);font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700;line-height:1.1;letter-spacing:.01em;margin-bottom:14px;}
+.about-hero h1 em{color:var(--green);font-style:normal;}
+.about-sub{font-family:var(--disp);font-size:clamp(1.1rem,2.6vw,1.5rem);font-weight:700;color:var(--gold);margin-bottom:18px;}
+.about-hero p{font-size:1.05rem;color:var(--t80);line-height:1.75;max-width:620px;margin:0 auto 36px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.btn-primary{background:var(--green);color:#070a08;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-primary:hover{background:#12c470;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.95rem;padding:14px 24px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
+.btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
+.btn-gold{background:var(--gold);color:#1a0d00;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-gold:hover{background:#ffb84d;transform:translateY(-1px);}
+
+/* SECTION BASE */
+.section{padding:76px 24px;max-width:1140px;margin:0 auto;}
+.section-narrow{max-width:760px;margin:0 auto;padding:76px 24px;}
+.sec-label{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:14px;}
+.sec-title{font-family:var(--disp);font-size:clamp(1.7rem,4vw,2.4rem);font-weight:700;line-height:1.15;letter-spacing:.01em;margin-bottom:20px;}
+.sec-text{font-size:1rem;color:var(--t80);line-height:1.8;}
+.sec-text + .sec-text{margin-top:16px;}
+.alt-bg{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+
+/* PROFIT LIST */
+.profit-list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:12px 20px;margin:24px 0;}
+.profit-list li{display:flex;align-items:center;gap:12px;font-size:.95rem;color:var(--t80);}
+.profit-list li::before{content:'✓';flex-shrink:0;font-size:.8rem;font-weight:700;color:var(--gold);background:var(--gold-dim);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;}
+@media(max-width:560px){.profit-list{grid-template-columns:1fr;}}
+
+/* FEATURE CARDS */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.feat-card{background:rgba(14,22,16,.6);border:1px solid var(--line);border-radius:14px;padding:26px 22px;transition:border-color .2s,box-shadow .2s,transform .2s;}
+.feat-card:hover{border-color:rgba(22,217,126,.28);box-shadow:0 0 26px rgba(22,217,126,.08);transform:translateY(-2px);}
+.feat-icon{width:42px;height:42px;border-radius:11px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.2);display:grid;place-items:center;margin-bottom:16px;font-size:1.3rem;}
+.feat-card h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:8px;}
+.feat-card p{font-size:.86rem;color:var(--t55);line-height:1.6;}
+@media(max-width:860px){.feat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.feat-grid{grid-template-columns:1fr;}}
+
+/* QUOTE CARDS */
+.quote-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.quote-card{background:rgba(14,22,16,.7);border:1px solid rgba(245,166,35,.22);border-radius:16px;padding:32px 28px;transition:border-color .2s,box-shadow .2s;}
+.quote-card:hover{border-color:rgba(245,166,35,.45);box-shadow:0 0 30px rgba(245,166,35,.10);}
+.quote-card p{font-family:var(--disp);font-size:clamp(1.1rem,2.4vw,1.35rem);font-weight:700;color:var(--gold);line-height:1.4;}
+@media(max-width:700px){.quote-grid{grid-template-columns:1fr;}}
+
+/* CTA */
+.cta-section{text-align:center;padding:96px 24px;}
+.cta-section h2{font-family:var(--disp);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:.01em;margin-bottom:16px;}
+.cta-section p{font-size:1rem;color:var(--t80);line-height:1.7;max-width:520px;margin:0 auto 40px;}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* FOOTER QUOTE */
+.foot-quote{text-align:center;padding:0 24px 56px;}
+.foot-quote p{font-family:var(--disp);font-size:clamp(1rem,2.2vw,1.3rem);font-weight:600;color:var(--t80);line-height:1.6;}
+.foot-quote p em{color:var(--green);font-style:normal;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
+.foot-in{max-width:1140px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Learn</a>
+      <a href="/about" class="active">About</a>
+      <a href="/dashboard">Dashboard</a>
+      <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    </nav>
+    <button class="ham" onclick="toggleDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/learn" onclick="closeDrawer()">Learn</a>
+  <a href="/about" onclick="closeDrawer()">About</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<!-- HERO -->
+<section class="about-hero reveal">
+  <div class="hero-eyebrow">About Us</div>
+  <h1>About <em>ScalpClock</em></h1>
+  <div class="about-sub">The Time to Profit Is Now.</div>
+  <p>ScalpClock is more than a trading platform. It's a place where you can learn how the market works, build confidence, and become a smarter trader.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="/learn">Start Learning →</a>
+    <a class="btn-ghost" href="/pricing">Explore ScalpClock PRO</a>
+  </div>
+</section>
+
+<!-- WHO WE ARE -->
+<section class="section-narrow reveal">
+  <div class="sec-label">Our Story</div>
+  <h2 class="sec-title">Who Is ScalpClock?</h2>
+  <p class="sec-text">ScalpClock was built to help people understand the market — not just follow it.</p>
+  <p class="sec-text">Instead of only showing trading signals, ScalpClock teaches users why the market moves, how to read charts, and how to make better trading decisions.</p>
+  <p class="sec-text">Whether you're a beginner or an experienced trader, ScalpClock is designed to help you grow every day.</p>
+</section>
+
+<!-- OUR MISSION -->
+<div class="alt-bg">
+  <section class="section-narrow reveal">
+    <div class="sec-label">Our Mission</div>
+    <h2 class="sec-title">Our Mission</h2>
+    <p class="sec-text">Our mission is to make trading education simple, interactive, and available to everyone.</p>
+    <p class="sec-text">We want every user to learn with confidence before risking real money.</p>
+  </section>
+</div>
+
+<!-- OUR PHILOSOPHY -->
+<section class="section-narrow reveal">
+  <div class="sec-label">Our Philosophy</div>
+  <h2 class="sec-title">Profit Means More Than Money</h2>
+  <p class="sec-text">At ScalpClock, profit isn't measured only in dollars.</p>
+  <p class="sec-text" style="margin-bottom:0;">Profit is also:</p>
+  <ul class="profit-list">
+    <li>Knowledge gained</li>
+    <li>Confidence built</li>
+    <li>Better decisions made</li>
+    <li>Mistakes avoided</li>
+    <li>Skills developed</li>
+  </ul>
+  <p class="sec-text">Every lesson, chart, replay, quiz, and live signal helps you become a smarter trader.</p>
+  <p class="sec-text">When you learn how to think, the profits can follow for years to come.</p>
+</section>
+
+<!-- WHAT MAKES US DIFFERENT -->
+<div class="alt-bg">
+  <section class="section reveal">
+    <div class="sec-label">What Makes ScalpClock Different</div>
+    <h2 class="sec-title">Built to teach, not just to signal</h2>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📚</div>
+        <h3>Learn While You Trade</h3>
+        <p>Interactive lessons explain what is happening in the market and why.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Live Charts</h3>
+        <p>Watch the market in real time while learning how to read price action.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⏪</div>
+        <h3>Chart Replay</h3>
+        <p>Go back in time and study previous trading days to improve your skills.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏆</div>
+        <h3>XP & Achievements</h3>
+        <p>Earn XP, complete lessons, build streaks, unlock badges, and track your progress.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <h3>Confidence Before Capital</h3>
+        <p>Practice, learn, and build confidence before trading with real money.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CORE BELIEFS -->
+<section class="section reveal">
+  <div class="sec-label">Our Core Beliefs</div>
+  <h2 class="sec-title">What we stand for</h2>
+  <div class="quote-grid">
+    <div class="quote-card"><p>"The Time to Profit Is Now."</p></div>
+    <div class="quote-card"><p>"Profit Through Knowledge."</p></div>
+    <div class="quote-card"><p>"Knowledge compounds faster than money."</p></div>
+    <div class="quote-card"><p>"The best trade you'll ever make is investing in yourself."</p></div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section reveal">
+  <h2>Your Journey Starts Here</h2>
+  <p>Every great trader starts by learning. Join ScalpClock and begin building the knowledge and confidence needed to make smarter trading decisions.</p>
+  <div class="cta-btns">
+    <a class="btn-primary" href="/login?tab=signup">Create Free Account</a>
+    <a class="btn-gold" href="/pricing">Upgrade to PRO</a>
+  </div>
+</section>
+
+<div class="foot-quote reveal">
+  <p><em>The market rewards preparation.</em><br>ScalpClock helps you prepare.<br>The Time to Profit Is Now.</p>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Learn</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:support@scalpclock.com" style="color:inherit;text-decoration:underline;">support@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<script>
+document.body.style.visibility='visible';
+
+// Nav drawer
+function toggleDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
+function closeDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.ham'))d.classList.remove('open');
+});
+
+// Scroll reveal
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(el=>el.classList.add('in'));return;}
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in');io.unobserve(entry.target);}
+    });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(el=>io.observe(el));
+})();
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+</script>
+</body>
+</html>
