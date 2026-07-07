@@ -839,10 +839,19 @@ function renderWatchlist() {
 
 // ── Subscription check ────────────────────────────────────────────────────────
 // plan values: 'free' | 'trial' | 'pro' | 'expired'
-async function checkSubscription() {
+async function checkSubscription(isRetry = false) {
   try {
     const { data: rows } = await sb.from('profiles').select('plan, promo_redeemed').eq('id', _uid).limit(1);
-    const plan      = rows?.[0]?.plan || 'free';
+    let plan = rows?.[0]?.plan || 'free';
+
+    // If still free but we just came from a successful checkout, wait and retry once —
+    // the activate endpoint may not have finished yet
+    const justPaid = !!localStorage.getItem('sc_trial_start') &&
+      (Date.now() - new Date(localStorage.getItem('sc_trial_start')).getTime()) < 120000;
+    if (plan === 'free' && justPaid && !isRetry) {
+      setTimeout(() => checkSubscription(true), 3000);
+      return;
+    }
     const isTrial   = plan === 'trial';
     const isPro     = plan === 'pro';
     const isPaid    = isTrial || isPro;

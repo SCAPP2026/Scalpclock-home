@@ -144,22 +144,36 @@ h1 em{color:var(--green);font-style:normal;}
 <p style="position:relative;z-index:1;text-align:center;padding:24px 20px 40px;font-size:11px;color:#3a4f6a;line-height:1.7">&copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; Not financial advice. Options trading carries risk.</p>
 
 <script>
-const params = new URLSearchParams(location.search);
-const isTrial = params.get('trial') === '1';
+const params    = new URLSearchParams(location.search);
+const isTrial   = params.get('trial') === '1';
+const sessionId = params.get('session_id') || '';
 
 if (isTrial) {
   document.getElementById('mainHeading').innerHTML = '🎉 Welcome to <em>Pro</em>';
   document.getElementById('mainSubtitle').textContent = 'Your 7-day free trial is active. Every Pro feature is unlocked now — no charge until day 8.';
   document.getElementById('trialBadge').style.display = 'inline-flex';
 
-  // Store trial start date so dashboard can compute "Day X of 7"
-  const now = new Date().toISOString();
   if (!localStorage.getItem('sc_trial_start')) {
-    localStorage.setItem('sc_trial_start', now);
+    localStorage.setItem('sc_trial_start', new Date().toISOString());
   }
 }
 
-// Countdown auto-redirect
+// Activate Pro in Supabase immediately — don't rely on webhook timing
+async function activatePlan() {
+  if (!sessionId) return;
+  try {
+    await fetch('/api/stripe/activate', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ session_id: sessionId }),
+    });
+  } catch (_) {}
+}
+
+// Start activation and countdown in parallel — activation usually finishes
+// in ~1s, well before the 5s countdown ends
+activatePlan();
+
 let secs = 5;
 const countEl = document.getElementById('countdown');
 const fillEl  = document.getElementById('progressFill');
