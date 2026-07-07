@@ -3,19 +3,18 @@ export async function onRequest(context) {
   const KEY_ID = env.ALPACA_KEY_ID;
   const SECRET = env.ALPACA_SECRET;
 
+  // Top 10 highest-volume options tickers — 15-min RSI signals
   const SYMBOLS = [
-    'SPY','QQQ','IWM','AAPL','MSFT','AMZN','GOOGL','META',
-    'NVDA','TSLA','AMD','NFLX','COIN','PLTR','SOFI','ARM',
-    'GLD','BAC','CVX','HOOD',
+    'SPY', 'QQQ', 'AAPL', 'TSLA', 'NVDA',
+    'MSFT', 'AMD',  'META', 'AMZN', 'NFLX',
   ];
 
   const NAMES = {
-    SPY:'S&P 500 ETF', QQQ:'Nasdaq 100 ETF', IWM:'Russell 2000 ETF',
-    AAPL:'Apple', MSFT:'Microsoft', AMZN:'Amazon', GOOGL:'Alphabet',
-    META:'Meta Platforms', NVDA:'Nvidia', TSLA:'Tesla',
-    AMD:'Advanced Micro Devices', NFLX:'Netflix', COIN:'Coinbase',
-    PLTR:'Palantir', SOFI:'SoFi Technologies', ARM:'Arm Holdings',
-    GLD:'SPDR Gold ETF', BAC:'Bank of America', CVX:'Chevron', HOOD:'Robinhood Markets',
+    SPY:  'S&P 500 ETF',      QQQ:  'Nasdaq 100 ETF',
+    AAPL: 'Apple',             TSLA: 'Tesla',
+    NVDA: 'Nvidia',            MSFT: 'Microsoft',
+    AMD:  'Advanced Micro',    META: 'Meta Platforms',
+    AMZN: 'Amazon',            NFLX: 'Netflix',
   };
 
   const hdrs = {
@@ -23,10 +22,9 @@ export async function onRequest(context) {
     'APCA-API-SECRET-KEY': SECRET,
   };
   const BASE    = 'https://data.alpaca.markets/v2';
-  const symListA = SYMBOLS.slice(0, 10).join(',');
-  const symListB = SYMBOLS.slice(10).join(',');
+  const symList = SYMBOLS.join(',');
 
-  const now      = new Date();
+  const now     = new Date();
   const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
   const prevISO  = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const todayStr = now.toISOString().slice(0, 10);
@@ -35,20 +33,13 @@ export async function onRequest(context) {
     try { return await res.json(); } catch { return {}; }
   }
 
-  // 1 request — 5-min bars for all symbols (last 5 days)
-  // 2 request — latest bar per symbol
-  // 3 request — prev-day daily bars
-  // clock = 4th (already exists)
-  // Total: 4 subrequests instead of 60
-
   let marketOpen = false;
   let allBars = {}, latestBars = {}, prevCloseBars = {};
-  const symList = SYMBOLS.join(',');
 
-  const [clockRes, barsResA, barsResB, latestRes, prevRes] = await Promise.all([
+  // 4 subrequests: clock + 15-min bars + latest + prev-day daily
+  const [clockRes, barsRes, latestRes, prevRes] = await Promise.all([
     fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symListA}&timeframe=5Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symListB}&timeframe=5Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
+    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=15Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
     fetch(`${BASE}/stocks/bars/latest?symbols=${symList}&feed=iex`, { headers: hdrs }),
     fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=1000&feed=iex&sort=asc`, { headers: hdrs }),
   ]);
@@ -56,23 +47,22 @@ export async function onRequest(context) {
   try {
     const clock = await safeJson(clockRes);
     marketOpen = clock.is_open || false;
-  } catch (e) { console.error('clock error:', e.message); }
+  } catch(e) { console.error('clock error:', e.message); }
 
   try {
-    const dataA = await safeJson(barsResA);
-    const dataB = await safeJson(barsResB);
-    allBars = { ...(dataA.bars || {}), ...(dataB.bars || {}) };
-  } catch (e) { console.error('bars error:', e.message); }
+    const data = await safeJson(barsRes);
+    allBars = data.bars || {};
+  } catch(e) { console.error('bars error:', e.message); }
 
   try {
     const data = await safeJson(latestRes);
     latestBars = data.bars || {};
-  } catch (e) { console.error('latest error:', e.message); }
+  } catch(e) { console.error('latest error:', e.message); }
 
   try {
     const data = await safeJson(prevRes);
     prevCloseBars = data.bars || {};
-  } catch (e) { console.error('prev error:', e.message); }
+  } catch(e) { console.error('prev error:', e.message); }
 
   function calcRSI(bars, period = 14) {
     const closes = bars.map(b => b.c);
@@ -105,8 +95,8 @@ export async function onRequest(context) {
 
   function calcVolSurge(bars) {
     if (bars.length < 5) return 1;
-    const recent = bars.slice(-20);
-    const avgVol = recent.reduce((s, b) => s + b.v, 0) / recent.length;
+    const recent    = bars.slice(-20);
+    const avgVol    = recent.reduce((s, b) => s + b.v, 0) / recent.length;
     const latestVol = bars[bars.length - 1].v;
     return avgVol > 0 ? latestVol / avgVol : 1;
   }
@@ -115,7 +105,6 @@ export async function onRequest(context) {
     if (rsi === null) {
       return { tone: 'hold', signal: 'Hold', conviction: null, explain: 'Not enough data yet.', confluence: 0 };
     }
-
     const volOk = volSurge >= 1.5;
 
     function buildExtras(bullish) {
@@ -132,55 +121,52 @@ export async function onRequest(context) {
       const extras = buildExtras(true);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
       return { tone: 'buy', signal: 'Buy Calls', conviction: 'HARD',
-        explain: `RSI ${rsi.toFixed(1)}${suffix} — extremely oversold. Strong call setup.`,
+        explain: `RSI ${rsi.toFixed(1)}${suffix} — price dropped hard and is likely to bounce. Strong call setup.`,
         confluence: 1 + extras.length };
     }
     if (rsi <= 30) {
       const extras = buildExtras(true);
-      const upgrade = extras.length >= 2;
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
-      return { tone: 'buy', signal: 'Buy Calls', conviction: upgrade ? 'HARD' : null,
-        explain: `RSI ${rsi.toFixed(1)}${suffix} — oversold. Calls have the edge.`,
+      return { tone: 'buy', signal: 'Buy Calls', conviction: extras.length >= 2 ? 'HARD' : null,
+        explain: `RSI ${rsi.toFixed(1)}${suffix} — price has pulled back. Calls are the play here.`,
         confluence: 1 + extras.length };
     }
     if (rsi >= 80) {
       const extras = buildExtras(false);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
       return { tone: 'sell', signal: 'Buy Puts', conviction: 'HARD',
-        explain: `RSI ${rsi.toFixed(1)}${suffix} — extremely overbought. Strong put setup.`,
+        explain: `RSI ${rsi.toFixed(1)}${suffix} — price ran up too far too fast. Strong put setup.`,
         confluence: 1 + extras.length };
     }
     if (rsi >= 70) {
       const extras = buildExtras(false);
-      const upgrade = extras.length >= 2;
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
-      return { tone: 'sell', signal: 'Buy Puts', conviction: upgrade ? 'HARD' : null,
-        explain: `RSI ${rsi.toFixed(1)}${suffix} — overbought. Puts have the edge.`,
+      return { tone: 'sell', signal: 'Buy Puts', conviction: extras.length >= 2 ? 'HARD' : null,
+        explain: `RSI ${rsi.toFixed(1)}${suffix} — price is stretched. Puts have the edge.`,
         confluence: 1 + extras.length };
     }
     return { tone: 'hold', signal: 'Hold', conviction: null,
-      explain: `RSI ${rsi.toFixed(1)} — neutral zone. No edge right now.`,
+      explain: `RSI ${rsi.toFixed(1)} — price is in the middle. No clear edge yet — wait for a better setup.`,
       confluence: 0 };
   }
 
   const tickers = SYMBOLS.map(sym => {
     try {
-      const bars       = allBars[sym]    || [];
-      const latestBar  = latestBars[sym] || null;
-      const dayBars    = prevCloseBars[sym] || [];
-      const prevClose  = dayBars.length >= 2 ? dayBars[dayBars.length - 2].c : null;
+      const bars      = allBars[sym]      || [];
+      const latestBar = latestBars[sym]   || null;
+      const dayBars   = prevCloseBars[sym] || [];
+      const prevClose = dayBars.length >= 2 ? dayBars[dayBars.length - 2].c : null;
 
-      const recentBars = bars.slice(-30);
+      // 50 × 15-min bars ≈ 12.5 hours — enough for stable RSI(14)
+      const recentBars = bars.slice(-50);
       const rsi        = calcRSI(recentBars);
       const vwap       = calcVWAP(bars);
       const volSurge   = calcVolSurge(bars);
       const price      = latestBar ? latestBar.c : (recentBars.length ? recentBars[recentBars.length - 1].c : null);
       const vwapDist   = (vwap && price) ? ((price - vwap) / vwap * 100) : 0;
       const sig        = getSignal(rsi, vwapDist, volSurge);
-
-      const changePct = (price && prevClose)
-        ? ((price - prevClose) / prevClose * 100).toFixed(2)
-        : null;
+      const changePct  = (price && prevClose)
+        ? ((price - prevClose) / prevClose * 100).toFixed(2) : null;
 
       return {
         symbol:    sym,
@@ -188,13 +174,13 @@ export async function onRequest(context) {
         ok:        true,
         price,
         changePct: changePct ? Number(changePct) : 0,
-        rsi:       rsi != null ? Number(rsi.toFixed(1)) : 50,
+        rsi:       rsi != null ? Number(rsi.toFixed(1)) : null,
         vwap:      vwap ? Number(vwap.toFixed(2)) : null,
         vwapDist:  Number(vwapDist.toFixed(2)),
         volSurge:  Number(volSurge.toFixed(2)),
         ...sig,
       };
-    } catch (e) {
+    } catch(e) {
       return { symbol: sym, name: NAMES[sym], ok: false };
     }
   });
@@ -203,7 +189,7 @@ export async function onRequest(context) {
     headers: {
       'Content-Type':                'application/json',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control':               'public, s-maxage=12, stale-while-revalidate=8',
+      'Cache-Control':               'public, s-maxage=30, stale-while-revalidate=15',
     },
   });
 }

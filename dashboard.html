@@ -288,22 +288,38 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .ach-name{font-family:var(--disp);font-weight:700;font-size:.82rem;margin-bottom:2px;color:var(--text);}
   .ach-desc{font-size:.68rem;color:var(--t30);}
   /* SIGNAL PREVIEW */
-  .signal-preview-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:32px;position:relative;overflow:hidden;}
-  .sp-row{display:flex;align-items:center;gap:16px;margin-bottom:10px;}
-  .sp-sym{font-family:var(--disp);font-weight:700;font-size:1.1rem;}
-  .sp-tag{font-family:var(--mono);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.06em;}
-  .sp-tag.buy{background:rgba(22,217,126,.15);color:var(--green);}
-  .sp-tag.sell{background:rgba(255,59,70,.12);color:#ff3b46;}
-  .sp-vals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
-  .sp-val-item{background:rgba(255,255,255,.03);border-radius:8px;padding:10px 12px;}
-  .sp-val-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t30);margin-bottom:4px;}
-  .sp-val-num{font-family:var(--disp);font-weight:700;font-size:1rem;filter:blur(5px);user-select:none;}
-  .sp-lock{position:absolute;inset:0;background:rgba(7,10,8,.78);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--r);}
+  /* Signal board */
+  .signal-board-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);margin-bottom:32px;position:relative;overflow:hidden;min-height:180px;}
+  .sb-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.03);cursor:default;transition:.15s;}
+  .sb-row:last-child{border-bottom:none;}
+  .sb-row:hover{background:rgba(255,255,255,.02);}
+  .sb-row.buy{border-left:2px solid rgba(22,217,126,.4);}
+  .sb-row.sell{border-left:2px solid rgba(255,59,70,.35);}
+  .sb-row.hold{border-left:2px solid transparent;padding-left:18px;}
+  .sb-sym-col{min-width:54px;}
+  .sb-sym{font-family:var(--disp);font-weight:700;font-size:.9rem;line-height:1;}
+  .sb-name{font-size:.62rem;color:var(--t30);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px;}
+  .sb-price-col{flex:1;text-align:right;padding-right:4px;}
+  .sb-price{font-family:var(--mono);font-size:.78rem;color:var(--text);}
+  .sb-chg{font-family:var(--mono);font-size:.7rem;margin-left:4px;}
+  .sb-badge{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.04em;white-space:nowrap;min-width:90px;text-align:center;flex-shrink:0;}
+  .sb-badge.buy{background:rgba(22,217,126,.13);color:var(--green);border:1px solid rgba(22,217,126,.22);}
+  .sb-badge.sell{background:rgba(255,59,70,.1);color:#ff3b46;border:1px solid rgba(255,59,70,.18);}
+  .sb-badge.hold{background:rgba(255,255,255,.04);color:var(--t55);border:1px solid rgba(255,255,255,.08);}
+  .sb-rsi{font-family:var(--mono);font-size:.74rem;color:var(--t55);min-width:52px;text-align:right;flex-shrink:0;}
+  .sb-rsi b{color:var(--text);font-weight:700;}
+  .sb-explain{font-size:.68rem;color:var(--t30);line-height:1.4;padding:0 16px 10px 20px;display:none;}
+  .sb-row.buy:hover + .sb-explain, .sb-row.sell:hover + .sb-explain{display:block;}
+  .sb-loading,.sb-error{padding:28px 20px;text-align:center;color:var(--t30);font-size:.82rem;}
+  .sb-error{color:#ff7a1a;}
+  /* Lock overlay */
+  .sp-lock{position:absolute;inset:0;background:rgba(7,10,8,.82);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--r);}
   .sp-lock svg{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.8;}
   .sp-lock-msg{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--text);}
-  .sp-lock-sub{font-size:.78rem;color:var(--t55);text-align:center;max-width:220px;}
+  .sp-lock-sub{font-size:.78rem;color:var(--t55);text-align:center;max-width:240px;line-height:1.5;}
   .sp-lock-btn{font-family:var(--disp);font-weight:700;font-size:.88rem;padding:9px 22px;border-radius:9px;background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;margin-top:4px;}
   .sp-lock-btn:hover{background:#20e88a;}
+  @media(max-width:480px){.sb-name{display:none;}.sb-price-col{display:none;}}
   .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -463,29 +479,25 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div id="wlItems"><div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div></div>
   </div>
 
-  <!-- SIGNAL PREVIEW -->
-  <div class="section-title" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
-    Scalp Signal Preview
-    <span id="signalStatusBadge" style="font-family:var(--mono);font-size:.65rem;color:var(--t30);"></span>
+  <!-- SCALP SIGNALS BOARD -->
+  <div class="section-title" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+    <span>📡 Scalp Signals</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="signalStatusBadge" style="font-family:var(--mono);font-size:.65rem;"></span>
+      <button onclick="loadLiveSignals()" id="signalRefreshBtn" title="Refresh signals"
+        style="background:none;border:1px solid var(--line);color:var(--t55);border-radius:6px;padding:3px 8px;font-size:.78rem;cursor:pointer;transition:.15s;" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--t55)'">↻</button>
+    </div>
   </div>
-  <!-- Status log (shown to all) -->
-  <div id="signalLog" style="background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-family:var(--mono);font-size:.72rem;line-height:1.9;display:none;"></div>
+  <p style="font-size:.75rem;color:var(--t30);margin:-4px 0 10px;line-height:1.5;">
+    15-min RSI alerts on the 10 most-traded options stocks. Green = calls are the play. Red = puts are the play. Grey = wait for a clearer setup.
+  </p>
 
-  <div class="signal-preview-wrap" id="signalPreview">
-    <div class="sp-row" id="signalRow">
-      <span class="sp-sym" id="signalSym">SPY</span>
-      <span class="sp-tag buy" id="signalTag">BUY CALLS</span>
-      <span style="font-family:var(--mono);font-size:.72rem;color:var(--t30);" id="signalConf">Confidence: 94%</span>
-    </div>
-    <div class="sp-vals">
-      <div class="sp-val-item"><div class="sp-val-label">RSI</div><div class="sp-val-num" id="signalRSI">—</div></div>
-      <div class="sp-val-item"><div class="sp-val-label">Vol Surge</div><div class="sp-val-num" id="signalVol">—</div></div>
-      <div class="sp-val-item"><div class="sp-val-label">VWAP Dist</div><div class="sp-val-num" id="signalVWAP">—</div></div>
-    </div>
+  <div class="signal-board-wrap" id="signalPreview">
+    <div id="signalBoard"><div class="sb-loading">Loading signals…</div></div>
     <div class="sp-lock" id="signalLock">
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-      <div class="sp-lock-msg">Unlock Scalp Signals</div>
-      <div class="sp-lock-sub">Get exact entry, stop-loss &amp; target with Pro — includes 7-day free trial.</div>
+      <div class="sp-lock-msg">Scalp Signals — Pro Feature</div>
+      <div class="sp-lock-sub">See which of the 10 top stocks to buy calls or puts on right now, updated every 15 minutes.</div>
       <button type="button" class="sp-lock-btn" onclick="startCheckout()">Start Free Trial →</button>
     </div>
   </div>
@@ -1370,81 +1382,92 @@ function renderScorecard(closedTrades) {
 }
 
 // ── Scalp Signals ──────────────────────────────────────────────────────────────
-function signalLog(msg, color = 'var(--t55)') {
-  const log = document.getElementById('signalLog');
-  if (!log) return;
-  log.style.display = 'block';
-  const ts = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  log.innerHTML += `<span style="color:var(--t30)">${ts}</span>&nbsp; <span style="color:${color}">${msg}</span><br>`;
-}
+
+let _signalRefreshTimer = null;
 
 async function loadLiveSignals() {
-  const logEl = document.getElementById('signalLog');
-  if (logEl) logEl.innerHTML = '';
+  const board      = document.getElementById('signalBoard');
+  const badge      = document.getElementById('signalStatusBadge');
+  const refreshBtn = document.getElementById('signalRefreshBtn');
 
-  signalLog('Connecting to signal feed…');
-  signalLog(`Authenticated as: ${_uid ? _uid.slice(0,8)+'…' : '—'}`);
-
-  // Show subscription context
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    const plan = session?.user?.app_metadata?.plan || 'free';
-    const label = plan === 'trial' ? 'Pro Trial' : plan === 'pro' ? 'Pro' : plan === 'expired' ? 'Expired' : 'Free';
-    signalLog(`Subscription: ${label}`, plan === 'pro' || plan === 'trial' ? 'var(--green)' : 'var(--t55)');
-  } catch(_) {}
-
-  signalLog('Loading scalp signals…');
+  if (refreshBtn) refreshBtn.disabled = true;
 
   try {
-    const t0  = Date.now();
-    const res  = await fetch('/api/signals');
-    const ms   = Date.now() - t0;
+    const res = await fetch('/api/signals');
 
     if (!res.ok) {
-      signalLog(`API error ${res.status} — signal feed unavailable`, 'var(--red)');
-      document.getElementById('signalStatusBadge').textContent = `⚠ API ${res.status}`;
+      if (board) board.innerHTML = `<div class="sb-error">⚠ Signal feed unavailable (${res.status}) — try refreshing</div>`;
+      if (badge) badge.innerHTML = `<span style="color:#ff7a1a">⚠ Error ${res.status}</span>`;
       return;
     }
 
-    const data = await res.json();
+    const data    = await res.json();
     const tickers = data.tickers || [];
-    const count   = tickers.length;
 
-    if (count === 0) {
-      signalLog('No signals returned — market may be closed or data feed is paused', '#ffc832');
-      signalLog(data.marketOpen ? 'Market shows OPEN — check Alpaca API key config' : 'Market is CLOSED · Signals resume at 9:30 AM ET', '#ffc832');
-      document.getElementById('signalStatusBadge').textContent = data.marketOpen ? '⚠ No data' : 'Market closed';
+    if (tickers.length === 0) {
+      if (board) board.innerHTML = '<div class="sb-error">No signal data returned — market may be closed or data feed is paused.</div>';
+      if (badge) badge.innerHTML = data.marketOpen
+        ? `<span style="color:#ff7a1a">⚠ No data — check API config</span>`
+        : `<span style="color:var(--t30)">⭕ Market closed · Signals resume 9:30 AM ET</span>`;
       return;
     }
 
-    const buys  = tickers.filter(t => t.tone === 'buy').length;
-    const sells = tickers.filter(t => t.tone === 'sell').length;
-    signalLog(`✓ ${count} signals loaded in ${ms}ms`, 'var(--green)');
-    signalLog(`  ${buys} buy · ${sells} sell · ${count - buys - sells} hold`, 'var(--t55)');
-    signalLog(data.marketOpen ? 'Market: OPEN — live data' : 'Market: CLOSED — last session data', data.marketOpen ? 'var(--green)' : '#ffc832');
+    // Render each ticker as a row
+    if (board) {
+      board.innerHTML = tickers.map(t => {
+        if (!t.ok) return `
+          <div class="sb-row hold">
+            <div class="sb-sym-col"><div class="sb-sym">${t.symbol}</div><div class="sb-name">${t.name}</div></div>
+            <div style="flex:1;color:var(--t30);font-size:.72rem;">No data available</div>
+          </div>`;
 
-    document.getElementById('signalStatusBadge').textContent =
-      `${count} signals · ${ms}ms · ${data.marketOpen ? '🟢 LIVE' : '⭕ CLOSED'}`;
+        const isUp      = t.changePct >= 0;
+        const chgStr    = `${isUp ? '+' : ''}${t.changePct.toFixed(2)}%`;
+        const hard      = t.conviction === 'HARD';
+        const badgeText = t.tone === 'buy'  ? `${hard ? '⚡ ' : ''}BUY CALLS`
+                        : t.tone === 'sell' ? `${hard ? '⚡ ' : ''}BUY PUTS`
+                        : 'WAIT — HOLD';
+        const priceStr  = t.price != null ? `$${t.price.toFixed(2)}` : '—';
+        const rsiVal    = t.rsi   != null ? t.rsi : '—';
+        const chgColor  = isUp ? 'var(--green)' : '#ff3b46';
 
-    // Show the top actionable signal
-    const actionable = tickers.filter(t => t.tone !== 'hold').sort((a, b) => b.confluence - a.confluence);
-    const top = actionable[0] || tickers[0];
-
-    if (top) {
-      const isBuy = top.tone === 'buy';
-      document.getElementById('signalSym').textContent  = top.symbol;
-      document.getElementById('signalTag').textContent  = top.signal;
-      document.getElementById('signalTag').className    = `sp-tag ${isBuy ? 'buy' : 'sell'}`;
-      document.getElementById('signalConf').textContent = `RSI: ${top.rsi} · Confluence: ${top.confluence}/3`;
-      document.getElementById('signalRSI').textContent  = top.rsi ?? '—';
-      document.getElementById('signalVol').textContent  = top.volSurge ? `${top.volSurge}×` : '—';
-      document.getElementById('signalVWAP').textContent = top.vwapDist ? `${top.vwapDist > 0 ? '+' : ''}${top.vwapDist}%` : '—';
+        return `
+          <div class="sb-row ${t.tone}">
+            <div class="sb-sym-col">
+              <div class="sb-sym">${t.symbol}</div>
+              <div class="sb-name">${t.name}</div>
+            </div>
+            <div class="sb-price-col">
+              <span class="sb-price">${priceStr}</span>
+              <span class="sb-chg" style="color:${chgColor}">${chgStr}</span>
+            </div>
+            <span class="sb-badge ${t.tone}">${badgeText}</span>
+            <span class="sb-rsi">RSI <b>${rsiVal}</b></span>
+          </div>
+          <div class="sb-explain">${t.explain || ''}</div>`;
+      }).join('');
     }
+
+    const buys   = tickers.filter(t => t.tone === 'buy').length;
+    const sells  = tickers.filter(t => t.tone === 'sell').length;
+    const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const liveColor = data.marketOpen ? 'var(--green)' : 'var(--t30)';
+    const liveLabel = data.marketOpen ? '🟢 Live' : '⭕ Closed';
+
+    if (badge) badge.innerHTML =
+      `<span style="color:${liveColor}">${liveLabel}</span>`
+      + ` <span style="color:var(--t30)">· ${buys} calls · ${sells} puts · ${timeStr}</span>`;
+
   } catch(e) {
-    signalLog('Network error — signal feed unreachable: ' + e.message, 'var(--red)');
-    signalLog('Check your internet connection and try refreshing', '#ffc832');
-    document.getElementById('signalStatusBadge').textContent = '⚠ Network error';
+    if (board) board.innerHTML = '<div class="sb-error">⚠ Could not reach signal feed — check your connection and refresh.</div>';
+    if (badge) badge.innerHTML = `<span style="color:#ff7a1a">⚠ Network error</span>`;
+  } finally {
+    if (refreshBtn) refreshBtn.disabled = false;
   }
+
+  // Auto-refresh every 60 seconds while dashboard is open
+  clearTimeout(_signalRefreshTimer);
+  _signalRefreshTimer = setTimeout(loadLiveSignals, 60000);
 }
 
 async function signOut() {
