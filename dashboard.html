@@ -524,7 +524,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
       <div class="sp-lock-msg">Scalp Signals — Pro Feature</div>
       <div class="sp-lock-sub">See which of the 10 top stocks to buy calls or puts on right now, updated every 15 minutes.</div>
-      <button type="button" class="sp-lock-btn" onclick="startCheckout()">Start Free Trial →</button>
+      <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Start Free Trial →</button>
     </div>
   </div>
 
@@ -681,7 +681,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <button type="button" id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
     </div>
     <br>
-    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Start 7-Day Free Trial</button>
+    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Start 7-Day Free Trial</button>
     <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Then $9.99/mo · Cancel anytime</p>
     <!-- PROMO CODE -->
     <div style="margin-top:14px;">
@@ -1296,8 +1296,8 @@ async function applyDashPromo() {
   btn.disabled    = false;
 }
 
-async function startCheckout() {
-  const btn = document.getElementById('upgradeBtn');
+async function startCheckout(btn) {
+  btn = btn || document.getElementById('upgradeBtn');
   const original = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
