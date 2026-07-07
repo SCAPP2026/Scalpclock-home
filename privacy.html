@@ -67,6 +67,10 @@ a:hover{text-decoration:underline;}
 .doc table th{text-align:left;padding:10px 14px;color:var(--t55);border-bottom:1px solid var(--line);font-weight:600;}
 .doc table td{padding:10px 14px;color:var(--t80);border-bottom:1px solid rgba(120,200,160,.06);vertical-align:top;}
 .doc table tr:last-child td{border-bottom:none;}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -75,10 +79,10 @@ a:hover{text-decoration:underline;}
   <div class="nav-in">
     <a class="brand" href="/">
       <div class="b-mark">
-        <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
           <circle cx="9" cy="9" r="7"/>
-          <line x1="9" y1="9" x2="9" y2="4.5"/>
-          <line x1="9" y1="9" x2="12.5" y2="9"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
         </svg>
       </div>
       <div class="brand-text">

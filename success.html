@@ -76,16 +76,20 @@ h1 em{color:var(--green);font-style:normal;}
 .brand-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
 .b-mark{width:30px;height:30px;border-radius:9px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.28);display:grid;place-items:center;flex-shrink:0;}
 .b-mark svg{width:16px;height:16px;}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
 <a class="brand" href="/">
   <div class="b-mark">
-    <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+    <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
       <circle cx="9" cy="9" r="7"/>
-      <line x1="9" y1="9" x2="9" y2="4.5"/>
-      <line x1="9" y1="9" x2="12.5" y2="9"/>
+      <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+      <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
     </svg>
   </div>
   <div class="brand-text">
