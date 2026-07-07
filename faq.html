@@ -126,26 +126,29 @@ a{color:inherit;text-decoration:none;}
       </div>
     </a>
     <div class="nav-links">
-      <a href="/dashboard">Dashboard</a>
-      <a href="/scalpchart">Live Charts</a>
-      <a href="/exitassistant">Exit Assistant</a>
-      <a href="/learn">Learning</a>
-      <a href="/faq" class="active">Broker Guide</a>
+      <a href="/">Home</a>
       <a href="/about">About</a>
+      <a href="/learn">Learn</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
       <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
     </div>
-    <a class="nav-cta" href="/login?tab=signup">Get Started</a>
+    <a class="nav-cta" href="/login?tab=signup">Start Free</a>
     <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
   </div>
 </nav>
 <div class="nav-drawer" id="navDrawer">
-  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
-  <a href="/scalpchart" onclick="closeDrawer()">Live Charts</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
-  <a href="/learn" onclick="closeDrawer()">Learning</a>
-  <a href="/faq" onclick="closeDrawer()">Broker Guide</a>
+  <a href="/" onclick="closeDrawer()">Home</a>
   <a href="/about" onclick="closeDrawer()">About</a>
+  <a href="/learn" onclick="closeDrawer()">Learn</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
 </div>
 
 <div class="page-hero">

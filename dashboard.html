@@ -56,8 +56,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .b-mark svg{width:18px;height:18px;}
 .nav-page-links{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;}
 .nav-page-links a{font-size:.85rem;color:var(--t55);padding:6px 12px;border-radius:8px;text-decoration:none;transition:color .15s,background .15s;}
-.nav-page-links a:hover{color:var(--text);background:rgba(22,217,126,.07);}
-@media(max-width:600px){.nav-page-links{display:none;}}
+.nav-page-links a:hover,.nav-page-links a.active{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-page-links a.active{color:var(--green);}
+.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--t55);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:65;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer.open{display:flex;transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t55);padding:14px 16px;border-radius:10px;border-bottom:1px solid rgba(120,200,160,.13);text-decoration:none;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:rgba(22,217,126,.08);}
+.nav-drawer a.active{color:var(--green);}
+@media(max-width:600px){.nav-page-links{display:none;}.nav-ham{display:flex;}}
 .nav-right{display:flex;align-items:center;gap:12px;}
 .nav-email{font-size:.82rem;color:var(--t55);font-family:var(--mono);}
 .btn-signout{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:7px 16px;
@@ -344,18 +353,34 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
     </a>
     <div class="nav-page-links">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/learn">Learn</a>
       <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
       <a href="/pricing">Pricing</a>
-      <a href="/learn">Learn</a>
-      <a href="/about">About</a>
+      <a href="/dashboard" class="active">Dashboard</a>
     </div>
     <div class="nav-right">
       <span class="nav-email" id="userEmail">Loading...</span>
       <button class="btn-signout" onclick="signOut()">Sign Out</button>
     </div>
+    <button class="nav-ham" onclick="toggleNavDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeNavDrawer()">Home</a>
+  <a href="/about" onclick="closeNavDrawer()">About</a>
+  <a href="/learn" onclick="closeNavDrawer()">Learn</a>
+  <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
+  <a href="/pricing" onclick="closeNavDrawer()">Pricing</a>
+  <a href="/dashboard" class="active" onclick="closeNavDrawer()">Dashboard</a>
+</div>
 
 <div class="shell">
 
@@ -1475,6 +1500,13 @@ async function signOut() {
   await sb.auth.signOut();
   window.location.href = '/';
 }
+
+function toggleNavDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
+function closeNavDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))d.classList.remove('open');
+});
 
 // ── Earnings Calendar ────────────────────────────────────────────────────────
 async function loadEarnings() {
