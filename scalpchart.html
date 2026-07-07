@@ -2747,8 +2747,7 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const { data:{ session } } = await _sb.auth.getSession();
   if (!session) { window.location.href = '/login?from=/scalpchart'; return; }
-  const { data: rows } = await _sb.from('profiles').select('plan').eq('id', session.user.id).limit(1);
-  const plan = rows?.[0]?.plan || 'free';
+  const plan = session.user.app_metadata?.plan || 'free';
   if (plan === 'free' || plan === 'expired') {
     document.body.style.visibility = 'visible';
     const wall = document.createElement('div');

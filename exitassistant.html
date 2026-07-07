@@ -2291,8 +2291,7 @@
   const { data: { session } } = await _sb.auth.getSession();
   clearTimeout(_authFallback);
   if (!session) { window.location.href = '/login?from=/exitassistant'; return; }
-  const { data: rows } = await _sb.from('profiles').select('plan').eq('id', session.user.id).limit(1);
-  const plan = rows?.[0]?.plan || 'free';
+  const plan = session.user.app_metadata?.plan || 'free';
   if (plan === 'free' || plan === 'expired') {
     document.body.style.visibility = 'visible';
     const wall = document.createElement('div');

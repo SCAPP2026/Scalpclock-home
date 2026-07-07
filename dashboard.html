@@ -841,8 +841,11 @@ function renderWatchlist() {
 // plan values: 'free' | 'trial' | 'pro' | 'expired'
 async function checkSubscription(isRetry = false) {
   try {
-    const { data: rows } = await sb.from('profiles').select('plan, promo_redeemed').eq('id', _uid).limit(1);
-    let plan = rows?.[0]?.plan || 'free';
+    // Refresh session on retry so we pick up updated app_metadata after activation
+    const { data: { session } } = isRetry
+      ? await sb.auth.refreshSession()
+      : await sb.auth.getSession();
+    let plan = session?.user?.app_metadata?.plan || 'free';
 
     // If still free but we just came from a successful checkout, wait and retry once —
     // the activate endpoint may not have finished yet
@@ -1384,8 +1387,8 @@ async function loadLiveSignals() {
 
   // Show subscription context
   try {
-    const { data: rows } = await sb.from('profiles').select('plan').eq('id', _uid).limit(1);
-    const plan = rows?.[0]?.plan || 'free';
+    const { data: { session } } = await sb.auth.getSession();
+    const plan = session?.user?.app_metadata?.plan || 'free';
     const label = plan === 'trial' ? 'Pro Trial' : plan === 'pro' ? 'Pro' : plan === 'expired' ? 'Expired' : 'Free';
     signalLog(`Subscription: ${label}`, plan === 'pro' || plan === 'trial' ? 'var(--green)' : 'var(--t55)');
   } catch(_) {}

@@ -47,26 +47,21 @@ export async function onRequest(context) {
 
   if (!env.SUPABASE_SERVICE_ROLE_KEY) return json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured in Cloudflare env' }, 500);
 
-  const patch = {
-    id:            userId,
-    plan:          'trial',
-    stripe_sub_id: session.subscription || null,
-  };
-
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
-      method:  'POST',
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      method:  'PUT',
       headers: {
         apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
         Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
-        Prefer:         'resolution=merge-duplicates,return=minimal',
       },
-      body: JSON.stringify(patch),
+      body: JSON.stringify({
+        app_metadata: { plan: 'trial', stripe_sub_id: session.subscription || null },
+      }),
     });
     if (!r.ok) {
       const text = await r.text();
-      console.error('Supabase upsert failed:', text);
+      console.error('Supabase auth update failed:', text);
       return json({ error: 'Failed to activate plan', detail: text }, 500);
     }
   } catch (e) {

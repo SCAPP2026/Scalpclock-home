@@ -101,26 +101,30 @@ export async function onRequest(context) {
   });
 }
 
-// Upsert (not PATCH) — creates the row if it doesn't exist, merges if it does
+// Update Supabase auth app_metadata — no profiles table needed, service role bypasses RLS
 async function upsertProfile(userId, patch, serviceKey) {
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
-      method:  'POST',
+    const appMeta = {};
+    if (patch.plan          !== undefined) appMeta.plan          = patch.plan;
+    if (patch.stripe_sub_id !== undefined) appMeta.stripe_sub_id = patch.stripe_sub_id;
+    if (patch.promo_redeemed !== undefined) appMeta.promo_redeemed = patch.promo_redeemed;
+
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      method:  'PUT',
       headers: {
         apikey:         serviceKey,
         Authorization:  `Bearer ${serviceKey}`,
         'Content-Type': 'application/json',
-        Prefer:         'resolution=merge-duplicates,return=minimal',
       },
-      body: JSON.stringify(patch),
+      body: JSON.stringify({ app_metadata: appMeta }),
     });
-    console.log('Profile upserted for user:', userId, 'patch:', JSON.stringify(patch), 'status:', r.status);
+    console.log('Auth user updated for:', userId, 'app_metadata:', JSON.stringify(appMeta), 'status:', r.status);
     if (!r.ok) {
       const text = await r.text();
-      console.error('Upsert error body:', text);
+      console.error('Auth update error:', text);
     }
   } catch (e) {
-    console.error('Failed to upsert profile:', e.message);
+    console.error('Failed to update auth user:', e.message);
   }
 }
 
