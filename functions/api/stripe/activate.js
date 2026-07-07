@@ -45,7 +45,7 @@ export async function onRequest(context) {
   const userId = session.client_reference_id;
   if (!userId) return json({ error: 'No user ID on session — checkout was initiated without auth' }, 400);
 
-  if (!env.SUPABASE_SERVICE_KEY) return json({ error: 'SUPABASE_SERVICE_KEY not configured in Cloudflare env' }, 500);
+  if (!env.SUPABASE_SERVICE_ROLE_KEY) return json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured in Cloudflare env' }, 500);
 
   const patch = {
     id:            userId,
@@ -57,8 +57,8 @@ export async function onRequest(context) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
       method:  'POST',
       headers: {
-        apikey:         env.SUPABASE_SERVICE_KEY,
-        Authorization:  `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+        apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         Prefer:         'resolution=merge-duplicates,return=minimal',
       },

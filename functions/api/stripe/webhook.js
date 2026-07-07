@@ -29,7 +29,7 @@ export async function onRequest(context) {
 
       console.log('Checkout completed:', session.customer_email, 'subscription:', session.subscription);
 
-      if (userId && env.SUPABASE_SERVICE_KEY) {
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
         // All new subscriptions start with a trial period, so mark 'trial'
         // customer.subscription.updated will promote to 'pro' when trial ends
         const hasPromo = Array.isArray(session.discounts) && session.discounts.length > 0;
@@ -40,7 +40,7 @@ export async function onRequest(context) {
         };
         if (hasPromo) patch.promo_redeemed = true;
 
-        await upsertProfile(userId, patch, env.SUPABASE_SERVICE_KEY);
+        await upsertProfile(userId, patch, env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
     }
@@ -51,7 +51,7 @@ export async function onRequest(context) {
 
       console.log('Subscription updated:', sub.id, 'status:', sub.status, 'user:', userId);
 
-      if (userId && env.SUPABASE_SERVICE_KEY) {
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
         let plan;
         if (sub.status === 'trialing')   plan = 'trial';
         else if (sub.status === 'active') plan = 'pro';
@@ -59,7 +59,7 @@ export async function onRequest(context) {
         else if (sub.status === 'canceled') plan = 'free';
 
         if (plan) {
-          await upsertProfile(userId, { id: userId, plan }, env.SUPABASE_SERVICE_KEY);
+          await upsertProfile(userId, { id: userId, plan }, env.SUPABASE_SERVICE_ROLE_KEY);
         }
       }
       break;
@@ -77,8 +77,8 @@ export async function onRequest(context) {
       const userId = sub.metadata?.user_id;
       console.log('Subscription cancelled:', sub.id, sub.customer, 'user:', userId);
 
-      if (userId && env.SUPABASE_SERVICE_KEY) {
-        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_KEY);
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
     }
@@ -88,8 +88,8 @@ export async function onRequest(context) {
       const userId = inv.subscription_details?.metadata?.user_id;
       console.log('Payment failed:', inv.customer_email, inv.id, 'user:', userId);
 
-      if (userId && env.SUPABASE_SERVICE_KEY) {
-        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_KEY);
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
     }
