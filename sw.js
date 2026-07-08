@@ -1,7 +1,8 @@
-const CACHE = 'sc-v1';
+const CACHE = 'sc-v2';
 const STATIC = [
   '/',
   '/index.html',
+  '/offline.html',
   '/login.html',
   '/dashboard.html',
   '/exitassistant.html',
@@ -9,8 +10,13 @@ const STATIC = [
   '/pricing.html',
   '/faq.html',
   '/learn.html',
+  '/about.html',
   '/hero.png',
   '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  '/favicon.ico',
 ];
 
 self.addEventListener('install', e => {
@@ -52,7 +58,11 @@ self.addEventListener('fetch', e => {
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => {
+        // Full-page navigations fall back to a dedicated offline page;
+        // other assets (images, scripts) just fail through.
+        if (e.request.mode === 'navigate') return caches.match('/offline.html');
+      });
     })
   );
 });

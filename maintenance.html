@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>ScalpClock — Platform Upgrade in Progress</title>
 <meta name="description" content="ScalpClock is undergoing a major platform upgrade. We'll be back shortly with new features including XP, badges, lessons, streaks, and improved ScalpCharts.">
-<link rel="icon" href="hero.png">
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#16d97e">
 <meta name="robots" content="noindex">
@@ -447,5 +449,6 @@ body::before{
 })();
 </script>
 
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>
