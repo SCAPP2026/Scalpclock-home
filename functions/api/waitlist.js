@@ -44,13 +44,12 @@ async function handleWaitlist(env, request) {
     return json({ error: 'Please enter a valid email address.' }, 400);
   }
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/maintenance_waitlist`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/maintenance_waitlist?on_conflict=email`, {
     method: 'POST',
     headers: {
       apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
       Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
       'Content-Type': 'application/json',
-      Prefer:         'resolution=ignore-duplicates,return=minimal',
     },
     body: JSON.stringify({ email, source: 'maintenance_waitlist' }),
   });
