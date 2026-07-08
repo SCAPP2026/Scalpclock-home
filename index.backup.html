@@ -56,7 +56,8 @@ a{color:var(--green);text-decoration:none;}
 .b-mark svg{width:18px;height:18px;}
 .nav-links{display:flex;align-items:center;gap:6px;}
 .nav-links a{font-size:.875rem;color:var(--t80);padding:7px 13px;border-radius:8px;transition:color .15s,background .15s;}
-.nav-links a:hover{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-links a.active{color:var(--green);}
 .nav-cta{background:var(--green)!important;color:#070a08!important;font-weight:600;border-radius:8px;padding:7px 16px!important;}
 .nav-cta:hover{background:#12c470!important;}
 .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
@@ -65,7 +66,8 @@ a{color:var(--green);text-decoration:none;}
 .nav-drawer.open{transform:translateX(0);}
 .nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);}
 .nav-drawer a:last-child{border-bottom:none;}
-.nav-drawer a:hover{color:var(--text);background:var(--g-dim);}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--g-dim);}
+.nav-drawer a.active{color:var(--green);}
 @media(max-width:720px){
   .nav-links{display:none;}
   .ham{display:flex;}
@@ -250,10 +252,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       </div>
     </a>
     <nav class="nav-links">
+      <a href="/" class="active">Home</a>
+      <a href="/about">About</a>
+      <a href="/learn">Learn</a>
       <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
       <a href="/pricing">Pricing</a>
-      <a href="/learn">Learn</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
     </nav>
@@ -263,10 +268,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </nav>
 <div class="nav-drawer" id="navDrawer">
+  <a href="/" class="active" onclick="closeDrawer()">Home</a>
+  <a href="/about" onclick="closeDrawer()">About</a>
+  <a href="/learn" onclick="closeDrawer()">Learn</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
-  <a href="/learn" onclick="closeDrawer()">Learn</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
 </div>
@@ -556,12 +564,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <a href="/exitassistant">Exit Assistant</a>
       <a href="/pricing">Pricing</a>
       <a href="/learn">Learn</a>
+      <a href="/about">About</a>
       <a href="/faq">FAQ</a>
       <a href="/dashboard">Dashboard</a>
       <a href="/terms">Terms</a>
       <a href="/privacy">Privacy</a>
     </div>
-    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice.</div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:support@scalpclock.com" style="color:inherit;text-decoration:underline;">support@scalpclock.com</a></div>
   </div>
 </footer>
 
