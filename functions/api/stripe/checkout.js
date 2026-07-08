@@ -55,9 +55,16 @@ async function handleCheckout(env, request) {
     mode:                      'subscription',
     success_url:               successUrl,
     cancel_url:                `${origin}/pricing`,
-    // Always allow promo codes — Stripe applies them natively in checkout
-    allow_promotion_codes:     'true',
   });
+
+  // Stripe rejects a session that sets both `discounts` and
+  // `allow_promotion_codes` — pre-apply the code the user already
+  // validated on-site; otherwise let them enter one manually at checkout.
+  if (promoId) {
+    params.set('discounts[0][promotion_code]', promoId);
+  } else {
+    params.set('allow_promotion_codes', 'true');
+  }
 
   if (isTrialSession) {
     params.set('subscription_data[trial_period_days]', '7');
