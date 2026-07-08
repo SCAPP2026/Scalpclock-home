@@ -19,6 +19,15 @@ export async function onRequest(context) {
     return new Response('Method not allowed', { status: 405, headers: CORS });
   }
 
+  try {
+    return await handleWaitlist(env, request);
+  } catch (e) {
+    console.error('Waitlist fatal:', e && e.stack || e);
+    return json({ error: `Internal error: ${e && e.message}` }, 500);
+  }
+}
+
+async function handleWaitlist(env, request) {
   if (!env.SUPABASE_SERVICE_ROLE_KEY) {
     return json({ error: 'Waitlist not configured' }, 500);
   }
@@ -35,32 +44,27 @@ export async function onRequest(context) {
     return json({ error: 'Please enter a valid email address.' }, 400);
   }
 
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/maintenance_waitlist?on_conflict=email`, {
-      method: 'POST',
-      headers: {
-        apikey:          env.SUPABASE_SERVICE_ROLE_KEY,
-        Authorization:    `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
-        'Content-Type':   'application/json',
-        Prefer:           'resolution=ignore-duplicates,return=minimal',
-      },
-      body: JSON.stringify({
-        email,
-        source: 'maintenance_waitlist',
-      }),
-    });
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/maintenance_waitlist?on_conflict=email`, {
+    method: 'POST',
+    headers: {
+      apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
+      Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer:         'resolution=ignore-duplicates,return=minimal',
+    },
+    body: JSON.stringify({
+      email,
+      source: 'maintenance_waitlist',
+    }),
+  });
 
-    if (!res.ok) {
-      const detail = await res.text().catch(() => '');
-      console.error('Waitlist insert failed:', res.status, detail);
-      return json({ error: 'Could not save your email. Please try again.' }, 502);
-    }
-
-    return json({ ok: true }, 200);
-  } catch (e) {
-    console.error('Waitlist fatal:', e);
-    return json({ error: 'Could not save your email. Please try again.' }, 500);
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    console.error('Waitlist insert failed:', res.status, detail);
+    return json({ error: 'Could not save your email. Please try again.' }, 502);
   }
+
+  return json({ ok: true }, 200);
 }
 
 function json(data, status = 200) {
