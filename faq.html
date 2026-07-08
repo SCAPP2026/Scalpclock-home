@@ -13,6 +13,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScalpClock · FAQ — Frequently Asked Questions</title>
 <meta name="description" content="Answers to common questions about ScalpClock signals, accounts, tickers, and how options-timing works.">
+<link rel="canonical" href="https://scalpclock.com/faq">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock · FAQ — Frequently Asked Questions">
+<meta property="og:description" content="Answers to common questions about ScalpClock signals, accounts, tickers, and how options-timing works.">
+<meta property="og:url" content="https://scalpclock.com/faq">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock · FAQ — Frequently Asked Questions">
+<meta name="twitter:description" content="Answers to common questions about ScalpClock signals, accounts, tickers, and how options-timing works.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="manifest" href="/manifest.json">
@@ -24,7 +38,9 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -108,6 +124,84 @@ a{color:inherit;text-decoration:none;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this paper trading or real money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ScalpClock provides real market signals — but you execute all trades yourself through your own brokerage. We are a signal and timing platform, not a broker. There is no paper trading mode; every signal reflects live or recent market data. Your money, your decisions, your broker."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How often do signals refresh?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The scalp signal board refreshes every 60 seconds during market hours. Each refresh pulls the latest 15-minute bars from our data feed and recalculates RSI(14), VWAP, and volume surge for all 20 tickers. Signal quality is better when the market is actively trading (9:45 AM–4:00 PM ET)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does HARD mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A HARD signal is our highest-confidence alert. It fires when multiple indicators align simultaneously: RSI is in extreme territory (≤20 oversold or ≥80 overbought), price is on the wrong side of VWAP, and volume is surging above the 20-bar average. Seeing HARD on a call or put means the statistical edge is stacked — it's not just one indicator, it's confluence. Learn more in the Learn Hub →"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an account to use ScalpClock?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The scalp signal board on the home page is accessible without an account. To use the Exit Assistant, trade journal, or dashboard, you need a free ScalpClock account. Creating one takes under 30 seconds — just an email and password, no credit card required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What tickers does ScalpClock cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ScalpClock monitors 20 tickers: SPY, QQQ, IWM, AAPL, MSFT, AMZN, GOOGL, META, NVDA, TSLA, AMD, NFLX, COIN, PLTR, SOFI, ARM, GLD, BAC, CVX, and HOOD. Each one gets its own live RSI(14)/VWAP/volume-surge signal every refresh cycle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Free and Pro?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Free gives you 4 delayed signals and 2 AI explanations per day, plus the 15-minute delayed watchlist. Pro ($9.99/mo) unlocks unlimited real-time signals, push notifications, confidence scores, options entry/exit recommendations, news catalyst integration, and full mobile access. See the full comparison →"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate are the signals?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Signal accuracy depends on market conditions. HARD signals (highest confluence) have historically shown a strong directional edge intraday, particularly in high-liquidity names like SPY and QQQ. No signal is guaranteed — markets can gap, reverse on news, or squeeze against the technical setup. ScalpClock is a timing tool, not a guarantee. Always use position sizing and stops."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is ScalpClock a financial advisor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. ScalpClock is an educational and analytical tool. Nothing on this platform constitutes financial advice, investment advice, or a recommendation to buy or sell any security. Options trading involves significant risk of loss. You should consult a licensed financial advisor before trading. Trade responsibly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use ScalpClock on my phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. ScalpClock is a Progressive Web App (PWA) — open it in your mobile browser and tap \"Add to Home Screen\" to install it like a native app. It loads fast, works offline with cached signals, and Pro users get push notifications delivered directly to their phone. No app store required."
+      }
+    }
+  ]
+}</script>
 </head>
 <body>
 
