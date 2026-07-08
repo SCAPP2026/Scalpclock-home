@@ -238,23 +238,35 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
   /* ── EARNINGS CALENDAR ── */
   .earnings-wrap{margin-top:32px;}
-  .earnings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .earnings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
   .earnings-refresh{background:transparent;border:1px solid rgba(205,211,210,.15);color:var(--t55);font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:var(--disp);transition:.15s;}
   .earnings-refresh:hover{color:var(--text);border-color:rgba(205,211,210,.35);}
-  .earnings-week{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-  .earnings-day{background:rgba(238,243,240,.04);border:1px solid rgba(238,243,240,.08);border-radius:10px;padding:10px 8px;min-height:90px;}
-  .earnings-day.today{border-color:rgba(22,217,126,.4);background:rgba(22,217,126,.05);}
-  .earnings-day.today .ед-label{color:var(--green);}
-  .ed-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t55);margin-bottom:8px;display:block;}
-  .ed-items{display:flex;flex-direction:column;gap:4px;}
-  .ed-item{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);font-weight:600;color:var(--text);padding:3px 5px;border-radius:5px;background:rgba(238,243,240,.05);border:1px solid rgba(238,243,240,.07);cursor:default;}
+  .earnings-tabs{display:flex;gap:8px;margin-bottom:14px;}
+  .earnings-tab{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:7px 16px;border-radius:20px;border:1px solid var(--line);color:var(--t55);background:transparent;cursor:pointer;transition:.15s;}
+  .earnings-tab:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+  .earnings-tab.active{color:var(--green);border-color:rgba(22,217,126,.4);background:rgba(22,217,126,.08);}
+  .earnings-week{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+  .earnings-day{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 10px;min-height:150px;display:flex;flex-direction:column;transition:border-color .15s;}
+  .earnings-day.today{border-color:rgba(22,217,126,.45);background:rgba(22,217,126,.05);}
+  .ed-daylabel{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--t30);}
+  .earnings-day.today .ed-daylabel{color:var(--green);}
+  .ed-datenum{font-family:var(--disp);font-size:1.5rem;font-weight:700;color:var(--text);line-height:1.15;margin-bottom:8px;}
+  .earnings-day.today .ed-datenum{color:var(--green);}
+  .ed-today-chip{display:inline-block;font-size:8px;font-weight:700;letter-spacing:.5px;color:#04150d;background:var(--green);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;}
+  .ed-items{display:flex;flex-direction:column;gap:5px;flex:1;}
+  .ed-item{padding:5px 7px;border-radius:7px;background:rgba(238,243,240,.04);border:1px solid rgba(238,243,240,.06);transition:.15s;}
   .ed-item:hover{border-color:rgba(22,217,126,.3);}
+  .ed-item-row{display:flex;align-items:center;gap:5px;}
+  .ed-sym{font-family:var(--mono);font-weight:700;font-size:11px;color:var(--text);}
+  .ed-name{font-size:9px;color:var(--t30);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+  .ed-eps{font-size:9px;color:var(--t55);font-family:var(--mono);margin-left:auto;}
   .ed-time{font-size:8px;font-weight:700;letter-spacing:.5px;padding:2px 4px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
   .ed-time.pre{background:rgba(91,156,246,.15);color:#5b9cf6;}
   .ed-time.amc{background:rgba(245,166,35,.15);color:#f5a623;}
   .ed-time.unk{background:rgba(238,243,240,.08);color:var(--t55);}
   .ed-empty{font-size:10px;color:rgba(238,243,240,.25);padding:4px 0;font-style:italic;}
-  .ed-more{font-size:10px;color:var(--t55);padding:3px 0;text-align:center;}
+  .ed-more{font-size:9px;color:var(--green);padding:4px 0;text-align:center;cursor:pointer;background:none;border:none;font-family:var(--disp);font-weight:700;width:100%;}
+  .ed-more:hover{text-decoration:underline;}
   .earnings-status{font-size:12px;color:var(--t55);padding:16px 0;text-align:center;}
   .earnings-today-alert{display:none;align-items:center;gap:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:#f5a623;}
   .eta-icon{font-size:18px;flex-shrink:0;}
@@ -565,12 +577,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <!-- EARNINGS CALENDAR -->
   <div class="earnings-wrap" id="earningsWrap">
     <div class="earnings-header">
-      <div class="section-title" style="margin:0">Earnings This Week</div>
+      <div class="section-title" style="margin:0">Earnings Calendar</div>
       <button class="earnings-refresh" onclick="loadEarnings()">↻ Refresh</button>
     </div>
     <div class="earnings-today-alert" id="earningsTodayAlert">
       <span class="eta-icon">⚠️</span>
       <span id="earningsTodayMsg"></span>
+    </div>
+    <div class="earnings-tabs">
+      <button class="earnings-tab active" data-week="this" onclick="setEarningsWeek('this')">This Week</button>
+      <button class="earnings-tab" data-week="next" onclick="setEarningsWeek('next')">Next Week</button>
     </div>
     <div id="earningsContent"><div class="earnings-status">Loading earnings calendar...</div></div>
   </div>
@@ -1581,12 +1597,51 @@ document.addEventListener('click',function(e){
 });
 
 // ── Earnings Calendar ────────────────────────────────────────────────────────
+const EARNINGS_NAME_HINTS = {
+  SPY:'S&P 500 ETF', QQQ:'Nasdaq 100 ETF', IWM:'Russell 2000 ETF', GLD:'SPDR Gold ETF',
+  AAPL:'Apple', MSFT:'Microsoft', AMZN:'Amazon', GOOGL:'Alphabet', GOOG:'Alphabet',
+  META:'Meta Platforms', NVDA:'Nvidia', TSLA:'Tesla', AMD:'Advanced Micro',
+  NFLX:'Netflix', COIN:'Coinbase', PLTR:'Palantir', SOFI:'SoFi Technologies',
+  ARM:'Arm Holdings', BAC:'Bank of America', CVX:'Chevron', HOOD:'Robinhood',
+  JPM:'JPMorgan Chase', WFC:'Wells Fargo', GS:'Goldman Sachs', MS:'Morgan Stanley',
+  C:'Citigroup', V:'Visa', MA:'Mastercard', PYPL:'PayPal', DIS:'Disney',
+  KO:'Coca-Cola', PEP:'PepsiCo', WMT:'Walmart', COST:'Costco', HD:'Home Depot',
+  NKE:'Nike', MCD:"McDonald's", SBUX:'Starbucks', XOM:'Exxon Mobil', BA:'Boeing',
+  CAT:'Caterpillar', GE:'General Electric', F:'Ford', GM:'General Motors',
+  UBER:'Uber', ABNB:'Airbnb', SNAP:'Snap', PINS:'Pinterest', SHOP:'Shopify',
+  SQ:'Block', INTC:'Intel', CSCO:'Cisco', ORCL:'Oracle', IBM:'IBM', ADBE:'Adobe',
+  CRM:'Salesforce', NOW:'ServiceNow', PANW:'Palo Alto Networks', AVGO:'Broadcom',
+  QCOM:'Qualcomm', TXN:'Texas Instruments', MU:'Micron', DELL:'Dell',
+  PFE:'Pfizer', MRNA:'Moderna', JNJ:'Johnson & Johnson', UNH:'UnitedHealth',
+  LLY:'Eli Lilly', ABBV:'AbbVie', CVS:'CVS Health', T:'AT&T', VZ:'Verizon',
+  TMUS:'T-Mobile', MSTR:'MicroStrategy', TLT:'20+ Yr Treasury ETF', XLE:'Energy Sector ETF',
+};
+
+let _earningsData = null;
+let _earningsWeek = 'this';
+let _earningsExpandedDays = new Set();
+
+function setEarningsWeek(week) {
+  _earningsWeek = week;
+  document.querySelectorAll('.earnings-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.week === week);
+  });
+  if (_earningsData) renderEarnings(_earningsData);
+}
+
+function toggleEarningsDay(date) {
+  if (_earningsExpandedDays.has(date)) _earningsExpandedDays.delete(date);
+  else _earningsExpandedDays.add(date);
+  if (_earningsData) renderEarnings(_earningsData);
+}
+
 async function loadEarnings() {
   const el = document.getElementById('earningsContent');
   el.innerHTML = '<div class="earnings-status">Loading earnings calendar...</div>';
   try {
     const res  = await fetch('/api/earnings');
     const data = await res.json();
+    _earningsData = data;
     renderEarnings(data);
   } catch {
     el.innerHTML = '<div class="earnings-status">Earnings data unavailable — check back later</div>';
@@ -1640,40 +1695,49 @@ function renderEarnings(data) {
   }
 
   const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  // Split into this week / next week
   const thisWeek = days.slice(0, 5);
   const nextWeek = days.slice(5, 10);
+  const weekDays = _earningsWeek === 'this' ? thisWeek : nextWeek;
 
-  function renderWeek(weekDays, label) {
-    const cols = weekDays.map((date, i) => {
-      const isToday = date === today;
-      const dayItems = byDate[date] || [];
-      const MAX = 6;
-      const shown = dayItems.slice(0, MAX);
-      const extra = dayItems.length - MAX;
+  const cols = weekDays.map((date, i) => {
+    const isToday   = date === today;
+    const dayItems  = byDate[date] || [];
+    const expanded  = _earningsExpandedDays.has(date);
+    const MAX       = 5;
+    const shown     = expanded ? dayItems : dayItems.slice(0, MAX);
+    const extra     = dayItems.length - shown.length;
+    const [, mo, dNum] = date.split('-');
+    const dateLabel = `${MONTH_LABELS[Number(mo) - 1]} ${Number(dNum)}`;
 
-      const itemsHTML = shown.length
-        ? shown.map(e => {
-            const tc = e.time === 'pre-market' ? 'pre' : e.time === 'after-close' ? 'amc' : 'unk';
-            const tl = e.time === 'pre-market' ? 'PRE' : e.time === 'after-close' ? 'AMC' : '?';
-            return `<div class="ed-item" title="${e.symbol} · ${e.time}">
-              <span class="ed-time ${tc}">${tl}</span>${e.symbol}
-            </div>`;
-          }).join('') + (extra > 0 ? `<div class="ed-more">+${extra} more</div>` : '')
-        : '<div class="ed-empty">No earnings</div>';
+    const itemsHTML = shown.length
+      ? shown.map(e => {
+          const tc   = e.time === 'pre-market' ? 'pre' : e.time === 'after-close' ? 'amc' : 'unk';
+          const tl   = e.time === 'pre-market' ? 'PRE' : e.time === 'after-close' ? 'AMC' : '?';
+          const name = EARNINGS_NAME_HINTS[e.symbol];
+          const eps  = (e.epsEstimate != null) ? `Est $${e.epsEstimate.toFixed(2)}` : '';
+          return `<div class="ed-item" title="${e.symbol}${name ? ' · ' + name : ''}">
+            <div class="ed-item-row">
+              <span class="ed-time ${tc}">${tl}</span>
+              <span class="ed-sym">${e.symbol}</span>
+              ${eps ? `<span class="ed-eps">${eps}</span>` : ''}
+            </div>
+            ${name ? `<div class="ed-name">${name}</div>` : ''}
+          </div>`;
+        }).join('') + (extra > 0
+          ? `<button class="ed-more" onclick="toggleEarningsDay('${date}')">+${extra} more ▾</button>`
+          : (expanded && dayItems.length > MAX ? `<button class="ed-more" onclick="toggleEarningsDay('${date}')">Show fewer ▴</button>` : ''))
+      : '<div class="ed-empty">No earnings</div>';
 
-      return `<div class="earnings-day${isToday ? ' today' : ''}">
-        <span class="ed-label">${DAY_LABELS[i]} ${date.slice(5)}</span>
-        <div class="ed-items">${itemsHTML}</div>
-      </div>`;
-    }).join('');
+    return `<div class="earnings-day${isToday ? ' today' : ''}">
+      <span class="ed-daylabel">${DAY_LABELS[i]}${isToday ? '<span class="ed-today-chip">TODAY</span>' : ''}</span>
+      <span class="ed-datenum">${dateLabel}</span>
+      <div class="ed-items">${itemsHTML}</div>
+    </div>`;
+  }).join('');
 
-    return `<div style="margin-bottom:8px;font-size:10px;color:var(--t55);letter-spacing:1px;text-transform:uppercase;font-weight:700">${label}</div>
-    <div class="earnings-week" style="margin-bottom:16px">${cols}</div>`;
-  }
-
-  el.innerHTML = renderWeek(thisWeek, 'This Week') + renderWeek(nextWeek, 'Next Week');
+  el.innerHTML = `<div class="earnings-week">${cols}</div>`;
 }
 
 /* ── news feed ── */
