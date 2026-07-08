@@ -270,6 +270,35 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .earnings-status{font-size:12px;color:var(--t55);padding:16px 0;text-align:center;}
   .earnings-today-alert{display:none;align-items:center;gap:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:#f5a623;}
   .eta-icon{font-size:18px;flex-shrink:0;}
+
+  /* Today's Focus row */
+  .tf-wrap{margin-bottom:16px;}
+  .tf-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--t55);margin-bottom:8px;display:block;}
+  .tf-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
+  .tf-card{flex:0 0 auto;min-width:150px;background:var(--panel);border:1px solid rgba(22,217,126,.18);border-radius:10px;padding:10px 12px;cursor:pointer;transition:.15s;}
+  .tf-card:hover{border-color:rgba(22,217,126,.4);}
+  .tf-top{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+  .tf-sym{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--text);}
+  .tf-name{font-size:9px;color:var(--t30);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+
+  /* Importance tags */
+  .eq-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:.4px;padding:1px 5px;border-radius:4px;text-transform:uppercase;margin-left:4px;vertical-align:middle;}
+  .eq-tag.major{background:rgba(245,166,35,.15);color:#f5a623;}
+  .eq-tag.covered{background:rgba(91,156,246,.15);color:#5b9cf6;}
+  .eq-tag.thin{background:rgba(238,243,240,.06);color:var(--t30);}
+
+  /* Per-ticker expandable detail */
+  .ed-item.expandable{cursor:pointer;}
+  .ed-detail{margin-top:6px;padding-top:6px;border-top:1px dashed rgba(238,243,240,.1);font-size:9px;color:var(--t55);display:flex;flex-direction:column;gap:4px;}
+  .ed-detail-row{display:flex;justify-content:space-between;gap:6px;}
+  .ed-detail-label{color:var(--t30);}
+  .ed-detail-val{color:var(--text);font-family:var(--mono);font-weight:700;}
+  .ed-detail-val.pos{color:var(--green);}
+  .ed-detail-val.neg{color:#ff3b46;}
+  .ed-tip{font-size:9px;color:var(--t55);line-height:1.5;margin-top:2px;font-style:italic;}
+  .ed-learn{font-size:9px;color:var(--green);text-decoration:none;font-weight:700;margin-top:2px;display:inline-block;}
+  .ed-learn:hover{text-decoration:underline;}
+
   @media(max-width:640px){
     .earnings-week{grid-template-columns:repeat(3,1fr);}
   }
@@ -580,10 +609,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="section-title" style="margin:0">Earnings Calendar</div>
       <button class="earnings-refresh" onclick="loadEarnings()">↻ Refresh</button>
     </div>
+    <p style="font-size:.72rem;color:var(--t30);margin:-6px 0 14px;line-height:1.5;">
+      Your daily earnings prep — 🔥 marks the majors, tap any company for its last earnings reaction and options positioning.
+    </p>
     <div class="earnings-today-alert" id="earningsTodayAlert">
       <span class="eta-icon">⚠️</span>
       <span id="earningsTodayMsg"></span>
     </div>
+    <div id="earningsTodayFocus"></div>
     <div class="earnings-tabs">
       <button class="earnings-tab active" data-week="this" onclick="setEarningsWeek('this')">This Week</button>
       <button class="earnings-tab" data-week="next" onclick="setEarningsWeek('next')">Next Week</button>
@@ -1617,9 +1650,33 @@ const EARNINGS_NAME_HINTS = {
   TMUS:'T-Mobile', MSTR:'MicroStrategy', TLT:'20+ Yr Treasury ETF', XLE:'Energy Sector ETF',
 };
 
+const SIGNALS_TRACKED = new Set([
+  'SPY','QQQ','IWM','AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA',
+  'AMD','NFLX','COIN','PLTR','SOFI','ARM','GLD','BAC','CVX','HOOD',
+]);
+
+const EARNINGS_TIPS = {
+  'pre-market':  "Reports before the open react right at 9:30 ET — expect a gap, not a gradual move.",
+  'after-close': "After-close reports move first in extended hours, then again at the next open — the initial after-hours reaction can fade or reverse by morning.",
+  'unknown':     "Timing isn't confirmed yet — check back closer to the date. Pre-market vs after-close changes how the reaction plays out.",
+};
+
+function getImportanceTag(e) {
+  if (SIGNALS_TRACKED.has(e.symbol)) return { cls: 'major', label: '🔥 Major' };
+  if (e.epsEstimate != null && e.revenueEstimate != null) return { cls: 'covered', label: 'Covered' };
+  return { cls: 'thin', label: 'Thin Data' };
+}
+function importanceRank(e) {
+  if (SIGNALS_TRACKED.has(e.symbol)) return 0;
+  if (e.epsEstimate != null && e.revenueEstimate != null) return 1;
+  return 2;
+}
+
 let _earningsData = null;
 let _earningsWeek = 'this';
 let _earningsExpandedDays = new Set();
+let _edDetailOpen  = new Set();
+let _edDetailCache = {};
 
 function setEarningsWeek(week) {
   _earningsWeek = week;
@@ -1633,6 +1690,80 @@ function toggleEarningsDay(date) {
   if (_earningsExpandedDays.has(date)) _earningsExpandedDays.delete(date);
   else _earningsExpandedDays.add(date);
   if (_earningsData) renderEarnings(_earningsData);
+}
+
+function toggleEarningsDetail(symbol, date) {
+  const key = symbol + '|' + date;
+  if (_edDetailOpen.has(key)) {
+    _edDetailOpen.delete(key);
+    if (_earningsData) renderEarnings(_earningsData);
+    return;
+  }
+  _edDetailOpen.add(key);
+  if (_earningsData) renderEarnings(_earningsData);
+
+  if (!_edDetailCache[symbol]) {
+    _edDetailCache[symbol] = { loading: true };
+    Promise.all([
+      fetch('/api/earnings-detail?symbol=' + encodeURIComponent(symbol)).then(r => r.json()).catch(() => null),
+      fetch('/api/options?symbol=' + encodeURIComponent(symbol)).then(r => r.json()).catch(() => null),
+    ]).then(([earn, opt]) => {
+      _edDetailCache[symbol] = { loading: false, earn, opt };
+      if (_earningsData) renderEarnings(_earningsData);
+    });
+  }
+}
+
+function renderEarningsDetail(e) {
+  const c = _edDetailCache[e.symbol];
+  if (!c || c.loading) {
+    return `<div class="ed-detail" onclick="event.stopPropagation()">
+      <div class="ed-detail-row"><span class="ed-detail-label">Loading last earnings + options data…</span></div>
+    </div>`;
+  }
+
+  const rows = [];
+  const last = c.earn && c.earn.lastEarnings;
+  if (last && (last.epsActual != null || last.surprisePercent != null)) {
+    const sp = last.surprisePercent;
+    const spCls = sp > 0 ? 'pos' : sp < 0 ? 'neg' : '';
+    rows.push(`<div class="ed-detail-row">
+      <span class="ed-detail-label">Last EPS (${last.period})</span>
+      <span class="ed-detail-val ${spCls}">${last.epsActual != null ? '$' + last.epsActual.toFixed(2) : '—'}${sp != null ? ` (${sp >= 0 ? '+' : ''}${sp.toFixed(1)}%)` : ''}</span>
+    </div>`);
+    if (last.priceMovePercent != null) {
+      const mv = last.priceMovePercent;
+      rows.push(`<div class="ed-detail-row">
+        <span class="ed-detail-label">Reaction Move</span>
+        <span class="ed-detail-val ${mv > 0 ? 'pos' : mv < 0 ? 'neg' : ''}">${mv >= 0 ? '+' : ''}${mv.toFixed(1)}%</span>
+      </div>`);
+    }
+  } else {
+    rows.push(`<div class="ed-detail-row"><span class="ed-detail-label">History</span><span class="ed-detail-val">No prior earnings on file</span></div>`);
+  }
+
+  const opt = c.opt;
+  if (opt && !opt.noData && !opt.error) {
+    if (opt.iv != null) {
+      rows.push(`<div class="ed-detail-row"><span class="ed-detail-label">Implied Volatility</span><span class="ed-detail-val">${opt.iv}%</span></div>`);
+    }
+    if (opt.pcRatio != null) {
+      rows.push(`<div class="ed-detail-row"><span class="ed-detail-label">Put/Call Ratio</span><span class="ed-detail-val">${opt.pcRatio}</span></div>`);
+    }
+    if (opt.unusualFlow && opt.unusualFlow.length) {
+      rows.push(`<div class="ed-detail-row"><span class="ed-detail-label">Positioning</span><span class="ed-detail-val pos">🔥 ${opt.unusualFlow.length} unusual flow alert${opt.unusualFlow.length > 1 ? 's' : ''}</span></div>`);
+    }
+  } else {
+    rows.push(`<div class="ed-detail-row"><span class="ed-detail-label">Options</span><span class="ed-detail-val">No listed options data</span></div>`);
+  }
+
+  const tip = EARNINGS_TIPS[e.time] || EARNINGS_TIPS.unknown;
+
+  return `<div class="ed-detail" onclick="event.stopPropagation()">
+    ${rows.join('')}
+    <div class="ed-tip">💡 ${tip}</div>
+    <a class="ed-learn" href="/learn" target="_blank">📚 Learn how to trade earnings →</a>
+  </div>`;
 }
 
 async function loadEarnings() {
@@ -1674,24 +1805,50 @@ function renderEarnings(data) {
     }
   }
 
-  // Group earnings by date
+  // Group earnings by date, majors/covered first within each day
   const byDate = {};
   for (const e of items) {
     if (!byDate[e.date]) byDate[e.date] = [];
     byDate[e.date].push(e);
   }
+  for (const date in byDate) {
+    byDate[date].sort((a, b) => importanceRank(a) - importanceRank(b) || a.symbol.localeCompare(b.symbol));
+  }
 
-  // Today alert — earnings today
+  // Today alert + Today's Focus row
   const todayItems = byDate[today] || [];
   const alertEl = document.getElementById('earningsTodayAlert');
   const msgEl   = document.getElementById('earningsTodayMsg');
+  const focusEl = document.getElementById('earningsTodayFocus');
+
   if (todayItems.length) {
     const names = todayItems.slice(0, 5).map(e => e.symbol).join(', ');
     const more  = todayItems.length > 5 ? ` +${todayItems.length - 5} more` : '';
     msgEl.textContent = `Earnings TODAY: ${names}${more} — expect elevated IV and potential gaps. Check before trading options.`;
     alertEl.style.display = 'flex';
+
+    const focusCards = todayItems.slice(0, 12).map(e => {
+      const tc   = e.time === 'pre-market' ? 'pre' : e.time === 'after-close' ? 'amc' : 'unk';
+      const tl   = e.time === 'pre-market' ? 'PRE' : e.time === 'after-close' ? 'AMC' : '?';
+      const name = (e.company && e.company !== e.symbol) ? e.company : EARNINGS_NAME_HINTS[e.symbol];
+      const tag  = getImportanceTag(e);
+      return `<div class="tf-card">
+        <div class="tf-top">
+          <span class="ed-time ${tc}">${tl}</span>
+          <span class="tf-sym">${e.symbol}</span>
+          <span class="eq-tag ${tag.cls}">${tag.label}</span>
+        </div>
+        ${name ? `<div class="tf-name">${name}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    focusEl.innerHTML = `<div class="tf-wrap">
+      <span class="tf-label">🎯 Today's Focus — ${todayItems.length} reporting</span>
+      <div class="tf-row">${focusCards}</div>
+    </div>`;
   } else {
     alertEl.style.display = 'none';
+    focusEl.innerHTML = '';
   }
 
   const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -1717,17 +1874,22 @@ function renderEarnings(data) {
           const tl   = e.time === 'pre-market' ? 'PRE' : e.time === 'after-close' ? 'AMC' : '?';
           const name = (e.company && e.company !== e.symbol) ? e.company : EARNINGS_NAME_HINTS[e.symbol];
           const eps  = (e.epsEstimate != null) ? `Est $${e.epsEstimate.toFixed(2)}` : '';
-          return `<div class="ed-item" title="${e.symbol}${name ? ' · ' + name : ''}">
+          const tag  = getImportanceTag(e);
+          const key  = e.symbol + '|' + e.date;
+          const isOpen = _edDetailOpen.has(key);
+          return `<div class="ed-item expandable" title="Tap for last earnings reaction &amp; options positioning" onclick="toggleEarningsDetail('${e.symbol}','${e.date}')">
             <div class="ed-item-row">
               <span class="ed-time ${tc}">${tl}</span>
               <span class="ed-sym">${e.symbol}</span>
+              <span class="eq-tag ${tag.cls}">${tag.label}</span>
               ${eps ? `<span class="ed-eps">${eps}</span>` : ''}
             </div>
             ${name ? `<div class="ed-name">${name}</div>` : ''}
+            ${isOpen ? renderEarningsDetail(e) : ''}
           </div>`;
         }).join('') + (extra > 0
-          ? `<button class="ed-more" onclick="toggleEarningsDay('${date}')">+${extra} more ▾</button>`
-          : (expanded && dayItems.length > MAX ? `<button class="ed-more" onclick="toggleEarningsDay('${date}')">Show fewer ▴</button>` : ''))
+          ? `<button class="ed-more" onclick="event.stopPropagation();toggleEarningsDay('${date}')">+${extra} more ▾</button>`
+          : (expanded && dayItems.length > MAX ? `<button class="ed-more" onclick="event.stopPropagation();toggleEarningsDay('${date}')">Show fewer ▴</button>` : ''))
       : '<div class="ed-empty">No earnings</div>';
 
     return `<div class="earnings-day${isToday ? ' today' : ''}">
