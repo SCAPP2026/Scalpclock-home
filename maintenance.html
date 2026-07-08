@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Platform Upgrade in Progress</title>
+<meta name="description" content="ScalpClock is undergoing a major platform upgrade. We'll be back shortly with new features including XP, badges, lessons, streaks, and improved ScalpCharts.">
+<link rel="icon" href="hero.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;
+  --green:#16d97e;
+  --green-dim:rgba(22,217,126,.08);
+  --green-glow:rgba(22,217,126,.18);
+  --red:#ff5a5a;
+  --text:#eef3f0;
+  --t70:rgba(238,243,240,.70);
+  --t45:rgba(238,243,240,.45);
+  --t20:rgba(238,243,240,.20);
+  --disp:'Rajdhani',sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+}
+
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  overflow-x:hidden;
+}
+
+/* ── Background grid ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(22,217,126,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(22,217,126,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── Radial glow behind logo ── */
+.glow-orb{
+  position:fixed;
+  top:-120px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;
+  background:radial-gradient(ellipse,rgba(22,217,126,.10) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Layout ── */
+.page{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px 60px;
+  gap:0;
+}
+
+/* ── Logo ── */
+.logo{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:32px;
+}
+.logo-mark{
+  width:52px;height:52px;flex-shrink:0;
+  background:rgba(22,217,126,.10);
+  border:1.5px solid rgba(22,217,126,.25);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-mark svg{width:30px;height:30px;}
+.logo-text{display:flex;flex-direction:column;line-height:1;}
+.logo-name{
+  font-family:var(--disp);font-size:2rem;font-weight:700;letter-spacing:.01em;
+  color:var(--text);
+}
+.logo-name em{color:var(--green);font-style:normal;}
+.logo-motto{
+  font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);font-weight:600;margin-top:3px;opacity:.85;
+}
+
+/* ── Badge ── */
+.badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(22,217,126,.08);
+  border:1px solid rgba(22,217,126,.22);
+  border-radius:100px;
+  padding:6px 16px;
+  font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--green);
+  margin-bottom:28px;
+  animation:pulse 2.8s ease-in-out infinite;
+}
+.badge-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);
+  animation:blink 1.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(22,217,126,.0);}50%{box-shadow:0 0 18px 0 rgba(22,217,126,.15);}}
+
+/* ── Headline ── */
+.headline{
+  font-family:var(--disp);font-size:clamp(2.4rem,6vw,3.8rem);
+  font-weight:700;line-height:1.08;letter-spacing:-.01em;
+  text-align:center;max-width:680px;
+  margin-bottom:18px;
+}
+.headline em{color:var(--green);font-style:normal;}
+
+.subline{
+  font-size:clamp(.95rem,2vw,1.1rem);color:var(--t70);
+  text-align:center;max-width:520px;line-height:1.65;
+  margin-bottom:44px;
+}
+
+/* ── Email waitlist ── */
+.waitlist{
+  max-width:480px;width:100%;
+  background:rgba(14,22,16,.70);
+  border:1px solid rgba(22,217,126,.16);
+  border-radius:16px;
+  padding:28px 24px;
+  margin-bottom:52px;
+  text-align:center;
+}
+.waitlist-headline{
+  font-family:var(--disp);font-size:clamp(1.3rem,3vw,1.6rem);
+  font-weight:700;line-height:1.25;
+  margin-bottom:10px;
+}
+.waitlist-sub{
+  font-size:.88rem;color:var(--t70);line-height:1.6;
+  margin-bottom:20px;
+}
+.waitlist-form{
+  display:flex;flex-direction:column;gap:10px;
+}
+@media(min-width:520px){
+  .waitlist-form{flex-direction:row;}
+}
+.waitlist-input{
+  flex:1;min-width:0;
+  background:rgba(238,243,240,.05);
+  border:1.5px solid rgba(238,243,240,.14);
+  border-radius:10px;
+  padding:13px 16px;
+  font-size:1rem;
+  font-family:var(--body);
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s,background .2s;
+}
+.waitlist-input::placeholder{color:var(--t45);}
+.waitlist-input:focus{
+  border-color:rgba(22,217,126,.55);
+  background:rgba(238,243,240,.08);
+}
+.waitlist-btn{
+  font-family:var(--disp);font-weight:700;font-size:1rem;
+  padding:13px 22px;
+  background:var(--green);
+  color:#04150d;
+  border:none;border-radius:10px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .2s,transform .2s,opacity .2s;
+}
+.waitlist-btn:hover:not(:disabled){background:#20e88a;transform:translateY(-1px);}
+.waitlist-btn:disabled{opacity:.6;cursor:default;transform:none;}
+
+.waitlist-msg{
+  min-height:1.3em;
+  margin-top:14px;
+  font-size:.85rem;
+  font-weight:600;
+  line-height:1.5;
+}
+.waitlist-msg.is-success{color:var(--green);}
+.waitlist-msg.is-error{color:var(--red);}
+
+.waitlist-privacy{
+  margin-top:14px;
+  font-size:.72rem;color:var(--t45);line-height:1.6;
+}
+
+/* ── Feature grid ── */
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  max-width:740px;width:100%;
+  margin-bottom:40px;
+}
+@media(max-width:620px){
+  .features{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:400px){
+  .features{grid-template-columns:1fr;}
+}
+
+.feat{
+  background:rgba(14,22,16,.70);
+  border:1px solid rgba(22,217,126,.10);
+  border-radius:12px;
+  padding:18px 16px;
+  display:flex;flex-direction:column;gap:6px;
+  transition:border-color .2s,background .2s;
+}
+.feat:hover{
+  border-color:rgba(22,217,126,.28);
+  background:rgba(14,22,16,.90);
+}
+.feat-icon{font-size:1.4rem;line-height:1;}
+.feat-name{
+  font-family:var(--disp);font-size:1rem;font-weight:700;letter-spacing:.02em;
+  color:var(--text);
+}
+.feat-desc{font-size:.78rem;color:var(--t45);line-height:1.5;}
+
+/* ── Progress bar ── */
+.progress-wrap{
+  max-width:420px;width:100%;
+  margin-bottom:28px;
+  display:flex;flex-direction:column;gap:8px;
+  align-items:center;
+}
+.progress-label{
+  font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--t45);
+}
+.progress-bar{
+  width:100%;height:4px;
+  background:rgba(22,217,126,.10);
+  border-radius:4px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;width:72%;
+  background:linear-gradient(90deg,rgba(22,217,126,.5),var(--green));
+  border-radius:4px;
+  animation:prog 3.2s ease-in-out infinite alternate;
+}
+@keyframes prog{0%{width:66%}100%{width:78%}}
+
+/* ── Brand line ── */
+.brand-line{
+  font-family:var(--disp);font-size:.95rem;font-weight:600;
+  color:var(--t70);letter-spacing:.01em;
+  text-align:center;
+  margin-bottom:28px;
+}
+.brand-line em{color:var(--green);font-style:normal;}
+
+/* ── Footer note ── */
+.footer{
+  font-size:.75rem;color:var(--t45);
+  text-align:center;line-height:1.8;
+}
+.footer a{color:var(--green);text-decoration:none;}
+.footer a:hover{text-decoration:underline;}
+
+/* ── Animated clock hands ── */
+.clock-svg .hand-min{
+  transform-origin:9px 9px;
+  animation:spin-min 6s linear infinite;
+}
+.clock-svg .hand-sec{
+  transform-origin:9px 9px;
+  animation:spin-sec 1s linear infinite;
+}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="glow-orb"></div>
+
+<main class="page">
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-mark">
+      <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="9" cy="9" r="7"/>
+        <line class="hand-min" x1="9" y1="9" x2="9" y2="4.2"/>
+        <line class="hand-sec" x1="9" y1="9" x2="12.8" y2="9"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-name">Scalp<em>Clock</em></span>
+      <span class="logo-motto">The Time To Profit Is Now</span>
+    </div>
+  </div>
+
+  <!-- Status badge -->
+  <div class="badge">
+    <span class="badge-dot"></span>
+    Platform Upgrade In Progress
+  </div>
+
+  <!-- Headline -->
+  <h1 class="headline">We're building something <em>much better</em> for you.</h1>
+
+  <p class="subline">
+    ScalpClock is undergoing a major platform upgrade. We're rewiring the engine,
+    sharpening the tools, and shipping features that will fundamentally change how
+    you trade. Back very soon.
+  </p>
+
+  <!-- Email waitlist -->
+  <div class="waitlist">
+    <h2 class="waitlist-headline">Want to be notified when ScalpClock is back?</h2>
+    <p class="waitlist-sub">Drop your email below and we'll let you know as soon as ScalpClock is live again. The time to profit is now — and your learning journey starts here.</p>
+    <form class="waitlist-form" id="waitlistForm" novalidate>
+      <input
+        type="email"
+        id="waitlistEmail"
+        class="waitlist-input"
+        placeholder="Enter your email"
+        autocomplete="email"
+        inputmode="email"
+        aria-label="Email address"
+        required>
+      <button type="submit" class="waitlist-btn" id="waitlistBtn">Notify Me</button>
+    </form>
+    <p class="waitlist-msg" id="waitlistMsg" role="status" aria-live="polite"></p>
+    <p class="waitlist-privacy">We'll only use your email to notify you about ScalpClock updates. No spam.</p>
+  </div>
+
+  <!-- Feature grid -->
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-name">XP &amp; Levels</div>
+      <div class="feat-desc">Earn experience points as you learn and trade. Level up your account.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🏅</div>
+      <div class="feat-name">Badges</div>
+      <div class="feat-desc">Unlock achievement badges for milestones, streaks, and chart mastery.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🎓</div>
+      <div class="feat-name">Lessons</div>
+      <div class="feat-desc">Structured trading lessons covering patterns, options, and risk management.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🔥</div>
+      <div class="feat-name">Streaks</div>
+      <div class="feat-desc">Daily streaks to keep you sharp. Miss a day, lose your streak.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-name">Quizzes</div>
+      <div class="feat-desc">Test your knowledge with timed quizzes after every lesson module.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📈</div>
+      <div class="feat-name">ScalpCharts v2</div>
+      <div class="feat-desc">Rebuilt live charts with Chart Replay, AI analysis, and real-time signals.</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <span class="progress-label">Upgrade progress</span>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+
+  <!-- Brand line -->
+  <p class="brand-line">Profit isn't just what you earn. <em>It's what you learn.</em></p>
+
+  <!-- Footer -->
+  <p class="footer">
+    Questions? Reach us at <a href="mailto:support@scalpclock.com">support@scalpclock.com</a><br>
+    &copy; 2026 VSLLC &nbsp;·&nbsp; ScalpClock &nbsp;·&nbsp; Not financial advice.
+  </p>
+
+</main>
+
+<script>
+(function(){
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const form  = document.getElementById('waitlistForm');
+  const input = document.getElementById('waitlistEmail');
+  const btn   = document.getElementById('waitlistBtn');
+  const msg   = document.getElementById('waitlistMsg');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const email = input.value.trim();
+
+    msg.textContent = '';
+    msg.className = 'waitlist-msg';
+
+    if (!EMAIL_RE.test(email)) {
+      msg.textContent = 'Please enter a valid email address.';
+      msg.classList.add('is-error');
+      return;
+    }
+
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    try {
+      const res  = await fetch('/api/waitlist', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.ok) {
+        msg.textContent = "You're on the list. We'll notify you when ScalpClock is back online.";
+        msg.classList.add('is-success');
+        input.value = '';
+        input.disabled = true;
+        btn.textContent = 'Notify Me';
+        btn.disabled = true;
+      } else {
+        msg.textContent = data.error || 'Please enter a valid email address.';
+        msg.classList.add('is-error');
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    } catch (err) {
+      msg.textContent = 'Something went wrong. Please try again.';
+      msg.classList.add('is-error');
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
