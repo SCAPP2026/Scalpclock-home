@@ -23,13 +23,17 @@ export async function onRequest(context) {
     return await handleWaitlist(env, request);
   } catch (e) {
     console.error('Waitlist fatal:', e && e.stack || e);
-    return json({ error: `Internal error: ${e && e.message}` }, 500);
+    // Cloudflare's edge replaces the body of Worker-returned 5xx responses
+    // with its own generic error page, so client-facing failures use 200
+    // with an error field instead — the frontend branches on data.ok, not
+    // on HTTP status.
+    return json({ error: `Internal error: ${e && e.message}` }, 200);
   }
 }
 
 async function handleWaitlist(env, request) {
   if (!env.SUPABASE_SERVICE_ROLE_KEY) {
-    return json({ error: 'Waitlist not configured' }, 500);
+    return json({ error: 'Waitlist not configured' }, 200);
   }
 
   let email;
@@ -58,7 +62,7 @@ async function handleWaitlist(env, request) {
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
     console.error('Waitlist insert failed:', res.status, detail);
-    return json({ error: 'Could not save your email. Please try again.' }, 502);
+    return json({ error: 'Could not save your email. Please try again.' }, 200);
   }
 
   return json({ ok: true }, 200);
