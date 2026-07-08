@@ -63,8 +63,15 @@ export async function onRequest(context) {
       vega:  fmt(avg(withGreeks.map(o => o.vega)),  3),
     };
 
-    // IV stats (CBOE reports iv as a decimal, e.g. 0.29 = 29%; 0 means no quote)
-    const ivs = opts.map(o => o.iv).filter(v => v);
+    // IV stats — near-the-money contracts only. Averaging across every strike
+    // (including deep OTM/ITM and 0DTE) pulls in noisy, sometimes-stale quotes
+    // that can put "average IV" at 100%+ for an ordinary stock; ATM IV is also
+    // the financially meaningful reference for "expected move" anyway.
+    const nearMoney = opts
+      .map(o => ({ iv: o.iv, dist: Math.abs(o.strike - midStrike) }))
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, 20);
+    const ivs = nearMoney.map(o => o.iv).filter(v => v);
     ivs.sort((a,b)=>a-b);
     const avgIV = avg(ivs);
     const medIV = ivs[Math.floor(ivs.length/2)];
