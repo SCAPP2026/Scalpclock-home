@@ -42,12 +42,32 @@ export async function onRequest(context) {
   let marketOpen = false;
   let allBars = {}, latestBars = {}, prevCloseBars = {};
 
-  // 4 subrequests: clock + 15-min bars + latest + prev-day daily
-  const [clockRes, barsRes, latestRes, prevRes] = await Promise.all([
+  // Multi-symbol bars endpoints paginate when the combined row count exceeds
+  // `limit` — with 20 symbols that happens well before every symbol gets
+  // enough bars for RSI(14), so we must follow next_page_token or some
+  // symbols silently come back empty.
+  async function fetchAllBars(url, maxPages = 6) {
+    const merged = {};
+    let pageToken = null;
+    for (let i = 0; i < maxPages; i++) {
+      const pageUrl = pageToken ? `${url}&page_token=${encodeURIComponent(pageToken)}` : url;
+      const res  = await fetch(pageUrl, { headers: hdrs });
+      const data = await safeJson(res);
+      const bars = data.bars || {};
+      for (const sym of Object.keys(bars)) {
+        (merged[sym] = merged[sym] || []).push(...bars[sym]);
+      }
+      pageToken = data.next_page_token || null;
+      if (!pageToken) break;
+    }
+    return merged;
+  }
+
+  const [clockRes, latestRes, bars15, barsDay] = await Promise.all([
     fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=15Min&start=${startISO}&limit=10000&feed=iex&sort=asc`, { headers: hdrs }),
     fetch(`${BASE}/stocks/bars/latest?symbols=${symList}&feed=iex`, { headers: hdrs }),
-    fetch(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=1000&feed=iex&sort=asc`, { headers: hdrs }),
+    fetchAllBars(`${BASE}/stocks/bars?symbols=${symList}&timeframe=15Min&start=${startISO}&limit=10000&feed=iex&sort=asc`),
+    fetchAllBars(`${BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=1000&feed=iex&sort=asc`),
   ]);
 
   try {
@@ -55,20 +75,14 @@ export async function onRequest(context) {
     marketOpen = clock.is_open || false;
   } catch(e) { console.error('clock error:', e.message); }
 
-  try {
-    const data = await safeJson(barsRes);
-    allBars = data.bars || {};
-  } catch(e) { console.error('bars error:', e.message); }
+  allBars = bars15;
 
   try {
     const data = await safeJson(latestRes);
     latestBars = data.bars || {};
   } catch(e) { console.error('latest error:', e.message); }
 
-  try {
-    const data = await safeJson(prevRes);
-    prevCloseBars = data.bars || {};
-  } catch(e) { console.error('prev error:', e.message); }
+  prevCloseBars = barsDay;
 
   function calcRSI(bars, period = 14) {
     const closes = bars.map(b => b.c);
