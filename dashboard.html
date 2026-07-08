@@ -282,6 +282,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .news-tickers{display:flex;flex-wrap:wrap;gap:4px;}
   .news-ticker{font-family:var(--mono);font-size:.58rem;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--g-dim);color:var(--green);border:1px solid rgba(22,217,126,.2);}
   .news-loading,.news-empty{text-align:center;padding:24px 0;color:var(--t30);font-family:var(--mono);font-size:.78rem;grid-column:1/-1;}
+  .news-toggle{grid-column:1/-1;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:10px;color:var(--green);font-family:var(--disp);font-weight:700;font-size:.82rem;padding:12px 16px;cursor:pointer;transition:.15s;text-align:center;}
+  .news-toggle:hover{background:rgba(22,217,126,.06);}
   @media(max-width:420px){
     .earnings-week{grid-template-columns:repeat(2,1fr);}
   }
@@ -345,6 +347,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .sb-rsi b{color:var(--text);font-weight:700;}
   .sb-explain{font-size:.68rem;color:var(--t30);line-height:1.4;padding:0 16px 10px 20px;display:none;}
   .sb-row:hover + .sb-explain{display:block;}
+  .sb-toggle{display:block;width:100%;background:rgba(255,255,255,.02);border:none;border-top:1px solid rgba(255,255,255,.06);color:var(--green);font-family:var(--disp);font-weight:700;font-size:.82rem;padding:12px 16px;cursor:pointer;transition:.15s;text-align:center;}
+  .sb-toggle:hover{background:rgba(22,217,126,.06);}
   .sb-loading,.sb-error{padding:28px 20px;text-align:center;color:var(--t30);font-size:.82rem;}
   .sb-error{color:#ff7a1a;}
   /* Lock overlay */
@@ -1452,6 +1456,65 @@ function renderScorecard(closedTrades) {
 // ── Scalp Signals ──────────────────────────────────────────────────────────────
 
 let _signalRefreshTimer = null;
+let _signalsExpanded = false;
+let _lastSignalTickers = [];
+const SIGNALS_PREVIEW_COUNT = 5;
+
+function toggleSignalsExpanded() {
+  _signalsExpanded = !_signalsExpanded;
+  renderSignalBoard(_lastSignalTickers);
+}
+
+function renderSignalBoard(tickers) {
+  const board = document.getElementById('signalBoard');
+  if (!board) return;
+
+  const visible  = _signalsExpanded ? tickers : tickers.slice(0, SIGNALS_PREVIEW_COUNT);
+  const hidden   = tickers.length - visible.length;
+
+  const rowsHtml = visible.map(t => {
+    if (!t.ok) return `
+      <div class="sb-row hold">
+        <span class="sb-light hold"></span>
+        <div class="sb-sym-col"><div class="sb-sym">${t.symbol}</div><div class="sb-name">${t.name}</div></div>
+        <div style="flex:1;color:var(--t30);font-size:.72rem;">No data available</div>
+      </div>`;
+
+    const isUp      = t.changePct >= 0;
+    const chgStr    = `${isUp ? '+' : ''}${t.changePct.toFixed(2)}%`;
+    const hard      = t.conviction === 'HARD';
+    const badgeText = t.tone === 'buy'  ? `${hard ? '⚡ ' : ''}BUY CALLS`
+                    : t.tone === 'sell' ? `${hard ? '⚡ ' : ''}BUY PUTS`
+                    : 'WAIT — HOLD';
+    const priceStr  = t.price != null ? `$${t.price.toFixed(2)}` : '—';
+    const rsiVal    = t.rsi   != null ? t.rsi : '—';
+    const chgColor  = isUp ? 'var(--green)' : '#ff3b46';
+
+    return `
+      <div class="sb-row ${t.tone}">
+        <span class="sb-light ${t.tone}"></span>
+        <div class="sb-sym-col">
+          <div class="sb-sym">${t.symbol}</div>
+          <div class="sb-name">${t.name}</div>
+        </div>
+        <div class="sb-price-col">
+          <span class="sb-price">${priceStr}</span>
+          <span class="sb-chg" style="color:${chgColor}">${chgStr}</span>
+        </div>
+        <span class="sb-badge ${t.tone}">${badgeText}</span>
+        <span class="sb-rsi">RSI <b>${rsiVal}</b></span>
+      </div>
+      <div class="sb-explain">${t.explain || ''}</div>`;
+  }).join('');
+
+  const toggleHtml = tickers.length > SIGNALS_PREVIEW_COUNT
+    ? `<button class="sb-toggle" onclick="toggleSignalsExpanded()">
+         ${_signalsExpanded ? 'Show Fewer ▴' : `Show All ${tickers.length} Stocks ▾ (${hidden} more)`}
+       </button>`
+    : '';
+
+  board.innerHTML = rowsHtml + toggleHtml;
+}
 
 async function loadLiveSignals() {
   const board      = document.getElementById('signalBoard');
@@ -1480,43 +1543,8 @@ async function loadLiveSignals() {
       return;
     }
 
-    // Render each ticker as a row
-    if (board) {
-      board.innerHTML = tickers.map(t => {
-        if (!t.ok) return `
-          <div class="sb-row hold">
-            <span class="sb-light hold"></span>
-            <div class="sb-sym-col"><div class="sb-sym">${t.symbol}</div><div class="sb-name">${t.name}</div></div>
-            <div style="flex:1;color:var(--t30);font-size:.72rem;">No data available</div>
-          </div>`;
-
-        const isUp      = t.changePct >= 0;
-        const chgStr    = `${isUp ? '+' : ''}${t.changePct.toFixed(2)}%`;
-        const hard      = t.conviction === 'HARD';
-        const badgeText = t.tone === 'buy'  ? `${hard ? '⚡ ' : ''}BUY CALLS`
-                        : t.tone === 'sell' ? `${hard ? '⚡ ' : ''}BUY PUTS`
-                        : 'WAIT — HOLD';
-        const priceStr  = t.price != null ? `$${t.price.toFixed(2)}` : '—';
-        const rsiVal    = t.rsi   != null ? t.rsi : '—';
-        const chgColor  = isUp ? 'var(--green)' : '#ff3b46';
-
-        return `
-          <div class="sb-row ${t.tone}">
-            <span class="sb-light ${t.tone}"></span>
-            <div class="sb-sym-col">
-              <div class="sb-sym">${t.symbol}</div>
-              <div class="sb-name">${t.name}</div>
-            </div>
-            <div class="sb-price-col">
-              <span class="sb-price">${priceStr}</span>
-              <span class="sb-chg" style="color:${chgColor}">${chgStr}</span>
-            </div>
-            <span class="sb-badge ${t.tone}">${badgeText}</span>
-            <span class="sb-rsi">RSI <b>${rsiVal}</b></span>
-          </div>
-          <div class="sb-explain">${t.explain || ''}</div>`;
-      }).join('');
-    }
+    _lastSignalTickers = tickers;
+    renderSignalBoard(tickers);
 
     const buys   = tickers.filter(t => t.tone === 'buy').length;
     const sells  = tickers.filter(t => t.tone === 'sell').length;
@@ -1651,7 +1679,14 @@ function renderEarnings(data) {
 /* ── news feed ── */
 var _newsArticles = [];
 var _newsFilter   = 'all';
+var _newsExpanded = false;
+var NEWS_PREVIEW_COUNT = 6;
 var NEWS_COLORS = { polygon: '#a78bfa', finnhub: '#60a5fa', all: 'var(--green)' };
+
+function toggleNewsExpanded() {
+  _newsExpanded = !_newsExpanded;
+  renderNewsGrid();
+}
 
 function newsEsc(s) {
   return String(s || '')
@@ -1675,7 +1710,9 @@ function renderNewsGrid() {
     grid.innerHTML = '<div class="news-empty">No articles from this source yet — check back soon.</div>';
     return;
   }
-  grid.innerHTML = list.slice(0, 20).map(function (a) {
+  var visible = _newsExpanded ? list.slice(0, 20) : list.slice(0, NEWS_PREVIEW_COUNT);
+  var hidden  = Math.min(list.length, 20) - visible.length;
+  var cardsHtml = visible.map(function (a) {
     var c   = a.color || NEWS_COLORS[a.source] || '#aaa';
     var bg  = c + '18';
     var bd  = c + '44';
@@ -1695,10 +1732,19 @@ function renderNewsGrid() {
       (tix ? '<div class="news-tickers">' + tix + '</div>' : '') +
     '</a>';
   }).join('');
+
+  var toggleHtml = list.length > NEWS_PREVIEW_COUNT
+    ? '<button class="news-toggle" onclick="toggleNewsExpanded()">' +
+        (_newsExpanded ? 'Show Fewer ▴' : 'Show More Articles ▾ (' + hidden + ' more)') +
+      '</button>'
+    : '';
+
+  grid.innerHTML = cardsHtml + toggleHtml;
 }
 
 window.filterNews = function (src) {
   _newsFilter = src;
+  _newsExpanded = false;
   document.querySelectorAll('.news-pill').forEach(function (p) {
     var match = p.dataset.src === src;
     var c = NEWS_COLORS[p.dataset.src] || 'var(--green)';
