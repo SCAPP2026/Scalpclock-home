@@ -44,12 +44,17 @@ async function handleWaitlist(env, request) {
     return json({ error: 'Please enter a valid email address.' }, 400);
   }
 
-  return json({
-    debug: true,
-    hasKey: !!env.SUPABASE_SERVICE_ROLE_KEY,
-    keyLen: (env.SUPABASE_SERVICE_ROLE_KEY || '').length,
-    email,
-  }, 200);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/maintenance_waitlist`, {
+    method: 'POST',
+    headers: {
+      apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
+      Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, source: 'maintenance_waitlist' }),
+  });
+  const text = await res.text();
+  return json({ debug: true, status: res.status, body: text }, 200);
 }
 
 function json(data, status = 200) {
