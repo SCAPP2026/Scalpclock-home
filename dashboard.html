@@ -261,6 +261,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   @media(max-width:640px){
     .earnings-week{grid-template-columns:repeat(3,1fr);}
   }
+
+  /* ── news feed ── */
+  .news-wrap{margin-top:32px;}
+  .news-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .news-refresh{background:transparent;border:1px solid rgba(205,211,210,.15);color:var(--t55);font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:var(--disp);transition:.15s;}
+  .news-refresh:hover{color:var(--text);border-color:rgba(205,211,210,.35);}
+  .news-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .news-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;letter-spacing:.07em;padding:5px 14px;border-radius:20px;border:1px solid var(--line);color:var(--t55);background:transparent;cursor:pointer;transition:.15s;}
+  .news-pill:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+  .news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  @media(max-width:680px){.news-grid{grid-template-columns:1fr;}}
+  .news-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;transition:.18s;text-decoration:none;color:var(--text);}
+  .news-card:hover{border-color:rgba(120,200,160,.3);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35);}
+  .news-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .news-source{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.07em;padding:2px 9px;border-radius:4px;}
+  .news-time{font-family:var(--mono);font-size:.65rem;color:var(--t30);margin-left:auto;}
+  .news-title{font-size:.85rem;font-weight:600;color:var(--text);line-height:1.45;}
+  .news-summary{font-size:.76rem;color:var(--t55);line-height:1.55;}
+  .news-tickers{display:flex;flex-wrap:wrap;gap:4px;}
+  .news-ticker{font-family:var(--mono);font-size:.58rem;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--g-dim);color:var(--green);border:1px solid rgba(22,217,126,.2);}
+  .news-loading,.news-empty{text-align:center;padding:24px 0;color:var(--t30);font-family:var(--mono);font-size:.78rem;grid-column:1/-1;}
   @media(max-width:420px){
     .earnings-week{grid-template-columns:repeat(2,1fr);}
   }
@@ -544,6 +565,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <span id="earningsTodayMsg"></span>
     </div>
     <div id="earningsContent"><div class="earnings-status">Loading earnings calendar...</div></div>
+  </div>
+
+<!-- MARKET NEWS -->
+  <div class="news-wrap" id="newsWrap">
+    <div class="news-header">
+      <div class="section-title" style="margin:0">Market News</div>
+      <button class="news-refresh" onclick="loadNews()">↻ Refresh</button>
+    </div>
+    <div class="news-filters" id="newsFilters">
+      <button class="news-pill" data-src="all" onclick="filterNews('all')">ALL</button>
+      <button class="news-pill" data-src="polygon" onclick="filterNews('polygon')" style="--nc:#a78bfa">MASSIVE</button>
+      <button class="news-pill" data-src="finnhub" onclick="filterNews('finnhub')" style="--nc:#60a5fa">FINNHUB</button>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <div class="news-loading">Loading market news…</div>
+    </div>
   </div>
 
 <!-- TRADE JOURNAL -->
@@ -1605,9 +1642,92 @@ function renderEarnings(data) {
   el.innerHTML = renderWeek(thisWeek, 'This Week') + renderWeek(nextWeek, 'Next Week');
 }
 
+/* ── news feed ── */
+var _newsArticles = [];
+var _newsFilter   = 'all';
+var NEWS_COLORS = { polygon: '#a78bfa', finnhub: '#60a5fa', all: 'var(--green)' };
+
+function newsEsc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function newsAgo(iso) {
+  var s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60)    return 'just now';
+  if (s < 3600)  return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+
+function renderNewsGrid() {
+  var grid = document.getElementById('newsGrid');
+  if (!grid) return;
+  var list = _newsFilter === 'all' ? _newsArticles : _newsArticles.filter(function (a) { return a.source === _newsFilter; });
+  if (!list.length) {
+    grid.innerHTML = '<div class="news-empty">No articles from this source yet — check back soon.</div>';
+    return;
+  }
+  grid.innerHTML = list.slice(0, 20).map(function (a) {
+    var c   = a.color || NEWS_COLORS[a.source] || '#aaa';
+    var bg  = c + '18';
+    var bd  = c + '44';
+    var tix = (a.tickers || []).slice(0, 5)
+      .map(function (t) { return '<span class="news-ticker">' + newsEsc(t) + '</span>'; }).join('');
+    var sum = (a.summary || '').slice(0, 130);
+    if (a.summary && a.summary.length > 130) sum += '…';
+    return '<a class="news-card" href="' + newsEsc(a.url) + '" target="_blank" rel="noopener noreferrer">' +
+      '<div class="news-meta">' +
+        '<span class="news-source" style="background:' + bg + ';color:' + c + ';border:1px solid ' + bd + '">' +
+          newsEsc(a.sourceLabel) +
+        '</span>' +
+        '<span class="news-time">' + newsAgo(a.publishedAt) + '</span>' +
+      '</div>' +
+      '<div class="news-title">' + newsEsc(a.title) + '</div>' +
+      (sum ? '<div class="news-summary">' + newsEsc(sum) + '</div>' : '') +
+      (tix ? '<div class="news-tickers">' + tix + '</div>' : '') +
+    '</a>';
+  }).join('');
+}
+
+window.filterNews = function (src) {
+  _newsFilter = src;
+  document.querySelectorAll('.news-pill').forEach(function (p) {
+    var match = p.dataset.src === src;
+    var c = NEWS_COLORS[p.dataset.src] || 'var(--green)';
+    if (match) {
+      p.style.color       = c;
+      p.style.borderColor = c;
+      p.style.background  = c + '18';
+    } else {
+      p.style.color       = '';
+      p.style.borderColor = '';
+      p.style.background  = '';
+    }
+  });
+  renderNewsGrid();
+};
+
+async function loadNews() {
+  var grid = document.getElementById('newsGrid');
+  if (grid) grid.innerHTML = '<div class="news-loading">Loading market news…</div>';
+  try {
+    const res  = await fetch('/api/news');
+    const data = await res.json();
+    _newsArticles = data.articles || [];
+    renderNewsGrid();
+  } catch {
+    if (grid) grid.innerHTML = '<div class="news-empty">Unable to load news right now.</div>';
+  }
+}
+
 init();
 checkUpgradeReturn();
 loadEarnings();
+filterNews('all');
+loadNews();
+setInterval(loadNews, 300000);
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">
