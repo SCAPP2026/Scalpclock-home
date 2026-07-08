@@ -1715,7 +1715,7 @@ function renderEarnings(data) {
       ? shown.map(e => {
           const tc   = e.time === 'pre-market' ? 'pre' : e.time === 'after-close' ? 'amc' : 'unk';
           const tl   = e.time === 'pre-market' ? 'PRE' : e.time === 'after-close' ? 'AMC' : '?';
-          const name = EARNINGS_NAME_HINTS[e.symbol];
+          const name = (e.company && e.company !== e.symbol) ? e.company : EARNINGS_NAME_HINTS[e.symbol];
           const eps  = (e.epsEstimate != null) ? `Est $${e.epsEstimate.toFixed(2)}` : '';
           return `<div class="ed-item" title="${e.symbol}${name ? ' · ' + name : ''}">
             <div class="ed-item-row">

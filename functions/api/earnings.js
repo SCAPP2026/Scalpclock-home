@@ -10,9 +10,10 @@ export async function onRequest(context) {
   const from  = fmt(today);
   const to    = fmt(new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000));
 
-  const [finn, fmp] = await Promise.allSettled([
+  const [finn, fmp, names] = await Promise.allSettled([
     fetchFinnhub(env.FINNHUB_KEY, from, to),
     fetchFMP(env.FMP_KEY, from, to),
+    fetchSymbolNames(env.FINNHUB_KEY),
   ]);
 
   let items = [];
@@ -21,6 +22,11 @@ export async function onRequest(context) {
     items = finn.value;
   } else if (fmp.status === 'fulfilled' && fmp.value.length) {
     items = fmp.value;
+  }
+
+  const nameMap = names.status === 'fulfilled' ? names.value : {};
+  if (Object.keys(nameMap).length) {
+    items = items.map(e => ({ ...e, company: nameMap[e.symbol] || e.symbol }));
   }
 
   // Filter to specific symbol if requested
@@ -44,6 +50,44 @@ export async function onRequest(context) {
   return json({ from, to, count: items.length, earnings: items });
 }
 
+// Finnhub's full US symbol list includes a company name (`description`) per
+// ticker. It's a big response (~1-2MB, thousands of rows), so it's cached at
+// the edge for 24h rather than fetched on every /api/earnings request.
+async function fetchSymbolNames(key) {
+  if (!key) return {};
+
+  const cacheKey = new Request('https://scalpclock.com/__cache__/finnhub-us-symbol-names');
+  const cache    = caches.default;
+
+  const cached = await cache.match(cacheKey);
+  if (cached) return await cached.json();
+
+  const res  = await fetch(`https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${key}`);
+  const data = await res.json();
+  if (!Array.isArray(data)) return {};
+
+  const map = {};
+  for (const s of data) {
+    if (s.symbol && s.description) map[s.symbol] = titleCase(s.description);
+  }
+
+  const cacheResponse = new Response(JSON.stringify(map), {
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400' },
+  });
+  await cache.put(cacheKey, cacheResponse);
+
+  return map;
+}
+
+function titleCase(s) {
+  return s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+    .replace(/\bLlc\b/g, 'LLC').replace(/\bLp\b/g, 'LP')
+    .replace(/\bInc\b/g, 'Inc').replace(/\bCorp\b/g, 'Corp')
+    .replace(/\bPlc\b/g, 'PLC').replace(/\bEtf\b/g, 'ETF')
+    .replace(/\bReit\b/g, 'REIT').replace(/\bAdr\b/g, 'ADR')
+    .replace(/\bUsa\b/g, 'USA').replace(/\bU\.s\.\b/g, 'U.S.');
+}
+
 async function fetchFinnhub(key, from, to) {
   if (!key) return [];
   const res  = await fetch(
@@ -52,7 +96,7 @@ async function fetchFinnhub(key, from, to) {
   const data = await res.json();
   return (data.earningsCalendar || []).map(e => ({
     symbol:            e.symbol,
-    company:           e.symbol, // Finnhub doesn't return name in calendar
+    company:           e.symbol, // filled in from fetchSymbolNames when available
     date:              e.date,
     time:              e.hour === 'bmo' ? 'pre-market' : e.hour === 'amc' ? 'after-close' : 'unknown',
     epsEstimate:       e.epsEstimate ?? null,
