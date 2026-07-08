@@ -50,6 +50,7 @@ async function handleWaitlist(env, request) {
       apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
       Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
       'Content-Type': 'application/json',
+      Prefer:         'resolution=ignore-duplicates,return=minimal',
     },
     body: JSON.stringify({ email, source: 'maintenance_waitlist' }),
   });
