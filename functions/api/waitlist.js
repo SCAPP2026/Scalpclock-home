@@ -54,8 +54,14 @@ async function handleWaitlist(env, request) {
     },
     body: JSON.stringify({ email, source: 'maintenance_waitlist' }),
   });
-  const text = await res.text();
-  return json({ debug: true, status: res.status, body: text }, 200);
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    console.error('Waitlist insert failed:', res.status, detail);
+    return json({ error: 'Could not save your email. Please try again.' }, 502);
+  }
+
+  return json({ ok: true }, 200);
 }
 
 function json(data, status = 200) {
