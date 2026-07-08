@@ -326,7 +326,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .sb-row:hover{background:rgba(255,255,255,.02);}
   .sb-row.buy{border-left:2px solid rgba(22,217,126,.4);}
   .sb-row.sell{border-left:2px solid rgba(255,59,70,.35);}
-  .sb-row.hold{border-left:2px solid transparent;padding-left:18px;}
+  .sb-row.hold{border-left:2px solid rgba(245,166,35,.3);}
+  .sb-light{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .sb-light.buy{background:var(--green);box-shadow:0 0 8px 1px rgba(22,217,126,.65);}
+  .sb-light.sell{background:#ff3b46;box-shadow:0 0 8px 1px rgba(255,59,70,.55);}
+  .sb-light.hold{background:#f5a623;box-shadow:0 0 8px 1px rgba(245,166,35,.5);}
   .sb-sym-col{min-width:54px;}
   .sb-sym{font-family:var(--disp);font-weight:700;font-size:.9rem;line-height:1;}
   .sb-name{font-size:.62rem;color:var(--t30);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px;}
@@ -336,11 +340,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .sb-badge{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.04em;white-space:nowrap;min-width:90px;text-align:center;flex-shrink:0;}
   .sb-badge.buy{background:rgba(22,217,126,.13);color:var(--green);border:1px solid rgba(22,217,126,.22);}
   .sb-badge.sell{background:rgba(255,59,70,.1);color:#ff3b46;border:1px solid rgba(255,59,70,.18);}
-  .sb-badge.hold{background:rgba(255,255,255,.04);color:var(--t55);border:1px solid rgba(255,255,255,.08);}
+  .sb-badge.hold{background:rgba(245,166,35,.1);color:#f5a623;border:1px solid rgba(245,166,35,.22);}
   .sb-rsi{font-family:var(--mono);font-size:.74rem;color:var(--t55);min-width:52px;text-align:right;flex-shrink:0;}
   .sb-rsi b{color:var(--text);font-weight:700;}
   .sb-explain{font-size:.68rem;color:var(--t30);line-height:1.4;padding:0 16px 10px 20px;display:none;}
-  .sb-row.buy:hover + .sb-explain, .sb-row.sell:hover + .sb-explain{display:block;}
+  .sb-row:hover + .sb-explain{display:block;}
   .sb-loading,.sb-error{padding:28px 20px;text-align:center;color:var(--t30);font-size:.82rem;}
   .sb-error{color:#ff7a1a;}
   /* Lock overlay */
@@ -537,7 +541,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
   <p style="font-size:.75rem;color:var(--t30);margin:-4px 0 10px;line-height:1.5;">
-    15-min RSI alerts on the 10 most-traded options stocks. Green = calls are the play. Red = puts are the play. Grey = wait for a clearer setup.
+    15-min RSI alerts on the 20 most-traded options stocks. 🟢 Green = calls are the play. 🔴 Red = puts are the play. 🟡 Yellow = wait for a clearer setup.
   </p>
 
   <div class="signal-board-wrap" id="signalPreview">
@@ -545,7 +549,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="sp-lock" id="signalLock">
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
       <div class="sp-lock-msg">Scalp Signals — Pro Feature</div>
-      <div class="sp-lock-sub">See which of the 10 top stocks to buy calls or puts on right now, updated every 15 minutes.</div>
+      <div class="sp-lock-sub">See which of the 20 top stocks to buy calls or puts on right now, updated every 15 minutes.</div>
       <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Start Free Trial →</button>
     </div>
   </div>
@@ -1481,6 +1485,7 @@ async function loadLiveSignals() {
       board.innerHTML = tickers.map(t => {
         if (!t.ok) return `
           <div class="sb-row hold">
+            <span class="sb-light hold"></span>
             <div class="sb-sym-col"><div class="sb-sym">${t.symbol}</div><div class="sb-name">${t.name}</div></div>
             <div style="flex:1;color:var(--t30);font-size:.72rem;">No data available</div>
           </div>`;
@@ -1497,6 +1502,7 @@ async function loadLiveSignals() {
 
         return `
           <div class="sb-row ${t.tone}">
+            <span class="sb-light ${t.tone}"></span>
             <div class="sb-sym-col">
               <div class="sb-sym">${t.symbol}</div>
               <div class="sb-name">${t.name}</div>

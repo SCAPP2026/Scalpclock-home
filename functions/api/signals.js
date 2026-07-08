@@ -3,18 +3,24 @@ export async function onRequest(context) {
   const KEY_ID = env.ALPACA_KEY_ID;
   const SECRET = env.ALPACA_SECRET;
 
-  // Top 10 highest-volume options tickers — 15-min RSI signals
+  // Top 20 highest-volume options tickers — 15-min RSI signals
   const SYMBOLS = [
-    'SPY', 'QQQ', 'AAPL', 'TSLA', 'NVDA',
-    'MSFT', 'AMD',  'META', 'AMZN', 'NFLX',
+    'SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'AMZN', 'GOOGL', 'META',
+    'NVDA', 'TSLA', 'AMD', 'NFLX', 'COIN', 'PLTR', 'SOFI', 'ARM',
+    'GLD', 'BAC', 'CVX', 'HOOD',
   ];
 
   const NAMES = {
-    SPY:  'S&P 500 ETF',      QQQ:  'Nasdaq 100 ETF',
-    AAPL: 'Apple',             TSLA: 'Tesla',
-    NVDA: 'Nvidia',            MSFT: 'Microsoft',
-    AMD:  'Advanced Micro',    META: 'Meta Platforms',
-    AMZN: 'Amazon',            NFLX: 'Netflix',
+    SPY:  'S&P 500 ETF',       QQQ:  'Nasdaq 100 ETF',
+    IWM:  'Russell 2000 ETF',  AAPL: 'Apple',
+    MSFT: 'Microsoft',         AMZN: 'Amazon',
+    GOOGL: 'Alphabet',         META: 'Meta Platforms',
+    NVDA: 'Nvidia',            TSLA: 'Tesla',
+    AMD:  'Advanced Micro',    NFLX: 'Netflix',
+    COIN: 'Coinbase',          PLTR: 'Palantir',
+    SOFI: 'SoFi Technologies', ARM:  'Arm Holdings',
+    GLD:  'SPDR Gold ETF',     BAC:  'Bank of America',
+    CVX:  'Chevron',           HOOD: 'Robinhood Markets',
   };
 
   const hdrs = {
