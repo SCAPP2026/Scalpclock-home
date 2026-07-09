@@ -3322,6 +3322,10 @@ function rpBeginSession(){
   document.getElementById('rpHintBanner').classList.remove('show');
   document.getElementById('rpCompleteOverlay').classList.remove('open');
   if(!rpChart){rpInitChart();rpInitDate();}
+  // Carry over whatever ticker is currently loaded on the Live tab instead of
+  // always defaulting to the rpSymbol input's hardcoded SPY placeholder.
+  const rpSymEl=document.getElementById('rpSymbol');
+  if(rpSymEl&&typeof ticker==='string'&&ticker)rpSymEl.value=ticker;
   rpQuickLoad('3mo',document.querySelector('.rp-quick-btn[data-range="3mo"]'));
   rpUpdateProgressUI();
   rpUpdateLearnPanel();
