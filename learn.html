@@ -107,6 +107,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,10,8,.92);backdrop-filte
 .today-day{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
 .today-title{font-family:var(--disp);font-size:1.4rem;font-weight:700;line-height:1.1;margin-bottom:6px;}
 .today-meta{font-size:.78rem;color:var(--t45);}
+.cap-ok{color:var(--green);}
+.cap-locked{color:var(--gold);}
+.today-cta.locked-cta{background:rgba(245,200,66,.14);color:var(--gold);}
 .today-meta span{color:var(--t70);}
 .today-cta{background:var(--green);color:#070a08;font-weight:700;font-size:.9rem;letter-spacing:.04em;padding:12px 24px;border-radius:10px;border:none;cursor:pointer;flex-shrink:0;transition:opacity .15s;}
 .today-cta:hover{opacity:.88;}
@@ -129,6 +132,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,10,8,.92);backdrop-filte
 .day-circle.current{border-color:var(--green);color:var(--text);background:rgba(22,217,126,.08);animation:pulse-day 2s ease-in-out infinite;}
 .day-circle.boss{border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.08);}
 .day-circle.locked{opacity:.4;cursor:not-allowed;}
+.day-circle.locked-today{border-color:rgba(245,200,66,.4);color:var(--gold);background:rgba(245,200,66,.06);cursor:pointer;}
+.day-circle.locked-today::after{content:'🌙';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;}
 @keyframes pulse-day{0%,100%{box-shadow:0 0 0 0 transparent;}50%{box-shadow:0 0 0 6px rgba(22,217,126,.15);}}
 .day-label{font-size:.62rem;color:var(--t45);text-align:center;line-height:1.2;max-width:52px;}
 
@@ -406,6 +411,25 @@ function bumpStreak() {
   LS.set('sc_streak_date',today);LS.set('sc_streak_count',cnt);return cnt;
 }
 
+/* ── DAILY LESSON CAP ── */
+// New lessons only — replaying an already-done lesson never counts
+// against this, so it can't be used to grind ahead of the curriculum.
+const DAILY_LESSON_LIMIT = 1;
+function getDailyCount() {
+  return LS.get('sc_daily_date','')===dateStr() ? LS.get('sc_daily_count',0) : 0;
+}
+function bumpDailyCount() {
+  LS.set('sc_daily_date',dateStr());
+  LS.set('sc_daily_count',getDailyCount()+1);
+}
+function dailyLimitReached() { return getDailyCount()>=DAILY_LESSON_LIMIT; }
+function hoursUntilMidnightStr() {
+  const now=new Date(),midnight=new Date(now);
+  midnight.setHours(24,0,0,0);
+  const ms=midnight-now,h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000);
+  return `${h}h ${m}m`;
+}
+
 /* ── CURRICULUM ── */
 const W1 = {
   num:1,title:'Foundations of Trading',
@@ -667,10 +691,16 @@ function renderTodayCard() {
   document.getElementById('today-icon').textContent=day.icon;
   document.getElementById('today-day-label').textContent=`Day ${currentDay} · Week ${day.week}`;
   document.getElementById('today-lesson-title').textContent=day.title;
-  document.getElementById('today-cta').textContent=isDone(currentDay)?'Replay →':'Start Lesson →';
+  const done=isDone(currentDay);
+  const locked=!done&&dailyLimitReached();
+  const cta=document.getElementById('today-cta');
+  cta.textContent=done?'Replay →':locked?'🔒 Come Back Tomorrow':'Start Lesson →';
+  cta.classList.toggle('locked-cta',locked);
   const qCount=day.quiz?day.quiz.length:0;
   const qText=qCount===0?'No quiz':`${qCount} quiz question${qCount!==1?'s':''}`;
-  document.getElementById('today-meta').innerHTML=`~5 min · <span>${qText}</span> · <span>+50 XP</span>`;
+  const remaining=Math.max(0,DAILY_LESSON_LIMIT-getDailyCount());
+  const capText=locked?`Next lesson in ${hoursUntilMidnightStr()}`:`${remaining}/${DAILY_LESSON_LIMIT} lesson${DAILY_LESSON_LIMIT!==1?'s':''} left today`;
+  document.getElementById('today-meta').innerHTML=`~5 min · <span>${qText}</span> · <span>+50 XP</span> · <span class="${locked?'cap-locked':'cap-ok'}">${capText}</span>`;
 }
 
 function renderPath() {
@@ -694,13 +724,15 @@ function renderPath() {
       const isCurrentD=dayNum===currentDay;
       const isDoneD=done.includes(dayNum);
       const isLocked=dayNum>currentDay;
+      const isTodayLocked=isCurrentD&&!isDoneD&&dailyLimitReached();
       const node=document.createElement('div');
       node.className='day-node';
-      node.onclick=()=>{if(!isLocked)startLesson(dayNum);};
+      node.onclick=()=>{if(isTodayLocked)showDailyLimitModal();else if(!isLocked)startLesson(dayNum);};
       const circle=document.createElement('div');
       let cls='day-circle';
       if(day.isBoss)cls+=' boss';
       if(isDoneD)cls+=' done';
+      else if(isTodayLocked)cls+=' locked-today';
       else if(isCurrentD)cls+=' current';
       else if(isLocked)cls+=' locked';
       circle.className=cls;
@@ -734,6 +766,7 @@ function renderBadges() {
 function startLesson(dayNum) {
   const lesson=ALL_DAYS[dayNum-1];
   if(!lesson)return;
+  if(!isDone(dayNum)&&dailyLimitReached()){showDailyLimitModal();return;}
   modalLesson=lesson;
   modalStep=0;
   earnedThisLesson=[];
@@ -742,6 +775,21 @@ function startLesson(dayNum) {
   rewardsComputed=false;
   document.getElementById('modal-overlay').classList.add('open');
   renderModalStep();
+}
+
+function showDailyLimitModal() {
+  modalLesson=null;
+  document.getElementById('step-dots').innerHTML='';
+  document.getElementById('modal-body').innerHTML=`
+<div class="step-tag">Daily Limit Reached</div>
+<div class="step-title">🌙 You're done for today!</div>
+<div class="step-content">
+<p>ScalpClock Learn unlocks <strong>${DAILY_LESSON_LIMIT} new lesson${DAILY_LESSON_LIMIT!==1?'s':''} per day</strong> so it actually sticks — cramming doesn't build real trading skill.</p>
+<div class="hbox">Your next lesson unlocks in <strong>${hoursUntilMidnightStr()}</strong>. Come back tomorrow to keep your streak alive! 🔥</div>
+<p>You can still replay any completed lesson below, or check today's Scalp Signals on your <a href="/dashboard">dashboard</a>.</p>
+</div>`;
+  document.getElementById('modal-footer').innerHTML=`<button class="btn-p" onclick="closeModal()">Got it →</button>`;
+  document.getElementById('modal-overlay').classList.add('open');
 }
 
 function closeModal() {
@@ -922,7 +970,9 @@ function computeRewards() {
   const totalXP=earnedThisLesson.reduce((s,e)=>s+(e.xp||0),0);
   addXP(totalXP);
   const dayNum=ALL_DAYS.indexOf(l)+1;
+  const wasAlreadyDone=isDone(dayNum);
   markDone(dayNum);
+  if(!wasAlreadyDone)bumpDailyCount();
   const newStreak=bumpStreak();
   const xp=getXP();
   const done=getDone();
