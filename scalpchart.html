@@ -759,8 +759,8 @@
   .rp-no-chips{font-size:11px;color:var(--muted);font-style:italic;}
 
   /* Replay education sidebar */
-  .rp-edu{width:280px;min-width:280px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
-  @media(max-width:900px){.rp-edu{width:100%;min-width:unset;border-left:none;border-top:1px solid var(--border);max-height:260px;}}
+  .rp-edu{width:300px;min-width:300px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;order:-1;}
+  @media(max-width:900px){.rp-edu{width:100%;min-width:unset;border-right:none;border-bottom:1px solid var(--border);max-height:unset;}}
   .rp-edu::-webkit-scrollbar{width:4px;}
   .rp-edu::-webkit-scrollbar-track{background:transparent;}
   .rp-edu::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
@@ -825,6 +825,74 @@
   .rp-mastery-track{height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
   .rp-mastery-fill{height:100%;border-radius:2px;background:var(--accent);}
   .rp-mastery-empty{font-size:11px;color:var(--muted);font-style:italic;}
+  /* ── Intro card ── */
+  .rp-intro{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;}
+  .rp-intro-card{max-width:420px;width:100%;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 28px;}
+  .rp-intro-icon{font-size:2.4rem;margin-bottom:10px;}
+  .rp-intro-title{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:8px;}
+  .rp-intro-sub{font-size:.92rem;color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .rp-intro-benefits{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+  .rp-intro-benefits li{font-size:.88rem;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .rp-intro-benefits li::before{content:'✓';color:var(--accent);font-weight:700;}
+  .rp-intro-start{width:100%;background:var(--accent);border:none;border-radius:10px;padding:15px;color:#00110c;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .15s;margin-bottom:10px;}
+  .rp-intro-start:hover{opacity:.88;}
+  .rp-intro-how{width:100%;background:none;border:1px solid var(--border2);border-radius:10px;padding:11px;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s;}
+  .rp-intro-how:hover{color:var(--text);border-color:var(--accent);}
+  .rp-intro-how-body{margin-top:14px;text-align:left;font-size:.82rem;color:var(--text);line-height:1.9;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+
+  /* ── Simplified primary controls ── */
+  .rp-simple-bar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
+  .rp-simple-btn{flex:1;min-width:130px;min-height:44px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .rp-simple-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .rp-simple-btn.rp-simple-primary{background:var(--accent);border-color:var(--accent);color:#00110c;flex:1.4;}
+  .rp-simple-btn.rp-simple-primary:hover{opacity:.88;color:#00110c;}
+  .rp-simple-btn.rp-simple-exit{color:var(--muted);}
+  .rp-simple-btn.rp-simple-exit:hover{border-color:var(--bear);color:var(--bear);}
+  @media(max-width:560px){.rp-simple-btn{min-width:44%;}}
+
+  /* ── Advanced tools (collapsible) ── */
+  .rp-advanced{background:var(--surface);border-bottom:1px solid var(--border);}
+  .rp-advanced summary{list-style:none;cursor:pointer;padding:10px 16px;font-size:.78rem;font-weight:700;letter-spacing:.04em;color:var(--muted);display:flex;align-items:center;gap:6px;user-select:none;}
+  .rp-advanced summary::-webkit-details-marker{display:none;}
+  .rp-advanced summary:hover{color:var(--text);}
+  .rp-advanced summary::after{content:'▾';margin-left:auto;transition:transform .15s;}
+  .rp-advanced[open] summary::after{transform:rotate(180deg);}
+  .rp-advanced[open] summary{border-bottom:1px solid var(--border);}
+
+  /* ── Learning panel header (goal/progress/hints) ── */
+  .rp-learn-goal{padding:16px;border-bottom:1px solid var(--border);background:rgba(0,212,170,.04);}
+  .rp-learn-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+  .rp-learn-goal-txt{font-size:.85rem;color:var(--text);line-height:1.5;font-weight:600;}
+  .rp-learn-stats{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-bottom:1px solid var(--border);}
+  .rp-learn-stat{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;}
+  .rp-learn-stat span{color:var(--muted);}
+  .rp-learn-stat strong{color:var(--text);font-family:'JetBrains Mono',monospace;}
+  .rp-learn-actions{display:flex;gap:8px;padding:14px 16px;border-bottom:1px solid var(--border);}
+  .rp-learn-actions button{flex:1;min-height:40px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:.78rem;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit;}
+  .rp-learn-actions button:hover{border-color:var(--accent);color:var(--accent);}
+  .rp-hint-banner{margin:0 16px 14px;padding:10px 12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:8px;font-size:.78rem;color:var(--text);line-height:1.5;display:none;}
+  .rp-hint-banner.show{display:block;}
+  .rp-hint-banner strong{color:var(--warn);}
+
+  /* ── Completion screen ── */
+  .rp-complete-overlay{display:none;position:fixed;inset:0;background:rgba(4,7,11,.88);z-index:600;align-items:center;justify-content:center;padding:16px;}
+  .rp-complete-overlay.open{display:flex;}
+  .rp-complete-card{max-width:520px;width:100%;max-height:88vh;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;}
+  .rp-complete-icon{font-size:2.4rem;margin-bottom:6px;}
+  .rp-complete-card h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;color:#fff;margin-bottom:20px;}
+  .rp-complete-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .rp-complete-stat{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 10px;}
+  .rp-complete-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
+  .rp-complete-lbl{font-size:.68rem;color:var(--muted);margin-top:2px;}
+  .rp-complete-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:22px;}
+  .rp-complete-badge{display:flex;align-items:center;gap:6px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:20px;padding:6px 14px;font-size:.78rem;font-weight:700;color:var(--accent);}
+  .rp-complete-badge-empty{font-size:.78rem;color:var(--muted);font-style:italic;}
+  .rp-complete-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .rp-complete-btns button{min-height:44px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.15s;border:1px solid var(--border2);background:rgba(255,255,255,.04);color:var(--text);}
+  .rp-complete-btns button:hover{border-color:var(--accent);color:var(--accent);}
+  .rp-complete-btns button.rp-complete-primary{background:var(--accent);border-color:var(--accent);color:#00110c;}
+  .rp-complete-btns button.rp-complete-primary:hover{opacity:.88;color:#00110c;}
+
   .rp-loading-bar{height:3px;background:transparent;}
   .rp-loading-bar.active{background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:rp-shimmer 1.4s infinite;}
   @keyframes rp-shimmer{0%{background-position:-200%}100%{background-position:200%}}
@@ -965,43 +1033,64 @@
 </div><!-- /livePanel -->
 
 <div id="replayPanel">
-  <!-- Loading bar -->
-  <div class="rp-loading-bar" id="rpLoadingBar"></div>
 
-  <!-- Controls -->
-  <div class="rp-controls">
-    <span class="rp-ctrl-label">Symbol</span>
-    <input type="text" id="rpSymbol" class="rp-input rp-sym" value="SPY" maxlength="8" placeholder="SPY">
-    <span class="rp-ctrl-label">Start Date</span>
-    <input type="date" id="rpDate" class="rp-input">
-    <div class="rp-divider"></div>
-    <span class="rp-ctrl-label">Quick</span>
-    <div class="rp-quick-btns">
-      <button type="button" class="rp-quick-btn" data-range="5d">Last Week</button>
-      <button type="button" class="rp-quick-btn" data-range="1mo">Last Month</button>
-      <button type="button" class="rp-quick-btn rp-active" data-range="3mo">3 Months</button>
-      <button type="button" class="rp-quick-btn" data-range="1y">1 Year</button>
+  <!-- Intro card — shown before a practice session starts -->
+  <div class="rp-intro" id="rpIntro">
+    <div class="rp-intro-card">
+      <div class="rp-intro-icon">🎬</div>
+      <div class="rp-intro-title">Practice Replay</div>
+      <div class="rp-intro-sub">Practice a real trading day one candle at a time.</div>
+      <ul class="rp-intro-benefits">
+        <li>No money at risk</li>
+        <li>Practice real historical market data</li>
+        <li>Learn from your mistakes</li>
+        <li>SampsonX explains every major setup</li>
+      </ul>
+      <button type="button" class="rp-intro-start" onclick="rpBeginSession()">▶ Start Replay</button>
+      <button type="button" class="rp-intro-how" onclick="rpToggleHow()">How Replay Works</button>
+      <div class="rp-intro-how-body" id="rpHowBody" style="display:none">
+        1. Press <strong>Start Replay</strong> — we'll load a real chart for you<br>
+        2. Press <strong>▶ Next Candle</strong> to reveal the market one bar at a time<br>
+        3. When SampsonX spots a setup, tap <strong>🤖 Ask SampsonX</strong> to learn what it means<br>
+        4. Predict what happens next to earn XP<br>
+        5. Finish the session to see your practice summary
+      </div>
     </div>
-    <button type="button" class="rp-load-btn" id="rpLoadBtn" onclick="rpLoadChart()">Load Chart</button>
-    <div class="rp-err" id="rpErr"></div>
   </div>
 
-  <!-- Body: chart col + edu sidebar -->
-  <div class="rp-body">
-    <div class="rp-chart-col">
-      <!-- Chart header + chart -->
-      <div class="rp-chart-hdr">
-        <span class="rp-ticker" id="rpTicker">—</span>
-        <div class="rp-ohlcv" id="rpOHLCV"><strong>Load a chart to begin</strong></div>
-      </div>
-      <div class="rp-chart-wrap">
-        <div id="rpChartEl"></div>
-        <div class="rp-overlay" id="rpOverlay">
-          <div style="font-size:2rem">📊</div>
-          <p>Type a stock symbol above and press <strong>Load Chart</strong> to begin.</p>
+  <!-- Main practice UI — hidden until Start Replay -->
+  <div id="rpMain" style="display:none;flex-direction:column;flex:1;overflow:auto;">
+
+    <!-- Loading bar -->
+    <div class="rp-loading-bar" id="rpLoadingBar"></div>
+
+    <!-- Simplified primary controls -->
+    <div class="rp-simple-bar">
+      <button type="button" class="rp-simple-btn rp-simple-primary" onclick="rpGoNext()">▶ Next Candle</button>
+      <button type="button" class="rp-simple-btn" onclick="rpHint()">💡 Hint <span id="rpHintBtnCount">(3)</span></button>
+      <button type="button" class="rp-simple-btn" onclick="rpAskSampson()">🤖 Ask SampsonX</button>
+      <button type="button" class="rp-simple-btn rp-simple-exit" onclick="rpExitReplay()">🚪 Exit Replay</button>
+    </div>
+
+    <!-- Advanced Tools (collapsed by default) -->
+    <details class="rp-advanced">
+      <summary>⚙ Advanced Tools</summary>
+      <div class="rp-controls">
+        <span class="rp-ctrl-label">Symbol</span>
+        <input type="text" id="rpSymbol" class="rp-input rp-sym" value="SPY" maxlength="8" placeholder="SPY">
+        <span class="rp-ctrl-label">Start Date</span>
+        <input type="date" id="rpDate" class="rp-input">
+        <div class="rp-divider"></div>
+        <span class="rp-ctrl-label">Quick</span>
+        <div class="rp-quick-btns">
+          <button type="button" class="rp-quick-btn" data-range="5d">Last Week</button>
+          <button type="button" class="rp-quick-btn" data-range="1mo">Last Month</button>
+          <button type="button" class="rp-quick-btn rp-active" data-range="3mo">3 Months</button>
+          <button type="button" class="rp-quick-btn" data-range="1y">1 Year</button>
         </div>
+        <button type="button" class="rp-load-btn" id="rpLoadBtn" onclick="rpLoadChart()">Load Chart</button>
+        <div class="rp-err" id="rpErr"></div>
       </div>
-      <!-- Replay bar -->
       <div class="rp-bar">
         <div class="rp-ctrl-btns">
           <button type="button" class="rp-ctrl-btn" id="rpBtnFirst" onclick="rpGoFirst()" title="First" disabled>⏮</button>
@@ -1018,7 +1107,6 @@
         <div class="rp-info" id="rpInfo"><strong>—</strong></div>
         <div class="rp-pos" id="rpPos"></div>
       </div>
-      <!-- Scrubber -->
       <div class="rp-scrubber" id="rpScrubberWrap" style="display:none">
         <div class="rp-scrub-track" id="rpScrubTrack" onclick="rpScrubClick(event)">
           <div class="rp-scrub-fill" id="rpScrubFill" style="width:0%"></div>
@@ -1028,40 +1116,89 @@
           <span id="rpScrubEnd">—</span>
         </div>
       </div>
-      <!-- Pattern chips -->
-      <div class="rp-chips">
-        <span class="rp-chips-lbl">Patterns</span>
-        <div id="rpChips" style="display:flex;gap:6px;flex-wrap:wrap;"><span class="rp-no-chips">Load a chart to detect patterns</span></div>
-      </div>
-    </div>
+    </details>
 
-    <!-- Education sidebar -->
-    <div class="rp-edu" id="rpEdu">
-      <div id="rpEduContent">
-        <div class="rp-edu-default">
-          <div class="rp-edu-icon">📚</div>
-          <div class="rp-edu-title">Ready to Replay</div>
-          <div class="rp-edu-sub">Load any stock chart, then press ▶ to reveal one bar at a time — like rewinding the market. When a pattern badge appears, tap it to learn what it means in plain English.</div>
-          <div class="rp-edu-tip"><strong>How it works:</strong><br>1. Type a ticker (like SPY or AAPL) and choose a date range<br>2. Press ▶ to play — bars appear one at a time<br>3. When a pattern badge shows up, tap it to learn what happened and why<br>4. Predict what happens next and earn XP for every correct call</div>
+    <!-- Body: learning panel (left) + chart col -->
+    <div class="rp-body">
+
+      <!-- Learning panel -->
+      <div class="rp-edu" id="rpEdu">
+        <div class="rp-learn-goal">
+          <div class="rp-learn-lbl">🎯 Today's Goal</div>
+          <div class="rp-learn-goal-txt" id="rpGoalTxt">Find the first pattern before SampsonX reveals it.</div>
+        </div>
+        <div class="rp-learn-stats">
+          <div class="rp-learn-stat"><span>Lesson Progress</span><strong id="rpLearnProgress">0 of 0 candles</strong></div>
+          <div class="rp-learn-stat"><span>Hints Remaining</span><strong id="rpLearnHints">3</strong></div>
+          <div class="rp-learn-stat"><span>XP Available</span><strong>+40 XP</strong></div>
+        </div>
+        <div class="rp-learn-actions">
+          <button type="button" onclick="rpHint()">💡 Hint</button>
+          <button type="button" onclick="rpAskSampson()">🤖 Ask SampsonX</button>
+        </div>
+        <div class="rp-hint-banner" id="rpHintBanner"></div>
+        <div id="rpEduContent">
+          <div class="rp-edu-default">
+            <div class="rp-edu-icon">📚</div>
+            <div class="rp-edu-title">Ready to Replay</div>
+            <div class="rp-edu-sub">Press ▶ Next Candle to reveal one bar at a time — like rewinding the market. When a pattern badge appears below the chart, tap it to learn what it means in plain English.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rp-chart-col">
+        <!-- Chart header + chart -->
+        <div class="rp-chart-hdr">
+          <span class="rp-ticker" id="rpTicker">—</span>
+          <div class="rp-ohlcv" id="rpOHLCV"><strong>Load a chart to begin</strong></div>
+        </div>
+        <div class="rp-chart-wrap">
+          <div id="rpChartEl"></div>
+          <div class="rp-overlay" id="rpOverlay">
+            <div style="font-size:2rem">📊</div>
+            <p>Loading your practice chart…</p>
+          </div>
+        </div>
+        <!-- Pattern chips -->
+        <div class="rp-chips">
+          <span class="rp-chips-lbl">Patterns</span>
+          <div id="rpChips" style="display:flex;gap:6px;flex-wrap:wrap;"><span class="rp-no-chips">Load a chart to detect patterns</span></div>
         </div>
       </div>
     </div>
+
+    <!-- Lifetime progress -->
+    <div class="rp-progress">
+      <div class="rp-prog-title">📊 Learning Progress</div>
+      <div class="rp-prog-stats">
+        <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatXP">0</div><div class="rp-prog-lbl">Total XP</div></div>
+        <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatAcc">—</div><div class="rp-prog-lbl">Prediction Accuracy</div></div>
+        <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatPats">0</div><div class="rp-prog-lbl">Patterns Seen</div></div>
+        <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatStreak">0</div><div class="rp-prog-lbl">Win Streak</div></div>
+      </div>
+      <div class="rp-mastery">
+        <div class="rp-mastery-title">Pattern Mastery</div>
+        <div class="rp-mastery-grid" id="rpMasteryGrid"><div class="rp-mastery-empty">No patterns seen yet — load a chart and start predicting!</div></div>
+      </div>
+    </div>
+  </div><!-- /rpMain -->
+
+  <!-- Completion screen -->
+  <div class="rp-complete-overlay" id="rpCompleteOverlay">
+    <div class="rp-complete-card">
+      <div class="rp-complete-icon">🎉</div>
+      <h2>Practice Complete</h2>
+      <div class="rp-complete-grid" id="rpCompleteGrid"></div>
+      <div class="rp-complete-badges" id="rpCompleteBadges"></div>
+      <div class="rp-complete-btns">
+        <button type="button" class="rp-complete-primary" onclick="rpPracticeAgain()">🔁 Practice Again</button>
+        <button type="button" onclick="location.href='/learn'">📝 Take Quiz</button>
+        <button type="button" onclick="location.href='/learn'">📖 Review Lesson</button>
+        <button type="button" onclick="location.href='/learn'">➡ Continue Learning</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Progress -->
-  <div class="rp-progress">
-    <div class="rp-prog-title">📊 Learning Progress</div>
-    <div class="rp-prog-stats">
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatXP">0</div><div class="rp-prog-lbl">Total XP</div></div>
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatAcc">—</div><div class="rp-prog-lbl">Prediction Accuracy</div></div>
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatPats">0</div><div class="rp-prog-lbl">Patterns Seen</div></div>
-      <div class="rp-prog-stat"><div class="rp-prog-val" id="rpStatStreak">0</div><div class="rp-prog-lbl">Win Streak</div></div>
-    </div>
-    <div class="rp-mastery">
-      <div class="rp-mastery-title">Pattern Mastery</div>
-      <div class="rp-mastery-grid" id="rpMasteryGrid"><div class="rp-mastery-empty">No patterns seen yet — load a chart and start predicting!</div></div>
-    </div>
-  </div>
 </div><!-- /replayPanel -->
 
 <script>
@@ -2263,8 +2400,14 @@ function switchTab(tab) {
     replayPanel.style.display = 'flex';
     tabLive.classList.remove('active');
     tabReplay.classList.add('active');
-    if (!rpChart) { rpInitChart(); rpInitDate(); rpQuickLoad('3mo'); rpUpdateProgressUI(); }
-    else if (rpChart) { setTimeout(() => rpChart.applyOptions({ width: document.getElementById('rpChartEl').clientWidth }), 50); }
+    // No auto-load — the intro card (#rpIntro) is the default state and stays
+    // visible until the user presses Start Replay (rpBeginSession). If a
+    // session was already started, resume the main UI instead of the intro.
+    if (rpChart) {
+      document.getElementById('rpIntro').style.display = 'none';
+      document.getElementById('rpMain').style.display  = 'flex';
+      setTimeout(() => rpChart.applyOptions({ width: document.getElementById('rpChartEl').clientWidth }), 50);
+    }
   } else {
     livePanel.style.display   = 'flex';
     replayPanel.style.display = 'none';
@@ -2659,6 +2802,8 @@ function rpRenderReplay(){
   rpRenderChips(detectAt(rpAllCandles,rpReplayIdx-1));
   rpUpdateScrubber();
   if(rpChart)rpChart.timeScale().scrollToPosition(-2,true);
+  rpUpdateLearnPanel();
+  rpCheckCompletion();
 }
 
 // ─── REPLAY CONTROLS ─────────────────────────────────────────
@@ -2761,6 +2906,162 @@ function rpEnableControls(){['rpBtnFirst','rpBtnPrev','rpBtnPlay','rpBtnNext','r
 function rpSetLoading(on){document.getElementById('rpLoadingBar').classList.toggle('active',on);document.getElementById('rpLoadBtn').disabled=on;document.getElementById('rpLoadBtn').textContent=on?'Loading…':'Load Chart';}
 function rpShowErr(msg){const el=document.getElementById('rpErr');el.textContent=msg;el.style.display='block';}
 function rpHideErr(){document.getElementById('rpErr').style.display='none';}
+
+// ─── REPLAY UX LAYER (intro, simple controls, learning panel, completion) ──
+// Pure additions on top of the engine above — no existing function bodies
+// changed except one hook at the end of rpRenderReplay().
+const RP_CHALLENGES=[
+  'Find the first Bullish or Bearish Engulfing pattern before SampsonX reveals it.',
+  'Spot a support level before price bounces off it.',
+  'Identify the first reversal pattern you see.',
+  'Predict the next candle correctly three times in a row.',
+  'Locate a resistance level before price pulls back from it.',
+  'Recognize a trend reversal as it happens.',
+];
+const RP_HINT_BUDGET=3;
+let rpHintsRemaining=RP_HINT_BUDGET;
+let rpSessionStartXP=0,rpSessionStartCorrect=0,rpSessionStartQuizTotal=0;
+let rpCompletionShown=false;
+let rpCurrentChallenge='';
+
+function rpBeginSession(){
+  rpCurrentChallenge=RP_CHALLENGES[Math.floor(Math.random()*RP_CHALLENGES.length)];
+  rpHintsRemaining=RP_HINT_BUDGET;
+  rpSessionStartXP=rpTotalXP;rpSessionStartCorrect=rpCorrect;rpSessionStartQuizTotal=rpQuizTotal;
+  rpCompletionShown=false;
+  document.getElementById('rpIntro').style.display='none';
+  document.getElementById('rpMain').style.display='flex';
+  document.getElementById('rpGoalTxt').textContent=rpCurrentChallenge;
+  document.getElementById('rpHintBanner').classList.remove('show');
+  document.getElementById('rpCompleteOverlay').classList.remove('open');
+  if(!rpChart){rpInitChart();rpInitDate();}
+  rpQuickLoad('3mo',document.querySelector('.rp-quick-btn[data-range="3mo"]'));
+  rpUpdateProgressUI();
+  rpUpdateLearnPanel();
+}
+
+function rpToggleHow(){
+  const el=document.getElementById('rpHowBody');
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function rpExitReplay(){
+  rpPause();
+  document.getElementById('rpMain').style.display='none';
+  document.getElementById('rpCompleteOverlay').classList.remove('open');
+  document.getElementById('rpIntro').style.display='flex';
+}
+
+function rpPracticeAgain(){
+  document.getElementById('rpCompleteOverlay').classList.remove('open');
+  rpBeginSession();
+}
+
+function rpHint(){
+  if(!rpAllCandles.length){return;}
+  const pats=detectAt(rpAllCandles,rpReplayIdx-1).filter(p=>BOOK[p.name]);
+  const banner=document.getElementById('rpHintBanner');
+  if(!pats.length){
+    banner.innerHTML='Nothing clear on this candle yet — press <strong>▶ Next Candle</strong> and check again.';
+    banner.classList.add('show');
+    return;
+  }
+  if(rpHintsRemaining>0){rpHintsRemaining--;rpUpdateLearnPanel();}
+  const p=pats[0],info=BOOK[p.name];
+  const dirIcon=info.signal==='bullish'?'📈':info.signal==='bearish'?'📉':'➡';
+  banner.innerHTML=`${dirIcon} This looks like a <strong>${p.name}</strong> setup. Tap 🤖 Ask SampsonX to learn why it matters.`;
+  banner.classList.add('show');
+}
+
+function rpAskSampson(){
+  if(!rpAllCandles.length){return;}
+  document.getElementById('rpHintBanner').classList.remove('show');
+  const pats=detectAt(rpAllCandles,rpReplayIdx-1).filter(p=>BOOK[p.name]);
+  if(pats.length){
+    rpShowEdu(pats,rpAllCandles,rpReplayIdx-1);
+  }else{
+    document.getElementById('rpEduContent').innerHTML=`
+      <div class="rp-edu-default">
+        <div class="rp-edu-icon">🤖</div>
+        <div class="rp-edu-title">Nothing notable yet</div>
+        <div class="rp-edu-sub">SampsonX doesn't see a clear setup on this candle. Press ▶ Next Candle and ask again.</div>
+      </div>`;
+  }
+}
+
+function rpUpdateLearnPanel(){
+  const hintsEl=document.getElementById('rpLearnHints');
+  const hintBtnEl=document.getElementById('rpHintBtnCount');
+  if(hintsEl)hintsEl.textContent=rpHintsRemaining;
+  if(hintBtnEl)hintBtnEl.textContent=`(${rpHintsRemaining})`;
+  const progEl=document.getElementById('rpLearnProgress');
+  if(progEl){
+    const revealed=Math.max(0,rpReplayIdx-rpStartIdx);
+    const total=Math.max(0,rpAllCandles.length-rpStartIdx);
+    progEl.textContent=`${revealed} of ${total} candles`;
+  }
+}
+
+// Mirrors learn.html's date-based streak logic exactly (same localStorage
+// keys) so finishing a Replay session also counts toward the site-wide
+// daily streak shown elsewhere, not just a Replay-only stat.
+function rpLSGet(k,d){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch{return d;}}
+function rpLSSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function rpBumpDailyStreak(){
+  const dateStr=(d=new Date())=>d.toISOString().slice(0,10);
+  const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dateStr(d);};
+  const today=dateStr(),last=rpLSGet('sc_streak_date','');
+  let cnt=rpLSGet('sc_streak_count',0);
+  if(last===today)return cnt;
+  cnt=last===yesterday()?cnt+1:1;
+  rpLSSet('sc_streak_date',today);rpLSSet('sc_streak_count',cnt);
+  return cnt;
+}
+
+const RP_BREAKOUT_PATTERNS=['Gap Up','Gap Down','Bull Flag','Bear Flag','Double Top','Double Bottom'];
+
+function rpCheckCompletion(){
+  if(rpCompletionShown||!rpAllCandles.length)return;
+  if(rpReplayIdx>=rpAllCandles.length){
+    rpCompletionShown=true;
+    rpPause();
+    rpShowCompletion();
+  }
+}
+
+function rpShowCompletion(){
+  const sessionXP=rpTotalXP-rpSessionStartXP;
+  const sessionCorrect=rpCorrect-rpSessionStartCorrect;
+  const sessionQuizTotal=rpQuizTotal-rpSessionStartQuizTotal;
+  const acc=sessionQuizTotal?Math.round(sessionCorrect/sessionQuizTotal*100):0;
+  const patternsIdentified=Object.keys(rpProgress).length;
+  const breakouts=Object.keys(rpProgress).filter(k=>RP_BREAKOUT_PATTERNS.includes(k)).length;
+  const srLevels=rpFindSR(rpAllCandles);
+  const supportCount=srLevels.filter(l=>l.type==='sup').length;
+  const resistanceCount=srLevels.filter(l=>l.type==='res').length;
+  const dailyStreak=rpBumpDailyStreak();
+
+  const badges=[];
+  if(sessionQuizTotal>=3&&acc>=90)badges.push({icon:'🎯',name:'Sharp Eye'});
+  if(rpStreak>=5)badges.push({icon:'🔥',name:'Hot Streak'});
+  if(patternsIdentified>=5)badges.push({icon:'📚',name:'Pattern Explorer'});
+  if(sessionQuizTotal>0&&sessionCorrect===sessionQuizTotal)badges.push({icon:'💯',name:'Perfect Session'});
+
+  document.getElementById('rpCompleteGrid').innerHTML=`
+    <div class="rp-complete-stat"><div class="rp-complete-val">${patternsIdentified}</div><div class="rp-complete-lbl">Patterns Identified</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">${supportCount}</div><div class="rp-complete-lbl">Support Levels Found</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">${resistanceCount}</div><div class="rp-complete-lbl">Resistance Levels Found</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">${breakouts}</div><div class="rp-complete-lbl">Breakouts Identified</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">${sessionCorrect}/${sessionQuizTotal}</div><div class="rp-complete-lbl">Correct Answers</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">${sessionQuizTotal?acc+'%':'—'}</div><div class="rp-complete-lbl">Accuracy</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">+${sessionXP}</div><div class="rp-complete-lbl">XP Earned</div></div>
+    <div class="rp-complete-stat"><div class="rp-complete-val">🔥 ${dailyStreak}</div><div class="rp-complete-lbl">Daily Streak</div></div>
+  `;
+  document.getElementById('rpCompleteBadges').innerHTML=badges.length
+    ?badges.map(b=>`<div class="rp-complete-badge"><span>${b.icon}</span>${b.name}</div>`).join('')
+    :'<div class="rp-complete-badge-empty">Keep practicing to earn badges!</div>';
+  document.getElementById('rpCompleteOverlay').classList.add('open');
+}
 </script>
 
 <script>
