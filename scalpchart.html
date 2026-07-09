@@ -3200,8 +3200,23 @@ function rpSetTimeframe(tf,btn){
 async function rpLoadChart(){
   const sym=(document.getElementById('rpSymbol').value||'SPY').toUpperCase();
   const date=document.getElementById('rpDate').value;
-  if(date){const sel=new Date(date),p1=Math.floor(sel.getTime()/1000-365*86400),p2=Math.floor(Date.now()/1000);await rpFetchAndLoad(sym,null,{p1,p2},null,date);}
-  else await rpFetchAndLoad(sym,rpActiveRange||'1y',null,63);
+  const d=RP_TF_DEFAULTS[rpTimeframe]||RP_TF_DEFAULTS['1D'];
+  if(date&&rpTimeframe==='1D'){
+    const sel=new Date(date),p1=Math.floor(sel.getTime()/1000-365*86400),p2=Math.floor(Date.now()/1000);
+    await rpFetchAndLoad(sym,null,{p1,p2},null,date);
+  }else if(date){
+    // Intraday: a full year of 1/5/15-min bars around an arbitrary date is
+    // an impractically large request — bound the window to a few days
+    // either side of the chosen date instead.
+    const spanDays={'1m':2,'5m':5,'15m':10}[rpTimeframe]||5;
+    const selSec=Math.floor(new Date(date).getTime()/1000);
+    const nowSec=Math.floor(Date.now()/1000);
+    const p1=selSec-spanDays*86400;
+    const p2=Math.min(nowSec,selSec+spanDays*86400);
+    await rpFetchAndLoad(sym,null,{p1,p2},null,date);
+  }else{
+    await rpFetchAndLoad(sym,d.range,null,d.offset);
+  }
 }
 
 async function rpFetchAndLoad(sym,range,periods,replayOffset,targetDate){
@@ -3216,7 +3231,15 @@ async function rpFetchAndLoad(sym,range,periods,replayOffset,targetDate){
     if(!res.ok||data.error){rpShowErr(data.error||'Failed to load chart data.');rpSetLoading(false);return;}
     rpAllCandles=data.candles;rpCurrentSym=data.symbol||sym;
     if(!rpAllCandles.length){rpShowErr('No data returned for this symbol or date range.');rpSetLoading(false);return;}
-    if(targetDate){const idx=rpAllCandles.findIndex(c=>c.time>=targetDate);rpStartIdx=idx>=0?idx:rpAllCandles.length-1;}
+    if(targetDate){
+      // Daily bars use a "YYYY-MM-DD" string for `time`; intraday bars use a
+      // numeric Unix timestamp. Comparing a number to that string coerces it
+      // to NaN and silently never matches, so detect the format actually in
+      // use rather than assuming the daily one.
+      const targetCmp=typeof rpAllCandles[0]?.time==='number'?Math.floor(new Date(targetDate).getTime()/1000):targetDate;
+      const idx=rpAllCandles.findIndex(c=>c.time>=targetCmp);
+      rpStartIdx=idx>=0?idx:rpAllCandles.length-1;
+    }
     else if(replayOffset!==null&&replayOffset!==undefined)rpStartIdx=Math.max(5,rpAllCandles.length-replayOffset);
     else rpStartIdx=Math.max(5,rpAllCandles.length-20);
     rpReplayIdx=rpStartIdx;
@@ -3237,7 +3260,7 @@ function rpRenderReplay(){
   if(last){
     const bull=last.close>=last.open,chg=last.close-last.open,pct=(chg/last.open*100).toFixed(2);
     document.getElementById('rpOHLCV').innerHTML=`<span><strong>O</strong> ${last.open}</span><span><strong>H</strong> ${last.high}</span><span><strong>L</strong> ${last.low}</span><span><strong>C</strong> <strong style="color:${bull?'#00c96b':'#ff4566'}">${last.close}</strong></span><span style="color:${bull?'#00c96b':'#ff4566'}">${bull?'+':''}${chg.toFixed(2)} (${bull?'+':''}${pct}%)</span>`;
-    document.getElementById('rpInfo').innerHTML=`<strong>${last.time}</strong>`;
+    document.getElementById('rpInfo').innerHTML=`<strong>${rpFormatCandleTime(last.time)}</strong>`;
     document.getElementById('rpPos').textContent=`Candle ${rpReplayIdx} of ${rpAllCandles.length} · ${Math.max(0,rpReplayIdx-rpStartIdx)} revealed`;
   }
   rpRenderChips(detectAt(rpAllCandles,rpReplayIdx-1));
@@ -3262,7 +3285,12 @@ function rpGoLast(){rpPause();rpReplayIdx=rpAllCandles.length;rpRenderReplay();}
 function rpSetSpeed(s,btn){rpSpeed=s;document.querySelectorAll('.rp-speed-btn').forEach(b=>b.classList.remove('rp-active'));if(btn)btn.classList.add('rp-active');if(rpPlayTimer){rpPause();rpPlay();}}
 function rpScrubClick(e){const t=document.getElementById('rpScrubTrack'),r=t.getBoundingClientRect(),pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));rpReplayIdx=Math.max(1,Math.round(pct*rpAllCandles.length));rpPause();rpRenderReplay();}
 function rpUpdateScrubber(){const pct=rpAllCandles.length?(rpReplayIdx/rpAllCandles.length*100).toFixed(1):0;document.getElementById('rpScrubFill').style.width=pct+'%';}
-function rpUpdateScrubberLabels(){if(!rpAllCandles.length)return;document.getElementById('rpScrubStart').textContent=rpAllCandles[0]?.time||'';document.getElementById('rpScrubEnd').textContent=rpAllCandles[rpAllCandles.length-1]?.time||'';}
+function rpFormatCandleTime(t){
+  if(typeof t!=='number')return t||'';
+  const d=new Date(t*1000);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+function rpUpdateScrubberLabels(){if(!rpAllCandles.length)return;document.getElementById('rpScrubStart').textContent=rpFormatCandleTime(rpAllCandles[0]?.time);document.getElementById('rpScrubEnd').textContent=rpFormatCandleTime(rpAllCandles[rpAllCandles.length-1]?.time);}
 function rpAutoShowPat(){if(rpReplayIdx<1)return;const pts=detectAt(rpAllCandles,rpReplayIdx-1).filter(p=>BOOK[p.name]&&p.conf>=74);if(pts.length)rpShowEdu([pts[0]],rpAllCandles,rpReplayIdx-1);}
 
 // ─── PATTERN CHIPS ───────────────────────────────────────────
