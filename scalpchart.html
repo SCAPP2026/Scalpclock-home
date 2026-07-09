@@ -1171,10 +1171,18 @@
       <div class="rp-controls">
         <span class="rp-ctrl-label">Symbol</span>
         <input type="text" id="rpSymbol" class="rp-input rp-sym" value="SPY" maxlength="8" placeholder="SPY">
+        <span class="rp-ctrl-label">Interval</span>
+        <div class="rp-quick-btns" id="rpTFBtns">
+          <button type="button" class="rp-quick-btn" data-tf="1m" onclick="rpSetTimeframe('1m',this)">1 min</button>
+          <button type="button" class="rp-quick-btn" data-tf="5m" onclick="rpSetTimeframe('5m',this)">5 min</button>
+          <button type="button" class="rp-quick-btn" data-tf="15m" onclick="rpSetTimeframe('15m',this)">15 min</button>
+          <button type="button" class="rp-quick-btn rp-active" data-tf="1D" onclick="rpSetTimeframe('1D',this)">Daily</button>
+        </div>
+        <div class="rp-divider"></div>
         <span class="rp-ctrl-label">Start Date</span>
         <input type="date" id="rpDate" class="rp-input">
         <div class="rp-divider"></div>
-        <span class="rp-ctrl-label">Quick</span>
+        <span class="rp-ctrl-label" id="rpQuickLbl">Quick</span>
         <div class="rp-quick-btns">
           <button type="button" class="rp-quick-btn" data-range="5d">Last Week</button>
           <button type="button" class="rp-quick-btn" data-range="1mo">Last Month</button>
@@ -3114,34 +3122,79 @@ function rpAddSRLines(candles){
   });
 }
 
+// Only markers worth a beginner's attention: a real confidence floor, at
+// most one arrow per candle (the strongest match, not every simultaneous
+// pattern), and only within a recent window instead of the entire revealed
+// history — otherwise a long replay session buries the chart in arrows.
+// 72 keeps bullish/bearish symmetric — e.g. Gap Up(74)/Gap Down(72) and
+// Morning Star(75)/Evening Star(73) both clear the bar together, while still
+// dropping the genuinely noisy ones (Spinning Top 65, Inside Bar 70).
+const RP_MARKER_MIN_CONF = 72;
+const RP_MARKER_LOOKBACK = 50;
+
 function rpAddMarkers(candles,upToIdx){
   const markers=[];
-  const step=Math.max(1,Math.floor(upToIdx/80));
-  for(let i=2;i<upToIdx;i+=step){detectAt(candles,i).filter(p=>BOOK[p.name]).forEach(p=>{const info=BOOK[p.name];markers.push({time:candles[i].time,position:info.signal==='bearish'?'aboveBar':'belowBar',color:info.signal==='bullish'?'#00c96b':info.signal==='bearish'?'#ff4566':'#f5a623',shape:info.signal==='bullish'?'arrowUp':info.signal==='bearish'?'arrowDown':'circle',size:0.5,text:''});});}
-  const cur=detectAt(candles,upToIdx-1).filter(p=>BOOK[p.name]);
-  cur.forEach(p=>{const info=BOOK[p.name];markers.push({time:candles[upToIdx-1].time,position:info.signal==='bearish'?'aboveBar':'belowBar',color:info.signal==='bullish'?'#00c96b':info.signal==='bearish'?'#ff4566':'#f5a623',shape:info.signal==='bullish'?'arrowUp':info.signal==='bearish'?'arrowDown':'circle',size:1,text:p.name.split(' ').slice(0,2).join(' ')});});
+  const from=Math.max(2,upToIdx-RP_MARKER_LOOKBACK);
+  for(let i=from;i<upToIdx;i++){
+    const matches=detectAt(candles,i).filter(p=>BOOK[p.name]&&p.conf>=RP_MARKER_MIN_CONF);
+    if(!matches.length)continue;
+    const best=matches.reduce((a,b)=>b.conf>a.conf?b:a);
+    const info=BOOK[best.name];
+    markers.push({time:candles[i].time,position:info.signal==='bearish'?'aboveBar':'belowBar',color:info.signal==='bullish'?'#00c96b':info.signal==='bearish'?'#ff4566':'#f5a623',shape:info.signal==='bullish'?'arrowUp':info.signal==='bearish'?'arrowDown':'circle',size:0.5,text:''});
+  }
+  const cur=detectAt(candles,upToIdx-1).filter(p=>BOOK[p.name]&&p.conf>=RP_MARKER_MIN_CONF);
+  if(cur.length){
+    const best=cur.reduce((a,b)=>b.conf>a.conf?b:a);
+    const info=BOOK[best.name];
+    markers.push({time:candles[upToIdx-1].time,position:info.signal==='bearish'?'aboveBar':'belowBar',color:info.signal==='bullish'?'#00c96b':info.signal==='bearish'?'#ff4566':'#f5a623',shape:info.signal==='bullish'?'arrowUp':info.signal==='bearish'?'arrowDown':'circle',size:1,text:best.name.split(' ').slice(0,2).join(' ')});
+  }
   rpCSeries.setMarkers(markers.sort((a,b)=>a.time<b.time?-1:1));
 }
 
 // ─── DATA LOADING ────────────────────────────────────────────
 let rpActiveRange='3mo';
+let rpTimeframe='1D';
 
 function rpInitDate(){
   const d=new Date();d.setMonth(d.getMonth()-3);
   const el=document.getElementById('rpDate');
   if(el){el.value=d.toISOString().slice(0,10);el.max=new Date().toISOString().slice(0,10);}
-  document.querySelectorAll('.rp-quick-btn').forEach(b=>{
+  // Scoped to [data-range] only — the timeframe pills below reuse .rp-quick-btn
+  // for styling but use data-tf + their own onclick, not this daily-range flow.
+  document.querySelectorAll('.rp-quick-btn[data-range]').forEach(b=>{
     b.addEventListener('click',function(){rpQuickLoad(this.dataset.range,this);});
   });
 }
 
 function rpQuickLoad(range,btn){
   rpActiveRange=range;
-  document.querySelectorAll('.rp-quick-btn').forEach(b=>b.classList.remove('rp-active'));
+  document.querySelectorAll('.rp-quick-btn[data-range]').forEach(b=>b.classList.remove('rp-active'));
   if(btn)btn.classList.add('rp-active');
   const OFFSETS={'5d':5,'1mo':21,'3mo':63,'1y':252},RANGES={'5d':'6mo','1mo':'6mo','3mo':'1y','1y':'2y'};
   const sym=(document.getElementById('rpSymbol').value||'SPY').toUpperCase();
   rpFetchAndLoad(sym,RANGES[range]||'1y',null,OFFSETS[range]||21);
+}
+
+// Sensible default range + how-far-back-to-start per interval — intraday
+// bars are far denser than daily ones, so 'quick load 3 months' doesn't
+// translate directly (it'd be tens of thousands of 1-min bars).
+const RP_TF_DEFAULTS={
+  '1m':  { range:'1d',  offset:120 },
+  '5m':  { range:'5d',  offset:100 },
+  '15m': { range:'1mo', offset:80  },
+  '1D':  { range:'1y',  offset:63  },
+};
+
+function rpSetTimeframe(tf,btn){
+  rpTimeframe=tf;
+  document.querySelectorAll('#rpTFBtns .rp-quick-btn').forEach(b=>b.classList.remove('rp-active'));
+  if(btn)btn.classList.add('rp-active');
+  const isDaily=tf==='1D';
+  document.getElementById('rpQuickLbl').style.display=isDaily?'':'none';
+  document.querySelectorAll('.rp-quick-btn[data-range]').forEach(b=>b.style.display=isDaily?'':'none');
+  const sym=(document.getElementById('rpSymbol').value||'SPY').toUpperCase();
+  const d=RP_TF_DEFAULTS[tf]||RP_TF_DEFAULTS['1D'];
+  rpFetchAndLoad(sym,d.range,null,d.offset);
 }
 
 async function rpLoadChart(){
@@ -3154,7 +3207,8 @@ async function rpLoadChart(){
 async function rpFetchAndLoad(sym,range,periods,replayOffset,targetDate){
   rpSetLoading(true);rpHideErr();rpResetOverlay();
   if(!rpChart)rpInitChart();
-  let url=`/api/historical?symbol=${encodeURIComponent(sym)}&interval=1d`;
+  const alpacaInterval=rpTimeframe==='1D'?'1d':rpTimeframe;
+  let url=`/api/historical?symbol=${encodeURIComponent(sym)}&interval=${alpacaInterval}`;
   if(periods)url+=`&period1=${periods.p1}&period2=${periods.p2}`;
   else url+=`&range=${range}`;
   try{
