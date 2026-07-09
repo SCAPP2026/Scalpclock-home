@@ -3152,7 +3152,7 @@ async function rpLoadChart(){
 }
 
 async function rpFetchAndLoad(sym,range,periods,replayOffset,targetDate){
-  rpSetLoading(true);rpHideErr();
+  rpSetLoading(true);rpHideErr();rpResetOverlay();
   if(!rpChart)rpInitChart();
   let url=`/api/historical?symbol=${encodeURIComponent(sym)}&interval=1d`;
   if(periods)url+=`&period1=${periods.p1}&period2=${periods.p2}`;
@@ -3291,8 +3291,28 @@ function rpUpdateProgressUI(){
 // ─── UTILS ───────────────────────────────────────────────────
 function rpEnableControls(){['rpBtnFirst','rpBtnPrev','rpBtnPlay','rpBtnNext','rpBtnLast'].forEach(id=>{document.getElementById(id).disabled=false;});}
 function rpSetLoading(on){document.getElementById('rpLoadingBar').classList.toggle('active',on);document.getElementById('rpLoadBtn').disabled=on;document.getElementById('rpLoadBtn').textContent=on?'Loading…':'Load Chart';}
-function rpShowErr(msg){const el=document.getElementById('rpErr');el.textContent=msg;el.style.display='block';}
+function rpShowErr(msg){
+  const el=document.getElementById('rpErr');
+  el.textContent=msg;el.style.display='block';
+  // #rpErr lives inside the collapsed Advanced Tools section, so on its own
+  // it's invisible during the default (auto-loaded) flow — surface the same
+  // error in the overlay too, since that's what's actually on screen.
+  const overlay=document.getElementById('rpOverlay');
+  if(overlay){
+    overlay.classList.remove('hidden');
+    overlay.innerHTML=`<div style="font-size:2rem">⚠️</div><p>${msg}</p><button type="button" class="rp-intro-start" style="max-width:200px;margin-top:6px" onclick="rpRetryLoad()">Try Again</button>`;
+  }
+}
 function rpHideErr(){document.getElementById('rpErr').style.display='none';}
+function rpResetOverlay(){
+  const overlay=document.getElementById('rpOverlay');
+  if(overlay)overlay.innerHTML='<div style="font-size:2rem">📊</div><p>Loading your practice chart…</p>';
+}
+function rpRetryLoad(){
+  rpResetOverlay();
+  const sym=document.getElementById('rpSymbol');
+  rpQuickLoad(rpActiveRange||'3mo',document.querySelector(`.rp-quick-btn[data-range="${rpActiveRange||'3mo'}"]`));
+}
 
 // ─── REPLAY UX LAYER (intro, simple controls, learning panel, completion) ──
 // Pure additions on top of the engine above — no existing function bodies
@@ -3413,7 +3433,10 @@ const RP_BREAKOUT_PATTERNS=['Gap Up','Gap Down','Bull Flag','Bear Flag','Double 
 
 function rpCheckCompletion(){
   if(rpCompletionShown||!rpAllCandles.length)return;
-  if(rpReplayIdx>=rpAllCandles.length){
+  // Require real progress (not just a thin-data symbol where rpStartIdx
+  // already equals the candle count) so completion can't fire the instant
+  // a chart loads, before the user has revealed anything.
+  if(rpReplayIdx>rpStartIdx&&rpReplayIdx>=rpAllCandles.length){
     rpCompletionShown=true;
     rpPause();
     rpShowCompletion();
