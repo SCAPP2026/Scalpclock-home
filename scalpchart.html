@@ -311,14 +311,18 @@
   .alert-card {
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
+    border-radius: 10px;
+    padding: 11px 12px;
     animation: slideIn 0.3s ease;
     border-left: 3px solid var(--accent);
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
   }
   .alert-card.bear { border-left-color: var(--bear); }
   .alert-card.warn { border-left-color: var(--warn); }
   .alert-card.info { border-left-color: var(--info); }
+  .alert-card.hovered, .alert-card:hover { box-shadow: 0 0 0 1px rgba(0,212,170,.25); }
+  .alert-card.hidden-by-filter { display: none; }
 
   @keyframes slideIn {
     from { opacity: 0; transform: translateX(8px); }
@@ -329,10 +333,12 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    gap: 8px;
   }
+  .alert-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .alert-name {
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 700;
     color: #fff;
   }
@@ -340,55 +346,95 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     color: var(--muted);
+    white-space: nowrap;
   }
+  .alert-fav {
+    background: none; border: none; cursor: pointer; font-size: 13px;
+    color: var(--border2); padding: 0; line-height: 1; flex-shrink: 0;
+  }
+  .alert-fav.active { color: var(--warn); }
+
   .alert-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 1px 6px;
-    border-radius: 3px;
-    margin-bottom: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    padding: 2px 7px;
+    border-radius: 4px;
   }
   .alert-badge.bull { background: rgba(0,201,107,0.15); color: var(--bull); }
   .alert-badge.bear { background: rgba(255,69,102,0.15); color: var(--bear); }
   .alert-badge.warn { background: rgba(245,166,35,0.15); color: var(--warn); }
+  .alert-tag-continuation {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 9px; font-weight: 700; letter-spacing: .03em;
+    padding: 2px 6px; border-radius: 4px;
+    background: rgba(91,156,246,.15); color: #5b9cf6;
+  }
+
+  .alert-mid-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .alert-gauge { flex-shrink: 0; }
+  .alert-gauge-meta { flex: 1; min-width: 0; }
+  .alert-gauge-label { font-size: 9px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .alert-gauge-tier { font-size: 12px; font-weight: 700; }
+  .alert-gauge-tier.strong { color: var(--bull); }
+  .alert-gauge-tier.moderate { color: var(--warn); }
+  .alert-gauge-tier.weak { color: var(--bear); }
+  .alert-difficulty { font-size: 9.5px; color: var(--muted); margin-top: 1px; }
 
   .alert-desc {
     font-size: 11px;
     color: var(--text);
     line-height: 1.5;
+    margin-bottom: 8px;
   }
+  .alert-section {
+    margin-bottom: 8px;
+  }
+  .alert-section-lbl {
+    font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 3px; display: flex; align-items: center; gap: 4px;
+  }
+  .alert-section-txt { font-size: 10.5px; color: var(--text); line-height: 1.5; }
+  .alert-section ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .alert-section li { font-size: 10.5px; color: var(--text); line-height: 1.5; padding-left: 12px; position: relative; }
+  .alert-section li::before { content: '•'; position: absolute; left: 0; color: var(--accent); opacity: .7; }
+  .alert-section li.bad::before { color: var(--bear); }
 
-  /* PATTERN INFO PANEL */
-  .pattern-info {
-    padding: 14px 16px;
-    border-top: 1px solid var(--border);
+  .alert-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .alert-btn {
+    flex: 1; font-size: 10.5px; font-weight: 700; padding: 7px 8px; border-radius: 7px;
+    cursor: pointer; text-align: center; transition: .15s; border: 1px solid var(--border2);
+    background: rgba(255,255,255,.03); color: var(--text); font-family: inherit;
   }
-  .pattern-info-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 6px;
+  .alert-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .alert-btn.primary { background: var(--accent); border-color: var(--accent); color: #00110c; }
+  .alert-btn.primary:hover { opacity: .88; color: #00110c; }
+
+  .alert-expand-toggle {
+    font-size: 10px; color: var(--accent); text-align: center; padding-top: 6px;
+    border-top: 1px dashed var(--border); margin-top: 4px; font-weight: 600;
   }
-  .pattern-info-text {
-    font-size: 11px;
-    color: var(--text);
-    line-height: 1.6;
+  .alert-expand-body { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .alert-card.expanded .alert-expand-body { display: block; }
+  .alert-card.expanded .alert-expand-toggle { display: none; }
+  .alert-collapse-toggle { display: none; font-size: 10px; color: var(--muted); text-align: center; padding-top: 8px; font-weight: 600; }
+  .alert-card.expanded .alert-collapse-toggle { display: block; }
+
+  .alert-quote {
+    background: rgba(0,212,170,.04); border-left: 2px solid rgba(0,212,170,.3);
+    padding: 7px 10px; border-radius: 0 6px 6px 0; margin-top: 6px;
   }
-  .pattern-info-stat {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
-    font-size: 11px;
+  .alert-quote p { font-size: 10.5px; color: var(--text); font-style: italic; line-height: 1.5; }
+  .alert-similar { display: flex; gap: 5px; flex-wrap: wrap; }
+  .alert-similar-chip {
+    font-size: 9.5px; font-weight: 600; padding: 3px 8px; border-radius: 12px;
+    background: rgba(255,255,255,.04); border: 1px solid var(--border2); color: var(--muted);
+    cursor: pointer; transition: .15s;
   }
-  .stat-label { color: var(--muted); }
-  .stat-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
-  .stat-val.bull { color: var(--bull); }
-  .stat-val.bear { color: var(--bear); }
-  .stat-val.warn { color: var(--warn); }
+  .alert-similar-chip:hover { color: var(--text); border-color: var(--accent); }
 
   /* OHLCV row */
   .ohlcv {
@@ -432,6 +478,46 @@
     gap: 8px;
     flex-wrap: wrap;
   }
+
+  /* ── Pattern formation progress card (developing patterns) ── */
+  .forming-card {
+    background: var(--bg); border: 1px solid var(--border2); border-radius: 8px;
+    padding: 8px 10px; font-size: 10.5px; min-width: 220px;
+  }
+  .forming-card-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .forming-card-name { font-weight: 700; color: var(--text); }
+  .forming-card-name.bear { color: var(--bear); }
+  .forming-card-name.bull { color: var(--bull); }
+  .forming-card-pct { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-weight: 700; }
+  .forming-track { height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden; margin-bottom: 5px; }
+  .forming-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s; }
+  .forming-card-sub { color: var(--muted); font-size: 9.5px; }
+
+  /* ── Sidebar filter/search bar ── */
+  .sidebar-filters { padding: 10px 12px 8px; border-bottom: 1px solid var(--border); }
+  .sf-search {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
+    padding: 7px 10px; color: var(--text); font-size: 11px; font-family: inherit; outline: none;
+    margin-bottom: 8px; box-sizing: border-box;
+  }
+  .sf-search:focus { border-color: var(--accent); }
+  .sf-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+  .sf-pill {
+    font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 14px;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    cursor: pointer; transition: .15s; font-family: inherit;
+  }
+  .sf-pill:hover { color: var(--text); }
+  .sf-pill.active { background: rgba(0,212,170,.12); border-color: var(--accent); color: var(--accent); }
+
+  /* ── Circular confidence gauge ── */
+  .gauge-svg { transform: rotate(-90deg); }
+  .gauge-track { fill: none; stroke: rgba(255,255,255,.08); }
+  .gauge-fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset .4s; }
+  .gauge-fill.strong { stroke: var(--bull); }
+  .gauge-fill.moderate { stroke: var(--warn); }
+  .gauge-fill.weak { stroke: var(--bear); }
+  .gauge-pct { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; fill: var(--text); transform: rotate(90deg); }
 
   /* ── SampsonX Confidence Meter ── */
   .sx-bar {
@@ -1020,13 +1106,20 @@
     <canvas id="vol"></canvas>
   </div>
   <div class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-title">Pattern Alerts</div>
-      <div id="alert-feed" class="alert-feed"></div>
+    <div class="sidebar-filters">
+      <input type="text" class="sf-search" id="sfSearch" placeholder="Search patterns…" oninput="renderAlertFeed()">
+      <div class="sf-pills" id="sfPills">
+        <button type="button" class="sf-pill active" data-filter="all" onclick="setPatternFilter('all',this)">All</button>
+        <button type="button" class="sf-pill" data-filter="bull" onclick="setPatternFilter('bull',this)">Bullish</button>
+        <button type="button" class="sf-pill" data-filter="bear" onclick="setPatternFilter('bear',this)">Bearish</button>
+        <button type="button" class="sf-pill" data-filter="warn" onclick="setPatternFilter('warn',this)">Neutral</button>
+        <button type="button" class="sf-pill" data-filter="continuation" onclick="setPatternFilter('continuation',this)">Continuation</button>
+        <button type="button" class="sf-pill" data-filter="favorites" onclick="setPatternFilter('favorites',this)">★ Favorites</button>
+      </div>
     </div>
-    <div class="pattern-info" id="patternInfo">
-      <div class="pattern-info-title">Select a pattern to learn more</div>
-      <div class="pattern-info-text">Patterns will appear here as they form on the chart. Click any alert to see an explanation.</div>
+    <div class="sidebar-section" style="flex:1;display:flex;flex-direction:column;min-height:0;padding:10px 0 0;">
+      <div class="sidebar-title" style="padding:0 16px">Pattern Alerts — Live Feed</div>
+      <div id="alert-feed" class="alert-feed"></div>
     </div>
   </div>
 </div>
@@ -1347,6 +1440,26 @@ const PATTERN_META = {
   'Three Black Crows':      { typicalMove:'-1.7%', avgCandles:5, conditions:['Each candle opens within prior body','Volume growing each session','Breaking below support'] },
 };
 
+// Live-tab pattern names → Replay's BOOK entry (richer definition/psychology/
+// mistakes content, reused here instead of duplicating it).
+const LIVE_TO_BOOK_NAME = {
+  'Bullish Morning Star': 'Morning Star',
+  'Bearish Evening Star': 'Evening Star',
+};
+
+function patCategory(pat) {
+  return /continuation/i.test(pat.signal) ? 'continuation' : 'reversal';
+}
+function patDifficulty(pat) {
+  return pat.candles >= 3 ? 'Hard' : pat.candles === 2 ? 'Medium' : 'Easy';
+}
+function gaugeTier(pct) {
+  return pct >= 70 ? 'strong' : pct >= 55 ? 'moderate' : 'weak';
+}
+function gaugeTierLabel(pct) {
+  return pct >= 70 ? 'Strong' : pct >= 55 ? 'Moderate' : 'Weak';
+}
+
 // ─── STATE ─────────────────────────────────────────────────────
 let candles = [];
 let ticker = 'AAPL';
@@ -1365,6 +1478,40 @@ let learnModeIdx = 0;
 let learnCorrect = 0;
 let learnTotal = 0;
 let learnAnswered = false;
+
+// ─── PATTERN SIDEBAR STATE ───────────────────────────────────────
+let patternFilter = 'all';
+let expandedAlertIds = new Set();
+let hoveredAlertCandles = null;   // {start, end} indices into `candles`, for chart<->card hover sync
+let hoveredCanvasCard = null;
+let mouseCanvasX = null, mouseCanvasY = null;
+
+function scLSGet(k, d) { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch { return d; } }
+function scLSSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+function getFavoritePatterns() { return scLSGet('sc_pattern_favorites', []); }
+function getStudiedPatterns() { return scLSGet('sc_patterns_studied', []); }
+
+function awardPatternXP(amount, label) {
+  const cur = scLSGet('sc_learn_xp', 0);
+  scLSSet('sc_learn_xp', cur + amount);
+  showXPToast(`+${amount} XP — ${label}`);
+}
+
+function showXPToast(msg) {
+  let toast = document.getElementById('scXPToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'scXPToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:300;background:#16d97e;color:#04150d;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;padding:11px 22px;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.5);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  requestAnimationFrame(() => { toast.style.opacity = '1'; toast.style.transform = 'translateX(-50%) translateY(0)'; });
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => {
+    toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2600);
+}
 
 // ─── CHART SETUP ───────────────────────────────────────────────
 const chartCanvas = document.getElementById('chart');
@@ -1617,6 +1764,43 @@ function toggleSampsonX() {
 }
 
 // ─── PATTERN DETECTION ─────────────────────────────────────────
+// 3-candle patterns can show real "in progress" state: check whether the
+// first 2 of 3 required candles already match before the pattern completes.
+const FORMING_CHECKERS = {
+  'Bullish Morning Star': (c) => {
+    if (c.length < 2) return null;
+    const [a, b] = c.slice(-2);
+    if (a.close < a.open && Math.abs(b.close - b.open) < (a.open - a.close) * 0.5) {
+      return { need: ['Bearish first candle ✓', 'Small-bodied middle candle ✓', 'Bullish close above midpoint — waiting'] };
+    }
+    return null;
+  },
+  'Bearish Evening Star': (c) => {
+    if (c.length < 2) return null;
+    const [a, b] = c.slice(-2);
+    if (a.close > a.open && Math.abs(b.close - b.open) < (a.close - a.open) * 0.5) {
+      return { need: ['Bullish first candle ✓', 'Small-bodied middle candle ✓', 'Bearish close below midpoint — waiting'] };
+    }
+    return null;
+  },
+  'Three White Soldiers': (c) => {
+    if (c.length < 2) return null;
+    const [a, b] = c.slice(-2);
+    if (a.close > a.open && b.close > b.open && b.close > a.close && b.open > a.open) {
+      return { need: ['1st bullish candle ✓', '2nd bullish, higher close ✓', '3rd bullish, higher close — waiting'] };
+    }
+    return null;
+  },
+  'Three Black Crows': (c) => {
+    if (c.length < 2) return null;
+    const [a, b] = c.slice(-2);
+    if (a.close < a.open && b.close < b.open && b.close < a.close && b.open < a.open) {
+      return { need: ['1st bearish candle ✓', '2nd bearish, lower close ✓', '3rd bearish, lower close — waiting'] };
+    }
+    return null;
+  },
+};
+
 function runPatternDetection() {
   const forming = [];
   Object.entries(PATTERNS).forEach(([name, pat]) => {
@@ -1626,7 +1810,9 @@ function runPatternDetection() {
         detectedSet.add(key);
         fireAlert(name, pat);
       }
-      forming.push({ name, type: pat.type });
+    } else if (FORMING_CHECKERS[name]) {
+      const partial = FORMING_CHECKERS[name](candles);
+      if (partial) forming.push({ name, type: pat.type, need: partial.need });
     }
   });
   renderFormingBadges(forming);
@@ -1636,67 +1822,210 @@ function runPatternDetection() {
 function renderFormingBadges(forming) {
   const wrap = document.getElementById('forming-wrap');
   if (!forming.length) {
-    wrap.innerHTML = '<span style="font-size:11px;color:var(--muted)">No active patterns detected — scanning...</span>';
+    wrap.innerHTML = '<span style="font-size:11px;color:var(--muted)">No patterns currently forming — scanning...</span>';
     return;
   }
-  wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);margin-right:4px">Forming:</span>' +
-    forming.map(f =>
-      `<span class="forming-badge ${f.type === 'bear' ? 'bear' : ''}">
-        <span style="font-size:9px">${f.type === 'bull' ? '▲' : f.type === 'bear' ? '▼' : '◆'}</span>
-        ${f.name}
-      </span>`
-    ).join('');
+  wrap.innerHTML = forming.map(f => {
+    const doneCount = f.need.filter(n => n.includes('✓')).length;
+    const pct = Math.round(doneCount / f.need.length * 100);
+    return `<div class="forming-card">
+      <div class="forming-card-hdr">
+        <span class="forming-card-name ${f.type}">${f.type === 'bull' ? '▲' : '▼'} ${f.name}</span>
+        <span class="forming-card-pct">${pct}%</span>
+      </div>
+      <div class="forming-track"><div class="forming-fill" style="width:${pct}%"></div></div>
+      <div class="forming-card-sub">${f.need[f.need.length - 1]} · ~1 candle remaining</div>
+    </div>`;
+  }).join('');
 }
 
 function fireAlert(name, pat) {
   const now = new Date();
   const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-  alertHistory.unshift({ name, pat, time, price: currentPrice.toFixed(2) });
-
-  const feed = document.getElementById('alert-feed');
-  const card = document.createElement('div');
-  card.className = `alert-card ${pat.type === 'bear' ? 'bear' : pat.type === 'warn' ? 'warn' : ''}`;
-  card.innerHTML = `
-    <div class="alert-header">
-      <div class="alert-name">${name}</div>
-      <div class="alert-time">${time}</div>
-    </div>
-    <div class="alert-badge ${pat.type}">
-      ${pat.type === 'bull' ? '▲ BULLISH' : pat.type === 'bear' ? '▼ BEARISH' : '◆ NEUTRAL'} · ${pat.signal}
-    </div>
-    <div class="alert-desc">${pat.desc.substring(0, 80)}...</div>
-  `;
-  card.style.cursor = 'pointer';
-  card.onclick = () => showPatternInfo(name, pat);
-  feed.insertBefore(card, feed.firstChild);
-  if (feed.children.length > 20) feed.removeChild(feed.lastChild);
-  showPatternInfo(name, pat);
+  const id = 'al' + Date.now() + Math.floor(Math.random() * 1000);
+  const candleStart = Math.max(0, candles.length - pat.candles);
+  alertHistory.unshift({ id, name, pat, time, price: currentPrice.toFixed(2), candleStart, candleEnd: candles.length - 1 });
+  if (alertHistory.length > 20) alertHistory.pop();
+  renderAlertFeed();
 }
 
-function showPatternInfo(name, pat) {
-  const meta = PATTERN_META[name] || {};
-  const typeLabel = pat.type === 'bull' ? 'Bullish' : pat.type === 'bear' ? 'Bearish' : 'Neutral';
-  const typeColor = pat.type === 'bull' ? 'var(--bull)' : pat.type === 'bear' ? 'var(--bear)' : 'var(--warn)';
-  const condHtml = meta.conditions ? `
-    <div class="pat-conditions">
-      <div class="pat-cond-title">Best Market Conditions</div>
-      ${meta.conditions.map(c => `<div class="pat-cond-item">✓ ${c}</div>`).join('')}
-    </div>` : '';
+function setPatternFilter(filter, btn) {
+  patternFilter = filter;
+  document.querySelectorAll('.sf-pill').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderAlertFeed();
+}
 
-  document.getElementById('patternInfo').innerHTML = `
-    <div class="pattern-info-title" style="font-size:13px;margin-bottom:4px">${name}</div>
-    <div style="margin-bottom:10px"><span style="font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;background:${typeColor}22;color:${typeColor};border:1px solid ${typeColor}44">${typeLabel} ${pat.signal}</span></div>
-    <div class="pattern-info-text" style="margin-bottom:10px">${pat.desc}</div>
-    <div class="pat-intel-row"><span class="pat-intel-key">Historical Win Rate</span><span class="pat-intel-val" style="color:${typeColor}">${pat.reliability}</span></div>
-    <div class="pat-intel-row"><span class="pat-intel-key">Candles Required</span><span class="pat-intel-val">${pat.candles}</span></div>
-    ${meta.typicalMove ? `<div class="pat-intel-row"><span class="pat-intel-key">Typical Move</span><span class="pat-intel-val" style="color:${typeColor}">${meta.typicalMove}</span></div>` : ''}
-    ${meta.avgCandles ? `<div class="pat-intel-row"><span class="pat-intel-key">Avg Time Until Move</span><span class="pat-intel-val">${meta.avgCandles} candles</span></div>` : ''}
-    ${condHtml}
-  `;
+function alertMatchesFilter(a) {
+  const search = (document.getElementById('sfSearch')?.value || '').trim().toLowerCase();
+  if (search && !a.name.toLowerCase().includes(search)) return false;
+  if (patternFilter === 'all') return true;
+  if (patternFilter === 'favorites') return getFavoritePatterns().includes(a.name);
+  if (patternFilter === 'continuation') return patCategory(a.pat) === 'continuation';
+  return a.pat.type === patternFilter;
+}
+
+function renderAlertFeed() {
+  const feed = document.getElementById('alert-feed');
+  const visible = alertHistory.filter(alertMatchesFilter);
+  if (!alertHistory.length) {
+    feed.innerHTML = '<div style="padding:20px 12px;text-align:center;font-size:11px;color:var(--muted)">Patterns will appear here as they\'re detected on the chart.</div>';
+    return;
+  }
+  if (!visible.length) {
+    feed.innerHTML = '<div style="padding:20px 12px;text-align:center;font-size:11px;color:var(--muted)">No alerts match this filter yet.</div>';
+    return;
+  }
+  feed.innerHTML = visible.map(a => buildAlertCardHTML(a)).join('');
+}
+
+function buildAlertCardHTML(a) {
+  const { id, name, pat, time } = a;
+  const meta = PATTERN_META[name] || {};
+  const bookName = LIVE_TO_BOOK_NAME[name] || name;
+  const book = (typeof BOOK !== 'undefined' && BOOK[bookName]) || null;
+  const pct = parseInt(pat.reliability, 10) || 60;
+  const tier = gaugeTier(pct), tierLabel = gaugeTierLabel(pct);
+  const category = patCategory(pat);
+  const isFav = getFavoritePatterns().includes(name);
+  const isExpanded = expandedAlertIds.has(id);
+  const r = 15, circ = 2 * Math.PI * r, offset = circ * (1 - pct / 100);
+
+  const gaugeSvg = `
+    <svg class="gauge-svg" width="40" height="40" viewBox="0 0 40 40">
+      <circle class="gauge-track" cx="20" cy="20" r="${r}" stroke-width="4"></circle>
+      <circle class="gauge-fill ${tier}" cx="20" cy="20" r="${r}" stroke-width="4"
+        stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle>
+      <text class="gauge-pct" x="20" y="24" text-anchor="middle">${pct}</text>
+    </svg>`;
+
+  const expandBody = isExpanded ? `
+    <div class="alert-expand-body">
+      ${book ? `
+        <div class="alert-section"><div class="alert-section-lbl">📖 Definition</div><div class="alert-section-txt">${book.definition}</div></div>
+        <div class="alert-section"><div class="alert-section-lbl">🧠 Market Psychology</div><div class="alert-section-txt">${book.psychology}</div></div>
+        <div class="alert-section"><div class="alert-section-lbl">✅ Professional Confirmation</div><ul>${(book.confirm || []).map(x => `<li>${x}</li>`).join('')}</ul></div>
+        <div class="alert-section"><div class="alert-section-lbl">❌ Common Mistakes</div><ul>${(book.mistakes || []).map(x => `<li class="bad">${x}</li>`).join('')}</ul></div>
+        <div class="alert-quote"><p>${book.quote}</p></div>
+      ` : `
+        <div class="alert-section"><div class="alert-section-lbl">📖 Definition</div><div class="alert-section-txt">${pat.desc}</div></div>
+      `}
+      <div class="alert-section">
+        <div class="alert-section-lbl">🎓 Keep Learning</div>
+        <div class="alert-actions">
+          <a class="alert-btn" href="/learn" style="text-decoration:none;display:block">Related Lesson</a>
+          <a class="alert-btn" href="/learn" style="text-decoration:none;display:block">Related Quiz</a>
+        </div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-lbl">🔗 Similar Patterns</div>
+        <div class="alert-similar">${similarPatterns(name, pat).map(n => `<span class="alert-similar-chip" onclick="event.stopPropagation();document.getElementById('sfSearch').value='${n}';renderAlertFeed();">${n}</span>`).join('') || '<span style="font-size:10px;color:var(--muted)">None yet</span>'}</div>
+      </div>
+    </div>
+    <div class="alert-collapse-toggle">▲ Show Less</div>
+  ` : `<div class="alert-expand-toggle">▼ Study This Pattern</div>`;
+
+  return `
+    <div class="alert-card ${pat.type === 'bear' ? 'bear' : pat.type === 'warn' ? 'warn' : ''}${isExpanded ? ' expanded' : ''}"
+         id="${id}"
+         onmouseenter="onAlertCardHover('${id}',true)" onmouseleave="onAlertCardHover('${id}',false)"
+         onclick="toggleAlertCard('${id}')">
+      <div class="alert-header">
+        <div class="alert-name-row">
+          <span class="alert-name">${name}</span>
+          <button type="button" class="alert-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavoritePattern('${name.replace(/'/g,"\\'")}')" title="Favorite">★</button>
+        </div>
+        <div class="alert-time">${time}</div>
+      </div>
+      <div class="alert-name-row" style="margin-bottom:6px">
+        <span class="alert-badge ${pat.type}">${pat.type === 'bull' ? '▲ BULLISH' : pat.type === 'bear' ? '▼ BEARISH' : '◆ NEUTRAL'}</span>
+        ${category === 'continuation' ? '<span class="alert-tag-continuation">↻ CONTINUATION</span>' : ''}
+      </div>
+      <div class="alert-mid-row">
+        <div class="alert-gauge">${gaugeSvg}</div>
+        <div class="alert-gauge-meta">
+          <div class="alert-gauge-label">Confidence</div>
+          <div class="alert-gauge-tier ${tier}">${tierLabel}</div>
+          <div class="alert-difficulty">Difficulty: ${patDifficulty(pat)} · ${pat.candles} candle${pat.candles !== 1 ? 's' : ''}</div>
+        </div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-lbl">💡 Why It Matters</div>
+        <div class="alert-desc" style="margin-bottom:0">${pat.desc}</div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-lbl">👀 What Pros Watch Next</div>
+        <ul>${(meta.conditions || []).slice(0, 3).map(c => `<li>${c}</li>`).join('')}</ul>
+      </div>
+      <div class="alert-actions">
+        <button type="button" class="alert-btn primary" onclick="event.stopPropagation();replayPattern('${name.replace(/'/g,"\\'")}')">🎬 Replay Similar Setups</button>
+      </div>
+      ${expandBody}
+    </div>`;
+}
+
+function similarPatterns(name, pat) {
+  return Object.entries(PATTERNS)
+    .filter(([n, p]) => n !== name && p.type === pat.type)
+    .map(([n]) => n)
+    .slice(0, 4);
+}
+
+function toggleFavoritePattern(name) {
+  const favs = getFavoritePatterns();
+  const idx = favs.indexOf(name);
+  if (idx >= 0) favs.splice(idx, 1); else favs.push(name);
+  scLSSet('sc_pattern_favorites', favs);
+  renderAlertFeed();
+}
+
+function toggleAlertCard(id) {
+  const alert = alertHistory.find(a => a.id === id);
+  if (!alert) return;
+  if (expandedAlertIds.has(id)) {
+    expandedAlertIds.delete(id);
+  } else {
+    expandedAlertIds.add(id);
+    const studied = getStudiedPatterns();
+    if (!studied.includes(alert.name)) {
+      studied.push(alert.name);
+      scLSSet('sc_patterns_studied', studied);
+      awardPatternXP(15, `${alert.name} Studied`);
+    }
+  }
+  renderAlertFeed();
+}
+
+function onAlertCardHover(id, entering) {
+  const alert = alertHistory.find(a => a.id === id);
+  if (!alert) return;
+  hoveredAlertCandles = entering ? { start: alert.candleStart, end: alert.candleEnd } : null;
+  drawChart();
+}
+
+function replayPattern(name) {
+  awardPatternXP(10, `${name} Replay Studied`);
+  switchTab('replay');
+  const intro = document.getElementById('rpIntro');
+  if (intro && intro.style.display !== 'none' && typeof rpBeginSession === 'function') {
+    rpBeginSession();
+  }
 }
 
 // ─── DRAW CHART ─────────────────────────────────────────────────
+function roundRectPath(c, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r);
+  c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r);
+  c.arcTo(x, y, x + w, y, r);
+  c.closePath();
+}
+
+let _chartGeom = null; // cached geometry from the last draw, used by hover/crosshair
+
 function drawChart() {
   const W = chartCanvas.width, H = chartCanvas.height;
   if (W === 0 || H === 0) return;
@@ -1720,29 +2049,42 @@ function drawChart() {
   const cw = Math.max(4, (chartW / n) - 2);
   const gap = chartW / n;
   const toX = (i) => padL + i * gap + gap / 2;
+  _chartGeom = { padL, padR, padT, padB, chartW, chartH, gap, n, visible, toY, minP, maxP, range };
 
-  // Grid lines
-  ctx.strokeStyle = '#1a2235';
+  // Grid lines — softer, low-contrast
+  ctx.strokeStyle = 'rgba(138,164,192,0.08)';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 5; i++) {
     const y = padT + (i / 5) * chartH;
     ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
     const price = maxP - (i / 5) * range;
-    ctx.fillStyle = '#4a5a78';
-    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillStyle = 'rgba(138,164,192,0.55)';
+    ctx.font = '10px "JetBrains Mono", monospace';
     ctx.textAlign = 'left';
     ctx.fillText(price.toFixed(2), W - padR + 4, y + 4);
   }
 
+  // Hovered alert range → a soft backdrop band, distinct from the per-candle glow below
+  if (hoveredAlertCandles) {
+    const { start, end } = hoveredAlertCandles;
+    const s = Math.max(0, start - (candles.length - n));
+    const e = Math.min(n - 1, end - (candles.length - n));
+    if (e >= s) {
+      const bx = toX(s) - cw / 2 - 3, bx2 = toX(e) + cw / 2 + 3;
+      ctx.fillStyle = 'rgba(0,212,170,0.06)';
+      ctx.fillRect(bx, padT, bx2 - bx, chartH);
+    }
+  }
+
   // Candles
-  const overlayPositions = [];
+  let hoveredCardIdRange = null;
   visible.forEach((c, i) => {
     const x = toX(i);
     const isBull = c.close >= c.open;
     const color = isBull ? '#00c96b' : '#ff4566';
     const bodyTop = toY(Math.max(c.open, c.close));
     const bodyBot = toY(Math.min(c.open, c.close));
-    const bodyH = Math.max(1, bodyBot - bodyTop);
+    const bodyH = Math.max(2, bodyBot - bodyTop);
 
     // Wick
     ctx.strokeStyle = color;
@@ -1752,31 +2094,24 @@ function drawChart() {
     ctx.lineTo(x, toY(c.low));
     ctx.stroke();
 
-    // Body
-    if (isBull) {
-      ctx.fillStyle = '#00c96b';
-    } else {
-      ctx.fillStyle = '#ff4566';
-    }
-
-    // Highlight last few candles if pattern detected
+    // Body — softly rounded corners for a cleaner look
+    ctx.fillStyle = color;
     const isHighlighted = checkCandleHighlight(i, n, visible);
-    if (isHighlighted) {
+    const globalIdx = candles.length - n + i;
+    const inHoveredRange = hoveredAlertCandles && globalIdx >= hoveredAlertCandles.start && globalIdx <= hoveredAlertCandles.end;
+    if (isHighlighted || inHoveredRange) {
       ctx.save();
-      ctx.shadowColor = isHighlighted === 'bull' ? '#00c96b' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623';
-      ctx.shadowBlur = 8;
+      ctx.shadowColor = inHoveredRange ? '#00d4aa' : (isHighlighted === 'bull' ? '#00c96b' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623');
+      ctx.shadowBlur = inHoveredRange ? 12 : 7;
     }
-    ctx.fillRect(x - cw / 2, bodyTop, cw, bodyH);
-    if (isHighlighted) {
-      ctx.strokeStyle = isHighlighted === 'bull' ? '#00d4aa' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623';
+    roundRectPath(ctx, x - cw / 2, bodyTop, cw, bodyH, Math.min(2, cw / 4));
+    ctx.fill();
+    if (isHighlighted || inHoveredRange) {
+      ctx.strokeStyle = inHoveredRange ? '#00d4aa' : (isHighlighted === 'bull' ? '#00d4aa' : isHighlighted === 'bear' ? '#ff4566' : '#f5a623');
       ctx.lineWidth = 1.5;
-      ctx.strokeRect(x - cw / 2, bodyTop, cw, bodyH);
+      roundRectPath(ctx, x - cw / 2, bodyTop, cw, bodyH, Math.min(2, cw / 4));
+      ctx.stroke();
       ctx.restore();
-    }
-
-    // Pattern overlay position tracking (original)
-    if (isHighlighted && i === n - 1) {
-      overlayPositions.push({ x, y: toY(c.high) - 18, type: isHighlighted });
     }
 
     // Selected candle ring (coach tap)
@@ -1788,7 +2123,8 @@ function drawChart() {
       ctx.shadowBlur = 6;
       const selTop = toY(c.high) - 4;
       const selBot = toY(c.low)  + 4;
-      ctx.strokeRect(x - cw / 2 - 3, selTop, cw + 6, selBot - selTop);
+      roundRectPath(ctx, x - cw / 2 - 3, selTop, cw + 6, selBot - selTop, 4);
+      ctx.stroke();
       ctx.restore();
     }
   });
@@ -1796,7 +2132,7 @@ function drawChart() {
   // Current price line
   const lastClose = visible[n - 1].close;
   const py = toY(lastClose);
-  ctx.strokeStyle = '#00d4aa';
+  ctx.strokeStyle = 'rgba(0,212,170,0.55)';
   ctx.lineWidth = 1;
   ctx.setLineDash([4, 4]);
   ctx.beginPath();
@@ -1805,13 +2141,37 @@ function drawChart() {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // Price label
+  // Price label — rounded pill
   ctx.fillStyle = '#00d4aa';
-  ctx.fillRect(W - padR + 2, py - 8, padR - 2, 16);
-  ctx.fillStyle = '#000';
-  ctx.font = '10px JetBrains Mono, monospace';
+  roundRectPath(ctx, W - padR + 2, py - 9, padR - 4, 18, 4);
+  ctx.fill();
+  ctx.fillStyle = '#00110c';
+  ctx.font = '600 10px "JetBrains Mono", monospace';
   ctx.textAlign = 'center';
-  ctx.fillText(lastClose.toFixed(2), W - padR + 2 + (padR - 2) / 2, py + 4);
+  ctx.fillText(lastClose.toFixed(2), W - padR + 2 + (padR - 4) / 2, py + 4);
+
+  // Crosshair — follows the mouse, drawn last so it sits above candles
+  if (mouseCanvasX !== null && mouseCanvasX >= padL && mouseCanvasX <= W - padR && mouseCanvasY >= padT && mouseCanvasY <= padT + chartH) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(221,232,245,0.35)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(padL, mouseCanvasY); ctx.lineTo(W - padR, mouseCanvasY);
+    ctx.moveTo(mouseCanvasX, padT); ctx.lineTo(mouseCanvasX, padT + chartH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const hoverPrice = maxP - ((mouseCanvasY - padT) / chartH) * range;
+    ctx.fillStyle = 'rgba(221,232,245,0.9)';
+    roundRectPath(ctx, W - padR + 2, mouseCanvasY - 9, padR - 4, 18, 4);
+    ctx.fill();
+    ctx.fillStyle = '#070b10';
+    ctx.font = '600 10px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(hoverPrice.toFixed(2), W - padR + 2 + (padR - 4) / 2, mouseCanvasY + 4);
+    ctx.restore();
+  }
 
   // Volume
   drawVolume(visible);
@@ -1825,6 +2185,33 @@ function checkCandleHighlight(i, n, visible) {
     }
   }
   return null;
+}
+
+// ─── CROSSHAIR + CHART↔CARD HOVER SYNC ───────────────────────────
+chartCanvas.addEventListener('mousemove', (e) => {
+  const rect = chartCanvas.getBoundingClientRect();
+  mouseCanvasX = e.clientX - rect.left;
+  mouseCanvasY = e.clientY - rect.top;
+  drawChart();
+
+  if (!_chartGeom) return;
+  const { padL, gap, n } = _chartGeom;
+  const idx = Math.floor((mouseCanvasX - padL) / gap);
+  if (idx < 0 || idx >= n) { setHoveredCard(null); return; }
+  const globalIdx = candles.length - n + idx;
+  const match = alertHistory.find(a => globalIdx >= a.candleStart && globalIdx <= a.candleEnd);
+  setHoveredCard(match ? match.id : null);
+});
+chartCanvas.addEventListener('mouseleave', () => {
+  mouseCanvasX = null; mouseCanvasY = null;
+  setHoveredCard(null);
+  drawChart();
+});
+function setHoveredCard(id) {
+  if (hoveredCanvasCard === id) return;
+  if (hoveredCanvasCard) { const el = document.getElementById(hoveredCanvasCard); if (el) el.classList.remove('hovered'); }
+  hoveredCanvasCard = id;
+  if (id) { const el = document.getElementById(id); if (el) el.classList.add('hovered'); }
 }
 
 function drawVolume(visible) {
