@@ -247,6 +247,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,10,8,.92);backdrop-filte
 }</script>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <nav>
   <a class="nav-logo" href="/">
@@ -414,7 +415,9 @@ function bumpStreak() {
 /* ── DAILY LESSON CAP ── */
 // New lessons only — replaying an already-done lesson never counts
 // against this, so it can't be used to grind ahead of the curriculum.
-const DAILY_LESSON_LIMIT = 1;
+// Pro (and trial, which grants the same access) users skip the cap entirely.
+const DAILY_LESSON_LIMIT = 2;
+let isPaidUser = false;
 function getDailyCount() {
   return LS.get('sc_daily_date','')===dateStr() ? LS.get('sc_daily_count',0) : 0;
 }
@@ -422,7 +425,18 @@ function bumpDailyCount() {
   LS.set('sc_daily_date',dateStr());
   LS.set('sc_daily_count',getDailyCount()+1);
 }
-function dailyLimitReached() { return getDailyCount()>=DAILY_LESSON_LIMIT; }
+function dailyLimitReached() { return !isPaidUser && getDailyCount()>=DAILY_LESSON_LIMIT; }
+
+async function checkPlan() {
+  try {
+    const SUPABASE_URL='https://fnuqxiflqqejjttxymbz.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+    const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const {data:{session}}=await sb.auth.getSession();
+    const plan=session?.user?.app_metadata?.plan||'free';
+    isPaidUser=plan==='pro'||plan==='trial';
+  } catch(e) { console.warn('Plan check failed:',e.message); isPaidUser=false; }
+}
 function hoursUntilMidnightStr() {
   const now=new Date(),midnight=new Date(now);
   midnight.setHours(24,0,0,0);
@@ -645,7 +659,7 @@ let earnedThisLesson = [];
 let rewardsComputed = false;
 
 /* ── INIT ── */
-function init() {
+async function init() {
   updateNav();
   const done = getDone();
   currentDay = Math.min(done.length + 1, 365);
@@ -654,6 +668,11 @@ function init() {
   renderTodayCard();
   renderPath();
   renderBadges();
+  await checkPlan();
+  // Re-render the bits the daily cap affects now that plan status is known —
+  // avoids a false "locked" flash for Pro/trial users on load.
+  renderTodayCard();
+  renderPath();
 }
 
 function updateNav() {
@@ -699,7 +718,9 @@ function renderTodayCard() {
   const qCount=day.quiz?day.quiz.length:0;
   const qText=qCount===0?'No quiz':`${qCount} quiz question${qCount!==1?'s':''}`;
   const remaining=Math.max(0,DAILY_LESSON_LIMIT-getDailyCount());
-  const capText=locked?`Next lesson in ${hoursUntilMidnightStr()}`:`${remaining}/${DAILY_LESSON_LIMIT} lesson${DAILY_LESSON_LIMIT!==1?'s':''} left today`;
+  const capText=isPaidUser?'⚡ Unlimited lessons — Pro'
+    :locked?`Next lesson in ${hoursUntilMidnightStr()}`
+    :`${remaining}/${DAILY_LESSON_LIMIT} lesson${DAILY_LESSON_LIMIT!==1?'s':''} left today`;
   document.getElementById('today-meta').innerHTML=`~5 min · <span>${qText}</span> · <span>+50 XP</span> · <span class="${locked?'cap-locked':'cap-ok'}">${capText}</span>`;
 }
 
