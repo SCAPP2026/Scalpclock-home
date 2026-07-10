@@ -32,10 +32,8 @@ async function handleCheckout(env, request) {
   }
 
   const PRICES = {
-    pro_monthly:   env.STRIPE_PRICE_PRO_MONTHLY,
-    pro_annual:    env.STRIPE_PRICE_PRO_ANNUAL,
-    elite_monthly: env.STRIPE_PRICE_ELITE_MONTHLY,
-    elite_annual:  env.STRIPE_PRICE_ELITE_ANNUAL,
+    pro_monthly: env.STRIPE_PRICE_PRO_MONTHLY,
+    pro_annual:  env.STRIPE_PRICE_PRO_ANNUAL,
   };
 
   const priceId = PRICES[`${tier}_${billing}`];

@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalpClock · Pricing — Free, Pro &amp; Elite</title>
-<meta name="description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing. Go Elite for unusual flow, earnings mode and priority alerts.">
+<title>ScalpClock · Pricing — Free & Pro</title>
+<meta name="description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and push alerts.">
 <link rel="canonical" href="https://scalpclock.com/pricing">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="ScalpClock · Pricing — Free, Pro &amp; Elite">
-<meta property="og:description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing. Go Elite for unusual flow, earnings mode and priority alerts.">
+<meta property="og:title" content="ScalpClock · Pricing — Free & Pro">
+<meta property="og:description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and push alerts.">
 <meta property="og:url" content="https://scalpclock.com/pricing">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ScalpClock · Pricing — Free, Pro &amp; Elite">
-<meta name="twitter:description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing. Go Elite for unusual flow, earnings mode and priority alerts.">
+<meta name="twitter:title" content="ScalpClock · Pricing — Free & Pro">
+<meta name="twitter:description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and push alerts.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -103,17 +103,14 @@ a{color:inherit;text-decoration:none;}
 
 /* CARDS */
 .plans{position:relative;z-index:1;padding:40px 0 80px;}
-.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
+.plans-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start;max-width:760px;margin:0 auto;}
 @media(max-width:900px){.plans-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto;}}
 .plan-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;gap:0;transition:.2s;}
 .plan-card:hover{border-color:rgba(120,200,160,.3);}
 .plan-card.featured{border-color:var(--green);box-shadow:0 0 40px rgba(22,217,126,.15);position:relative;}
-.plan-card.elite{border-color:var(--gold);box-shadow:0 0 40px rgba(245,166,35,.1);}
 .plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.06em;padding:4px 14px;border-radius:20px;white-space:nowrap;}
 .plan-badge.pro{background:var(--green);color:#04150d;}
-.plan-badge.elite{background:var(--gold);color:#1a0d00;}
 .plan-name{font-family:var(--disp);font-weight:700;font-size:1.4rem;margin-bottom:6px;}
-.plan-name.elite{color:var(--gold);}
 .plan-price{margin-bottom:6px;}
 .plan-price .amount{font-family:var(--disp);font-size:2.6rem;font-weight:700;line-height:1;}
 .plan-price .per{color:var(--t55);font-size:.85rem;margin-left:4px;}
@@ -124,14 +121,11 @@ a{color:inherit;text-decoration:none;}
 .feature-list li .ic{flex-shrink:0;width:18px;height:18px;margin-top:1px;}
 .ic-yes{color:var(--green);}
 .ic-no{color:var(--t30);}
-.ic-gold{color:var(--gold);}
 .plan-cta{width:100%;font-family:var(--disp);font-weight:700;font-size:1rem;padding:14px;border-radius:11px;border:none;cursor:pointer;transition:.15s;display:block;text-align:center;}
 .cta-free{background:transparent;border:1px solid rgba(22,217,126,.4);color:var(--green);}
 .cta-free:hover{background:var(--g-dim);}
 .cta-pro{background:var(--green);color:#04150d;box-shadow:0 0 24px rgba(22,217,126,.3);}
 .cta-pro:hover{background:#20e88a;transform:translateY(-1px);}
-.cta-elite{background:var(--gold);color:#1a0d00;box-shadow:0 0 24px rgba(245,166,35,.25);}
-.cta-elite:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
 /* WAITLIST FORM */
 .waitlist-wrap{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
@@ -140,7 +134,6 @@ a{color:inherit;text-decoration:none;}
 .waitlist-wrap input::placeholder{color:var(--t30);}
 .waitlist-toast{font-size:.82rem;padding:10px 14px;border-radius:8px;text-align:center;display:none;}
 .toast-pro{background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);}
-.toast-elite{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--gold);}
 
 /* FOOTER NOTE */
 .footer-note{text-align:center;color:var(--t30);font-size:.82rem;padding:0 24px 60px;position:relative;z-index:1;}
@@ -168,7 +161,7 @@ a{color:inherit;text-decoration:none;}
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "ScalpClock Pro",
-  "description": "Start free with delayed signals. Upgrade to Pro for real-time options timing. Go Elite for unusual flow, earnings mode and priority alerts.",
+  "description": "Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and push alerts.",
   "brand": {
     "@type": "Brand",
     "name": "ScalpClock"
@@ -441,56 +434,6 @@ a{color:inherit;text-decoration:none;}
           <div id="promoMsg" style="display:none;margin-top:8px;font-size:.8rem;padding:8px 12px;border-radius:7px;"></div>
         </div>
         <div class="waitlist-toast toast-pro" id="proToast" style="margin-top:10px;"></div>
-      </div>
-
-      <!-- ELITE -->
-      <div class="plan-card elite">
-        <div class="plan-badge elite">ELITE</div>
-        <div class="plan-name elite">Elite</div>
-        <div class="plan-price">
-          <span class="amount" style="font-size:1.8rem;color:var(--gold)">Coming Soon</span>
-        </div>
-        <div class="plan-desc">Everything in Pro, plus the deepest market intelligence ScalpClock offers.</div>
-        <hr class="plan-divider">
-        <ul class="feature-list">
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Everything in Pro
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Live unusual options flow
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Gamma exposure analysis
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Earnings mode &amp; IV crush detection
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Institutional flow heatmaps
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Advanced AI scanner (unlimited)
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Priority voice &amp; webhook alerts
-          </li>
-          <li>
-            <svg class="ic ic-gold" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg>
-            Dedicated account manager
-          </li>
-        </ul>
-        <div class="waitlist-wrap" id="eliteForm">
-          <input type="email" id="eliteEmail" placeholder="your@email.com">
-          <button class="plan-cta cta-elite" onclick="joinWaitlist('elite')">Join Elite Waitlist</button>
-          <div class="waitlist-toast toast-elite" id="eliteToast">You're on the Elite list! We'll reach out first.</div>
-        </div>
       </div>
 
     </div>
