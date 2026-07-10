@@ -3231,6 +3231,13 @@ async function rpFetchAndLoad(sym,range,periods,replayOffset,targetDate){
     if(!res.ok||data.error){rpShowErr(data.error||'Failed to load chart data.');rpSetLoading(false);return;}
     rpAllCandles=data.candles;rpCurrentSym=data.symbol||sym;
     if(!rpAllCandles.length){rpShowErr('No data returned for this symbol or date range.');rpSetLoading(false);return;}
+    // Any successful new chart load is a fresh practice attempt — reset the
+    // completion guard and session-XP baseline here (not just in
+    // rpBeginSession) so switching timeframe, picking a different quick
+    // range, or loading a custom date after finishing a session doesn't
+    // silently block the completion screen from ever firing again.
+    rpCompletionShown=false;
+    rpSessionStartXP=rpTotalXP;rpSessionStartCorrect=rpCorrect;rpSessionStartQuizTotal=rpQuizTotal;
     if(targetDate){
       // Daily bars use a "YYYY-MM-DD" string for `time`; intraday bars use a
       // numeric Unix timestamp. Comparing a number to that string coerces it
