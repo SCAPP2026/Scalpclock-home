@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page Not Found — ScalpClock</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;
+  --green:#16d97e;
+  --text:#eef3f0;
+  --t70:rgba(238,243,240,.70);
+  --t45:rgba(238,243,240,.45);
+  --disp:'Rajdhani',sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(22,217,126,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(22,217,126,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+}
+.page{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;gap:18px;
+}
+.logo-mark{
+  width:64px;height:64px;flex-shrink:0;
+  background:rgba(22,217,126,.10);
+  border:1.5px solid rgba(22,217,126,.25);
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:8px;
+}
+.logo-mark svg{width:36px;height:36px;}
+.code{font-family:var(--disp);font-weight:700;font-size:.85rem;letter-spacing:.12em;color:var(--t45);}
+h1{font-family:var(--disp);font-size:clamp(1.6rem,5vw,2.2rem);font-weight:700;}
+h1 em{color:var(--green);font-style:normal;}
+p{font-size:.95rem;color:var(--t70);max-width:380px;line-height:1.6;}
+.links{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.btn{
+  font-family:var(--disp);font-weight:700;font-size:.95rem;
+  text-decoration:none;
+  border-radius:10px;
+  padding:12px 28px;
+  transition:background .2s,transform .2s,border-color .2s;
+}
+.btn-primary{background:var(--green);color:#04150d;}
+.btn-primary:hover{background:#20e88a;transform:translateY(-1px);}
+.btn-ghost{color:var(--text);border:1.5px solid rgba(238,243,240,.18);}
+.btn-ghost:hover{border-color:rgba(22,217,126,.4);}
+.hint{font-size:.75rem;color:var(--t45);margin-top:4px;}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="logo-mark">
+    <svg viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="9" cy="9" r="7"/>
+      <line x1="9" y1="9" x2="9" y2="4.2"/>
+      <line x1="9" y1="9" x2="12.8" y2="9"/>
+    </svg>
+  </div>
+  <div class="code">404</div>
+  <h1>Page <em>not found</em></h1>
+  <p>This page doesn't exist or may have moved. Check the URL, or head back to a page that does.</p>
+  <div class="links">
+    <a class="btn btn-primary" href="/">Go Home</a>
+    <a class="btn btn-ghost" href="/scalpchart">ScalpCharts</a>
+  </div>
+  <p class="hint">The Time To Profit Is Now.</p>
+</main>
+</body>
+</html>
