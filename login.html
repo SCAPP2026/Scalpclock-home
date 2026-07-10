@@ -70,10 +70,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   color:var(--t55);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;}
 .tab.active{color:var(--green);border-bottom-color:var(--green);}
 .form{display:flex;flex-direction:column;gap:16px;}
-.field{display:flex;flex-direction:column;gap:6px;}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0;}
 label{font-size:.82rem;color:var(--t55);font-weight:500;}
 input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:9px;
-  padding:11px 14px;color:var(--text);font-family:var(--body);font-size:.95rem;outline:none;transition:.15s;}
+  width:100%;padding:11px 14px;color:var(--text);font-family:var(--body);font-size:.95rem;outline:none;transition:.15s;}
 input:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
 input::placeholder{color:var(--t30);}
 .btn-main{font-family:var(--disp);font-weight:700;font-size:1rem;padding:13px;border-radius:10px;
