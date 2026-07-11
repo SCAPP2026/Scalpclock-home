@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts</title>
+<meta name="description" content="A breakout without volume is usually a trap. Here's how consolidation, volume, and follow-through combine to separate real breakouts from fakeouts.">
+<link rel="canonical" href="https://scalpclock.com/blog/breakout-trading-explained">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts">
+<meta property="og:description" content="A breakout without volume is usually a trap. Here's how consolidation, volume, and follow-through combine to separate real breakouts from fakeouts.">
+<meta property="og:url" content="https://scalpclock.com/blog/breakout-trading-explained">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts">
+<meta name="twitter:description" content="A breakout without volume is usually a trap. Here's how consolidation, volume, and follow-through combine to separate real breakouts from fakeouts.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;--panel:rgba(14,22,16,.85);--line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;--max:1100px;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:inherit;text-decoration:none;}
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.75);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-family:var(--disp);font-weight:600;font-size:.9rem;color:var(--t55);padding:8px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(22,217,126,.08);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
+.nav-cta:hover{background:#20e88a;}
+.nav-burger{display:none;background:none;border:none;color:var(--t55);cursor:pointer;padding:8px;border-radius:8px;font-size:1.5rem;line-height:1;transition:color .15s;}
+.nav-burger:hover{color:#fff;}
+.nav-drawer{display:none;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1a2b22;z-index:59;padding:4px 0 20px;}
+.nav-drawer.open{display:flex;}
+.nav-drawer a{font-family:var(--disp);font-weight:600;font-size:1.05rem;color:#8899b0;padding:16px 28px;border-bottom:1px solid #1a2b22;text-decoration:none;transition:color .15s,background .15s;}
+.nav-drawer a:hover,.nav-drawer a:active{color:#fff;background:rgba(22,217,126,.07);}
+@media(max-width:720px){.nav-links{display:none;}.nav-burger{display:block;}.nav-cta{display:none;}}
+.breadcrumbs{max-width:760px;margin:0 auto;padding:20px 24px 0;font-size:.82rem;color:var(--t30);position:relative;z-index:1;}
+.breadcrumbs a{color:var(--t55);}
+.breadcrumbs a:hover{color:var(--green);}
+.article-hero{max-width:760px;margin:0 auto;padding:24px 24px 0;position:relative;z-index:1;}
+.article-cat{font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);}
+.article-hero h1{font-family:var(--disp);font-size:clamp(1.8rem,4.5vw,2.5rem);font-weight:700;margin:10px 0 14px;line-height:1.2;}
+.byline{color:var(--t30);font-size:.85rem;margin-bottom:24px;}
+.chart-wrap{max-width:760px;margin:0 auto 8px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;}
+.chart-wrap svg{width:100%;height:auto;display:block;}
+.chart-caption{max-width:760px;margin:0 auto 32px;color:var(--t30);font-size:.82rem;text-align:center;padding:0 24px;}
+.article-body{max-width:760px;margin:0 auto;padding:0 24px 40px;position:relative;z-index:1;color:var(--t80);font-size:1.02rem;line-height:1.75;}
+.article-body h2{font-family:var(--disp);font-size:1.5rem;font-weight:700;color:var(--text);margin:36px 0 14px;}
+.article-body p{margin-bottom:18px;}
+.article-body ul,.article-body ol{margin:0 0 18px 22px;}
+.article-body li{margin-bottom:8px;}
+.article-body a{color:var(--green);text-decoration:underline;text-underline-offset:3px;}
+.article-body strong{color:var(--text);}
+.takeaways{background:var(--g-dim);border:1px solid rgba(22,217,126,.25);border-radius:var(--r);padding:24px;margin:24px 0;}
+.takeaways h2{margin-top:0 !important;}
+.cta-box{background:var(--panel);border:1px solid rgba(22,217,126,.3);border-radius:var(--r);padding:32px;text-align:center;margin:32px 0;}
+.cta-box p{color:var(--t80);margin-bottom:18px;font-size:1.05rem;}
+.btn{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:12px 24px;border-radius:10px;transition:.15s;display:inline-block;}
+.btn-green{background:var(--green);color:#04150d;}
+.btn-green:hover{background:#20e88a;}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:16px 0 32px;}
+.related-card{border:1px solid var(--line);border-radius:10px;padding:16px;transition:.15s;}
+.related-card:hover{border-color:rgba(22,217,126,.4);}
+.related-card span{font-family:var(--disp);font-weight:700;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
+.related-card h4{font-family:var(--disp);font-size:1rem;margin-top:6px;}
+.share-row{display:flex;gap:10px;align-items:center;margin:24px 0 8px;}
+.share-row span{font-size:.82rem;color:var(--t30);margin-right:4px;}
+.share-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;background:none;color:var(--t55);transition:.15s;}
+.share-btn:hover{border-color:rgba(22,217,126,.4);color:var(--green);}
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
+.foot-in{max-width:1140px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts",
+  "description": "A breakout without volume is usually a trap. Here's how consolidation, volume, and follow-through combine to separate real breakouts from fakeouts.",
+  "author": {"@type":"Organization","name":"ScalpClock"},
+  "publisher": {"@type":"Organization","name":"ScalpClock","logo":{"@type":"ImageObject","url":"https://scalpclock.com/icon-512.png"}},
+  "datePublished": "2026-06-23",
+  "dateModified": "2026-06-23",
+  "image": "https://scalpclock.com/og-image.png",
+  "mainEntityOfPage": {"@type":"WebPage","@id":"https://scalpclock.com/blog/breakout-trading-explained"}
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://scalpclock.com/"},
+    {"@type":"ListItem","position":2,"name":"Blog","item":"https://scalpclock.com/blog"},
+    {"@type":"ListItem","position":3,"name":"Pattern Lessons","item":"https://scalpclock.com/blog/category/pattern-lessons"},
+    {"@type":"ListItem","position":4,"name":"Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts","item":"https://scalpclock.com/blog/breakout-trading-explained"}
+  ]
+}</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/learn">Learn</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog" class="active">Blog</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+    </div>
+    <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeDrawer()">Home</a>
+  <a href="/about" onclick="closeDrawer()">About</a>
+  <a href="/learn" onclick="closeDrawer()">Learn</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/blog" class="active" onclick="closeDrawer()">Blog</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<div class="breadcrumbs"><a href="/">Home</a> / <a href="/blog">Blog</a> / <a href="/blog/category/pattern-lessons">Pattern Lessons</a></div>
+
+<div class="article-hero">
+  <span class="article-cat">Pattern Lessons</span>
+  <h1>Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts</h1>
+  <div class="byline">By ScalpClock Team · June 23, 2026 · 7 min read</div>
+</div>
+
+<div class="chart-wrap" id="featChart"></div>
+<p class="chart-caption">Price consolidates in a tight range for several candles, then breaks out on an expanded range — the shape of a real breakout.</p>
+
+<div class="article-body">
+  <p>A breakout is one of the easiest patterns to spot and one of the easiest to get burned by. Price pokes above a level everyone's watching, traders pile in — and then it reverses straight back into the range, leaving the late buyers underwater. That's a fakeout, and it's far more common than a real breakout.</p>
+
+  <h2>What a real breakout looks like</h2>
+  <p>Three things separate a breakout worth trading from one worth fading:</p>
+  <ul>
+    <li><strong>A real consolidation first.</strong> Price needs to have actually compressed into a tight range for multiple candles — that's the "coiled spring" that gives a breakout something to break from. A single sharp move isn't a breakout, it's just a move.</li>
+    <li><strong>Volume expansion on the break.</strong> The candle that clears the range should trade on noticeably higher volume than the consolidation candles. Low-volume breaks are the single biggest tell of a fakeout — there isn't enough real buying (or selling) behind the move to sustain it.</li>
+    <li><strong>Follow-through, not immediate reversal.</strong> A real breakout usually holds above the old range on the next candle or two, sometimes retesting the old level as new support. An immediate snap-back through the breakout level is the market telling you it was a trap.</li>
+  </ul>
+
+  <h2>Why fakeouts happen so often</h2>
+  <p>Obvious levels attract obvious orders — stop-losses and breakout buy orders cluster right above resistance. That makes it profitable for larger players to push price just far enough to trigger those orders, fill against them, and let price fall back. This is sometimes called a stop hunt or a liquidity grab. It's not a conspiracy so much as a structural feature of where orders sit.</p>
+
+  <h2>See it in ScalpClock</h2>
+  <p>ScalpClock's signal board factors in volume surge alongside RSI and VWAP specifically to filter out low-volume breaks. Practice reading real consolidation-then-breakout sessions in <a href="/scalpchart?tab=replay">Replay</a> before trading them live, and use the <a href="/exitassistant">Exit Assistant</a> to set an invalidation level in case the break fails.</p>
+
+  <div class="takeaways">
+    <h2>Key Takeaways</h2>
+    <ul>
+      <li>A breakout needs a real prior consolidation — a single sharp move isn't a breakout.</li>
+      <li>Volume expansion on the breaking candle is the clearest signal separating real breaks from fakeouts.</li>
+      <li>Obvious levels attract stop-hunting order flow, which is why so many breakouts snap back immediately.</li>
+    </ul>
+  </div>
+
+  <div class="cta-box">
+    <p>Practice this setup inside ScalpClock and learn how patterns develop before risking real money.</p>
+    <a class="btn btn-green" href="/login?tab=signup">Start Free →</a>
+  </div>
+
+  <h2>Related Articles</h2>
+  <div class="related-grid">
+    <a class="related-card" href="/blog/support-and-resistance-made-simple">
+      <span>Trading Education</span>
+      <h4>Support and Resistance Made Simple</h4>
+    </a>
+    <a class="related-card" href="/blog/moving-average-crossover-strategy">
+      <span>Pattern Lessons</span>
+      <h4>Moving Average Crossover Strategy: Golden Cross, Death Cross, and Scalping Timeframes</h4>
+    </a>
+    <a class="related-card" href="/blog/how-to-read-candlestick-patterns">
+      <span>Trading Education</span>
+      <h4>How to Read Candlestick Patterns (Without Memorizing 50 Shapes)</h4>
+    </a>
+  </div>
+
+  <div class="share-row">
+    <span>Share:</span>
+    <button class="share-btn" onclick="blogShareX(document.title, window.location.href)" aria-label="Share on X">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.2l5 6.6L18.9 2Zm-1.2 18h1.7L7.4 4H5.6l12.1 16Z"/></svg>
+    </button>
+    <button class="share-btn" onclick="blogShareLinkedIn(window.location.href)" aria-label="Share on LinkedIn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.4H3.3V21H6.9V8.4ZM5.1 3a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2ZM21 21v-7c0-3.4-1.8-5-4.3-5-2 0-2.9 1.1-3.4 1.9V8.4H9.7c0 .1 0 8.8 0 12.6h3.6v-7c0-.4 0-.7.1-1 .3-.7 1-1.4 2.1-1.4 1.5 0 2.1 1.1 2.1 2.8V21H21Z"/></svg>
+    </button>
+    <a class="share-btn" href="mailto:?subject=Breakout%20Trading%20Explained:%20Spotting%20Real%20Breakouts%20vs.%20Fakeouts&body=Check this out: https://scalpclock.com/blog/breakout-trading-explained" aria-label="Share by email">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+    </a>
+    <button class="share-btn" onclick="blogCopyLink(this, window.location.href)" aria-label="Copy link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/></svg>
+    </button>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog">Blog</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Learn</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:support@scalpclock.com" style="color:inherit;text-decoration:underline;">support@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<script src="/js/blog-chart.js"></script>
+<script>
+document.body.style.visibility='visible';
+function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
+function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
+document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
+renderBlogChart('featChart', [{o:50,h:50.5,l:49.6,c:50.1},{o:50.1,h:50.6,l:49.7,c:50.3},{o:50.3,h:50.7,l:49.8,c:50},{o:50,h:50.5,l:49.7,c:50.4},{o:50.4,h:50.6,l:49.9,c:50.2},{o:50.2,h:50.7,l:49.8,c:50.5},{o:50.5,h:52.3,l:50.4,c:52},{o:52,h:53.2,l:51.8,c:52.9},{o:52.9,h:53.6,l:52.6,c:53.3}], {type:'candlestick'});
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
