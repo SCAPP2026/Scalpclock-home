@@ -1,0 +1,6 @@
+#!/bin/sh
+# Keeps sitemap.xml in sync with public *.html pages on every commit.
+# Enable once per clone with: git config core.hooksPath .githooks
+
+node scripts/generate-sitemap.js >/dev/null
+git add sitemap.xml
