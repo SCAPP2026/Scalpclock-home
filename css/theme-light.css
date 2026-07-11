@@ -32,6 +32,13 @@
   --red:#f54242;
   --red-ink:#c22323;
 
+  /* Additional status semantics (dashboard.html: grades, earnings tags,
+     loss/warn colors) — same fill/-ink split as green/gold/red above */
+  --amber:#f5a623;
+  --amber-ink:#9a5f0a;
+  --info:#5b9cf6;
+  --info-ink:#1c5fc4;
+
   --r-card:14px;
   --r-btn:10px;
   --r-input:10px;

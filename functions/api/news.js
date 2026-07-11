@@ -1,6 +1,9 @@
+// Colors tuned for legibility on dashboard.html's light theme (the only
+// consumer of this endpoint) — deeper than a raw brand purple/blue so they
+// clear WCAG AA as text/border color on a white card.
 const SOURCE_META = {
-  polygon: { label: 'Massive',  color: '#a78bfa' },
-  finnhub: { label: 'Finnhub',  color: '#60a5fa' },
+  polygon: { label: 'Massive',  color: '#7c5cd6' },
+  finnhub: { label: 'Finnhub',  color: '#2f6fd6' },
 };
 
 export async function onRequest(context) {
