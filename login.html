@@ -41,51 +41,38 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="/css/theme-light.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#070a08;--panel:rgba(14,22,16,.90);
-  --line:rgba(120,200,160,.13);--green:#16d97e;
-  --text:#eef3f0;--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
-  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
-}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
-  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.08),transparent 68%),
+  linear-gradient(var(--line) 1px,transparent 1px),
+  linear-gradient(90deg,var(--line) 1px,transparent 1px);
   background-size:auto,48px 48px,48px 48px;}
 .box{position:relative;z-index:1;width:100%;max-width:420px;}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;justify-content:center;margin-bottom:32px;}
 .brand-text{display:flex;flex-direction:column;gap:2px;}
 .brand-name{font-family:var(--disp);font-weight:700;font-size:1.45rem;letter-spacing:.02em;color:var(--text);line-height:1;}
 .brand-name em{color:var(--green);font-style:normal;}
-.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green-ink);opacity:.9;white-space:nowrap;}
 .b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
 .b-mark svg{width:18px;height:18px;}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px;
-  box-shadow:0 24px 64px rgba(0,0,0,.5);}
+  box-shadow:var(--shadow-lg);}
 .tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:1px solid var(--line);}
 .tab{flex:1;text-align:center;padding:10px;font-family:var(--disp);font-weight:700;font-size:1rem;
-  color:var(--t55);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;}
-.tab.active{color:var(--green);border-bottom-color:var(--green);}
+  color:var(--t65);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;}
+.tab.active{color:var(--green-ink);border-bottom-color:var(--green);}
 .form{display:flex;flex-direction:column;gap:16px;}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
-label{font-size:.82rem;color:var(--t55);font-weight:500;}
-input{background:rgba(7,10,8,.8);border:1px solid var(--line);border-radius:9px;
-  width:100%;padding:11px 14px;color:var(--text);font-family:var(--body);font-size:.95rem;outline:none;transition:.15s;}
-input:focus{border-color:rgba(22,217,126,.5);box-shadow:0 0 0 3px rgba(22,217,126,.08);}
-input::placeholder{color:var(--t30);}
-.btn-main{font-family:var(--disp);font-weight:700;font-size:1rem;padding:13px;border-radius:10px;
-  background:var(--green);color:#04150d;border:none;cursor:pointer;transition:.15s;margin-top:4px;}
-.btn-main:hover{background:#20e88a;}
-.btn-main:disabled{opacity:.5;cursor:not-allowed;}
+label{font-size:.82rem;color:var(--t65);font-weight:500;}
 
 .msg{font-size:.83rem;padding:10px 14px;border-radius:8px;text-align:center;margin-bottom:8px;}
-.error{background:rgba(255,59,70,.1);border:1px solid rgba(255,59,70,.3);color:#ff3b46;}
-.success{background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);color:var(--green);}
-.footer-note{text-align:center;margin-top:20px;font-size:.78rem;color:var(--t30);}
-.footer-note a{color:var(--green);text-decoration:none;}
+.error{background:rgba(197,35,35,.08);border:1px solid rgba(197,35,35,.3);color:var(--red-ink);}
+.success{background:var(--green-soft);border:1px solid rgba(22,217,126,.35);color:var(--green-ink);}
+.footer-note{text-align:center;margin-top:20px;font-size:.78rem;color:var(--t45);}
+.footer-note a{color:var(--green-ink);text-decoration:none;}
 .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -134,7 +121,7 @@ input::placeholder{color:var(--t30);}
         <label>Password</label>
         <input type="password" id="si-pass" placeholder="••••••••">
       </div>
-      <button class="btn-main" id="si-btn" onclick="signIn()">Sign In</button>
+      <button class="btn btn-primary" id="si-btn" onclick="signIn()" style="width:100%;margin-top:4px">Sign In</button>
     </div>
 
     <!-- SIGN UP -->
@@ -161,7 +148,7 @@ input::placeholder{color:var(--t30);}
         <label>Confirm Password</label>
         <input type="password" id="su-pass2" placeholder="••••••••">
       </div>
-      <button class="btn-main" id="su-btn" onclick="signUp()">Create Account</button>
+      <button class="btn btn-primary" id="su-btn" onclick="signUp()" style="width:100%;margin-top:4px">Create Account</button>
     </div>
   </div>
   <p class="footer-note">By signing up you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>

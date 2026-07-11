@@ -1,0 +1,109 @@
+/* ScalpClock — Light theme (login.html, learn.html, dashboard.html only).
+   Charts/trading-tool pages (scalpchart.html, exitassistant.html) and the
+   rest of the marketing site keep the original dark theme and are not
+   affected by this file. See /home/iamtvic/.claude/plans for design notes. */
+
+:root{
+  /* Surfaces */
+  --bg:#f7f9f7;
+  --bg2:#eef2ef;
+  --panel:#ffffff;
+  --panel-alt:#f1f5f2;
+  --line:rgba(13,26,19,.12);
+  --line-strong:rgba(13,26,19,.20);
+
+  /* Text ("ink" family — dark text on a light background) */
+  --text:#0d1a13;
+  --t85:rgba(13,26,19,.85);
+  --t65:rgba(13,26,19,.65);
+  --t45:rgba(13,26,19,.45);
+  --t25:rgba(13,26,19,.25);
+
+  /* Brand green — fills/borders/icons only; use --green-ink for text/links */
+  --green:#16d97e;
+  --green-ink:#0a7a4a;
+  --green-soft:rgba(22,217,126,.12);
+  --green-soft-strong:rgba(22,217,126,.22);
+  --on-green:#06140d;
+
+  /* Gamification semantics (learn.html badges/streaks) */
+  --gold:#f5c842;
+  --gold-ink:#8a6a12;
+  --red:#f54242;
+  --red-ink:#c22323;
+
+  --r-card:14px;
+  --r-btn:10px;
+  --r-input:10px;
+  --shadow-sm:0 1px 2px rgba(13,26,19,.04);
+  --shadow-md:0 4px 16px rgba(13,26,19,.07);
+  --shadow-lg:0 8px 30px rgba(13,26,19,.14);
+
+  --disp:'Rajdhani',sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace; /* dashboard.html .card-dark numeric data only */
+
+  /* Dark-inset tokens — copied verbatim from scalpchart.html/exitassistant.html
+     so dashboard's trading-data widgets tie back to the real chart pages.
+     Used only inside .card-dark; never mix with the light tokens above. */
+  --dk-bg:#070b10;
+  --dk-surface:#0e1824;
+  --dk-border:#1e2d42;
+  --dk-border2:#2a3d58;
+  --dk-text:#dde8f5;
+  --dk-muted:#8aa4c0;
+  --dk-accent:#00d4aa;
+  --dk-bull:#00c96b;
+  --dk-bear:#ff4566;
+  --dk-warn:#f5a623;
+  --dk-info:#5b9cf6;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--disp);font-weight:700;font-size:1rem;
+  padding:12px 24px;border-radius:var(--r-btn);
+  cursor:pointer;transition:.15s;text-decoration:none;border:1px solid transparent;
+}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-primary{background:var(--green);color:var(--on-green);border-color:var(--green);}
+.btn-primary:hover{background:#20e88a;border-color:#20e88a;}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--line-strong);}
+.btn-outline{background:transparent;color:var(--green-ink);border-color:var(--green);}
+.btn-outline:hover{background:var(--green-soft);}
+
+/* ── Cards ───────────────────────────────────────────────────────────── */
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r-card);box-shadow:var(--shadow-sm);
+}
+.card-dark{
+  background:var(--dk-surface);border:1px solid var(--dk-border);
+  border-top:2px solid var(--dk-accent);
+  color:var(--dk-text);border-radius:var(--r-card);
+  box-shadow:var(--shadow-lg);
+}
+.card-dark .mono,
+.card-dark .num{font-family:var(--mono);}
+
+/* ── Form inputs (login.html) ───────────────────────────────────────── */
+.field input,
+.input{
+  width:100%;background:var(--bg2);border:1px solid var(--line);
+  border-radius:var(--r-input);padding:11px 14px;color:var(--text);
+  font-family:var(--body);font-size:.95rem;outline:none;transition:.15s;
+}
+.field input::placeholder,
+.input::placeholder{color:var(--t25);}
+.field input:focus-visible,
+.input:focus-visible{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px var(--green-soft);
+}
+
+/* ── Nav link states ─────────────────────────────────────────────────── */
+.nav-link{color:var(--t65);text-decoration:none;transition:.15s;}
+.nav-link:hover{color:var(--text);}
+.nav-link.active{color:var(--green-ink);}
