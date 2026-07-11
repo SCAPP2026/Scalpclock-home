@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock Tutorials · ScalpClock Blog</title>
+<meta name="description" content="Get the most out of ScalpClock: what it is, how chart replay builds skill, and how it compares to traditional trading platforms.">
+<link rel="canonical" href="https://scalpclock.com/blog/category/scalpclock-tutorials">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock Tutorials · ScalpClock Blog">
+<meta property="og:description" content="Get the most out of ScalpClock: what it is, how chart replay builds skill, and how it compares to traditional trading platforms.">
+<meta property="og:url" content="https://scalpclock.com/blog/category/scalpclock-tutorials">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock Tutorials · ScalpClock Blog">
+<meta name="twitter:description" content="Get the most out of ScalpClock: what it is, how chart replay builds skill, and how it compares to traditional trading platforms.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;--panel:rgba(14,22,16,.85);--line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;--max:1100px;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.75);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-family:var(--disp);font-weight:600;font-size:.9rem;color:var(--t55);padding:8px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(22,217,126,.08);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
+.nav-cta:hover{background:#20e88a;}
+.nav-burger{display:none;background:none;border:none;color:var(--t55);cursor:pointer;padding:8px;border-radius:8px;font-size:1.5rem;line-height:1;transition:color .15s;}
+.nav-burger:hover{color:#fff;}
+.nav-drawer{display:none;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1a2b22;z-index:59;padding:4px 0 20px;}
+.nav-drawer.open{display:flex;}
+.nav-drawer a{font-family:var(--disp);font-weight:600;font-size:1.05rem;color:#8899b0;padding:16px 28px;border-bottom:1px solid #1a2b22;text-decoration:none;transition:color .15s,background .15s;}
+.nav-drawer a:hover,.nav-drawer a:active{color:#fff;background:rgba(22,217,126,.07);}
+@media(max-width:720px){.nav-links{display:none;}.nav-burger{display:block;}.nav-cta{display:none;}}
+.breadcrumbs{max-width:var(--max);margin:0 auto;padding:20px 24px 0;font-size:.82rem;color:var(--t30);position:relative;z-index:1;}
+.breadcrumbs a{color:var(--t55);}
+.breadcrumbs a:hover{color:var(--green);}
+.blog-hero{text-align:center;padding:32px 24px 40px;position:relative;z-index:1;}
+.blog-hero h1{font-family:var(--disp);font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:700;margin-bottom:14px;}
+.blog-hero h1 em{color:var(--green);font-style:normal;}
+.blog-hero p{color:var(--t55);font-size:1rem;max-width:600px;margin:0 auto;}
+.post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:16px 24px 80px;max-width:var(--max);margin:0 auto;position:relative;z-index:1;}
+.post-card{display:flex;flex-direction:column;gap:8px;padding:22px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);transition:.2s;}
+.post-card:hover{border-color:rgba(22,217,126,.4);transform:translateY(-3px);}
+.post-cat{font-family:var(--disp);font-weight:700;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);}
+.post-card h3{font-family:var(--disp);font-size:1.15rem;font-weight:700;line-height:1.3;}
+.post-card p{color:var(--t55);font-size:.88rem;line-height:1.6;flex:1;}
+.post-date{font-size:.78rem;color:var(--t30);}
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
+.foot-in{max-width:1140px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://scalpclock.com/"},
+    {"@type":"ListItem","position":2,"name":"Blog","item":"https://scalpclock.com/blog"},
+    {"@type":"ListItem","position":3,"name":"ScalpClock Tutorials","item":"https://scalpclock.com/blog/category/scalpclock-tutorials"}
+  ]
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"url":"https://scalpclock.com/blog/what-is-scalpclock"},
+    {"@type":"ListItem","position":2,"url":"https://scalpclock.com/blog/chart-replay-helps-traders-improve-faster"},
+    {"@type":"ListItem","position":3,"url":"https://scalpclock.com/blog/scalpclock-vs-traditional-trading-platforms"}
+  ]
+}</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/learn">Learn</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog" class="active">Blog</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+    </div>
+    <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeDrawer()">Home</a>
+  <a href="/about" onclick="closeDrawer()">About</a>
+  <a href="/learn" onclick="closeDrawer()">Learn</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/blog" class="active" onclick="closeDrawer()">Blog</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<div class="breadcrumbs"><a href="/">Home</a> / <a href="/blog">Blog</a> / ScalpClock Tutorials</div>
+
+<div class="blog-hero">
+  <h1>ScalpClock <em>Tutorials</em></h1>
+  <p>What ScalpClock is, how its replay and coaching features work, and how it stacks up against a traditional trading platform.</p>
+</div>
+
+<div class="post-grid">
+  <a class="post-card" href="/blog/what-is-scalpclock">
+    <span class="post-cat">ScalpClock Tutorials</span>
+    <h3>What Is ScalpClock? A Trading Coach Built Into Your Charts</h3>
+    <p>ScalpClock pairs live scalp signals with a built-in Learn Hub, chart replay, and an Exit Assistant — so you build real skill while you trade.</p>
+    <span class="post-date">2026-06-08</span>
+  </a>
+  <a class="post-card" href="/blog/chart-replay-helps-traders-improve-faster">
+    <span class="post-cat">ScalpClock Tutorials</span>
+    <h3>Why Chart Replay Helps Traders Improve Faster Than Live Trading Alone</h3>
+    <p>Live markets give you one shot per setup. Replay lets you rewind, re-run, and drill the same pattern until recognition becomes automatic.</p>
+    <span class="post-date">2026-06-12</span>
+  </a>
+  <a class="post-card" href="/blog/scalpclock-vs-traditional-trading-platforms">
+    <span class="post-cat">ScalpClock Tutorials</span>
+    <h3>ScalpClock vs. Traditional Trading Platforms: What's Actually Different</h3>
+    <p>Most platforms give you charts and an order ticket. ScalpClock adds a Learn Hub, replay, and an Exit Assistant on top.</p>
+    <span class="post-date">2026-07-10</span>
+  </a>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog">Blog</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Learn</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:support@scalpclock.com" style="color:inherit;text-decoration:underline;">support@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<script>
+document.body.style.visibility='visible';
+function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
+function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
+document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
