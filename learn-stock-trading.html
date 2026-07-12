@@ -47,6 +47,7 @@
   --bg:#070a08;--bg2:#0b110d;--panel:rgba(14,22,16,.85);--line:rgba(120,200,160,.13);
   --green:#16d97e;--g-dim:rgba(22,217,126,.08);
   --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --red:#f54242;
   --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;--max:1100px;--r:14px;
 }
 html{scroll-behavior:smooth}
@@ -122,6 +123,27 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.btn-outline{border:1px solid rgba(22,217,126,.4);color:var(--green);background:none;}
+.btn-outline:hover{background:var(--g-dim);}
+.mini-cta{max-width:760px;margin:0 auto 8px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--g-dim);border:1px solid rgba(22,217,126,.25);border-radius:10px;padding:14px 20px;}
+.mini-cta p{color:var(--t80);font-size:.92rem;margin:0;}
+.mini-cta .btn{padding:9px 18px;font-size:.85rem;white-space:nowrap;}
+.replay-demo{max-width:760px;margin:0 auto 32px;background:var(--panel);border:1px solid rgba(22,217,126,.25);border-radius:var(--r);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.replay-demo p{color:var(--t80);font-size:.95rem;margin:0;max-width:480px;}
+.replay-demo .btn{white-space:nowrap;}
+.email-capture{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:28px;margin:32px 0;text-align:center;}
+.email-capture h3{font-family:var(--disp);font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--text);}
+.email-capture p{color:var(--t55);font-size:.88rem;margin-bottom:16px;}
+.email-capture-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:420px;margin:0 auto;}
+.email-capture-form input{flex:1;min-width:200px;padding:11px 16px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-family:var(--body);font-size:.9rem;}
+.email-capture-form input::placeholder{color:var(--t30);}
+.email-capture-form button{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:11px 20px;border-radius:8px;background:var(--green);color:#04150d;border:none;cursor:pointer;white-space:nowrap;transition:.15s;}
+.email-capture-form button:hover:not(:disabled){background:#20e88a;}
+.email-capture-form button:disabled{opacity:.6;cursor:default;}
+.email-capture-msg{font-size:.82rem;margin-top:10px;min-height:1em;}
+.email-capture-msg.is-success{color:var(--green);}
+.email-capture-msg.is-error{color:var(--red);}
+.email-capture-privacy{font-size:.75rem;color:var(--t30);margin-top:8px;}
 </style>
 <style>
 
@@ -214,6 +236,11 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <p>Most "learn to trade" resources are either a wall of theory or a course you pay for upfront. ScalpClock's Learn Hub is a free, structured curriculum: one concept per lesson, a chart example, a practice scenario, and a quiz — connected directly to the same live signals and charts you'll actually trade with.</p>
 </div>
 
+<div class="mini-cta">
+  <p>New to ScalpClock? Start free — no credit card required.</p>
+  <a class="btn btn-green" href="/login?tab=signup">Start Free →</a>
+</div>
+
 <div class="lp-body">
   <h2>How ScalpClock Delivers This</h2>
   <ul class="feature-list">
@@ -221,6 +248,11 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <li><strong>Live Pattern Detection</strong> — see the concepts from each lesson flagged automatically on <a href="/scalpchart">live ScalpCharts</a>.</li>
     <li><strong>Practice Without Risk</strong> — drill what you just learned in <a href="/scalpchart?tab=replay">Replay</a> before trading it live.</li>
   </ul>
+
+  <div class="replay-demo">
+    <p>See this play out on a real chart — step through a historical session candle by candle.</p>
+    <a class="btn btn-outline" href="/scalpchart?tab=replay">Try This in Replay →</a>
+  </div>
 
   <h2>Learn More</h2>
   <div class="lp-links">
@@ -249,6 +281,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <p>Practice this setup inside ScalpClock and learn how patterns develop before risking real money.</p>
     <a class="btn btn-green" href="/login?tab=signup">Start Free →</a>
   </div>
+
+  <div class="email-capture">
+    <h3>Get one trading lesson a week</h3>
+    <p>New articles and pattern breakdowns, straight to your inbox. No spam.</p>
+    <form class="email-capture-form" id="emailCapture">
+      <input type="email" id="emailCaptureEmail" placeholder="you@example.com" autocomplete="email" required>
+      <button type="submit" id="emailCaptureBtn">Subscribe</button>
+    </form>
+    <p class="email-capture-msg" id="emailCaptureMsg" role="status" aria-live="polite"></p>
+    <p class="email-capture-privacy">We'll only use your email to send trading lessons. Unsubscribe anytime.</p>
+  </div>
 </div>
 
 <footer>
@@ -269,11 +312,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </footer>
 
+<script src="/js/blog-chart.js"></script>
 <script>
 document.body.style.visibility='visible';
 function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
 function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
+initEmailCapture('emailCapture', 'landing-page');
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
