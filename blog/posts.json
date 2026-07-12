@@ -1,0 +1,92 @@
+[
+  {
+    "slug": "what-is-scalpclock",
+    "title": "What Is ScalpClock? A Trading Coach Built Into Your Charts",
+    "category": "ScalpClock Tutorials",
+    "excerpt": "ScalpClock pairs live scalp signals with a built-in Learn Hub, chart replay, and an Exit Assistant — so you build real skill while you trade, instead of guessing.",
+    "date": "2026-06-08",
+    "keywords": ["what is scalpclock", "trading coach", "learn stock trading", "scalp signals"],
+    "related": ["scalpclock-vs-traditional-trading-platforms", "chart-replay-helps-traders-improve-faster", "how-traders-build-pattern-recognition-skills"]
+  },
+  {
+    "slug": "chart-replay-helps-traders-improve-faster",
+    "title": "Why Chart Replay Helps Traders Improve Faster Than Live Trading Alone",
+    "category": "ScalpClock Tutorials",
+    "excerpt": "Live markets give you one shot per setup. Replay lets you rewind, re-run, and drill the same pattern until recognition becomes automatic.",
+    "date": "2026-06-12",
+    "keywords": ["trading replay tool", "chart replay", "practice trading", "scalping practice simulator"],
+    "related": ["what-is-scalpclock", "how-traders-build-pattern-recognition-skills", "how-to-read-candlestick-patterns"]
+  },
+  {
+    "slug": "how-to-read-candlestick-patterns",
+    "title": "How to Read Candlestick Patterns (Without Memorizing 50 Shapes)",
+    "category": "Trading Education",
+    "excerpt": "Most candlestick guides throw a wall of shapes at you. Here's the small set of patterns that actually show up often enough to matter, and how to read them.",
+    "date": "2026-06-16",
+    "keywords": ["how to read candlestick patterns", "candlestick pattern trainer", "candlestick basics"],
+    "related": ["support-and-resistance-made-simple", "breakout-trading-explained", "how-traders-build-pattern-recognition-skills"]
+  },
+  {
+    "slug": "scalping-mistakes-new-traders-make",
+    "title": "7 Scalping Mistakes New Traders Make (And How to Fix Them)",
+    "category": "Trading Education",
+    "excerpt": "Overtrading, chasing green candles, ignoring volume — the same handful of mistakes account for most blown-up scalping accounts. Here's how to spot them in your own trading.",
+    "date": "2026-06-19",
+    "keywords": ["scalping mistakes", "scalping practice simulator", "day trading mistakes"],
+    "related": ["vwap-trading-strategy-explained", "support-and-resistance-made-simple", "chart-replay-helps-traders-improve-faster"]
+  },
+  {
+    "slug": "breakout-trading-explained",
+    "title": "Breakout Trading Explained: Spotting Real Breakouts vs. Fakeouts",
+    "category": "Pattern Lessons",
+    "excerpt": "A breakout without volume is usually a trap. Here's how consolidation, volume, and follow-through combine to separate real breakouts from fakeouts.",
+    "date": "2026-06-23",
+    "keywords": ["breakout trading", "trading pattern recognition", "consolidation breakout"],
+    "related": ["support-and-resistance-made-simple", "moving-average-crossover-strategy", "how-to-read-candlestick-patterns"]
+  },
+  {
+    "slug": "support-and-resistance-made-simple",
+    "title": "Support and Resistance Made Simple",
+    "category": "Trading Education",
+    "excerpt": "Support and resistance aren't exact lines — they're zones where buyers and sellers have fought before. Here's how to draw them without overthinking it.",
+    "date": "2026-06-27",
+    "keywords": ["support and resistance", "learn stock trading", "price action basics"],
+    "related": ["breakout-trading-explained", "how-to-read-candlestick-patterns", "vwap-trading-strategy-explained"]
+  },
+  {
+    "slug": "vwap-trading-strategy-explained",
+    "title": "VWAP Trading Strategy Explained: Trading With the Institutional Average",
+    "category": "Pattern Lessons",
+    "excerpt": "VWAP is the price institutions actually benchmark against. Here's how retail scalpers can use it to time entries instead of fighting the tape.",
+    "date": "2026-07-01",
+    "keywords": ["vwap trading strategy", "vwap explained", "institutional trading levels"],
+    "related": ["moving-average-crossover-strategy", "scalping-mistakes-new-traders-make", "breakout-trading-explained"]
+  },
+  {
+    "slug": "moving-average-crossover-strategy",
+    "title": "Moving Average Crossover Strategy: Golden Cross, Death Cross, and Scalping Timeframes",
+    "category": "Pattern Lessons",
+    "excerpt": "Crossovers are simple, lagging, and still useful — if you know which timeframe you're trading and stop expecting them to call exact tops and bottoms.",
+    "date": "2026-07-04",
+    "keywords": ["moving average crossover", "golden cross", "death cross", "candlestick pattern trainer"],
+    "related": ["vwap-trading-strategy-explained", "breakout-trading-explained", "how-traders-build-pattern-recognition-skills"]
+  },
+  {
+    "slug": "how-traders-build-pattern-recognition-skills",
+    "title": "How Traders Actually Build Pattern Recognition Skills",
+    "category": "Trading Education",
+    "excerpt": "Pattern recognition isn't memorization — it's repetition with feedback. Here's what the research on skill acquisition says, and how to apply it to charts.",
+    "date": "2026-07-07",
+    "keywords": ["trading pattern recognition", "learn stock trading", "chart pattern practice"],
+    "related": ["chart-replay-helps-traders-improve-faster", "how-to-read-candlestick-patterns", "what-is-scalpclock"]
+  },
+  {
+    "slug": "scalpclock-vs-traditional-trading-platforms",
+    "title": "ScalpClock vs. Traditional Trading Platforms: What's Actually Different",
+    "category": "ScalpClock Tutorials",
+    "excerpt": "Most platforms give you charts and an order ticket. ScalpClock adds a Learn Hub, replay, and an Exit Assistant on top — here's what that means in practice.",
+    "date": "2026-07-10",
+    "keywords": ["stock trading simulator", "trading platform comparison", "scalpclock review"],
+    "related": ["what-is-scalpclock", "chart-replay-helps-traders-improve-faster", "how-traders-build-pattern-recognition-skills"]
+  }
+]
