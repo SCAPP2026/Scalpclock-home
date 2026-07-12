@@ -113,3 +113,64 @@ function initBlogIndex() {
     render();
   });
 }
+
+// --- Email capture (shared backend: /api/waitlist) ---
+// Mirrors maintenance.html's real fetch/validate/success/error handler.
+// formId must contain elements with ids `${formId}Email`, `${formId}Btn`,
+// `${formId}Msg`. `source` is passed through to the waitlist endpoint for
+// segmentation (e.g. 'blog-article', 'landing-page').
+
+function initEmailCapture(formId, source) {
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const form = document.getElementById(formId);
+  if (!form) return;
+  const input = document.getElementById(formId + 'Email');
+  const btn = document.getElementById(formId + 'Btn');
+  const msg = document.getElementById(formId + 'Msg');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const email = input.value.trim();
+
+    msg.textContent = '';
+    msg.className = 'email-capture-msg';
+
+    if (!EMAIL_RE.test(email)) {
+      msg.textContent = 'Please enter a valid email address.';
+      msg.classList.add('is-error');
+      return;
+    }
+
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.ok) {
+        msg.textContent = "You're subscribed — look out for new lessons in your inbox.";
+        msg.classList.add('is-success');
+        input.value = '';
+        input.disabled = true;
+        btn.textContent = 'Subscribed';
+        btn.disabled = true;
+      } else {
+        msg.textContent = data.error || 'Please enter a valid email address.';
+        msg.classList.add('is-error');
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    } catch (err) {
+      msg.textContent = 'Something went wrong. Please try again.';
+      msg.classList.add('is-error');
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
+}

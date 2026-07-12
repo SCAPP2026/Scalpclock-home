@@ -36,9 +36,9 @@ async function handleWaitlist(env, request) {
     return json({ error: 'Waitlist not configured' }, 200);
   }
 
-  let email;
+  let email, source;
   try {
-    ({ email } = await request.json());
+    ({ email, source } = await request.json());
   } catch {
     return json({ error: 'Please enter a valid email address.' }, 400);
   }
@@ -56,7 +56,7 @@ async function handleWaitlist(env, request) {
       'Content-Type': 'application/json',
       Prefer:         'resolution=ignore-duplicates,return=minimal',
     },
-    body: JSON.stringify({ email, source: 'maintenance_waitlist' }),
+    body: JSON.stringify({ email, source: source || 'maintenance_waitlist' }),
   });
 
   if (!res.ok) {
