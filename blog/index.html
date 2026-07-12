@@ -126,6 +126,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.email-capture{max-width:600px;margin:0 auto 40px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:28px;text-align:center;position:relative;z-index:1;}
+.email-capture h3{font-family:var(--disp);font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--text);}
+.email-capture p{color:var(--t55);font-size:.88rem;margin-bottom:16px;}
+.email-capture-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:420px;margin:0 auto;}
+.email-capture-form input{flex:1;min-width:200px;padding:11px 16px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-family:var(--body);font-size:.9rem;}
+.email-capture-form input::placeholder{color:var(--t30);}
+.email-capture-form button{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:11px 20px;border-radius:8px;background:var(--green);color:#04150d;border:none;cursor:pointer;white-space:nowrap;transition:.15s;}
+.email-capture-form button:hover:not(:disabled){background:#20e88a;}
+.email-capture-form button:disabled{opacity:.6;cursor:default;}
+.email-capture-msg{font-size:.82rem;margin-top:10px;min-height:1em;}
+.email-capture-msg.is-success{color:var(--green);}
+.email-capture-msg.is-error{color:var(--red);}
+.email-capture-privacy{font-size:.75rem;color:var(--t30);margin-top:8px;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -206,6 +219,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 
 <div class="post-grid" id="postGrid"></div>
 
+<div class="email-capture">
+  <h3>Get one trading lesson a week</h3>
+  <p>New articles and pattern breakdowns, straight to your inbox. No spam.</p>
+  <form class="email-capture-form" id="emailCapture">
+    <input type="email" id="emailCaptureEmail" placeholder="you@example.com" autocomplete="email" required>
+    <button type="submit" id="emailCaptureBtn">Subscribe</button>
+  </form>
+  <p class="email-capture-msg" id="emailCaptureMsg" role="status" aria-live="polite"></p>
+  <p class="email-capture-privacy">We'll only use your email to send trading lessons. Unsubscribe anytime.</p>
+</div>
+
 <footer>
   <div class="foot-in">
     <div class="foot-links">
@@ -231,6 +255,7 @@ function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.
 function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
 initBlogIndex();
+initEmailCapture('emailCapture', 'blog-index');
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
