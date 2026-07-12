@@ -200,6 +200,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
   .btn-close-trade{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:5px;border:1px solid rgba(255,69,102,.4);background:rgba(255,69,102,.1);color:var(--dk-bear);cursor:pointer;transition:.15s;white-space:nowrap;}
   .btn-close-trade:hover{background:rgba(255,69,102,.2);}
+  .trade-actions{display:inline-flex;align-items:center;gap:6px;}
+  .btn-delete-trade{font-family:var(--mono);font-size:.68rem;font-weight:700;width:22px;height:22px;line-height:1;border-radius:5px;border:1px solid rgba(194,35,35,.35);background:rgba(194,35,35,.08);color:var(--red-ink);cursor:pointer;transition:.15s;}
+  .btn-delete-trade:hover{background:rgba(194,35,35,.18);}
+  .open-trades-wrap .btn-delete-trade{border-color:rgba(255,69,102,.4);background:rgba(255,69,102,.1);color:var(--dk-bear);}
+  .open-trades-wrap .btn-delete-trade:hover{background:rgba(255,69,102,.2);}
   /* DAILY SCORECARD */
   .scorecard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
   @media(max-width:640px){.scorecard-grid{grid-template-columns:repeat(2,1fr);}}
@@ -587,7 +592,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="link-title">ScalpExit</div>
       <div class="link-desc">Profit clock, trailing stops, and probability-based exit signals.</div>
     </a>
-    <a class="link-card" href="/scalpchart">
+    <a class="link-card" href="/dashboard#signals">
       <div class="link-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <div class="link-title">ScalpSignals</div>
       <div class="link-desc">Real-time RSI + VWAP + volume signals — live inside ScalpCharts.</div>
@@ -633,7 +638,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 
   <!-- SCALP SIGNALS BOARD -->
-  <div class="section-title" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+  <div class="section-title" id="signals" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
     <span>📡 Scalp Signals</span>
     <div style="display:flex;align-items:center;gap:8px;">
       <span id="signalStatusBadge" style="font-family:var(--mono);font-size:.65rem;"></span>
@@ -721,7 +726,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <!-- Closed Trades -->
   <div class="trade-table-wrap">
     <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr>
-      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th>
+      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th><th>Action</th>
     </tr></thead><tbody id="tradeBody"></tbody></table>
     <div class="trade-empty" id="tradeEmpty">
       <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
@@ -1168,6 +1173,14 @@ function renderAchievements(closed, open, wins, uniqueTickers) {
   }).join('');
 }
 
+async function deleteTrade(id) {
+  if (!confirm('Delete this trade entry? This cannot be undone.')) return;
+  try {
+    await sb.from('trades').delete().eq('id', id).eq('user_id', _uid);
+    await loadAllTrades();
+  } catch(e) { alert('Could not delete trade: ' + e.message); }
+}
+
 async function loadAllTrades() {
   await Promise.all([loadOpenTrades(), loadClosedTrades()]);
   // Compute XP + achievements after both load
@@ -1200,7 +1213,10 @@ async function loadOpenTrades() {
         <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
         <td><span class="t-price">${qty}x</span></td>
         <td><span class="t-date">${date}</span></td>
-        <td><button class="btn-close-trade" onclick="openCloseModal('${t.id}','${t.symbol}','${dir}',${t.entry_price},${qty})">Close</button></td>
+        <td><span class="trade-actions">
+          <button class="btn-close-trade" onclick="openCloseModal('${t.id}','${t.symbol}','${dir}',${t.entry_price},${qty})">Close</button>
+          <button class="btn-delete-trade" title="Delete entry" onclick="deleteTrade('${t.id}')">✕</button>
+        </span></td>
       </tr>`;
     }).join('');
   } catch(e) {}
@@ -1243,6 +1259,7 @@ async function loadClosedTrades() {
         <td><span class="t-price">${qty}x</span></td>
         <td><span class="t-date">${date}</span></td>
         <td><span class="t-badge ${win ? 'win' : 'loss'}">${win ? 'WIN' : 'LOSS'}</span></td>
+        <td><button class="btn-delete-trade" title="Delete entry" onclick="deleteTrade('${t.id}')">✕</button></td>
       </tr>`;
     }).join('');
     document.getElementById('tradeTable').style.display = 'table';

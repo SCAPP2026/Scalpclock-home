@@ -424,15 +424,54 @@ function bumpDailyCount() {
 }
 function dailyLimitReached() { return !isPaidUser && getDailyCount()>=DAILY_LESSON_LIMIT; }
 
+/* ── SUPABASE (shared client + logged-in progress sync) ── */
+const SUPABASE_URL='https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb=null;
+try { sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); } catch(e) { console.warn('Supabase init failed:',e.message); }
+let _uid=null;
+
 async function checkPlan() {
   try {
-    const SUPABASE_URL='https://fnuqxiflqqejjttxymbz.supabase.co';
-    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
-    const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     const {data:{session}}=await sb.auth.getSession();
     const plan=session?.user?.app_metadata?.plan||'free';
     isPaidUser=plan==='pro'||plan==='trial';
+    _uid=session?.user?.id||null;
+    if(_uid) await syncProgressFromCloud();
   } catch(e) { console.warn('Plan check failed:',e.message); isPaidUser=false; }
+}
+
+// Anonymous visitors (_uid===null) never call these — pure localStorage,
+// same as before this sync was added.
+async function syncProgressFromCloud() {
+  try {
+    const {data,error}=await sb.from('profiles').select('learn_progress').eq('id',_uid).single();
+    if(error||!data||!data.learn_progress) return;
+    const r=data.learn_progress;
+    // Union merge so neither the device's nor the account's progress can be lost.
+    if(Array.isArray(r.done)) LS.set('sc_lessons_done',Array.from(new Set([...getDone(),...r.done])));
+    if(Array.isArray(r.badges)) LS.set('sc_earned_badges',Array.from(new Set([...getEarned(),...r.badges])));
+    if(typeof r.xp==='number') LS.set('sc_learn_xp',Math.max(getXP(),r.xp));
+    if(typeof r.streakCount==='number' && (r.streakDate||'')>=LS.get('sc_streak_date','')){
+      LS.set('sc_streak_date',r.streakDate||'');
+      LS.set('sc_streak_count',Math.max(LS.get('sc_streak_count',0),r.streakCount));
+    }
+    if(typeof r.quizFirstTry==='number') LS.set('sc_quiz_first_try',Math.max(LS.get('sc_quiz_first_try',0),r.quizFirstTry));
+  } catch(e) { console.warn('Progress sync (pull) failed:',e.message); }
+}
+
+async function pushProgressToCloud() {
+  if(!_uid) return;
+  try {
+    await sb.from('profiles').update({learn_progress:{
+      done:getDone(),
+      badges:getEarned(),
+      xp:getXP(),
+      streakDate:LS.get('sc_streak_date',''),
+      streakCount:LS.get('sc_streak_count',0),
+      quizFirstTry:LS.get('sc_quiz_first_try',0),
+    }}).eq('id',_uid);
+  } catch(e) { console.warn('Progress sync (push) failed:',e.message); }
 }
 function hoursUntilMidnightStr() {
   const now=new Date(),midnight=new Date(now);
@@ -1008,6 +1047,7 @@ function computeRewards() {
   if(l.isBoss&&earnBadge('boss_slayer'))earnedThisLesson.push({badge:true,badgeIcon:'👑',badgeName:'Boss Slayer'});
   if(xp>=500&&earnBadge('xp500'))earnedThisLesson.push({badge:true,badgeIcon:'⚗️',badgeName:'XP 500'});
   if(xp>=2000&&earnBadge('xp2000'))earnedThisLesson.push({badge:true,badgeIcon:'🔮',badgeName:'XP 2000'});
+  pushProgressToCloud();
 }
 
 function nextStep(){if(modalStep<4){modalStep++;renderModalStep();}}
