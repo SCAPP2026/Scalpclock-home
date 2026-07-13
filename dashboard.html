@@ -451,10 +451,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .sb-rsi b{color:var(--dk-text);font-weight:700;}
   .sb-explain{font-size:.68rem;color:var(--dk-muted);line-height:1.4;padding:0 16px 10px 20px;display:none;}
   .sb-row:hover + .sb-explain{display:block;}
-  .sb-toggle{display:block;width:100%;background:rgba(255,255,255,.02);border:none;border-top:1px solid var(--dk-border);color:var(--dk-accent);font-family:var(--disp);font-weight:700;font-size:.82rem;padding:12px 16px;cursor:pointer;transition:.15s;text-align:center;}
-  .sb-toggle:hover{background:rgba(0,212,170,.08);}
   .sb-loading,.sb-error{padding:28px 20px;text-align:center;color:var(--dk-muted);font-size:.82rem;}
   .sb-error{color:var(--dk-warn);}
+  .sb-range-tabs{display:flex;gap:6px;padding:12px 16px 0;}
+  .sb-range-tab{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--dk-border);color:var(--dk-muted);font-family:var(--disp);font-weight:700;font-size:.78rem;padding:8px;border-radius:8px;cursor:pointer;transition:.15s;}
+  .sb-range-tab:hover{color:var(--dk-text);}
+  .sb-range-tab.active{background:rgba(0,212,170,.12);border-color:var(--dk-accent);color:var(--dk-accent);}
+  .sb-group-title{font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:14px 16px 6px;color:var(--dk-muted);}
+  .sb-group-empty{padding:10px 16px 16px;color:var(--dk-muted);font-size:.8rem;}
   /* Lock overlay */
   .sp-lock{position:absolute;inset:0;background:rgba(7,11,16,.85);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--r-card);}
   .sp-lock svg{width:26px;height:26px;stroke:var(--dk-accent);fill:none;stroke-width:1.8;}
@@ -651,15 +655,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
   <p style="font-size:.75rem;color:var(--t45);margin:-4px 0 10px;line-height:1.5;">
-    15-min RSI alerts on the 20 most-traded options stocks. 🟢 Green = calls are the play. 🔴 Red = puts are the play. 🟡 Yellow = wait for a clearer setup.
+    Scans the most active &amp; moving stocks in the market and surfaces the strongest setups. 🟢 Green = calls are the play. 🔴 Red = puts are the play.
   </p>
 
   <div class="signal-board-wrap" id="signalPreview">
+    <div class="sb-range-tabs" id="sbRangeTabs">
+      <button class="sb-range-tab active" data-range="day" onclick="setSignalsRange('day')">Today</button>
+      <button class="sb-range-tab" data-range="week" onclick="setSignalsRange('week')">This Week</button>
+    </div>
     <div id="signalBoard"><div class="sb-loading">Loading signals…</div></div>
     <div class="sp-lock" id="signalLock">
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
       <div class="sp-lock-msg">Scalp Signals — Pro Feature</div>
-      <div class="sp-lock-sub">See which of the 20 top stocks to buy calls or puts on right now, updated every 15 minutes.</div>
+      <div class="sp-lock-sub">Scans the market's most active stocks and surfaces the strongest calls and puts setups, for today or this week.</div>
       <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Start Free Trial →</button>
     </div>
   </div>
@@ -1596,39 +1604,27 @@ function renderScorecard(closedTrades) {
     </div>`;
 }
 
-// ── Scalp Signals ──────────────────────────────────────────────────────────────
+// ── Scalp Signals — market-wide scanner ─────────────────────────────────────
 
 let _signalRefreshTimer = null;
-let _signalsExpanded = false;
-let _lastSignalTickers = [];
-const SIGNALS_PREVIEW_COUNT = 5;
+let _signalsRange = 'day';
 
-function toggleSignalsExpanded() {
-  _signalsExpanded = !_signalsExpanded;
-  renderSignalBoard(_lastSignalTickers);
+function setSignalsRange(range) {
+  if (range === _signalsRange) return;
+  _signalsRange = range;
+  document.querySelectorAll('.sb-range-tab').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.range === range));
+  loadLiveSignals();
 }
 
-function renderSignalBoard(tickers) {
-  const board = document.getElementById('signalBoard');
-  if (!board) return;
-
-  const visible  = _signalsExpanded ? tickers : tickers.slice(0, SIGNALS_PREVIEW_COUNT);
-  const hidden   = tickers.length - visible.length;
-
-  const rowsHtml = visible.map(t => {
-    if (!t.ok) return `
-      <div class="sb-row hold">
-        <span class="sb-light hold"></span>
-        <div class="sb-sym-col"><div class="sb-sym">${t.symbol}</div><div class="sb-name">${t.name}</div></div>
-        <div style="flex:1;color:var(--dk-muted);font-size:.72rem;">No data available</div>
-      </div>`;
-
+function renderSignalGroup(list, emptyLabel) {
+  if (!list.length) return `<div class="sb-group-empty">${emptyLabel}</div>`;
+  return list.map(t => {
     const isUp      = t.changePct >= 0;
     const chgStr    = `${isUp ? '+' : ''}${t.changePct.toFixed(2)}%`;
     const hard      = t.conviction === 'HARD';
     const badgeText = t.tone === 'buy'  ? `${hard ? '⚡ ' : ''}BUY CALLS`
-                    : t.tone === 'sell' ? `${hard ? '⚡ ' : ''}BUY PUTS`
-                    : 'WAIT — HOLD';
+                    : `${hard ? '⚡ ' : ''}BUY PUTS`;
     const priceStr  = t.price != null ? `$${t.price.toFixed(2)}` : '—';
     const rsiVal    = t.rsi   != null ? t.rsi : '—';
     const chgColor  = isUp ? 'var(--dk-bull)' : 'var(--dk-bear)';
@@ -1649,14 +1645,18 @@ function renderSignalBoard(tickers) {
       </div>
       <div class="sb-explain">${t.explain || ''}</div>`;
   }).join('');
+}
 
-  const toggleHtml = tickers.length > SIGNALS_PREVIEW_COUNT
-    ? `<button class="sb-toggle" onclick="toggleSignalsExpanded()">
-         ${_signalsExpanded ? 'Show Fewer ▴' : `Show All ${tickers.length} Stocks ▾ (${hidden} more)`}
-       </button>`
-    : '';
-
-  board.innerHTML = rowsHtml + toggleHtml;
+function renderSignalBoard(data) {
+  const board = document.getElementById('signalBoard');
+  if (!board) return;
+  const calls = data.calls || [], puts = data.puts || [];
+  board.innerHTML = `
+    <div class="sb-group-title">📈 Top Calls</div>
+    ${renderSignalGroup(calls, 'No strong call setups right now.')}
+    <div class="sb-group-title">📉 Top Puts</div>
+    ${renderSignalGroup(puts, 'No strong put setups right now.')}
+  `;
 }
 
 async function loadLiveSignals() {
@@ -1665,9 +1665,10 @@ async function loadLiveSignals() {
   const refreshBtn = document.getElementById('signalRefreshBtn');
 
   if (refreshBtn) refreshBtn.disabled = true;
+  if (board) board.innerHTML = '<div class="sb-loading">Scanning the market…</div>';
 
   try {
-    const res = await fetch('/api/signals');
+    const res = await fetch(`/api/signals?range=${_signalsRange}`);
 
     if (!res.ok) {
       if (board) board.innerHTML = `<div class="sb-error">⚠ Signal feed unavailable (${res.status}) — try refreshing</div>`;
@@ -1675,29 +1676,25 @@ async function loadLiveSignals() {
       return;
     }
 
-    const data    = await res.json();
-    const tickers = data.tickers || [];
+    const data  = await res.json();
+    const calls = data.calls || [], puts = data.puts || [];
 
-    if (tickers.length === 0) {
-      if (board) board.innerHTML = '<div class="sb-error">No signal data returned — market may be closed or data feed is paused.</div>';
-      if (badge) badge.innerHTML = data.marketOpen
-        ? `<span style="color:var(--amber-ink)">⚠ No data — check API config</span>`
-        : `<span style="color:var(--t45)">⭕ Market closed · Signals resume 9:30 AM ET</span>`;
+    if (!data.marketOpen && _signalsRange === 'day' && calls.length === 0 && puts.length === 0) {
+      if (board) board.innerHTML = '<div class="sb-error">No signal data — market may be closed or data feed is paused.</div>';
+      if (badge) badge.innerHTML = `<span style="color:var(--t45)">⭕ Market closed · Signals resume 9:30 AM ET</span>`;
       return;
     }
 
-    _lastSignalTickers = tickers;
-    renderSignalBoard(tickers);
+    renderSignalBoard(data);
 
-    const buys   = tickers.filter(t => t.tone === 'buy').length;
-    const sells  = tickers.filter(t => t.tone === 'sell').length;
-    const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const timeStr   = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     const liveColor = data.marketOpen ? 'var(--green-ink)' : 'var(--t45)';
     const liveLabel = data.marketOpen ? '🟢 Live' : '⭕ Closed';
+    const scanNote  = data.source === 'fallback-static' ? ' · backup list' : '';
 
     if (badge) badge.innerHTML =
       `<span style="color:${liveColor}">${liveLabel}</span>`
-      + ` <span style="color:var(--t45)">· ${buys} calls · ${sells} puts · ${timeStr}</span>`;
+      + ` <span style="color:var(--t45)">· ${data.universeSize || 0} scanned${scanNote} · ${timeStr}</span>`;
 
   } catch(e) {
     if (board) board.innerHTML = '<div class="sb-error">⚠ Could not reach signal feed — check your connection and refresh.</div>';
