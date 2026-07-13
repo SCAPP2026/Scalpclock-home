@@ -650,6 +650,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
 
+<!-- WATCHLIST -->
+  <div class="section-title" id="watchlist" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <span>Watchlist</span>
+    <span style="font-family:var(--mono);font-size:.7rem;color:var(--t45);" id="wlCount">0 / 5</span>
+  </div>
+  <div class="watchlist-widget">
+    <div class="watchlist-add">
+      <input type="text" id="wlInput" placeholder="Add ticker (e.g. SPY)" maxlength="6" onkeydown="if(event.key==='Enter')addToWatchlist()">
+      <button onclick="addToWatchlist()">+</button>
+    </div>
+    <div id="wlItems"><div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div></div>
+  </div>
+
 <!-- TRADE JOURNAL -->
   <div class="journal-header">
     <div class="section-title" style="margin:0">Trade Journal</div>
@@ -662,19 +675,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <table class="trade-table" id="openTradeTable"><thead><tr>
       <th>Symbol</th><th>Contract</th><th>Entry</th><th>Contracts</th><th>Date</th><th>Action</th>
     </tr></thead><tbody id="openTradeBody"></tbody></table>
-  </div>
-
-  <!-- WATCHLIST -->
-  <div class="section-title" id="watchlist" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <span>Watchlist</span>
-    <span style="font-family:var(--mono);font-size:.7rem;color:var(--t45);" id="wlCount">0 / 5</span>
-  </div>
-  <div class="watchlist-widget">
-    <div class="watchlist-add">
-      <input type="text" id="wlInput" placeholder="Add ticker (e.g. SPY)" maxlength="6" onkeydown="if(event.key==='Enter')addToWatchlist()">
-      <button onclick="addToWatchlist()">+</button>
-    </div>
-    <div id="wlItems"><div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div></div>
   </div>
 
   <!-- TRADE HISTORY (closed trades, stats, daily scorecard) -->
