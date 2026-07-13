@@ -453,6 +453,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .sb-row:hover + .sb-explain{display:block;}
   .sb-loading,.sb-error{padding:28px 20px;text-align:center;color:var(--dk-muted);font-size:.82rem;}
   .sb-error{color:var(--dk-warn);}
+  .sb-search{display:flex;gap:8px;padding:14px 16px 0;}
+  .sb-search input{flex:1;min-width:0;background:var(--dk-bg);border:1px solid var(--dk-border);color:var(--dk-text);border-radius:8px;padding:9px 12px;font-family:var(--mono);font-size:.85rem;text-transform:uppercase;}
+  .sb-search input::placeholder{color:var(--dk-muted);text-transform:none;}
+  .sb-search input:focus{outline:none;border-color:var(--dk-accent);}
+  .sb-search button{background:var(--dk-accent);color:var(--dk-bg);border:none;border-radius:8px;padding:9px 16px;font-family:var(--disp);font-weight:700;font-size:.8rem;cursor:pointer;white-space:nowrap;transition:.15s;}
+  .sb-search button:hover{opacity:.88;}
+  .sb-search button:disabled{opacity:.5;cursor:not-allowed;}
+  .sx-result{margin:12px 16px 0;padding:14px;border-radius:10px;border:1px solid var(--dk-border);background:rgba(255,255,255,.02);}
+  .sx-result.buy{border-left:3px solid var(--dk-bull);}
+  .sx-result.sell{border-left:3px solid var(--dk-bear);}
+  .sx-result.hold{border-left:3px solid var(--dk-warn);}
+  .sx-result-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .sx-result-sym{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--dk-text);}
+  .sx-result-price{font-family:var(--mono);font-size:.85rem;color:var(--dk-muted);}
+  .sx-badge{font-family:var(--disp);font-weight:700;font-size:.72rem;padding:4px 10px;border-radius:6px;margin-left:auto;}
+  .sx-badge.buy{background:rgba(0,201,107,.15);color:var(--dk-bull);}
+  .sx-badge.sell{background:rgba(255,69,102,.15);color:var(--dk-bear);}
+  .sx-badge.hold{background:rgba(245,166,35,.15);color:var(--dk-warn);}
+  .sx-msg{font-size:.82rem;color:var(--dk-text);line-height:1.6;}
+  .sx-warn{font-size:.72rem;color:var(--dk-warn);margin-top:6px;}
   .sb-range-tabs{display:flex;gap:6px;padding:12px 16px 0;}
   .sb-range-tab{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--dk-border);color:var(--dk-muted);font-family:var(--disp);font-weight:700;font-size:.78rem;padding:8px;border-radius:8px;cursor:pointer;transition:.15s;}
   .sb-range-tab:hover{color:var(--dk-text);}
@@ -659,6 +679,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </p>
 
   <div class="signal-board-wrap" id="signalPreview">
+    <div class="sb-search">
+      <input type="text" id="sbSearchInput" placeholder="Search any ticker (e.g. AAPL)" maxlength="10" onkeydown="if(event.key==='Enter')searchSampsonX()">
+      <button onclick="searchSampsonX()" id="sbSearchBtn">🤖 Ask SampsonX</button>
+    </div>
+    <div id="sbSearchResult"></div>
     <div class="sb-range-tabs" id="sbRangeTabs">
       <button class="sb-range-tab active" data-range="day" onclick="setSignalsRange('day')">Today</button>
       <button class="sb-range-tab" data-range="week" onclick="setSignalsRange('week')">This Week</button>
@@ -1614,7 +1639,56 @@ function setSignalsRange(range) {
   _signalsRange = range;
   document.querySelectorAll('.sb-range-tab').forEach(btn =>
     btn.classList.toggle('active', btn.dataset.range === range));
+  const searchResult = document.getElementById('sbSearchResult');
+  if (searchResult) searchResult.innerHTML = ''; // stale result was for the old range
   loadLiveSignals();
+}
+
+async function searchSampsonX() {
+  const input     = document.getElementById('sbSearchInput');
+  const btn       = document.getElementById('sbSearchBtn');
+  const resultEl  = document.getElementById('sbSearchResult');
+  const symbol    = (input.value || '').trim().toUpperCase();
+  if (!symbol) return;
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Asking...';
+  resultEl.innerHTML = '<div class="sb-loading">SampsonX is checking the chart…</div>';
+
+  try {
+    const res  = await fetch(`/api/signals?symbol=${encodeURIComponent(symbol)}&range=${_signalsRange}`);
+    const data = await res.json();
+
+    if (!data.result) {
+      resultEl.innerHTML = `<div class="sx-result hold"><div class="sx-msg">🤖 ${data.sampsonX || 'No data found for that ticker.'}</div></div>`;
+      return;
+    }
+
+    const r         = data.result;
+    const isUp      = r.changePct >= 0;
+    const chgStr    = `${isUp ? '+' : ''}${r.changePct.toFixed(2)}%`;
+    const chgColor  = isUp ? 'var(--dk-bull)' : 'var(--dk-bear)';
+    const badgeText = r.tone === 'buy' ? 'BUY CALLS' : r.tone === 'sell' ? 'BUY PUTS' : 'HOLD';
+    const warn      = r.lowLiquidity
+      ? '<div class="sx-warn">⚠ Lower price/volume name — options on this ticker may have wide spreads or limited liquidity.</div>'
+      : '';
+
+    resultEl.innerHTML = `
+      <div class="sx-result ${r.tone}">
+        <div class="sx-result-head">
+          <span class="sx-result-sym">${r.symbol}</span>
+          <span class="sx-result-price">$${r.price.toFixed(2)} <span style="color:${chgColor}">${chgStr}</span></span>
+          <span class="sx-badge ${r.tone}">${badgeText}</span>
+        </div>
+        <div class="sx-msg">🤖 ${data.sampsonX}</div>
+        ${warn}
+      </div>`;
+  } catch (e) {
+    resultEl.innerHTML = '<div class="sx-result hold"><div class="sx-msg">⚠ Could not reach SampsonX — check your connection and try again.</div></div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🤖 Ask SampsonX';
+  }
 }
 
 function renderSignalGroup(list, emptyLabel) {

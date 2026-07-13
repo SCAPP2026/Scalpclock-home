@@ -10,112 +10,34 @@
 //                           anchored concept and doesn't apply here, so
 //                           it's dropped from the weekly score instead of
 //                           computing something meaningless.
+// ?symbol=TICKER          — look up one specific ticker instead of scanning
+//                           the market ("SampsonX" ticker search). Skips
+//                           the screener/universe build entirely, reuses
+//                           the same RSI/VWAP/volume-surge model, and
+//                           returns a verdict even for Hold / lower-
+//                           liquidity names instead of filtering them out
+//                           the way the market scan does.
 export async function onRequest(context) {
   const { env, request } = context;
   const KEY_ID = env.ALPACA_KEY_ID;
   const SECRET = env.ALPACA_SECRET;
   const hdrs   = { 'APCA-API-KEY-ID': KEY_ID, 'APCA-API-SECRET-KEY': SECRET };
 
-  const url   = new URL(request.url);
-  const range = url.searchParams.get('range') === 'week' ? 'week' : 'day';
+  const url    = new URL(request.url);
+  const range  = url.searchParams.get('range') === 'week' ? 'week' : 'day';
+  const symbolParam = (url.searchParams.get('symbol') || '').toUpperCase().replace(/[^A-Z.\-]/g, '').slice(0, 10);
 
-  const DATA_BASE = 'https://data.alpaca.markets/v2';
-  const SCREEN_BASE = 'https://data.alpaca.markets/v1beta1/screener/stocks';
+  const DATA_BASE    = 'https://data.alpaca.markets/v2';
+  const SCREEN_BASE  = 'https://data.alpaca.markets/v1beta1/screener/stocks';
 
   async function safeJson(res) {
     try { return await res.json(); } catch { return {}; }
   }
 
-  // ── Fallback universe ──────────────────────────────────────────────────
-  // Used if the screener endpoints error or aren't entitled on the current
-  // Alpaca plan (they serve real-time SIP data, which can require a paid
-  // market-data tier beyond the free IEX feed the rest of this file uses).
-  // Still a real improvement over the old fixed 20 — broader sector spread.
-  const FALLBACK_SYMBOLS = [
-    'SPY','QQQ','IWM','DIA',
-    'AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA','AMD','NFLX',
-    'CRM','ORCL','ADBE','INTC','MU','AVGO','CSCO','QCOM','UBER','ABNB','SHOP','SQ','PYPL',
-    'JPM','GS','MS','WFC','C','BAC','SCHW',
-    'XOM','CVX','OXY','SLB',
-    'DIS','NKE','SBUX','MCD','WMT','TGT','COST','HD',
-    'PFE','JNJ','UNH','LLY','MRNA',
-    'BA','CAT','GE','F','GM',
-    'COIN','PLTR','SOFI','ARM','HOOD','RIVN','GME','AMC','MARA','RIOT','NIO',
-    'GLD','TLT',
-  ];
-
-  const NAMES = {
-    SPY:'S&P 500 ETF',QQQ:'Nasdaq 100 ETF',IWM:'Russell 2000 ETF',DIA:'Dow Jones ETF',
-    AAPL:'Apple',MSFT:'Microsoft',AMZN:'Amazon',GOOGL:'Alphabet',META:'Meta Platforms',
-    NVDA:'Nvidia',TSLA:'Tesla',AMD:'Advanced Micro',NFLX:'Netflix',
-    CRM:'Salesforce',ORCL:'Oracle',ADBE:'Adobe',INTC:'Intel',MU:'Micron',AVGO:'Broadcom',
-    CSCO:'Cisco',QCOM:'Qualcomm',UBER:'Uber',ABNB:'Airbnb',SHOP:'Shopify',SQ:'Block',PYPL:'PayPal',
-    JPM:'JPMorgan Chase',GS:'Goldman Sachs',MS:'Morgan Stanley',WFC:'Wells Fargo',C:'Citigroup',
-    BAC:'Bank of America',SCHW:'Charles Schwab',
-    XOM:'Exxon Mobil',CVX:'Chevron',OXY:'Occidental Petroleum',SLB:'Schlumberger',
-    DIS:'Disney',NKE:'Nike',SBUX:'Starbucks',MCD:"McDonald's",WMT:'Walmart',TGT:'Target',
-    COST:'Costco',HD:'Home Depot',
-    PFE:'Pfizer',JNJ:'Johnson & Johnson',UNH:'UnitedHealth',LLY:'Eli Lilly',MRNA:'Moderna',
-    BA:'Boeing',CAT:'Caterpillar',GE:'GE Aerospace',F:'Ford',GM:'General Motors',
-    COIN:'Coinbase',PLTR:'Palantir',SOFI:'SoFi Technologies',ARM:'Arm Holdings',HOOD:'Robinhood Markets',
-    RIVN:'Rivian',GME:'GameStop',AMC:'AMC Entertainment',MARA:'Marathon Digital',RIOT:'Riot Platforms',
-    NIO:'NIO Inc',GLD:'SPDR Gold ETF',TLT:'20+ Yr Treasury ETF',
-  };
-  function nameFor(sym) { return NAMES[sym] || sym; }
-
-  // ── Build the scan universe ─────────────────────────────────────────────
-  let symbols = [];
-  let source  = 'scan';
-  try {
-    const [actRes, movRes] = await Promise.all([
-      fetch(`${SCREEN_BASE}/most-actives?by=volume&top=100`, { headers: hdrs }),
-      fetch(`${SCREEN_BASE}/movers?top=50`, { headers: hdrs }),
-    ]);
-    if (!actRes.ok || !movRes.ok) throw new Error(`screener HTTP ${actRes.status}/${movRes.status}`);
-    const act = await safeJson(actRes);
-    const mov = await safeJson(movRes);
-    const fromActives = (act.most_actives || []).map(t => t.symbol);
-    const fromMovers   = [...(mov.gainers || []), ...(mov.losers || [])].map(t => t.symbol);
-    symbols = [...new Set([...fromActives, ...fromMovers])].filter(Boolean);
-    if (symbols.length < 20) throw new Error('screener returned too few symbols');
-  } catch (e) {
-    console.error('screener unavailable, using fallback universe:', e.message);
-    symbols = FALLBACK_SYMBOLS;
-    source  = 'fallback-static';
-  }
-
-  // Cap universe size — keeps the multi-symbol bars request and per-request
-  // CPU work bounded even if a screener response is unexpectedly large.
-  symbols = symbols.slice(0, 220);
-  const symList = symbols.join(',');
-
-  const now = new Date();
+  const now      = new Date();
   const todayStr = now.toISOString().slice(0, 10);
 
-  async function fetchAllBars(baseUrl, maxPages) {
-    const merged = {};
-    let pageToken = null;
-    for (let i = 0; i < maxPages; i++) {
-      const pageUrl = pageToken ? `${baseUrl}&page_token=${encodeURIComponent(pageToken)}` : baseUrl;
-      const res  = await fetch(pageUrl, { headers: hdrs });
-      const data = await safeJson(res);
-      const bars = data.bars || {};
-      for (const sym of Object.keys(bars)) {
-        (merged[sym] = merged[sym] || []).push(...bars[sym]);
-      }
-      pageToken = data.next_page_token || null;
-      if (!pageToken) break;
-    }
-    return merged;
-  }
-
-  let marketOpen = false;
-  try {
-    const clockRes = await fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs });
-    marketOpen = (await safeJson(clockRes)).is_open || false;
-  } catch (e) { console.error('clock error:', e.message); }
-
-  // ── Shared math (unchanged from the original per-ticker model) ─────────
+  // ── Shared math (used by both the single-symbol lookup and the scan) ────
   function calcRSI(bars, period = 14) {
     const closes = bars.map(b => b.c);
     if (closes.length < period + 1) return null;
@@ -204,6 +126,187 @@ export async function onRequest(context) {
       explain: `RSI ${rsi.toFixed(1)} — price is in the middle. No clear edge yet — wait for a better setup.`,
       confluence: 0 };
   }
+
+  async function fetchAllBars(baseUrl, maxPages) {
+    const merged = {};
+    let pageToken = null;
+    for (let i = 0; i < maxPages; i++) {
+      const pageUrl = pageToken ? `${baseUrl}&page_token=${encodeURIComponent(pageToken)}` : baseUrl;
+      const res  = await fetch(pageUrl, { headers: hdrs });
+      const data = await safeJson(res);
+      const bars = data.bars || {};
+      for (const sym of Object.keys(bars)) {
+        (merged[sym] = merged[sym] || []).push(...bars[sym]);
+      }
+      pageToken = data.next_page_token || null;
+      if (!pageToken) break;
+    }
+    return merged;
+  }
+
+  // ── SampsonX ticker search — one specific symbol, any liquidity ─────────
+  if (symbolParam) {
+    try {
+      let rsi, vwap, volSurge, price, prevClose, latestVol;
+
+      if (range === 'day') {
+        const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
+        const prevISO  = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const [latestRes, bars15Res, barsDayRes] = await Promise.all([
+          fetch(`${DATA_BASE}/stocks/bars/latest?symbols=${symbolParam}&feed=iex`, { headers: hdrs }),
+          fetch(`${DATA_BASE}/stocks/bars?symbols=${symbolParam}&timeframe=15Min&start=${startISO}&limit=200&feed=iex&sort=asc`, { headers: hdrs }),
+          fetch(`${DATA_BASE}/stocks/bars?symbols=${symbolParam}&timeframe=1Day&start=${prevISO}&limit=10&feed=iex&sort=asc`, { headers: hdrs }),
+        ]);
+        const latestBar = ((await safeJson(latestRes)).bars || {})[symbolParam] || null;
+        const bars       = ((await safeJson(bars15Res)).bars || {})[symbolParam] || [];
+        const dayBars    = ((await safeJson(barsDayRes)).bars || {})[symbolParam] || [];
+
+        if (!bars.length && !latestBar) throw new Error('NO_DATA');
+
+        const recentBars = bars.slice(-50);
+        price     = latestBar ? latestBar.c : (recentBars.length ? recentBars[recentBars.length - 1].c : null);
+        latestVol = latestBar ? latestBar.v : (recentBars.length ? recentBars[recentBars.length - 1].v : 0);
+        prevClose = dayBars.length >= 2 ? dayBars[dayBars.length - 2].c : null;
+
+        rsi      = calcRSI(recentBars);
+        vwap     = calcVWAP(bars);
+        volSurge = calcVolSurge(bars);
+      } else {
+        const startISO = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+        const barsRes = await fetch(`${DATA_BASE}/stocks/bars?symbols=${symbolParam}&timeframe=1Day&start=${startISO}&limit=100&feed=iex&sort=asc`, { headers: hdrs });
+        const bars = ((await safeJson(barsRes)).bars || {})[symbolParam] || [];
+
+        if (!bars.length) throw new Error('NO_DATA');
+
+        const latest = bars[bars.length - 1];
+        price     = latest.c;
+        latestVol = latest.v;
+        prevClose = bars.length >= 2 ? bars[bars.length - 2].c : null;
+        rsi       = calcRSI(bars);
+        vwap      = null;
+        volSurge  = calcVolSurge(bars, 20);
+      }
+
+      if (!price) throw new Error('NO_DATA');
+
+      const vwapDist  = (vwap && price) ? Number((((price - vwap) / vwap) * 100).toFixed(2)) : null;
+      const sig        = getSignal(rsi, vwapDist, volSurge);
+      const changePct  = (price && prevClose) ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
+      const lowLiquidity = price < 5 || (latestVol || 0) < 50000;
+
+      let clockOpen = false;
+      try {
+        const clockRes = await fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs });
+        clockOpen = (await safeJson(clockRes)).is_open || false;
+      } catch (_) {}
+
+      const sampsonX = rsi === null
+        ? `SampsonX says: not enough price history yet on ${symbolParam} to call this one — check back after the market's had more time to trade it.`
+        : `SampsonX says: ${sig.signal}${sig.conviction === 'HARD' ? ' (high confidence)' : ''} — ${sig.explain}`;
+
+      return new Response(JSON.stringify({
+        marketOpen: clockOpen, asOf: new Date().toISOString(), range,
+        symbol: symbolParam,
+        result: {
+          symbol: symbolParam, ok: true,
+          price, changePct: changePct ?? 0,
+          rsi: rsi != null ? Number(rsi.toFixed(1)) : null,
+          vwap: vwap ? Number(vwap.toFixed(2)) : null,
+          vwapDist, volSurge: Number(volSurge.toFixed(2)),
+          lowLiquidity,
+          ...sig,
+        },
+        sampsonX,
+      }), {
+        headers: {
+          'Content-Type':                'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control':               'public, s-maxage=20, stale-while-revalidate=10',
+        },
+      });
+    } catch (e) {
+      const notFound = e.message === 'NO_DATA';
+      return new Response(JSON.stringify({
+        symbol: symbolParam,
+        result: null,
+        sampsonX: notFound
+          ? `SampsonX says: no price data found for "${symbolParam}" — double-check the ticker symbol.`
+          : `SampsonX says: couldn't pull data for "${symbolParam}" right now — try again in a moment.`,
+      }), {
+        status: notFound ? 404 : 502,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+  }
+
+  // ── Fallback universe ──────────────────────────────────────────────────
+  // Used if the screener endpoints error or aren't entitled on the current
+  // Alpaca plan (they serve real-time SIP data, which can require a paid
+  // market-data tier beyond the free IEX feed the rest of this file uses).
+  // Still a real improvement over the old fixed 20 — broader sector spread.
+  const FALLBACK_SYMBOLS = [
+    'SPY','QQQ','IWM','DIA',
+    'AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA','AMD','NFLX',
+    'CRM','ORCL','ADBE','INTC','MU','AVGO','CSCO','QCOM','UBER','ABNB','SHOP','SQ','PYPL',
+    'JPM','GS','MS','WFC','C','BAC','SCHW',
+    'XOM','CVX','OXY','SLB',
+    'DIS','NKE','SBUX','MCD','WMT','TGT','COST','HD',
+    'PFE','JNJ','UNH','LLY','MRNA',
+    'BA','CAT','GE','F','GM',
+    'COIN','PLTR','SOFI','ARM','HOOD','RIVN','GME','AMC','MARA','RIOT','NIO',
+    'GLD','TLT',
+  ];
+
+  const NAMES = {
+    SPY:'S&P 500 ETF',QQQ:'Nasdaq 100 ETF',IWM:'Russell 2000 ETF',DIA:'Dow Jones ETF',
+    AAPL:'Apple',MSFT:'Microsoft',AMZN:'Amazon',GOOGL:'Alphabet',META:'Meta Platforms',
+    NVDA:'Nvidia',TSLA:'Tesla',AMD:'Advanced Micro',NFLX:'Netflix',
+    CRM:'Salesforce',ORCL:'Oracle',ADBE:'Adobe',INTC:'Intel',MU:'Micron',AVGO:'Broadcom',
+    CSCO:'Cisco',QCOM:'Qualcomm',UBER:'Uber',ABNB:'Airbnb',SHOP:'Shopify',SQ:'Block',PYPL:'PayPal',
+    JPM:'JPMorgan Chase',GS:'Goldman Sachs',MS:'Morgan Stanley',WFC:'Wells Fargo',C:'Citigroup',
+    BAC:'Bank of America',SCHW:'Charles Schwab',
+    XOM:'Exxon Mobil',CVX:'Chevron',OXY:'Occidental Petroleum',SLB:'Schlumberger',
+    DIS:'Disney',NKE:'Nike',SBUX:'Starbucks',MCD:"McDonald's",WMT:'Walmart',TGT:'Target',
+    COST:'Costco',HD:'Home Depot',
+    PFE:'Pfizer',JNJ:'Johnson & Johnson',UNH:'UnitedHealth',LLY:'Eli Lilly',MRNA:'Moderna',
+    BA:'Boeing',CAT:'Caterpillar',GE:'GE Aerospace',F:'Ford',GM:'General Motors',
+    COIN:'Coinbase',PLTR:'Palantir',SOFI:'SoFi Technologies',ARM:'Arm Holdings',HOOD:'Robinhood Markets',
+    RIVN:'Rivian',GME:'GameStop',AMC:'AMC Entertainment',MARA:'Marathon Digital',RIOT:'Riot Platforms',
+    NIO:'NIO Inc',GLD:'SPDR Gold ETF',TLT:'20+ Yr Treasury ETF',
+  };
+  function nameFor(sym) { return NAMES[sym] || sym; }
+
+  // ── Build the scan universe ─────────────────────────────────────────────
+  let symbols = [];
+  let source  = 'scan';
+  try {
+    const [actRes, movRes] = await Promise.all([
+      fetch(`${SCREEN_BASE}/most-actives?by=volume&top=100`, { headers: hdrs }),
+      fetch(`${SCREEN_BASE}/movers?top=50`, { headers: hdrs }),
+    ]);
+    if (!actRes.ok || !movRes.ok) throw new Error(`screener HTTP ${actRes.status}/${movRes.status}`);
+    const act = await safeJson(actRes);
+    const mov = await safeJson(movRes);
+    const fromActives = (act.most_actives || []).map(t => t.symbol);
+    const fromMovers   = [...(mov.gainers || []), ...(mov.losers || [])].map(t => t.symbol);
+    symbols = [...new Set([...fromActives, ...fromMovers])].filter(Boolean);
+    if (symbols.length < 20) throw new Error('screener returned too few symbols');
+  } catch (e) {
+    console.error('screener unavailable, using fallback universe:', e.message);
+    symbols = FALLBACK_SYMBOLS;
+    source  = 'fallback-static';
+  }
+
+  // Cap universe size — keeps the multi-symbol bars request and per-request
+  // CPU work bounded even if a screener response is unexpectedly large.
+  symbols = symbols.slice(0, 220);
+  const symList = symbols.join(',');
+
+  let marketOpen = false;
+  try {
+    const clockRes = await fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs });
+    marketOpen = (await safeJson(clockRes)).is_open || false;
+  } catch (e) { console.error('clock error:', e.message); }
 
   // ── Fetch bars for the requested range ──────────────────────────────────
   // More symbols means more pages before every symbol has enough bars for
