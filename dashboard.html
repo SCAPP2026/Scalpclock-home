@@ -248,7 +248,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .modal-msg{font-size:.78rem;padding:8px 12px;border-radius:6px;margin-bottom:12px;text-align:center;}
 
   /* ── ONBOARDING ── */
-  .ob-card{max-width:540px;}
+  .ob-card{max-width:540px;position:relative;}
+  .ob-skip{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--t45);font-size:.78rem;font-family:var(--body);cursor:pointer;transition:.15s;}
+  .ob-skip:hover{color:var(--t65);}
   .ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:24px;}
   .ob-dot{width:7px;height:7px;border-radius:50%;background:var(--line-strong);transition:.2s;}
   .ob-dot.active{background:var(--green);width:20px;border-radius:4px;}
@@ -746,6 +748,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <!-- Onboarding Modal -->
   <div id="onboardModal" class="modal-overlay" style="display:none">
     <div class="modal-card ob-card">
+      <button class="ob-skip" onclick="obFinish()">Skip ✕</button>
       <div class="ob-dots" id="obDots">
         <span class="ob-dot"></span><span class="ob-dot"></span><span class="ob-dot"></span><span class="ob-dot"></span>
       </div>
@@ -1178,7 +1181,12 @@ function renderAchievements(closed, open, wins, uniqueTickers) {
 async function deleteTrade(id) {
   if (!confirm('Delete this trade entry? This cannot be undone.')) return;
   try {
-    await sb.from('trades').delete().eq('id', id).eq('user_id', _uid);
+    const { data, error } = await sb.from('trades').delete().eq('id', id).eq('user_id', _uid).select();
+    if (error) { alert('Could not delete trade: ' + error.message); return; }
+    if (!data || data.length === 0) {
+      alert('Delete didn\'t go through — your account may not have permission to remove trades yet. Contact support if this keeps happening.');
+      return;
+    }
     await loadAllTrades();
   } catch(e) { alert('Could not delete trade: ' + e.message); }
 }
