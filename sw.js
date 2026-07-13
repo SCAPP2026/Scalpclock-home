@@ -1,4 +1,4 @@
-const CACHE = 'sc-v6';
+const CACHE = 'sc-v7';
 const STATIC = [
   '/',
   '/index.html',
@@ -11,7 +11,7 @@ const STATIC = [
   '/faq.html',
   '/learn.html',
   '/about.html',
-  '/blog',
+  '/blog/',
   '/blog/posts.json',
   '/js/blog-chart.js',
   '/css/theme-light.css',
@@ -61,7 +61,13 @@ self.addEventListener('fetch', e => {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
-        return res;
+        // Navigations can't be satisfied by a redirected Response (e.g. /blog
+        // -> /blog/) — Chrome throws "Response served by service worker has
+        // redirections". Rebuild a fresh, non-redirected Response with the
+        // same body/status so the browser can render it.
+        return res.redirected
+          ? new Response(res.body, { status: res.status, statusText: res.statusText, headers: res.headers })
+          : res;
       }).catch(() => {
         // Full-page navigations fall back to a dedicated offline page;
         // other assets (images, scripts) just fail through.
