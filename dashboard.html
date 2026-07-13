@@ -544,6 +544,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 <div class="shell">
 
+
   <div class="welcome">
     <h1>Welcome back, <span id="firstName">trader</span></h1>
     <p>Here's your ScalpClock account overview.</p>
@@ -570,41 +571,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="stat-label">Market Status</div>
       <div class="stat-val" id="marketStatus">—</div>
       <div class="stat-sub" id="marketSub">Checking...</div>
-    </div>
-  </div>
-
-  <!-- ACCOUNT DETAILS — shown near top for quick reference -->
-  <div class="section-title">Account Details</div>
-  <div class="account-card" style="margin-bottom:32px;">
-    <div class="account-row">
-      <span class="account-key">Name</span>
-      <span class="account-val" id="accountName">—</span>
-      <button class="name-edit-btn" id="nameEditBtn" onclick="startNameEdit()">Edit</button>
-    </div>
-    <div id="nameEditRow" style="display:none;padding:0 0 8px;">
-      <div class="name-edit-inputs">
-        <input type="text" id="editFirstName" placeholder="First name">
-        <input type="text" id="editLastName" placeholder="Last name">
-        <button class="name-save-btn" onclick="saveName()">Save</button>
-        <button class="name-cancel-btn" onclick="cancelNameEdit()">Cancel</button>
-      </div>
-      <div id="nameEditMsg" style="font-size:.75rem;color:#ff5a5a;padding:0 0 4px;"></div>
-    </div>
-    <div class="account-row">
-      <span class="account-key">Email</span>
-      <span class="account-val" id="accountEmail">—</span>
-    </div>
-    <div class="account-row">
-      <span class="account-key">User ID</span>
-      <span class="account-val" id="accountId">—</span>
-    </div>
-    <div class="account-row">
-      <span class="account-key">Subscription</span>
-      <span class="badge free" id="accountSubBadge">FREE</span>
-    </div>
-    <div class="account-row">
-      <span class="account-key">Email Verified</span>
-      <span class="account-val" id="emailVerified">—</span>
     </div>
   </div>
 
@@ -652,19 +618,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </a>
   </div>
 
-  <!-- WATCHLIST -->
-  <div class="section-title" id="watchlist" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <span>Watchlist</span>
-    <span style="font-family:var(--mono);font-size:.7rem;color:var(--t45);" id="wlCount">0 / 5</span>
-  </div>
-  <div class="watchlist-widget">
-    <div class="watchlist-add">
-      <input type="text" id="wlInput" placeholder="Add ticker (e.g. SPY)" maxlength="6" onkeydown="if(event.key==='Enter')addToWatchlist()">
-      <button onclick="addToWatchlist()">+</button>
-    </div>
-    <div id="wlItems"><div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div></div>
-  </div>
-
   <!-- SCALP SIGNALS BOARD -->
   <div class="section-title" id="signals" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
     <span>📡 Scalp Signals</span>
@@ -697,9 +650,60 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
 
-  <!-- ACHIEVEMENTS -->
-  <div class="section-title" style="margin-bottom:16px;">Achievements</div>
-  <div class="ach-grid" id="achGrid"></div>
+<!-- TRADE JOURNAL -->
+  <div class="journal-header">
+    <div class="section-title" style="margin:0">Trade Journal</div>
+    <button class="btn-log-trade" onclick="openLogModal()">+ Log New Trade</button>
+  </div>
+
+  <!-- Open Trades -->
+  <div id="openTradesWrap" class="open-trades-wrap" style="display:none">
+    <div class="open-trades-head"><span class="open-dot"></span>Open Positions</div>
+    <table class="trade-table" id="openTradeTable"><thead><tr>
+      <th>Symbol</th><th>Contract</th><th>Entry</th><th>Contracts</th><th>Date</th><th>Action</th>
+    </tr></thead><tbody id="openTradeBody"></tbody></table>
+  </div>
+
+  <!-- WATCHLIST -->
+  <div class="section-title" id="watchlist" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <span>Watchlist</span>
+    <span style="font-family:var(--mono);font-size:.7rem;color:var(--t45);" id="wlCount">0 / 5</span>
+  </div>
+  <div class="watchlist-widget">
+    <div class="watchlist-add">
+      <input type="text" id="wlInput" placeholder="Add ticker (e.g. SPY)" maxlength="6" onkeydown="if(event.key==='Enter')addToWatchlist()">
+      <button onclick="addToWatchlist()">+</button>
+    </div>
+    <div id="wlItems"><div class="watchlist-empty">Your watchlist is empty. Add up to 5 tickers above.</div></div>
+  </div>
+
+  <!-- TRADE HISTORY (closed trades, stats, daily scorecard) -->
+  <div class="section-title">Trade History</div>
+  <!-- Win Rate Summary -->
+  <div class="trade-summary" id="tradeSummary" style="display:none;">
+    <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
+    <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
+    <div class="trade-stat"><div class="stat-label">Total P&amp;L</div><div class="stat-val" id="tTotalPnl">—</div></div>
+    <div class="trade-stat"><div class="stat-label">Avg P&amp;L</div><div class="stat-val" id="tAvgPnl">—</div></div>
+  </div>
+
+  <!-- Closed Trades -->
+  <div class="trade-table-wrap">
+    <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr>
+      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th><th>Action</th>
+    </tr></thead><tbody id="tradeBody"></tbody></table>
+    <div class="trade-empty" id="tradeEmpty">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      <strong>No closed trades yet</strong>
+      <p>Log a trade above, then close it to see your P&amp;L and win rate.</p>
+    </div>
+  </div>
+
+  <!-- DAILY SCORECARD -->
+  <div id="scorecardWrap" style="margin-top:32px;display:none">
+    <div class="section-title">Today's Scorecard</div>
+    <div id="scorecardGrid"></div>
+  </div>
 
 <!-- EARNINGS CALENDAR -->
   <div class="earnings-wrap" id="earningsWrap">
@@ -738,44 +742,43 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
   </div>
 
-<!-- TRADE JOURNAL -->
-  <div class="journal-header">
-    <div class="section-title" style="margin:0">Trade Journal</div>
-    <button class="btn-log-trade" onclick="openLogModal()">+ Log New Trade</button>
-  </div>
+  <!-- ACHIEVEMENTS -->
+  <div class="section-title" style="margin-bottom:16px;">Achievements</div>
+  <div class="ach-grid" id="achGrid"></div>
 
-  <!-- Open Trades -->
-  <div id="openTradesWrap" class="open-trades-wrap" style="display:none">
-    <div class="open-trades-head"><span class="open-dot"></span>Open Positions</div>
-    <table class="trade-table" id="openTradeTable"><thead><tr>
-      <th>Symbol</th><th>Contract</th><th>Entry</th><th>Contracts</th><th>Date</th><th>Action</th>
-    </tr></thead><tbody id="openTradeBody"></tbody></table>
-  </div>
-
-  <!-- Win Rate Summary -->
-  <div class="trade-summary" id="tradeSummary" style="display:none;">
-    <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
-    <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
-    <div class="trade-stat"><div class="stat-label">Total P&amp;L</div><div class="stat-val" id="tTotalPnl">—</div></div>
-    <div class="trade-stat"><div class="stat-label">Avg P&amp;L</div><div class="stat-val" id="tAvgPnl">—</div></div>
-  </div>
-
-  <!-- Closed Trades -->
-  <div class="trade-table-wrap">
-    <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr>
-      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th><th>Action</th>
-    </tr></thead><tbody id="tradeBody"></tbody></table>
-    <div class="trade-empty" id="tradeEmpty">
-      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-      <strong>No closed trades yet</strong>
-      <p>Log a trade above, then close it to see your P&amp;L and win rate.</p>
+  <!-- ACCOUNT DETAILS -->
+  <div class="section-title">Account Details</div>
+  <div class="account-card" style="margin-bottom:32px;">
+    <div class="account-row">
+      <span class="account-key">Name</span>
+      <span class="account-val" id="accountName">—</span>
+      <button class="name-edit-btn" id="nameEditBtn" onclick="startNameEdit()">Edit</button>
     </div>
-  </div>
-
-  <!-- DAILY SCORECARD -->
-  <div id="scorecardWrap" style="margin-top:32px;display:none">
-    <div class="section-title">Today's Scorecard</div>
-    <div id="scorecardGrid"></div>
+    <div id="nameEditRow" style="display:none;padding:0 0 8px;">
+      <div class="name-edit-inputs">
+        <input type="text" id="editFirstName" placeholder="First name">
+        <input type="text" id="editLastName" placeholder="Last name">
+        <button class="name-save-btn" onclick="saveName()">Save</button>
+        <button class="name-cancel-btn" onclick="cancelNameEdit()">Cancel</button>
+      </div>
+      <div id="nameEditMsg" style="font-size:.75rem;color:#ff5a5a;padding:0 0 4px;"></div>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Email</span>
+      <span class="account-val" id="accountEmail">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">User ID</span>
+      <span class="account-val" id="accountId">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Subscription</span>
+      <span class="badge free" id="accountSubBadge">FREE</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Email Verified</span>
+      <span class="account-val" id="emailVerified">—</span>
+    </div>
   </div>
 
   <!-- Onboarding Modal -->
@@ -873,7 +876,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <button class="btn-modal-submit" id="ct-btn" onclick="closeTrade()">Close Trade</button>
       </div>
     </div>
-  </div>  <div class="upgrade">
+  </div>
+
+  <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
     <p>Unlimited real-time signals, options recommendations, confidence scoring, and live pattern alerts.</p>
     <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);border-radius:10px;margin-bottom:16px;">
@@ -901,6 +906,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div id="dashPromoMsg" style="display:none;margin-top:8px;font-size:.8rem;padding:8px 12px;border-radius:7px;"></div>
     </div>
   </div>
+
 
 </div>
 
