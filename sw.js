@@ -1,4 +1,4 @@
-const CACHE = 'sc-v10';
+const CACHE = 'sc-v11';
 const STATIC = [
   '/',
   '/index.html',
