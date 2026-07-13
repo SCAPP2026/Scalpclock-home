@@ -1804,7 +1804,7 @@
       <div class="form-row">
         <div class="field-group full-width">
           <label class="field-label">📈 Current Premium
-            <button class="btn-live-fetch" id="liveFetchBtn" onclick="fetchLivePremium()">⚡ Get Live Price</button>
+            <button class="btn-live-fetch" id="liveFetchBtn" onclick="fetchLivePremium()">⚡ Get Current Price</button>
           </label>
           <input class="se-input" id="currentPriceInput" type="number" step="0.01" min="0.01"
             placeholder="Current option price — or click ⚡ if strike & expiry are set">
@@ -2454,7 +2454,7 @@ function setOptionContract() {
   document.getElementById('optStatusMsg').style.display = 'none';
   document.getElementById('optLiveDisplay').innerHTML = `
     <span class="opt-ticker-label">${ticker} ${strike}${optCallMode ? 'C' : 'P'} ${expiry.slice(5)}</span>
-    <span class="opt-status-msg" id="optStatusMsg">Fetching live premium...</span>`;
+    <span class="opt-status-msg" id="optStatusMsg">Fetching current premium...</span>`;
 
   if (optPremiumTimer) clearInterval(optPremiumTimer);
   fetchOptionPremium();
@@ -2469,8 +2469,15 @@ function clearOptionContract() {
   if (optPremiumTimer) { clearInterval(optPremiumTimer); optPremiumTimer = null; }
   document.getElementById('optClearBtn').style.display  = 'none';
   document.getElementById('logTradeBtn').style.display  = 'none';
+  // Also clear the input fields themselves, not just the tracked-contract
+  // state — leaving a stale strike/expiry/premium in the boxes is what let
+  // a since-cleared contract's numbers feed back into a later calculation.
+  document.getElementById('optStrikeInput').value    = '';
+  document.getElementById('optExpiryInput').value    = '';
+  document.getElementById('optEntryPremium').value   = '';
+  document.getElementById('currentPriceInput').value = '';
   const display = document.getElementById('optLiveDisplay');
-  display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track live premium</span>';
+  display.innerHTML = '<span class="opt-status-msg" id="optStatusMsg">Enter strike + expiry to track current premium</span>';
   updateTargetTabs();
   clearState();
 }
@@ -2656,7 +2663,7 @@ function renderOptionsPanel() {
   const titleEl = document.getElementById('optionsPanelTitle');
   if (optContract && lastContractData && !lastContractData.error) {
     const d = lastContractData;
-    titleEl.textContent = 'Your Option — Live Data';
+    titleEl.textContent = 'Your Option — Current Data';
     const el = document.getElementById('optionsContent');
     const price = optCurrentPrice;
     const entry = optContract.entryPremium;
@@ -2865,19 +2872,38 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function onTickerChange() {
   ticker = document.getElementById('tickerSel').value;
+
+  // Full reset — every field below is ticker/contract-specific, and a stale
+  // value left over from the previous ticker (especially currentPriceInput,
+  // which calculateExit()/renderProfitSummary() both read as a manual
+  // fallback current premium) would otherwise get used as if it were live
+  // data for the newly-selected ticker.
   entryPrice = null;
+  optCurrentPrice = null;
+  optContractGreeks = null;
+  lastContractData = null;
+  optContract = null;
   lastSigLevel = '';
   _clockEtaSec = null;
+  if (optPremiumTimer) { clearInterval(optPremiumTimer); optPremiumTimer = null; }
+
   document.getElementById('entryInput').value = '';
+  document.getElementById('optStrikeInput').value = '';
+  document.getElementById('optExpiryInput').value = '';
+  document.getElementById('optEntryPremium').value = '';
+  document.getElementById('currentPriceInput').value = '';
+  document.getElementById('optClearBtn').style.display = 'none';
+  document.getElementById('logTradeBtn').style.display = 'none';
+  document.getElementById('optLiveDisplay').innerHTML = '<span class="opt-status-msg" id="optStatusMsg"></span>';
   document.getElementById('gainPill').style.display = 'none';
+
   candles = [];
   updateTargetTabs();
   resetDisplay();
   refresh();
   loadOptions();
   checkEarnings();
-  if (optContract) clearOptionContract();
-  else clearState();
+  clearState();
 }
 
 function setEntry() {
@@ -4068,13 +4094,13 @@ function fetchLivePremium() {
   const expiry = document.getElementById('optExpiryInput')?.value;
   if (!strike || !expiry) {
     const msg = document.getElementById('optStatusMsg');
-    if (msg) msg.textContent = 'Enter strike and expiry date first, then click ⚡ Get Live Price.';
+    if (msg) msg.textContent = 'Enter strike and expiry date first, then click ⚡ Get Current Price.';
     return;
   }
   if (btn) { btn.textContent = '⏳ Fetching...'; btn.classList.add('loading'); }
   fetchAutoFill();
   setTimeout(() => {
-    if (btn) { btn.textContent = '⚡ Get Live Price'; btn.classList.remove('loading'); }
+    if (btn) { btn.textContent = '⚡ Get Current Price'; btn.classList.remove('loading'); }
   }, 3000);
 }
 
