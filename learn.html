@@ -894,14 +894,141 @@ ${data.map((v,i)=>i===data.length-1?`<circle cx="${pad+i*xStep}" cy="${y(v)}" r=
 </svg>`;
 }
 
+// Most of the 365-day curriculum is auto-generated from WEEK_DEFS (see
+// buildStubWeek) and has no hand-authored watchData/watchTitle/watchCaption
+// — only Week 1's lessons do. Without this, every one of those lessons fell
+// back to the same hardcoded chart/title/caption. This picks a chart shape
+// and an accurate caption from the lesson's own title/category instead, so
+// the Watch step always matches what that specific lesson is actually about.
+const CHART_PATTERNS = {
+  uptrend:             () => [40,41,43,42,44,46,45,47,49,48,50,52,51,53,55],
+  downtrend:           () => [55,54,52,53,51,49,50,48,46,47,45,43,44,42,40],
+  breakout:            () => [45,46,45,46,45,47,46,45,46,48,52,56,59,61,63],
+  breakdown:           () => [55,54,55,54,55,53,54,55,54,52,48,44,41,39,37],
+  bounceOffSupport:    () => [52,50,47,44,41,39,38,40,44,48,51,53,54,55,56],
+  rejectionAtResistance:()=> [42,44,47,50,53,55,56,54,51,48,45,43,42,41,40],
+  doubleTop:           () => [42,45,49,53,56,54,51,48,50,53,56,54,50,46,43],
+  doubleBottom:        () => [58,55,51,47,44,46,49,52,50,47,44,46,50,54,58],
+  consolidation:       () => [48,50,47,49,48,51,47,50,48,49,47,50,48,49,48],
+  highVolatility:      () => [48,55,44,52,41,50,58,43,49,56,42,51,45,53,47],
+  gapUp:               () => [45,46,45,46,45,53,54,53,55,54,56,55,57,56,58],
+  gapDown:             () => [55,54,55,54,55,47,46,47,45,46,44,45,43,44,42],
+  parabolic:           () => [42,43,44,45,47,49,52,55,59,64,70,77,85,94,104],
+  grindHigherPullback: () => [42,44,46,48,50,49,47,45,44,46,49,52,54,56,58],
+  downtrendPullback:   () => [58,55,52,49,47,48,49,48,47,45,42,39,37,35,33],
+  oscillation:         () => [48,52,47,53,46,54,45,55,46,53,47,52,48,51,49],
+  headAndShoulders:    () => [44,48,52,49,46,52,58,54,48,52,56,51,46,42,38],
+  cupAndHandle:        () => [50,47,44,42,41,42,44,47,50,52,49,47,50,54,58],
+};
+
+// Checked in order — most specific pattern names first, generic trend words
+// last, so "Bull Flag" matches grindHigherPullback rather than the generic
+// uptrend rule further down.
+const WATCH_RULES = [
+  { kw:['double top'], pattern:'doubleTop', caption:'Price tests the same high twice and fails — a classic reversal warning this lesson explains.' },
+  { kw:['double bottom'], pattern:'doubleBottom', caption:'Price tests the same low twice and holds — a classic reversal signal this lesson explains.' },
+  { kw:['head & shoulders','head and shoulders'], pattern:'headAndShoulders', caption:'Three peaks with the middle one highest — a classic topping pattern this lesson explains.' },
+  { kw:['cup & handle','cup and handle'], pattern:'cupAndHandle', caption:'A rounded base, a small pullback, then a breakout — the setup this lesson explains.' },
+  { kw:['bull flag'], pattern:'grindHigherPullback', caption:'A sharp move up, a brief pause, then continuation higher — the bull flag setup this lesson explains.' },
+  { kw:['bear flag','dead cat bounce'], pattern:'downtrendPullback', caption:'A sharp move down, a brief bounce, then continuation lower — the setup this lesson explains.' },
+  { kw:['triangle','wedge','pennant','compression','base building','choppy','chop','sideways','range-bound'], pattern:'consolidation', caption:'Price tightens into a narrowing range before resolving — the setup this lesson explains.' },
+  { kw:['breakout','break out','breaks out'], pattern:'breakout', caption:'Price consolidates in a tight range, then breaks out on a volume surge — the setup this lesson focuses on.' },
+  { kw:['breakdown','break down','breaks down'], pattern:'breakdown', caption:'Price holds a range, then breaks down hard as sellers take control — the setup this lesson focuses on.' },
+  { kw:['gap up','gap and go','gap-and-go'], pattern:'gapUp', caption:'Price gaps up at the open and holds the move — the scenario this lesson walks through.' },
+  { kw:['gap down','gap fill','gap risk'], pattern:'gapDown', caption:'Price gaps down at the open — the scenario this lesson walks through.' },
+  { kw:['squeeze','parabolic','melt-up','melt up'], pattern:'parabolic', caption:'Price accelerates into a fast, steepening move — the kind of run this lesson covers.' },
+  { kw:['support'], pattern:'bounceOffSupport', caption:'Price drops into a support level and bounces — exactly the reaction this lesson is teaching you to spot.' },
+  { kw:['resistance','rejection','fakeout','false breakout','overbought'], pattern:'rejectionAtResistance', caption:'Price rallies into resistance and gets rejected — exactly the reaction this lesson is teaching you to spot.' },
+  { kw:['pullback','dip','retracement','reclaim'], pattern:'grindHigherPullback', caption:'An uptrend pauses for a pullback, then continues — the kind of setup this lesson covers.' },
+  { kw:['oversold','vwap','mean reversion','oscillator','rsi','stochastic'], pattern:'oscillation', caption:'Price oscillates around a mean level — the kind of rhythm this lesson teaches you to read.' },
+  { kw:['reversal'], pattern:'doubleBottom', caption:'Price makes a low, fails to make a new low, and turns — a reversal signal this lesson explains.' },
+  { kw:['death cross','downtrend','bearish','decline','short sell'], pattern:'downtrend', caption:'Price grinds steadily lower — the kind of trend this lesson covers.' },
+  { kw:['golden cross','uptrend','bullish','momentum','trend'], pattern:'uptrend', caption:'Price grinds steadily higher — the kind of trend this lesson covers.' },
+  { kw:['volatility','vix','whipsaw','0dte','gamma','iv crush'], pattern:'highVolatility', caption:'Price swings sharply in both directions — the kind of volatility this lesson covers.' },
+];
+
+// Topics that aren't chart-pattern-based at all (mindset, career, taxes,
+// community) — shown honestly rather than pretending a random chart shape
+// is "the pattern this lesson covers."
+const NON_CHART_CATEGORIES = ['Psychology','Community','Taxes','Full-Time','Year 2','Mastery','Edge'];
+
+// Second-tier fallback: most day titles across a 52-week curriculum don't
+// contain a literal chart-pattern name (e.g. "Delta: How Much Does Your
+// Option Move?", "Position Sizing: Never Risk More Than 1%") even though
+// their week-level category clearly implies what kind of price action is
+// relevant. Checked after WATCH_RULES fails to match a specific keyword,
+// before falling all the way back to a fully generic chart.
+const CATEGORY_DEFAULTS = {
+  Indicators:     { pattern:'oscillation',        caption:'Indicators like RSI and moving averages are built to measure this kind of back-and-forth price movement.' },
+  VWAP:           { pattern:'oscillation',        caption:'Price oscillates around a mean level — the kind of rhythm VWAP is built to track.' },
+  'Order Flow':   { pattern:'highVolatility',      caption:'Order flow and tape reading are about fast, granular price action like this.' },
+  Tape:           { pattern:'highVolatility',      caption:'Tape reading is about fast, granular price action like this.' },
+  Scalping:       { pattern:'highVolatility',      caption:'Scalping setups play out over fast, sharp price swings like this.' },
+  Simulation:     { pattern:'highVolatility',      caption:'A sample session showing the kind of price action this simulation covers.' },
+  Earnings:       { pattern:'gapUp',               caption:'Earnings reactions are classically gap-driven — a large price jump between one close and the next open.' },
+  News:           { pattern:'highVolatility',      caption:'News-driven moves tend to be sharp and choppy, like this.' },
+  '0DTE':         { pattern:'highVolatility',      caption:'0DTE options are exposed to fast, sharp intraday swings like this.' },
+  Institutional:  { pattern:'breakout',            caption:'Institutional accumulation often precedes a continuation move like this.' },
+  Sectors:        { pattern:'oscillation',         caption:'Sector rotation is about money moving back and forth, like this.' },
+  Macro:          { pattern:'oscillation',         caption:'Macro cycles move in ebbs and flows, like this.' },
+  Crypto:         { pattern:'highVolatility',      caption:'Crypto is known for sharp swings in both directions, like this.' },
+  Futures:        { pattern:'oscillation',         caption:'A sample price series illustrating the kind of movement this lesson covers.' },
+  Algos:          { pattern:'oscillation',         caption:'Algorithmic strategies often trade mean-reversion or momentum patterns like this.' },
+  Pairs:          { pattern:'oscillation',         caption:'Pairs trading is about relative movement between two instruments, like this back-and-forth.' },
+  'Market Profile':{ pattern:'consolidation',      caption:'Market profile concepts like value area and POC are built around price spending time in a range, like this.' },
+  Fibonacci:      { pattern:'grindHigherPullback', caption:'A move higher, a retracement, then continuation — the kind of setup Fibonacci levels are used to measure.' },
+  'Supply/Demand':{ pattern:'bounceOffSupport',    caption:'Price reacting at a supply or demand zone — the kind of setup this lesson covers.' },
+  Patterns:       { pattern:'consolidation',       caption:'A sample setup illustrating the kind of chart pattern this lesson covers.' },
+  Structure:      { pattern:'breakout',            caption:'Market structure concepts are about price breaking key levels, like this.' },
+  Charts:         { pattern:'breakout',            caption:'Advanced chart reading often centers on compression before a breakout, like this.' },
+  Swing:          { pattern:'grindHigherPullback', caption:'Swing setups often involve a move, a pause, then continuation over several days — like this.' },
+  'Options Adv.': { pattern:'highVolatility',      caption:'Advanced options strategies are often built around volatility like this.' },
+  'Risk Mgmt':    { pattern:'uptrend',             caption:'A steady, controlled climb — what good risk management is trying to protect.' },
+  'Market Open':  { pattern:'gapUp',               caption:'The open is when gaps and the biggest early moves happen — the kind of action this lesson covers.' },
+  Portfolio:      { pattern:'grindHigherPullback',  caption:'Steady growth with pullbacks along the way — what portfolio management is built to handle.' },
+};
+
+function pickWatchPattern(lesson) {
+  const category = lesson.category || '';
+  if (NON_CHART_CATEGORIES.includes(category)) {
+    return {
+      data: CHART_PATTERNS.uptrend(),
+      caption: `This lesson is about trading mindset and career skills rather than a specific chart pattern — here's a reference price chart while you read on.`,
+    };
+  }
+  const hay = `${lesson.title || ''} ${category}`.toLowerCase();
+  for (const rule of WATCH_RULES) {
+    if (rule.kw.some(k => hay.includes(k))) {
+      return { data: CHART_PATTERNS[rule.pattern](), caption: rule.caption };
+    }
+  }
+  if (CATEGORY_DEFAULTS[category]) {
+    const d = CATEGORY_DEFAULTS[category];
+    return { data: CHART_PATTERNS[d.pattern](), caption: d.caption };
+  }
+  return {
+    data: CHART_PATTERNS.uptrend(),
+    caption: `A reference price chart for "${lesson.title}."`,
+  };
+}
+
 function renderWatchStep(body,footer) {
   const l=modalLesson;
-  const data=l.watchData||[40,42,44,43,45,47,46,48,50,49,51,53,52,54,56];
+  let data, caption;
+  if (l.watchData) {
+    data = l.watchData;
+    caption = l.watchCaption || 'Observe how price moves and what it tells you.';
+  } else {
+    const picked = pickWatchPattern(l);
+    data = picked.data;
+    caption = picked.caption;
+  }
+  const watchTitle = l.watchTitle || l.title;
   body.innerHTML=`<div class="step-tag">Step 2 of 5 · Watch</div>
-<div class="step-title">${l.watchTitle||'Chart Example'}</div>
+<div class="step-title">${watchTitle}</div>
 <div class="step-content"><p>Study this chart carefully before moving to practice:</p></div>
 <div class="chart-wrap">${buildSVGChart(data)}</div>
-<p class="chart-caption">${l.watchCaption||'Observe how price moves and what it tells you.'}</p>`;
+<p class="chart-caption">${caption}</p>`;
   footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" onclick="nextStep()">Next: Practice →</button>`;
 }
 
