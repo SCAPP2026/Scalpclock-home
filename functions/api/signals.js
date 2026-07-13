@@ -147,7 +147,7 @@ export async function onRequest(context) {
   // ── SampsonX ticker search — one specific symbol, any liquidity ─────────
   if (symbolParam) {
     try {
-      let rsi, vwap, volSurge, price, prevClose, latestVol;
+      let rsi, vwap, volSurge, price, prevClose, avgDailyVol;
 
       if (range === 'day') {
         const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
@@ -165,8 +165,11 @@ export async function onRequest(context) {
 
         const recentBars = bars.slice(-50);
         price     = latestBar ? latestBar.c : (recentBars.length ? recentBars[recentBars.length - 1].c : null);
-        latestVol = latestBar ? latestBar.v : (recentBars.length ? recentBars[recentBars.length - 1].v : 0);
         prevClose = dayBars.length >= 2 ? dayBars[dayBars.length - 2].c : null;
+        // Liquidity is judged on average full-day volume, not a single
+        // 15-min bar — a mega-cap like AAPL can easily have one quiet bar
+        // under any fixed per-bar floor without actually being illiquid.
+        avgDailyVol = dayBars.length ? dayBars.reduce((s, b) => s + b.v, 0) / dayBars.length : 0;
 
         rsi      = calcRSI(recentBars);
         vwap     = calcVWAP(bars);
@@ -180,11 +183,12 @@ export async function onRequest(context) {
 
         const latest = bars[bars.length - 1];
         price     = latest.c;
-        latestVol = latest.v;
         prevClose = bars.length >= 2 ? bars[bars.length - 2].c : null;
         rsi       = calcRSI(bars);
         vwap      = null;
         volSurge  = calcVolSurge(bars, 20);
+        const recentDaily = bars.slice(-10);
+        avgDailyVol = recentDaily.length ? recentDaily.reduce((s, b) => s + b.v, 0) / recentDaily.length : 0;
       }
 
       if (!price) throw new Error('NO_DATA');
@@ -192,7 +196,7 @@ export async function onRequest(context) {
       const vwapDist  = (vwap && price) ? Number((((price - vwap) / vwap) * 100).toFixed(2)) : null;
       const sig        = getSignal(rsi, vwapDist, volSurge);
       const changePct  = (price && prevClose) ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
-      const lowLiquidity = price < 5 || (latestVol || 0) < 50000;
+      const lowLiquidity = price < 5 || avgDailyVol < 500000;
 
       let clockOpen = false;
       try {
