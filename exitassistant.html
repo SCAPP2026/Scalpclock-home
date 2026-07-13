@@ -2485,6 +2485,7 @@ function clearOptionContract() {
 function saveState() {
   try {
     localStorage.setItem('sc_ea_state', JSON.stringify({
+      savedDate:        new Date().toISOString().slice(0, 10),
       ticker,
       entryPrice,
       optStrike:        document.getElementById('optStrikeInput').value,
@@ -2506,6 +2507,22 @@ function restoreState() {
   try {
     const s = JSON.parse(localStorage.getItem('sc_ea_state') || 'null');
     if (!s) return;
+
+    // Only restore same-day state — this exists purely to survive an
+    // accidental refresh mid-session, not to resurrect a trade setup from
+    // a previous day. Without this, "clean slate" never actually happened:
+    // whatever was last entered kept coming back indefinitely.
+    const todayStr = new Date().toISOString().slice(0, 10);
+    if (s.savedDate !== todayStr) { clearState(); return; }
+
+    // An options contract whose expiry has already passed is dead —
+    // never silently restore it even within the same day.
+    if (s.optContract && s.optContract.expiry && s.optContract.expiry < todayStr) {
+      s.optContract  = null;
+      s.optPremium   = '';
+      s.currentPrice = '';
+      s.optExpiry    = ''; // don't leave a past-due date sitting in the field
+    }
 
     // Restore ticker
     if (s.ticker) {
