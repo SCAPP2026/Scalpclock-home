@@ -707,10 +707,19 @@ async function init() {
   renderPath();
   renderBadges();
   await checkPlan();
-  // Re-render the bits the daily cap affects now that plan status is known —
-  // avoids a false "locked" flash for Pro/trial users on load.
+  // checkPlan() may have just pulled in cloud-synced progress that wasn't
+  // in this browser's localStorage yet (e.g. first login on a new device,
+  // or after clearing site data) — recompute currentDay and re-render
+  // everything derived from it, not just the daily-cap-gated bits. Without
+  // this, a successful sync still silently showed the pre-sync Level/Day
+  // until the next full page load, which read exactly like lost progress.
+  updateNav();
+  currentDay = Math.min(getDone().length + 1, 365);
+  renderHeroStats();
+  renderLevelBar();
   renderTodayCard();
   renderPath();
+  renderBadges();
 }
 
 function updateNav() {
