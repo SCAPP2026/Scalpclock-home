@@ -1674,7 +1674,7 @@ async function searchSampsonX() {
     const isUp      = r.changePct >= 0;
     const chgStr    = `${isUp ? '+' : ''}${r.changePct.toFixed(2)}%`;
     const chgColor  = isUp ? 'var(--dk-bull)' : 'var(--dk-bear)';
-    const badgeText = r.tone === 'buy' ? 'BUY CALLS' : r.tone === 'sell' ? 'BUY PUTS' : 'HOLD';
+    const badgeText = r.tone === 'buy' ? 'CALLS' : r.tone === 'sell' ? 'PUTS' : 'HOLD';
     const warn      = r.lowLiquidity
       ? '<div class="sx-warn">⚠ Lower price/volume name — options on this ticker may have wide spreads or limited liquidity.</div>'
       : '';
@@ -1703,8 +1703,8 @@ function renderSignalGroup(list, emptyLabel) {
     const isUp      = t.changePct >= 0;
     const chgStr    = `${isUp ? '+' : ''}${t.changePct.toFixed(2)}%`;
     const hard      = t.conviction === 'HARD';
-    const badgeText = t.tone === 'buy'  ? `${hard ? '⚡ ' : ''}BUY CALLS`
-                    : `${hard ? '⚡ ' : ''}BUY PUTS`;
+    const badgeText = t.tone === 'buy'  ? `${hard ? '⚡ ' : ''}CALLS`
+                    : `${hard ? '⚡ ' : ''}PUTS`;
     const priceStr  = t.price != null ? `$${t.price.toFixed(2)}` : '—';
     const rsiVal    = t.rsi   != null ? t.rsi : '—';
     const chgColor  = isUp ? 'var(--dk-bull)' : 'var(--dk-bear)';

@@ -97,28 +97,28 @@ export async function onRequest(context) {
     if (rsi <= 20) {
       const extras = buildExtras(true);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
-      return { tone: 'buy', signal: 'Buy Calls', conviction: 'HARD',
+      return { tone: 'buy', signal: 'Calls', conviction: 'HARD',
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price dropped hard and is likely to bounce. Strong call setup.`,
         confluence: 1 + extras.length };
     }
     if (rsi <= 30) {
       const extras = buildExtras(true);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
-      return { tone: 'buy', signal: 'Buy Calls', conviction: extras.length >= 2 ? 'HARD' : null,
+      return { tone: 'buy', signal: 'Calls', conviction: extras.length >= 2 ? 'HARD' : null,
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price has pulled back. Calls are the play here.`,
         confluence: 1 + extras.length };
     }
     if (rsi >= 80) {
       const extras = buildExtras(false);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
-      return { tone: 'sell', signal: 'Buy Puts', conviction: 'HARD',
+      return { tone: 'sell', signal: 'Puts', conviction: 'HARD',
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price ran up too far too fast. Strong put setup.`,
         confluence: 1 + extras.length };
     }
     if (rsi >= 70) {
       const extras = buildExtras(false);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
-      return { tone: 'sell', signal: 'Buy Puts', conviction: extras.length >= 2 ? 'HARD' : null,
+      return { tone: 'sell', signal: 'Puts', conviction: extras.length >= 2 ? 'HARD' : null,
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price is stretched. Puts have the edge.`,
         confluence: 1 + extras.length };
     }
@@ -350,7 +350,7 @@ export async function onRequest(context) {
         const sig       = getSignal(rsi, vwapDist, volSurge);
         const changePct = (price && prevClose) ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
 
-        if (sig.tone === 'hold') continue; // only Buy Calls / Buy Puts candidates compete for the top-10 slots
+        if (sig.tone === 'hold') continue; // only Calls / Puts candidates compete for the top-10 slots
 
         scored.push({
           symbol: sym, name: nameFor(sym), ok: true,
