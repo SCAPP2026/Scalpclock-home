@@ -465,14 +465,22 @@ async function syncProgressFromCloud() {
 async function pushProgressToCloud() {
   if(!_uid) return;
   try {
-    await sb.from('profiles').update({learn_progress:{
-      done:getDone(),
-      badges:getEarned(),
-      xp:getXP(),
-      streakDate:LS.get('sc_streak_date',''),
-      streakCount:LS.get('sc_streak_count',0),
-      quizFirstTry:LS.get('sc_quiz_first_try',0),
-    }}).eq('id',_uid);
+    // upsert, not update — if this account's profiles row is missing for
+    // any reason (e.g. signup's insert ran before the table existed, or
+    // the row was never created), update() would silently affect zero
+    // rows and progress would never actually save. upsert self-heals by
+    // creating the row instead of depending on it already being there.
+    await sb.from('profiles').upsert({
+      id:_uid,
+      learn_progress:{
+        done:getDone(),
+        badges:getEarned(),
+        xp:getXP(),
+        streakDate:LS.get('sc_streak_date',''),
+        streakCount:LS.get('sc_streak_count',0),
+        quizFirstTry:LS.get('sc_quiz_first_try',0),
+      },
+    }, {onConflict:'id'});
   } catch(e) { console.warn('Progress sync (push) failed:',e.message); }
 }
 function hoursUntilMidnightStr() {
