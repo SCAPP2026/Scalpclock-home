@@ -1,8 +1,11 @@
 // Market-wide scalp-signal scanner. Instead of only re-checking a fixed
 // watchlist, this builds a dynamic universe from Alpaca's screener
-// endpoints (most-active-by-volume + top gainers/losers), scores every
-// name in it with the same RSI/VWAP/volume-surge model, and returns only
-// the strongest Buy-Calls and Buy-Puts candidates.
+// endpoints (most-active-by-volume + top gainers/losers), always includes
+// a fixed core of the most heavily-traded options names (SPY, QQQ, AAPL,
+// etc. — see CORE_SYMBOLS) regardless of whether they're currently a
+// "mover", scores every name with the RSI/VWAP/volume-surge model PLUS a
+// real news-catalyst check, and returns only the strongest Calls/Puts
+// candidates.
 //
 // ?range=day  (default) — 15-min bars, intraday RSI(14) + VWAP + vol surge.
 // ?range=week            — daily bars, RSI(14) over closes + a 20-day
@@ -13,7 +16,7 @@
 // ?symbol=TICKER          — look up one specific ticker instead of scanning
 //                           the market ("SampsonX" ticker search). Skips
 //                           the screener/universe build entirely, reuses
-//                           the same RSI/VWAP/volume-surge model, and
+//                           the same RSI/VWAP/volume-surge/news model, and
 //                           returns a verdict even for Hold / lower-
 //                           liquidity names instead of filtering them out
 //                           the way the market scan does.
@@ -36,6 +39,49 @@ export async function onRequest(context) {
 
   const now      = new Date();
   const todayStr = now.toISOString().slice(0, 10);
+
+  // ── News catalyst check ──────────────────────────────────────────────────
+  // Same Polygon ("Massive") + Finnhub sources as /api/news, fetched once
+  // per request (not once per ticker) and reduced to a ticker -> has-recent-
+  // -coverage lookup. This doesn't attempt sentiment (bullish vs bearish) —
+  // there's no real sentiment model behind this, and claiming one would be
+  // overclaiming. What it does do: a technical RSI extreme that's also
+  // backed by an actual news catalyst is a materially different, stronger
+  // signal than the same RSI reading on a name with no news at all, so it
+  // adds to confluence exactly like the existing VWAP/volume-surge checks.
+  async function fetchNewsTickers(recencyHours) {
+    const cutoff = now.getTime() - recencyHours * 60 * 60 * 1000;
+    const tickers = new Set();
+    const [polyRes, finnRes] = await Promise.allSettled([
+      env.MASSIVE_API_KEY
+        ? fetch(`https://api.polygon.io/v2/reference/news?limit=50&order=desc&sort=published_utc&apiKey=${env.MASSIVE_API_KEY}`)
+        : Promise.resolve(null),
+      env.FINNHUB_KEY
+        ? fetch(`https://finnhub.io/api/v1/news?category=general&token=${env.FINNHUB_KEY}`)
+        : Promise.resolve(null),
+    ]);
+    try {
+      if (polyRes.status === 'fulfilled' && polyRes.value) {
+        const d = await safeJson(polyRes.value);
+        for (const a of (d.results || [])) {
+          if (new Date(a.published_utc).getTime() >= cutoff) {
+            (a.tickers || []).forEach(s => tickers.add(String(s).toUpperCase()));
+          }
+        }
+      }
+    } catch (e) { console.error('polygon news parse failed:', e.message); }
+    try {
+      if (finnRes.status === 'fulfilled' && finnRes.value) {
+        const d = await safeJson(finnRes.value);
+        for (const a of (Array.isArray(d) ? d : [])) {
+          if ((a.datetime || 0) * 1000 >= cutoff) {
+            (a.related || '').split(',').forEach(s => { const t = s.trim().toUpperCase(); if (t) tickers.add(t); });
+          }
+        }
+      }
+    } catch (e) { console.error('finnhub news parse failed:', e.message); }
+    return tickers;
+  }
 
   // ── Shared math (used by both the single-symbol lookup and the scan) ────
   function calcRSI(bars, period = 14) {
@@ -75,9 +121,9 @@ export async function onRequest(context) {
     return avgVol > 0 ? latestVol / avgVol : 1;
   }
 
-  function getSignal(rsi, vwapDist, volSurge) {
+  function getSignal(rsi, vwapDist, volSurge, hasNews) {
     if (rsi === null) {
-      return { tone: 'hold', signal: 'Hold', conviction: null, explain: 'Not enough data yet.', confluence: 0 };
+      return { tone: 'hold', signal: 'Hold', conviction: null, explain: 'Not enough data yet.', confluence: 0, hasNews: !!hasNews };
     }
     const volOk = volSurge >= 1.5;
     const hasVwap = vwapDist !== null;
@@ -91,6 +137,7 @@ export async function onRequest(context) {
           : `${Math.abs(vwapDist).toFixed(1)}% above VWAP`);
       }
       if (volOk) parts.push(`vol ×${volSurge.toFixed(1)}`);
+      if (hasNews) parts.push('news catalyst');
       return parts;
     }
 
@@ -99,32 +146,32 @@ export async function onRequest(context) {
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
       return { tone: 'buy', signal: 'Calls', conviction: 'HARD',
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price dropped hard and is likely to bounce. Strong call setup.`,
-        confluence: 1 + extras.length };
+        confluence: 1 + extras.length, hasNews: !!hasNews };
     }
     if (rsi <= 30) {
       const extras = buildExtras(true);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
       return { tone: 'buy', signal: 'Calls', conviction: extras.length >= 2 ? 'HARD' : null,
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price has pulled back. Calls are the play here.`,
-        confluence: 1 + extras.length };
+        confluence: 1 + extras.length, hasNews: !!hasNews };
     }
     if (rsi >= 80) {
       const extras = buildExtras(false);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
       return { tone: 'sell', signal: 'Puts', conviction: 'HARD',
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price ran up too far too fast. Strong put setup.`,
-        confluence: 1 + extras.length };
+        confluence: 1 + extras.length, hasNews: !!hasNews };
     }
     if (rsi >= 70) {
       const extras = buildExtras(false);
       const suffix = extras.length ? ` · ${extras.join(', ')}` : '';
       return { tone: 'sell', signal: 'Puts', conviction: extras.length >= 2 ? 'HARD' : null,
         explain: `RSI ${rsi.toFixed(1)}${suffix} — price is stretched. Puts have the edge.`,
-        confluence: 1 + extras.length };
+        confluence: 1 + extras.length, hasNews: !!hasNews };
     }
     return { tone: 'hold', signal: 'Hold', conviction: null,
       explain: `RSI ${rsi.toFixed(1)} — price is in the middle. No clear edge yet — wait for a better setup.`,
-      confluence: 0 };
+      confluence: 0, hasNews: !!hasNews };
   }
 
   async function fetchAllBars(baseUrl, maxPages) {
@@ -148,6 +195,7 @@ export async function onRequest(context) {
   if (symbolParam) {
     try {
       let rsi, vwap, volSurge, price, prevClose, avgDailyVol;
+      const newsTickersPromise = fetchNewsTickers(range === 'week' ? 72 : 6);
 
       if (range === 'day') {
         const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
@@ -193,8 +241,10 @@ export async function onRequest(context) {
 
       if (!price) throw new Error('NO_DATA');
 
-      const vwapDist  = (vwap && price) ? Number((((price - vwap) / vwap) * 100).toFixed(2)) : null;
-      const sig        = getSignal(rsi, vwapDist, volSurge);
+      const newsTickers = await newsTickersPromise;
+      const hasNews    = newsTickers.has(symbolParam);
+      const vwapDist   = (vwap && price) ? Number((((price - vwap) / vwap) * 100).toFixed(2)) : null;
+      const sig        = getSignal(rsi, vwapDist, volSurge, hasNews);
       const changePct  = (price && prevClose) ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
       const lowLiquidity = price < 5 || avgDailyVol < 500000;
 
@@ -242,6 +292,11 @@ export async function onRequest(context) {
       });
     }
   }
+
+  // ── Fixed core — always scanned regardless of what the screener surfaces
+  // that moment. The most heavily-traded options names in the market don't
+  // stop mattering just because they aren't today's biggest mover.
+  const CORE_SYMBOLS = ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'META', 'AMD'];
 
   // ── Fallback universe ──────────────────────────────────────────────────
   // Used if the screener endpoints error or aren't entitled on the current
@@ -301,6 +356,10 @@ export async function onRequest(context) {
     source  = 'fallback-static';
   }
 
+  // Guarantee the fixed core is always in the universe, whichever path
+  // built `symbols` above, before the size cap below.
+  symbols = [...new Set([...CORE_SYMBOLS, ...symbols])];
+
   // Cap universe size — keeps the multi-symbol bars request and per-request
   // CPU work bounded even if a screener response is unexpectedly large.
   symbols = symbols.slice(0, 220);
@@ -311,6 +370,8 @@ export async function onRequest(context) {
     const clockRes = await fetch('https://paper-api.alpaca.markets/v2/clock', { headers: hdrs });
     marketOpen = (await safeJson(clockRes)).is_open || false;
   } catch (e) { console.error('clock error:', e.message); }
+
+  const newsTickers = await fetchNewsTickers(range === 'week' ? 72 : 6);
 
   // ── Fetch bars for the requested range ──────────────────────────────────
   // More symbols means more pages before every symbol has enough bars for
@@ -347,7 +408,7 @@ export async function onRequest(context) {
         const vwap     = calcVWAP(bars);
         const volSurge = calcVolSurge(bars);
         const vwapDist = (vwap && price) ? Number((((price - vwap) / vwap) * 100).toFixed(2)) : null;
-        const sig       = getSignal(rsi, vwapDist, volSurge);
+        const sig       = getSignal(rsi, vwapDist, volSurge, newsTickers.has(sym));
         const changePct = (price && prevClose) ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
 
         if (sig.tone === 'hold') continue; // only Calls / Puts candidates compete for the top-10 slots
@@ -383,7 +444,7 @@ export async function onRequest(context) {
 
         const rsi       = calcRSI(bars);
         const volSurge   = calcVolSurge(bars, 20); // vs 20-day average volume
-        const sig        = getSignal(rsi, null, volSurge); // no VWAP at weekly timeframe
+        const sig        = getSignal(rsi, null, volSurge, newsTickers.has(sym)); // no VWAP at weekly timeframe
         const changePct  = prevClose ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
 
         if (sig.tone === 'hold') continue;
@@ -417,6 +478,7 @@ export async function onRequest(context) {
   return new Response(JSON.stringify({
     marketOpen, asOf: new Date().toISOString(), range,
     universeSize: symbols.length, scannedCount: scored.length, source,
+    newsTickersTracked: newsTickers.size,
     calls, puts,
   }), {
     headers: {
