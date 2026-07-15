@@ -48,6 +48,7 @@
   --panel:rgba(14,22,16,.85);
   --line:rgba(120,200,160,.13);
   --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --gold:#f5a623;--gold-dim:rgba(245,166,35,.1);
   --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
   --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
   --r:14px;
@@ -129,6 +130,53 @@ a{color:var(--green);text-decoration:none;}
 @media(max-width:860px){
   .hero{grid-template-columns:1fr;gap:40px;padding:60px 20px 40px;}
   .hero-widget{max-width:480px;}
+}
+
+/* FOUNDING MEMBER — PROMO BAR */
+.promo-bar{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;background:#16a34a;color:#04150d;padding:10px 24px;text-align:center;font-size:.85rem;font-weight:600;position:relative;z-index:70;}
+.promo-bar-text{line-height:1.4;}
+.promo-bar-btn{flex-shrink:0;background:#04150d;color:#16a34a;font-family:var(--disp);font-weight:700;font-size:.82rem;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;white-space:nowrap;transition:.15s;}
+.promo-bar-btn:hover{background:#0a2416;}
+@media(max-width:640px){.promo-bar{flex-direction:column;gap:8px;padding:12px 16px;}.promo-bar-btn{width:100%;}}
+
+/* FOUNDING MEMBER — HERO CARD */
+.founding-hero-card{margin-top:28px;background:linear-gradient(160deg,rgba(245,166,35,.10),rgba(14,22,16,.85));border:1px solid rgba(245,166,35,.35);border-radius:16px;padding:24px 26px;max-width:480px;}
+.founding-hero-title{font-family:var(--disp);font-weight:700;font-size:1.15rem;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.founding-hero-sub{font-size:.85rem;color:var(--t80);margin-bottom:14px;}
+.founding-hero-checks{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.founding-hero-checks li{font-size:.9rem;color:var(--text);display:flex;align-items:center;gap:8px;}
+.founding-hero-checks li b{color:var(--gold);}
+.founding-hero-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--gold);color:#1a0d00;font-family:var(--disp);font-weight:700;font-size:.95rem;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:.15s;}
+.founding-hero-btn:hover{background:#ffb84d;transform:translateY(-1px);}
+.founding-hero-note{font-size:.75rem;color:var(--t30);margin-top:12px;line-height:1.5;}
+
+/* FOUNDING MEMBER — PRICING SECTION */
+.founding-section{padding:80px 24px;max-width:640px;margin:0 auto;text-align:center;}
+.founding-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:24px 0 32px;}
+.founding-badge{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,166,35,.3);padding:6px 14px;border-radius:20px;}
+.founding-progress-wrap{margin-bottom:32px;text-align:left;}
+.founding-progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--t55);margin-bottom:8px;}
+.founding-progress-label b{color:var(--gold);}
+.founding-progress-track{height:10px;border-radius:6px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);overflow:hidden;}
+.founding-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ffb84d);border-radius:6px;transition:width .6s ease;width:0%;}
+.founding-price-card{background:var(--panel);border:1px solid rgba(245,166,35,.4);border-radius:20px;padding:36px 28px;box-shadow:0 0 50px rgba(245,166,35,.12);text-align:left;}
+.founding-price-name{font-family:var(--disp);font-weight:700;font-size:1.5rem;color:var(--text);margin-bottom:6px;}
+.founding-price-amount{font-family:var(--disp);font-size:2.8rem;font-weight:700;color:var(--gold);line-height:1;}
+.founding-price-per{color:var(--t55);font-size:.9rem;margin-left:4px;}
+.founding-price-trial{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--green);background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);padding:5px 12px;border-radius:20px;margin:14px 0 18px;}
+.founding-price-everything{font-size:.9rem;color:var(--t80);margin-bottom:14px;font-weight:600;}
+.founding-price-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 0 26px;}
+.founding-price-list li{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--text);}
+.founding-price-list li b{color:var(--gold);}
+.founding-price-cta{display:block;width:100%;text-align:center;background:var(--gold);color:#1a0d00;font-family:var(--disp);font-weight:700;font-size:1rem;padding:15px;border-radius:11px;border:none;cursor:pointer;transition:.15s;}
+.founding-price-cta:hover{background:#ffb84d;transform:translateY(-1px);}
+.founding-price-limit{text-align:center;font-size:.78rem;color:var(--t55);margin-top:10px;}
+.founding-regular-price{text-align:center;margin-top:22px;padding:16px;border:1px dashed var(--line);border-radius:12px;}
+.founding-regular-price .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--t30);margin-bottom:4px;}
+.founding-regular-price .amt{font-family:var(--disp);font-weight:700;font-size:1.3rem;color:var(--t55);}
+.founding-regular-price .note{font-size:.78rem;color:var(--t30);margin-top:4px;}
+@media(max-width:640px){
+  .founding-price-card{padding:28px 22px;}
 }
 
 /* SECTION BASE */
@@ -276,6 +324,12 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </head>
 <body>
 
+<!-- FOUNDING MEMBER ANNOUNCEMENT BAR (hidden until /api/founding-status confirms the offer is active) -->
+<div class="promo-bar" id="promoBar" style="display:none">
+  <span class="promo-bar-text">🚀 Founding Member Special &bull; Lock in ScalpClock Pro for just $1.99/month for life &bull; Includes a 5-Day Free Trial</span>
+  <button type="button" class="promo-bar-btn" onclick="document.getElementById('founding').scrollIntoView({behavior:'smooth'})">Claim Your Spot</button>
+</div>
+
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-in">
@@ -363,6 +417,21 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <div class="hero-eyebrow">AI Trading Coach · Learn While You Trade</div>
       <h1>Stop Guessing.<br><em>Start Understanding.</em></h1>
       <p class="hero-sub">Most traders stare at charts hoping for a signal. ScalpClock's AI trading coach SampsonX reads every candle, explains candlestick patterns, technical analysis, and price action in plain English — teaching you options and stock trading while you trade real signals.</p>
+
+      <!-- FOUNDING MEMBER HERO CARD (hidden until /api/founding-status confirms the offer is active) -->
+      <div class="founding-hero-card" id="foundingHeroCard" style="display:none">
+        <div class="founding-hero-title">🔥 Founding Member Offer</div>
+        <div class="founding-hero-sub">Only the first 500 members can lock in this price.</div>
+        <ul class="founding-hero-checks">
+          <li><b>✓</b> $1.99/month</li>
+          <li><b>✓</b> 5-Day Free Trial</li>
+          <li><b>✓</b> Price Locked For Life</li>
+          <li><b>✓</b> Cancel Anytime</li>
+        </ul>
+        <button type="button" class="founding-hero-btn" onclick="startFoundingCheckout()">Become a Founding Member</button>
+        <div class="founding-hero-note">After the first 500 members, ScalpClock Pro will increase to $9.99/month. Founding Members keep their $1.99/month pricing as long as their subscription remains active.</div>
+      </div>
+
       <div class="hero-btns">
         <a class="btn-primary" href="/login?tab=signup">Start Free →</a>
         <a class="btn-ghost" href="#demo">Watch Demo</a>
@@ -379,6 +448,49 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
         <div class="hw-sx-text" id="heroSXText">Reading the chart…</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- FOUNDING MEMBER PRICING SECTION (hidden until /api/founding-status confirms the offer is active) -->
+<section class="founding-section" id="founding" style="display:none">
+  <div class="sec-label" style="display:flex;justify-content:center;">Limited Time</div>
+  <h2 class="sec-title">Lock In Founding Member Pricing</h2>
+  <div class="founding-badges">
+    <span class="founding-badge">🔥 Founding Member</span>
+    <span class="founding-badge">⏰ Limited Time</span>
+    <span class="founding-badge">💎 Lifetime Price Lock</span>
+  </div>
+
+  <div class="founding-progress-wrap">
+    <div class="founding-progress-label">
+      <span>Founding Member Spots Remaining</span>
+      <b id="foundingProgressCount">Loading…</b>
+    </div>
+    <div class="founding-progress-track">
+      <div class="founding-progress-fill" id="foundingProgressFill"></div>
+    </div>
+  </div>
+
+  <div class="founding-price-card">
+    <div class="founding-price-name">Founding Member</div>
+    <div><span class="founding-price-amount">$1.99</span><span class="founding-price-per">/month</span></div>
+    <div class="founding-price-trial">🎁 5-Day Free Trial Included</div>
+    <div class="founding-price-everything">Everything in Pro</div>
+    <ul class="founding-price-list">
+      <li><b>✓</b> Live ScalpCharts</li>
+      <li><b>✓</b> Replay Mode</li>
+      <li><b>✓</b> Lessons</li>
+      <li><b>✓</b> Exit Assistant</li>
+      <li><b>✓</b> Future Premium Features</li>
+    </ul>
+    <button type="button" class="founding-price-cta" onclick="startFoundingCheckout()">Start Free Trial</button>
+    <div class="founding-price-limit">Limited to the first 500 members.</div>
+  </div>
+
+  <div class="founding-regular-price">
+    <div class="lbl">Regular Price</div>
+    <div class="amt">$9.99/month</div>
+    <div class="note">Coming after the Founding Member promotion ends.</div>
   </div>
 </section>
 
@@ -618,9 +730,66 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // Page reveal (removed stale Supabase auth check — wrong project)
 document.body.style.visibility='visible';
+
+// ─── FOUNDING MEMBER PROMO ──────────────────────────────────────
+let _sb = null;
+try {
+  _sb = supabase.createClient(
+    'https://fnuqxiflqqejjttxymbz.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY'
+  );
+} catch (e) { console.warn('Supabase init failed:', e.message); }
+
+async function startFoundingCheckout() {
+  let userId = null;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    userId = session?.user?.id || null;
+  } catch(_) {}
+
+  try {
+    const body = { tier: 'founding_member', billing: 'monthly', trial: true };
+    if (userId) body.userId = userId;
+
+    const res  = await fetch('/api/stripe/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL returned');
+    }
+  } catch (err) {
+    console.error('startFoundingCheckout error:', err);
+    alert(err.message || 'Something went wrong — please try again.');
+  }
+}
+
+async function loadFoundingStatus() {
+  try {
+    const res  = await fetch('/api/founding-status');
+    const data = await res.json();
+    if (!data.active) return; // single source of truth — inactive means every founding element on this page stays hidden
+
+    document.getElementById('promoBar').style.display = '';
+    document.getElementById('foundingHeroCard').style.display = '';
+    document.getElementById('founding').style.display = '';
+
+    const pct = Math.max(0, Math.min(100, (data.remaining / data.cap) * 100));
+    document.getElementById('foundingProgressFill').style.width = pct + '%';
+    document.getElementById('foundingProgressCount').textContent = `${data.remaining} / ${data.cap} Remaining`;
+  } catch (e) {
+    console.warn('founding status failed:', e.message);
+  }
+}
+loadFoundingStatus();
 
 // Nav drawer
 function toggleDrawer(){document.getElementById('navDrawer').classList.toggle('open');}

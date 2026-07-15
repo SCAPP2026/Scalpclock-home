@@ -5,6 +5,13 @@
 // re-runs server-side before honoring the discounted price, so this file
 // exports the shared logic rather than duplicating it.
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+
+// Single kill switch for the whole promotion. Flip to false to end it
+// immediately — every homepage/pricing element that renders the offer
+// reads `active` from this endpoint, so nothing else needs to change.
+// (checkout.js re-declares this same constant — see the comment there
+// for why it's duplicated rather than imported.)
+const ACTIVE_OVERRIDE = true;
 const CAP = 500;
 const CUTOFF = '2026-09-30T23:59:59Z';
 
@@ -25,7 +32,7 @@ export async function getFoundingStatus(serviceKey) {
     console.error('founding-status count failed:', e.message);
   }
   const remaining = Math.max(0, CAP - claimed);
-  const active    = remaining > 0 && Date.now() < new Date(CUTOFF).getTime();
+  const active    = ACTIVE_OVERRIDE && remaining > 0 && Date.now() < new Date(CUTOFF).getTime();
   return { claimed, remaining, cap: CAP, cutoff: CUTOFF, active };
 }
 

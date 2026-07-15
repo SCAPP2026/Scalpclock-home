@@ -23,9 +23,10 @@ export async function onRequest(context) {
   }
 }
 
-// Same cap/cutoff logic as functions/api/founding-status.js — duplicated
-// rather than imported so this file has zero cross-file dependency risk
-// for billing-critical code. Keep both in sync if the cap/date changes.
+// Same kill switch, cap, and cutoff as functions/api/founding-status.js —
+// duplicated rather than imported so this file has zero cross-file
+// dependency risk for billing-critical code. Keep all three in sync.
+const FOUNDING_ACTIVE_OVERRIDE = true;
 const FOUNDING_CAP    = 500;
 const FOUNDING_CUTOFF = '2026-09-30T23:59:59Z';
 
@@ -46,7 +47,7 @@ async function isFoundingOfferActive(serviceKey) {
     console.error('founding offer count failed:', e.message);
     return false; // fail closed — never grant the discount if we can't verify eligibility
   }
-  return (FOUNDING_CAP - claimed) > 0 && Date.now() < new Date(FOUNDING_CUTOFF).getTime();
+  return FOUNDING_ACTIVE_OVERRIDE && (FOUNDING_CAP - claimed) > 0 && Date.now() < new Date(FOUNDING_CUTOFF).getTime();
 }
 
 async function handleCheckout(env, request) {
