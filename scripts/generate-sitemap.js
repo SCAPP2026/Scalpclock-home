@@ -23,13 +23,25 @@ const ROOT = path.resolve(__dirname, "..");
 const DOMAIN = "https://scalpclock.com";
 const OUT_FILE = path.join(ROOT, "sitemap.xml");
 
-// Per-page priority/changefreq overrides. Anything not listed here falls back
-// to DEFAULT_META below, so a brand-new page still gets a sane entry.
+// Non-content directories to skip when walking the repo for HTML pages.
+const SKIP_DIRS = new Set([
+  ".git", ".github", ".githooks", ".claude", ".wrangler",
+  "css", "js", "functions", "tests", "scripts", "node_modules",
+  "Scalpclock-home", // stale nested clone, not served
+]);
+
+// Per-page priority/changefreq overrides, keyed by URL path (no leading
+// slash, "index" for a directory's own index.html — e.g. "blog" for
+// blog/index.html, "blog/category" for any /blog/category/* page). Anything
+// not listed here falls back to DEFAULT_META, so a brand-new page — root or
+// nested — still gets a sane entry without editing this file.
 const PAGE_META = {
   index: { priority: "1.0", changefreq: "daily" },
   learn: { priority: "0.9", changefreq: "daily" },
   scalpchart: { priority: "0.8", changefreq: "daily" },
   pricing: { priority: "0.8", changefreq: "weekly" },
+  blog: { priority: "0.8", changefreq: "weekly" },
+  "blog/category": { priority: "0.6", changefreq: "weekly" },
   exitassistant: { priority: "0.7", changefreq: "weekly" },
   about: { priority: "0.7", changefreq: "monthly" },
   faq: { priority: "0.6", changefreq: "monthly" },
@@ -38,6 +50,14 @@ const PAGE_META = {
   privacy: { priority: "0.3", changefreq: "yearly" },
 };
 const DEFAULT_META = { priority: "0.5", changefreq: "monthly" };
+const BLOG_POST_META = { priority: "0.6", changefreq: "monthly" };
+
+function metaFor(urlKey) {
+  if (PAGE_META[urlKey]) return PAGE_META[urlKey];
+  if (urlKey.startsWith("blog/category/")) return PAGE_META["blog/category"];
+  if (urlKey.startsWith("blog/")) return BLOG_POST_META;
+  return DEFAULT_META;
+}
 
 function readRedirectSources() {
   const file = path.join(ROOT, "_redirects");
@@ -50,6 +70,24 @@ function readRedirectSources() {
     if (from) sources.add(from.replace(/^\//, "").replace(/\.html$/, ""));
   }
   return sources;
+}
+
+// Recursively finds every *.html file under `dir`, skipping SKIP_DIRS.
+// Returns paths relative to ROOT with forward slashes (posix-style),
+// regardless of OS, so they match how URLs and _redirects are written.
+function findHtmlFiles(dir) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith(".")) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (SKIP_DIRS.has(entry.name)) continue;
+      out.push(...findHtmlFiles(full));
+    } else if (entry.isFile() && entry.name.endsWith(".html")) {
+      out.push(path.relative(ROOT, full).split(path.sep).join("/"));
+    }
+  }
+  return out;
 }
 
 function isNoindex(html) {
@@ -83,18 +121,22 @@ function escapeXml(s) {
 
 function collectPublicPages() {
   const redirectSources = readRedirectSources();
-  const files = fs.readdirSync(ROOT).filter((f) => f.endsWith(".html"));
+  const files = findHtmlFiles(ROOT); // e.g. "index.html", "blog/index.html", "blog/category/faq.html"
 
   const pages = [];
   for (const file of files) {
-    const basename = path.basename(file, ".html");
-    if (redirectSources.has(basename)) continue; // aliased/redirected away
+    // "index.html" -> "", "blog/index.html" -> "blog", "about.html" -> "about"
+    const withoutExt = file.replace(/\.html$/, "");
+    const urlKey = withoutExt === "index" || withoutExt.endsWith("/index")
+      ? withoutExt.slice(0, -"index".length).replace(/\/$/, "")
+      : withoutExt;
+    if (redirectSources.has(urlKey || "index")) continue; // aliased/redirected away
 
     const html = fs.readFileSync(path.join(ROOT, file), "utf8");
     if (isNoindex(html)) continue;
 
-    const urlPath = basename === "index" ? "/" : `/${basename}`;
-    const meta = PAGE_META[basename] || DEFAULT_META;
+    const urlPath = urlKey ? `/${urlKey}` : "/";
+    const meta = metaFor(urlKey || "index");
     pages.push({
       loc: `${DOMAIN}${urlPath}`,
       lastmod: lastmodFor(file),

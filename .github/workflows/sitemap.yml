@@ -1,0 +1,36 @@
+name: Update sitemap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.html"
+      - "_redirects"
+      - "scripts/generate-sitemap.js"
+
+permissions:
+  contents: write
+
+jobs:
+  sitemap:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Regenerate sitemap.xml
+        run: node scripts/generate-sitemap.js
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- sitemap.xml; then
+            echo "sitemap.xml already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git commit -m "chore: regenerate sitemap.xml [skip ci]"
+          git push
