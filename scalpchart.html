@@ -1045,6 +1045,7 @@
 <div class="mode-tab-bar">
   <button class="mode-tab active" id="tabLive" onclick="switchTab('live')">📊 Live Charts</button>
   <button class="mode-tab" id="tabReplay" onclick="switchTab('replay')">📅 Replay</button>
+  <button class="mode-tab" id="tabFeedback" onclick="switchTab('feedback')">📷 Chart Review</button>
 </div>
 
 <div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
@@ -1310,6 +1311,142 @@
   </div>
 
 </div><!-- /replayPanel -->
+
+<div id="feedbackPanel" style="display:none;flex-direction:column;overflow-y:auto;">
+
+  <div class="rp-intro" id="fcIntro">
+    <div class="rp-intro-card">
+      <div class="rp-intro-icon">📷</div>
+      <div class="rp-intro-title">Chart Review</div>
+      <div class="rp-intro-sub">Upload a screenshot of any chart — ScalpClock, TradingView, or anywhere else — and SampsonX will break it down using the 4 C's.</div>
+      <ul class="rp-intro-benefits">
+        <li>Works with any PNG or JPEG chart screenshot</li>
+        <li>Analyzed with the same 4 C's framework as the live Coach</li>
+        <li>Up to 5 reviews per day</li>
+      </ul>
+      <input type="file" id="fcFileInput" accept="image/png,image/jpeg" style="display:none" onchange="fcHandleFile(this)">
+      <button type="button" class="rp-intro-start" onclick="document.getElementById('fcFileInput').click()">📁 Choose Screenshot</button>
+      <div id="fcPreviewWrap" style="display:none;margin-top:14px">
+        <img id="fcPreviewImg" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border)" alt="Chart preview">
+        <button type="button" class="rp-intro-start" id="fcSubmitBtn" style="margin-top:14px" onclick="fcSubmit()" disabled>
+          <svg class="sx-avatar-svg sx-mood-neutral" id="fcAvatarSvg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>Get SampsonX's Feedback
+        </button>
+      </div>
+      <div id="fcError" style="display:none;color:var(--bear);font-size:.85rem;margin-top:10px"></div>
+    </div>
+  </div>
+
+  <div id="fcResult" style="display:none;padding:24px;max-width:640px;margin:0 auto;width:100%">
+    <div class="coach-section-head"><svg class="sx-avatar-svg sx-mood-neutral" id="fcResultAvatarSvg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="vertical-align:-2px;margin-right:2px"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>SampsonX — The 4 C's</div>
+    <div class="coach-tip-box" id="fcFeedbackText" style="white-space:pre-wrap"></div>
+    <button type="button" class="rp-intro-start" style="margin-top:18px" onclick="fcReset()">📁 Review Another Chart</button>
+  </div>
+
+</div><!-- /feedbackPanel -->
+
+<script>
+// ─── CHART REVIEW (AI photo feedback) ─────────────────────────
+let fcSelectedFile = null;
+
+function fcSetMood(mood) {
+  const el = document.getElementById('fcAvatarSvg');
+  if (el) el.setAttribute('class', 'sx-avatar-svg sx-mood-' + mood);
+}
+
+function fcShowError(msg) {
+  const el = document.getElementById('fcError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function fcHandleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('fcError').style.display = 'none';
+  if (!['image/png', 'image/jpeg'].includes(file.type)) {
+    fcShowError('Please choose a PNG or JPEG image.');
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    fcShowError('That image is too large — try a screenshot under 4MB.');
+    return;
+  }
+  fcSelectedFile = file;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById('fcPreviewImg').src = reader.result;
+    document.getElementById('fcPreviewWrap').style.display = 'block';
+    document.getElementById('fcSubmitBtn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function fcGetToken() {
+  try {
+    const _fcSb = supabase.createClient(
+      'https://fnuqxiflqqejjttxymbz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY'
+    );
+    const { data: { session } } = await _fcSb.auth.getSession();
+    return session?.access_token || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function fcSubmit() {
+  if (!fcSelectedFile) return;
+  const btn = document.getElementById('fcSubmitBtn');
+  btn.disabled = true;
+  fcSetMood('thinking');
+  document.getElementById('fcError').style.display = 'none';
+
+  const token = await fcGetToken();
+  if (!token) {
+    fcShowError('Please sign in again.');
+    btn.disabled = false;
+    fcSetMood('neutral');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64 = reader.result.split(',')[1];
+    try {
+      const res = await fetch('/api/chart-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ image: base64, mediaType: fcSelectedFile.type }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        fcShowError(data.error || 'Something went wrong — try again.');
+        btn.disabled = false;
+        fcSetMood('neutral');
+        return;
+      }
+      document.getElementById('fcFeedbackText').textContent = data.feedback;
+      document.getElementById('fcIntro').style.display = 'none';
+      document.getElementById('fcResult').style.display = 'block';
+    } catch (e) {
+      fcShowError('⚠ Could not reach SampsonX — check your connection and try again.');
+      btn.disabled = false;
+      fcSetMood('neutral');
+    }
+  };
+  reader.readAsDataURL(fcSelectedFile);
+}
+
+function fcReset() {
+  fcSelectedFile = null;
+  document.getElementById('fcFileInput').value = '';
+  document.getElementById('fcPreviewWrap').style.display = 'none';
+  document.getElementById('fcSubmitBtn').disabled = true;
+  fcSetMood('neutral');
+  document.getElementById('fcResult').style.display = 'none';
+  document.getElementById('fcIntro').style.display = 'flex';
+}
+</script>
 
 <script>
 // ─── PATTERN LIBRARY ───────────────────────────────────────────
@@ -2800,28 +2937,27 @@ document.addEventListener('visibilitychange', () => {
 <script>
 // ─── TAB SWITCHING ────────────────────────────────────────────
 function switchTab(tab) {
-  const livePanel   = document.getElementById('livePanel');
-  const replayPanel = document.getElementById('replayPanel');
-  const tabLive     = document.getElementById('tabLive');
-  const tabReplay   = document.getElementById('tabReplay');
-  if (tab === 'replay') {
-    livePanel.style.display   = 'none';
-    replayPanel.style.display = 'flex';
-    tabLive.classList.remove('active');
-    tabReplay.classList.add('active');
-    // No auto-load — the intro card (#rpIntro) is the default state and stays
-    // visible until the user presses Start Replay (rpBeginSession). If a
-    // session was already started, resume the main UI instead of the intro.
-    if (rpChart) {
-      document.getElementById('rpIntro').style.display = 'none';
-      document.getElementById('rpMain').style.display  = 'flex';
-      setTimeout(() => rpChart.applyOptions({ width: document.getElementById('rpChartEl').clientWidth }), 50);
-    }
-  } else {
-    livePanel.style.display   = 'flex';
-    replayPanel.style.display = 'none';
-    tabLive.classList.add('active');
-    tabReplay.classList.remove('active');
+  const panels = {
+    live: document.getElementById('livePanel'),
+    replay: document.getElementById('replayPanel'),
+    feedback: document.getElementById('feedbackPanel'),
+  };
+  const tabs = {
+    live: document.getElementById('tabLive'),
+    replay: document.getElementById('tabReplay'),
+    feedback: document.getElementById('tabFeedback'),
+  };
+  Object.keys(panels).forEach((k) => {
+    panels[k].style.display = k === tab ? 'flex' : 'none';
+    tabs[k].classList.toggle('active', k === tab);
+  });
+  // No auto-load — the intro card (#rpIntro) is the default state and stays
+  // visible until the user presses Start Replay (rpBeginSession). If a
+  // session was already started, resume the main UI instead of the intro.
+  if (tab === 'replay' && rpChart) {
+    document.getElementById('rpIntro').style.display = 'none';
+    document.getElementById('rpMain').style.display  = 'flex';
+    setTimeout(() => rpChart.applyOptions({ width: document.getElementById('rpChartEl').clientWidth }), 50);
   }
 }
 

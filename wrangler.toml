@@ -2,9 +2,21 @@ name = "scalpclock"
 compatibility_date = "2024-09-23"
 pages_build_output_dir = "."
 
+# KV namespace used by functions/api/chart-feedback.js to enforce the
+# monthly (600 total) and daily (5/user) caps on paid Anthropic vision calls.
+# Must also be bound in the Cloudflare Pages dashboard (Settings → Functions
+# → KV namespace bindings) for production — this entry only covers local
+# `wrangler pages dev`.
+[[kv_namespaces]]
+binding = "CHART_FEEDBACK_KV"
+id = "34e6e1c9f8a4452b80e756848db5eb3a"
+
 # Secrets — set in Cloudflare dashboard → Settings → Environment variables
 # Alpaca (market data):
 #   ALPACA_KEY_ID, ALPACA_SECRET
+# Anthropic (chart-upload AI feedback in scalpchart.html's Chart Review tab):
+#   ANTHROPIC_API_KEY — sk-ant-... from console.anthropic.com; used with
+#   model claude-sonnet-5, gated behind Pro plan + the KV caps above
 # Stripe (payments):
 #   STRIPE_SECRET_KEY         — sk_live_... from Stripe dashboard
 #   STRIPE_WEBHOOK_SECRET     — whsec_... from Stripe webhook endpoint settings
