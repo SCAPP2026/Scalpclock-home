@@ -136,12 +136,12 @@ h1 em{color:var(--green);font-style:normal;}
 
   <div class="trial-badge" id="trialBadge" style="display:none">
     <span class="trial-dot"></span>
-    <span id="trialBadgeText">7-Day Free Trial — Active</span>
+    <span id="trialBadgeText">5-Day Free Trial — Active</span>
   </div>
 
   <div class="checklist">
     <div class="checklist-title">Your Pro Access</div>
-    <div class="cl-item"><span class="cl-icon">✅</span> Trial Activated — no charge for 7 days</div>
+    <div class="cl-item"><span class="cl-icon">✅</span> Trial Activated — no charge for 5 days</div>
     <div class="cl-item"><span class="cl-icon">✅</span> Scalp Signals — real-time RSI entry &amp; exit alerts</div>
     <div class="cl-item"><span class="cl-icon">✅</span> ScalpCharts — tap any candle for AI coaching</div>
     <div class="cl-item"><span class="cl-icon">✅</span> Exit Assistant — know exactly when to exit</div>
@@ -168,7 +168,7 @@ const sessionId = params.get('session_id') || '';
 
 if (isTrial) {
   document.getElementById('mainHeading').innerHTML = '🎉 Welcome to <em>Pro</em>';
-  document.getElementById('mainSubtitle').textContent = 'Your 7-day free trial is active. Every Pro feature is unlocked now — no charge until day 8.';
+  document.getElementById('mainSubtitle').textContent = 'Your 5-day free trial is active. Every Pro feature is unlocked now — no charge until day 6.';
   document.getElementById('trialBadge').style.display = 'inline-flex';
 
   if (!localStorage.getItem('sc_trial_start')) {

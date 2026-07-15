@@ -152,6 +152,34 @@ a{color:inherit;text-decoration:none;}
 /* FAQ STRIP */
 .compare-note{position:relative;z-index:1;text-align:center;padding:0 24px 24px;}
 .compare-note a{color:var(--green);font-size:.9rem;}
+
+/* FOUNDING MEMBER */
+.founding-banner{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin-top:20px;padding:16px 26px;background:var(--gold-dim);border:1px solid rgba(245,166,35,.35);border-radius:14px;}
+.founding-banner-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+.founding-banner-body{font-size:.92rem;color:var(--text);line-height:1.6;text-align:center;max-width:440px;}
+.founding-banner-body strong{color:var(--gold);}
+.founding-banner-limit{font-size:.78rem;color:var(--t55);}
+.plan-card.founding-active{border-color:var(--gold);box-shadow:0 0 40px rgba(245,166,35,.15);}
+.plan-badge.founding{background:var(--gold);color:#1a0d00;}
+.founding-checks{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0 20px;}
+.founding-checks li{font-size:.9rem;color:var(--text);}
+.founding-checks li b{color:var(--gold);}
+.plan-cta.cta-founding{background:var(--gold);color:#1a0d00;box-shadow:0 0 24px rgba(245,166,35,.3);}
+.plan-cta.cta-founding:hover{background:#ffb84d;transform:translateY(-1px);}
+
+/* COUNTDOWN */
+.countdown-wrap{position:relative;z-index:1;max-width:520px;margin:0 auto 32px;padding:0 24px;text-align:center;}
+.countdown-title{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--text);margin-bottom:14px;}
+.countdown-timer{display:flex;justify-content:center;gap:12px;margin-bottom:14px;}
+.countdown-unit{background:var(--panel);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:12px 16px;min-width:64px;}
+.countdown-num{font-family:var(--disp);font-weight:700;font-size:1.6rem;color:var(--gold);line-height:1;}
+.countdown-label{font-size:.65rem;color:var(--t55);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
+.countdown-spots{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:.9rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,166,35,.3);padding:8px 18px;border-radius:20px;}
+
+/* TRUST ROW */
+.trust-row{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;max-width:var(--max);margin:0 auto 40px;padding:0 24px;}
+.trust-item{display:flex;align-items:center;gap:7px;font-size:.85rem;color:var(--t80);}
+.trust-item svg{width:16px;height:16px;color:var(--green);flex-shrink:0;}
 .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -236,13 +264,25 @@ a{color:inherit;text-decoration:none;}
   <p>Start free and experience the platform. Upgrade when you're ready to trade with real-time edge.</p>
   <div style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:12px 22px;background:rgba(22,217,126,.07);border:1px solid rgba(22,217,126,.25);border-radius:12px;">
     <span style="font-size:1.3rem;">🎁</span>
-    <span style="font-size:.9rem;color:var(--text);font-weight:500;">Start your <strong style="color:var(--green);">FREE 7-Day Trial</strong>. Cancel anytime during the trial and you won't be charged.</span>
+    <span style="font-size:.9rem;color:var(--text);font-weight:500;">Start your <strong style="color:var(--green);">FREE 5-Day Trial</strong>. Cancel anytime during the trial and you won't be charged.</span>
   </div>
   <div class="billing-toggle">
     <span>Monthly</span>
     <div class="toggle-pill" id="billingToggle" onclick="toggleBilling()"></div>
     <span>Annual <span class="save-badge">Save 20%</span></span>
   </div>
+</div>
+
+<!-- FOUNDING MEMBER COUNTDOWN (hidden until /api/founding-status confirms offer is active) -->
+<div class="countdown-wrap" id="foundingCountdown" style="display:none">
+  <div class="countdown-title">🔥 Founding Member pricing ends in</div>
+  <div class="countdown-timer">
+    <div class="countdown-unit"><div class="countdown-num" id="cdDays">--</div><div class="countdown-label">Days</div></div>
+    <div class="countdown-unit"><div class="countdown-num" id="cdHours">--</div><div class="countdown-label">Hours</div></div>
+    <div class="countdown-unit"><div class="countdown-num" id="cdMins">--</div><div class="countdown-label">Mins</div></div>
+    <div class="countdown-unit"><div class="countdown-num" id="cdSecs">--</div><div class="countdown-label">Secs</div></div>
+  </div>
+  <div class="countdown-spots" id="cdSpots">Loading spots remaining…</div>
 </div>
 
 <!-- VISITOR ACCESS BAND -->
@@ -335,7 +375,7 @@ a{color:inherit;text-decoration:none;}
           <span class="per" id="proLabel">/month</span>
         </div>
         <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);border-radius:20px;margin-bottom:10px;">
-          <span style="font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:.04em;">🎁 7-DAY FREE TRIAL</span>
+          <span style="font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:.04em;">🎁 5-DAY FREE TRIAL</span>
         </div>
         <div class="plan-desc">Every tool that saves time, improves decisions, and surfaces real trading opportunities.</div>
         <hr class="plan-divider">
@@ -405,8 +445,8 @@ a{color:inherit;text-decoration:none;}
             SampsonX AI coach &amp; priority support
           </li>
         </ul>
-        <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 7-Day Free Trial</button>
-        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 7 days · Cancel anytime</p>
+        <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 5-Day Free Trial</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 5 days · Cancel anytime</p>
         <!-- PROMO CODE -->
         <div style="margin-top:12px;text-align:center;">
           <button onclick="togglePromo()" style="background:none;border:none;color:var(--t55);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
@@ -423,15 +463,48 @@ a{color:inherit;text-decoration:none;}
         <div class="waitlist-toast toast-pro" id="proToast" style="margin-top:10px;"></div>
       </div>
 
+      <!-- FOUNDING MEMBER (hidden until /api/founding-status confirms offer is active) -->
+      <div class="plan-card founding-active" id="foundingCard" style="display:none">
+        <div class="plan-badge founding">LIMITED OFFER</div>
+        <div class="plan-name">Founding Member</div>
+        <div class="plan-price">
+          <span class="amount">$1.99</span>
+          <span class="per">/month, locked for life</span>
+        </div>
+        <div class="founding-banner">
+          <div class="founding-banner-label">First 500 traders only</div>
+          <div class="founding-banner-body">Lock in <strong>$1.99/mo</strong> forever — early supporters keep this price even as ScalpClock grows.</div>
+          <div class="founding-banner-limit" id="foundingLimitText">Loading spots remaining…</div>
+        </div>
+        <div class="plan-desc">Everything in Pro, at founding pricing — locked in for as long as your subscription stays active.</div>
+        <hr class="plan-divider">
+        <ul class="founding-checks">
+          <li><b>✓</b> All Pro features — signals, charts, exit assistant, journal</li>
+          <li><b>✓</b> Price locked at $1.99/mo for life — never increases</li>
+          <li><b>✓</b> 5-day free trial, cancel anytime</li>
+          <li><b>✓</b> Founding Member badge on your profile</li>
+        </ul>
+        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">Claim Founding Price</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 5 days · Cancel anytime</p>
+        <div class="waitlist-toast toast-pro" id="foundingToast" style="margin-top:10px;"></div>
+      </div>
+
     </div>
   </div>
 </section>
+
+<!-- TRUST ROW -->
+<div class="trust-row">
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Cancel anytime, no lock-in</div>
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Secure checkout via Stripe</div>
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Card required, no charge until trial ends</div>
+</div>
 
 <div class="compare-note">
   <a href="/faq">Have questions? Read the FAQ →</a>
 </div>
 
-<p class="footer-note">Pro trial requires a card · no charge for 7 days · cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a> &nbsp;·&nbsp; <a href="mailto:admin@scalpclock.com">admin@scalpclock.com</a></p>
+<p class="footer-note">Pro trial requires a card · no charge for 5 days · cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a> &nbsp;·&nbsp; <a href="mailto:admin@scalpclock.com">admin@scalpclock.com</a></p>
 <p class="footer-note" style="margin-top:10px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -547,6 +620,87 @@ async function startCheckout(isTrial) {
     btn.textContent = originalText;
   }
 }
+
+async function startFoundingCheckout() {
+  const btn   = document.getElementById('foundingBtn');
+  const toast = document.getElementById('foundingToast');
+  const originalText = btn.textContent;
+  btn.disabled    = true;
+  btn.textContent = 'Redirecting…';
+  toast.style.display = 'none';
+
+  let userId = null;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    userId = session?.user?.id || null;
+  } catch(_) {}
+
+  try {
+    const body = { tier: 'founding_member', billing: 'monthly', trial: true };
+    if (userId) body.userId = userId;
+
+    const res  = await fetch('/api/stripe/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL returned');
+    }
+  } catch (err) {
+    console.error('startFoundingCheckout error:', err);
+    toast.textContent       = err.message || 'Something went wrong — please try again.';
+    toast.style.display     = 'block';
+    toast.style.background  = 'rgba(255,59,70,.08)';
+    toast.style.borderColor = 'rgba(255,59,70,.3)';
+    toast.style.color       = '#ff3b46';
+    btn.disabled    = false;
+    btn.textContent = originalText;
+  }
+}
+
+function startFoundingCountdown(cutoffMs) {
+  let timer;
+  function tick() {
+    const diff = cutoffMs - Date.now();
+    if (diff <= 0) {
+      document.getElementById('foundingCountdown').style.display = 'none';
+      document.getElementById('foundingCard').style.display = 'none';
+      if (timer) clearInterval(timer);
+      return;
+    }
+    const d = Math.floor(diff / 864e5);
+    const h = Math.floor((diff % 864e5) / 36e5);
+    const m = Math.floor((diff % 36e5) / 6e4);
+    const s = Math.floor((diff % 6e4) / 1000);
+    document.getElementById('cdDays').textContent  = d;
+    document.getElementById('cdHours').textContent = String(h).padStart(2, '0');
+    document.getElementById('cdMins').textContent  = String(m).padStart(2, '0');
+    document.getElementById('cdSecs').textContent  = String(s).padStart(2, '0');
+  }
+  tick();
+  timer = setInterval(tick, 1000);
+}
+
+async function loadFoundingStatus() {
+  try {
+    const res  = await fetch('/api/founding-status');
+    const data = await res.json();
+    if (!data.active) return;
+    document.getElementById('foundingCard').style.display = '';
+    document.getElementById('foundingCountdown').style.display = '';
+    const spotsText = `${data.remaining} of ${data.cap} spots left`;
+    document.getElementById('cdSpots').textContent = spotsText;
+    document.getElementById('foundingLimitText').textContent = spotsText + ' at this price';
+    startFoundingCountdown(new Date(data.cutoff).getTime());
+  } catch (e) {
+    console.warn('founding status failed:', e.message);
+  }
+}
+loadFoundingStatus();
 
 function joinWaitlist(tier) {
   const emailEl = document.getElementById(tier + 'Email');

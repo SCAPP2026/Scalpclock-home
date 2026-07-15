@@ -883,14 +883,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <p>Unlimited real-time signals, options recommendations, confidence scoring, and live pattern alerts.</p>
     <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);border-radius:10px;margin-bottom:16px;">
       <span style="font-size:1rem;">🎁</span>
-      <span style="font-size:.82rem;color:var(--text);font-weight:500;"><strong style="color:var(--green-ink);">FREE 7-Day Trial</strong> — Cancel anytime. Won't be charged until day 8.</span>
+      <span style="font-size:.82rem;color:var(--text);font-weight:500;"><strong style="color:var(--green-ink);">FREE 5-Day Trial</strong> — Cancel anytime. Won't be charged until day 6.</span>
     </div>
     <div class="upgrade-toggle">
       <button type="button" id="toggleMonthly" class="active" onclick="setBilling('monthly')">Monthly</button>
       <button type="button" id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
     </div>
     <br>
-    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Start 7-Day Free Trial</button>
+    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Start 5-Day Free Trial</button>
     <p style="text-align:center;font-size:.75rem;color:var(--t65);margin-top:8px;">Then $9.99/mo · Cancel anytime</p>
     <!-- PROMO CODE -->
     <div style="margin-top:14px;">
@@ -1119,15 +1119,15 @@ async function checkSubscription(isRetry = false) {
         // Compute trial day from localStorage start date (set by success.html)
         const startStr = localStorage.getItem('sc_trial_start');
         const trialStart = startStr ? new Date(startStr) : new Date();
-        const trialEnd   = new Date(trialStart.getTime() + 7 * 864e5);
-        const dayNum     = Math.min(7, Math.max(1, Math.ceil((Date.now() - trialStart.getTime()) / 864e5)));
+        const trialEnd   = new Date(trialStart.getTime() + 5 * 864e5);
+        const dayNum     = Math.min(5, Math.max(1, Math.ceil((Date.now() - trialStart.getTime()) / 864e5)));
         const expiresStr = trialEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         document.getElementById('planBadge').innerHTML =
           `<span style="color:var(--green-ink)">PRO ACTIVE</span>`;
         document.querySelector('#planBadge').insertAdjacentHTML('afterend',
-          `<div style="font-size:.72rem;color:var(--t65);margin-top:4px;font-family:var(--mono)">Trial Day ${dayNum} of 7 · Expires ${expiresStr}</div>`);
+          `<div style="font-size:.72rem;color:var(--t65);margin-top:4px;font-family:var(--mono)">Trial Day ${dayNum} of 5 · Expires ${expiresStr}</div>`);
         const subBadge = document.getElementById('accountSubBadge');
-        if (subBadge) { subBadge.textContent = `TRIAL · Day ${dayNum}/7`; subBadge.className = 'badge pro'; }
+        if (subBadge) { subBadge.textContent = `TRIAL · Day ${dayNum}/5`; subBadge.className = 'badge pro'; }
       } else {
         document.getElementById('planBadge').textContent = 'PRO ACTIVE';
         document.getElementById('planBadge').style.color = 'var(--green-ink)';
@@ -1161,7 +1161,7 @@ function showOnboardingBanner(isTrial) {
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       ${[
-        ['✅','Trial Activated','No charge for 7 days'],
+        ['✅','Trial Activated','No charge for 5 days'],
         ['📊','ScalpCharts','Tap any candle → AI coaching'],
         ['📅','Chart Replay','Rewind any chart, spot patterns, earn XP'],
         ['🚪','Exit Assistant','Know exactly when to exit'],
@@ -1480,7 +1480,7 @@ function setBilling(mode) {
   document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
   document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
   const btn = document.getElementById('upgradeBtn');
-  btn.textContent = _promoId ? 'Claim Free Month' : 'Start 7-Day Free Trial';
+  btn.textContent = _promoId ? 'Claim Free Month' : 'Start 5-Day Free Trial';
 }
 
 function toggleDashPromo() {

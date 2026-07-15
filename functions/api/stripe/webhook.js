@@ -26,8 +26,9 @@ export async function onRequest(context) {
     case 'checkout.session.completed': {
       const session = event.data.object;
       const userId  = session.client_reference_id;
+      const isFounding = session.metadata?.founding_member === 'true';
 
-      console.log('Checkout completed:', session.customer_email, 'subscription:', session.subscription);
+      console.log('Checkout completed:', session.customer_email, 'subscription:', session.subscription, 'founding:', isFounding);
 
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
         // All new subscriptions start with a trial period, so mark 'trial'
@@ -39,8 +40,18 @@ export async function onRequest(context) {
           stripe_sub_id:  session.subscription || null,
         };
         if (hasPromo) patch.promo_redeemed = true;
+        if (isFounding) patch.founding_member = true;
 
         await upsertProfile(userId, patch, env.SUPABASE_SERVICE_ROLE_KEY);
+      }
+
+      // Record the claim — this is what actually decrements the live
+      // "spots remaining" count (functions/api/founding-status.js counts
+      // rows in this table). checkout.js already re-verified eligibility
+      // server-side before creating this session, so no need to re-check
+      // the cap here — just record it.
+      if (isFounding && env.SUPABASE_SERVICE_ROLE_KEY) {
+        await recordFoundingMember(userId, session.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
     }
@@ -108,6 +119,7 @@ async function upsertProfile(userId, patch, serviceKey) {
     if (patch.plan          !== undefined) appMeta.plan          = patch.plan;
     if (patch.stripe_sub_id !== undefined) appMeta.stripe_sub_id = patch.stripe_sub_id;
     if (patch.promo_redeemed !== undefined) appMeta.promo_redeemed = patch.promo_redeemed;
+    if (patch.founding_member !== undefined) appMeta.founding_member = patch.founding_member;
 
     const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
       method:  'PUT',
@@ -125,6 +137,34 @@ async function upsertProfile(userId, patch, serviceKey) {
     }
   } catch (e) {
     console.error('Failed to update auth user:', e.message);
+  }
+}
+
+// Insert-only — no upsert/uniqueness needed since each checkout.session.completed
+// event fires once per new subscription. This row is purely what
+// functions/api/founding-status.js counts to compute spots remaining.
+async function recordFoundingMember(userId, subscriptionId, serviceKey) {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/founding_members`, {
+      method:  'POST',
+      headers: {
+        apikey:         serviceKey,
+        Authorization:  `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+        Prefer:         'return=minimal',
+      },
+      body: JSON.stringify({
+        user_id:                userId || null,
+        stripe_subscription_id: subscriptionId || null,
+      }),
+    });
+    console.log('Founding member recorded for:', userId, 'status:', r.status);
+    if (!r.ok) {
+      const text = await r.text();
+      console.error('founding_members insert error:', text);
+    }
+  } catch (e) {
+    console.error('Failed to record founding member:', e.message);
   }
 }
 
