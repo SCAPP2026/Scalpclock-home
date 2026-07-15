@@ -118,25 +118,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .email-capture-msg.is-success{color:var(--green);}
 .email-capture-msg.is-error{color:var(--red);}
 .email-capture-privacy{font-size:.75rem;color:var(--t30);margin-top:8px;}
+
+/* PAGER */
+.post-pager{display:flex;align-items:center;justify-content:center;gap:18px;padding:0 24px 60px;position:relative;z-index:1;}
+.pager-btn{font-family:var(--disp);font-weight:600;font-size:.85rem;padding:9px 18px;border-radius:9px;border:1px solid var(--line);background:none;color:var(--text);cursor:pointer;transition:.15s;}
+.pager-btn:hover:not(:disabled){border-color:rgba(22,217,126,.4);color:var(--green);}
+.pager-btn:disabled{opacity:.35;cursor:default;}
+.pager-info{font-size:.82rem;color:var(--t55);}
+.post-empty{grid-column:1/-1;text-align:center;color:var(--t55);padding:40px 0;}
 </style>
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type":"ListItem","position":1,"name":"Home","item":"https://scalpclock.com/"},
-    {"@type":"ListItem","position":2,"name":"Blog","item":"https://scalpclock.com/blog"},
-    {"@type":"ListItem","position":3,"name":"ScalpClock Tutorials","item":"https://scalpclock.com/blog/category/scalpclock-tutorials"}
-  ]
-}</script>
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "itemListElement": [
-    {"@type":"ListItem","position":1,"url":"https://scalpclock.com/blog/what-is-scalpclock"},
-    {"@type":"ListItem","position":2,"url":"https://scalpclock.com/blog/chart-replay-helps-traders-improve-faster"},
-    {"@type":"ListItem","position":3,"url":"https://scalpclock.com/blog/scalpclock-vs-traditional-trading-platforms"}
-  ]
-}</script>
 </head>
 <body>
 
@@ -183,33 +173,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
 </div>
 
-<div class="breadcrumbs"><a href="/">Home</a> / <a href="/blog/">Blog</a> / ScalpClock Tutorials</div>
+<div class="breadcrumbs"><a href="/">Home</a> / <a href="/blog/">Blog</a> / <span id="catCrumb">ScalpClock Tutorials</span></div>
 
 <div class="blog-hero">
-  <h1>ScalpClock <em>Tutorials</em></h1>
+  <h1 id="catH1">ScalpClock <em>Tutorials</em></h1>
   <p>What ScalpClock is, how its replay and coaching features work, and how it stacks up against a traditional trading platform.</p>
 </div>
 
-<div class="post-grid">
-  <a class="post-card" href="/blog/what-is-scalpclock">
-    <span class="post-cat">ScalpClock Tutorials</span>
-    <h3>What Is ScalpClock? A Trading Coach Built Into Your Charts</h3>
-    <p>ScalpClock pairs live scalp signals with a built-in Learn Hub, chart replay, and an Exit Assistant — so you build real skill while you trade.</p>
-    <span class="post-date">2026-06-08</span>
-  </a>
-  <a class="post-card" href="/blog/chart-replay-helps-traders-improve-faster">
-    <span class="post-cat">ScalpClock Tutorials</span>
-    <h3>Why Chart Replay Helps Traders Improve Faster Than Live Trading Alone</h3>
-    <p>Live markets give you one shot per setup. Replay lets you rewind, re-run, and drill the same pattern until recognition becomes automatic.</p>
-    <span class="post-date">2026-06-12</span>
-  </a>
-  <a class="post-card" href="/blog/scalpclock-vs-traditional-trading-platforms">
-    <span class="post-cat">ScalpClock Tutorials</span>
-    <h3>ScalpClock vs. Traditional Trading Platforms: What's Actually Different</h3>
-    <p>Most platforms give you charts and an order ticket. ScalpClock adds a Learn Hub, replay, and an Exit Assistant on top.</p>
-    <span class="post-date">2026-07-10</span>
-  </a>
-</div>
+<div class="post-grid" id="postGrid"></div>
+<div class="post-pager" id="postPager"></div>
 
 <div class="email-capture">
   <h3>Get one trading lesson a week</h3>
@@ -247,6 +219,7 @@ function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.
 function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
 initEmailCapture('emailCapture', 'blog-category');
+initCategoryPage();
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>

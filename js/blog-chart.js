@@ -68,25 +68,90 @@ function blogCopyLink(btn, url) {
   });
 }
 
-// --- /blog/index.html search + category filter ---
+// --- /blog/index.html + /blog/category/* shared rendering ---
+// Both pages read from the same /blog/posts.json — that's the single source
+// of truth for post content, so a new post or category shows up everywhere
+// (index, its category page, category tabs) without touching any HTML.
+
+const BLOG_PAGE_SIZE = 6;
+
+// Must match how the existing /blog/category/*.html filenames were named —
+// "Trading Education" -> "trading-education" — so a category page's URL
+// slug can be matched back to the category strings in posts.json.
+function slugifyCategory(cat) {
+  return cat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function postCardHTML(p) {
+  return `<a class="post-card" href="/blog/${p.slug}">
+    <span class="post-cat">${p.category}</span>
+    <h3>${p.title}</h3>
+    <p>${p.excerpt}</p>
+    <span class="post-date">${p.date}</span>
+  </a>`;
+}
+
+function pagerHTML(page, totalPages) {
+  if (totalPages <= 1) return '';
+  return `<div class="post-pager">
+    <button type="button" class="pager-btn" id="pagerPrev" ${page <= 1 ? 'disabled' : ''}>&larr; Prev</button>
+    <span class="pager-info">Page ${page} of ${totalPages}</span>
+    <button type="button" class="pager-btn" id="pagerNext" ${page >= totalPages ? 'disabled' : ''}>Next &rarr;</button>
+  </div>`;
+}
+
+function getPageParam() {
+  return Math.max(1, parseInt(new URLSearchParams(location.search).get('page') || '1', 10) || 1);
+}
+
+function setPageParam(p) {
+  const url = new URL(location.href);
+  if (p <= 1) url.searchParams.delete('page'); else url.searchParams.set('page', p);
+  history.replaceState(null, '', url);
+}
+
+// Renders `items` into `grid` for the given `page`, wires the pager buttons
+// into `pagerWrap`, and returns the (possibly clamped) page number so the
+// caller's state stays in sync.
+function renderPostPage(grid, pagerWrap, items, page, emptyMsg, onPageChange) {
+  const totalPages = Math.max(1, Math.ceil(items.length / BLOG_PAGE_SIZE));
+  page = Math.min(page, totalPages);
+  const pageItems = items.slice((page - 1) * BLOG_PAGE_SIZE, page * BLOG_PAGE_SIZE);
+
+  grid.innerHTML = pageItems.length
+    ? pageItems.map(postCardHTML).join('')
+    : `<p class="post-empty">${emptyMsg}</p>`;
+
+  if (pagerWrap) {
+    pagerWrap.innerHTML = pagerHTML(page, totalPages);
+    const prevBtn = document.getElementById('pagerPrev');
+    const nextBtn = document.getElementById('pagerNext');
+    if (prevBtn) prevBtn.addEventListener('click', () => onPageChange(page - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => onPageChange(page + 1));
+  }
+  return page;
+}
 
 function initBlogIndex() {
   const grid = document.getElementById('postGrid');
   const search = document.getElementById('blogSearch');
-  const tabs = document.querySelectorAll('.cat-tab');
+  const tabsWrap = document.getElementById('catTabs');
+  const pagerWrap = document.getElementById('postPager');
   if (!grid) return;
 
   fetch('/blog/posts.json').then(r => r.json()).then(posts => {
     let activeCategory = 'all';
+    let page = getPageParam();
 
-    function cardHTML(p) {
-      return `<a class="post-card" href="/blog/${p.slug}">
-        <span class="post-cat">${p.category}</span>
-        <h3>${p.title}</h3>
-        <p>${p.excerpt}</p>
-        <span class="post-date">${p.date}</span>
-      </a>`;
+    // Tabs are built from whatever categories actually exist in posts.json,
+    // not hardcoded — a new category on a new post gets a tab automatically.
+    const categories = [...new Set(posts.map(p => p.category))].sort();
+    if (tabsWrap) {
+      tabsWrap.innerHTML = ['<button type="button" class="cat-tab active" data-category="all">All Posts</button>']
+        .concat(categories.map(c => `<button type="button" class="cat-tab" data-category="${c}">${c}</button>`))
+        .join('');
     }
+    const tabs = document.querySelectorAll('.cat-tab');
 
     function render() {
       const q = (search && search.value || '').trim().toLowerCase();
@@ -97,19 +162,126 @@ function initBlogIndex() {
         const haystack = (p.title + ' ' + p.excerpt + ' ' + (p.keywords || []).join(' ')).toLowerCase();
         return haystack.includes(q);
       });
-      grid.innerHTML = filtered.length
-        ? filtered.map(cardHTML).join('')
-        : '<p class="post-empty">No articles match your search.</p>';
+      page = renderPostPage(grid, pagerWrap, filtered, page, 'No articles match your search.', (p) => {
+        page = p;
+        setPageParam(page);
+        render();
+        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     }
 
-    if (search) search.addEventListener('input', render);
+    if (search) search.addEventListener('input', () => { page = 1; setPageParam(1); render(); });
     tabs.forEach(tab => tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       activeCategory = tab.dataset.category;
+      page = 1;
+      setPageParam(1);
       render();
     }));
 
+    render();
+  });
+}
+
+// --- /blog/category/*.html — one dynamic renderer for every category page ---
+// The category (and its display name) come from the URL's last path segment
+// matched against slugifyCategory(post.category), not from hardcoded markup,
+// so /blog/category/<anything>.html works for categories that don't have any
+// posts yet too (renders an honest "nothing here yet" state instead of 404).
+function initCategoryPage() {
+  const grid = document.getElementById('postGrid');
+  const pagerWrap = document.getElementById('postPager');
+  if (!grid) return;
+
+  const slug = location.pathname.replace(/\/+$/, '').split('/').pop().replace(/\.html$/, '');
+
+  fetch('/blog/posts.json').then(r => r.json()).then(posts => {
+    const catPosts = posts.filter(p => slugifyCategory(p.category) === slug);
+    const displayName = catPosts.length
+      ? catPosts[0].category
+      : slug.split('-').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+
+    const h1 = document.getElementById('catH1');
+    if (h1) h1.innerHTML = `${displayName.split(' ')[0]} <em>${displayName.split(' ').slice(1).join(' ') || displayName.split(' ')[0]}</em>`;
+    const pageTitle = `${displayName} Articles · ScalpClock Blog`;
+    document.title = pageTitle;
+    const crumb = document.getElementById('catCrumb');
+    if (crumb) crumb.textContent = displayName;
+
+    const canonicalUrl = `https://scalpclock.com/blog/category/${slug}`;
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.setAttribute('href', canonicalUrl);
+
+    // Only the pages served through the generic fallback (no dedicated static
+    // HTML) start noindexed — once a category actually has posts, index it.
+    // A category with a hand-authored page never has this meta tag at all.
+    const robotsMeta = document.querySelector('meta[name="robots"]');
+    if (robotsMeta) robotsMeta.setAttribute('content', catPosts.length ? 'index,follow' : 'noindex,follow');
+
+    const desc = catPosts.length
+      ? `${displayName} articles from the ScalpClock blog.`
+      : `${displayName} articles from the ScalpClock blog — coming soon.`;
+    ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.setAttribute('content', desc);
+    });
+    ['meta[property="og:title"]', 'meta[name="twitter:title"]'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.setAttribute('content', pageTitle);
+    });
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+    else {
+      const m = document.createElement('meta');
+      m.setAttribute('property', 'og:url');
+      m.setAttribute('content', canonicalUrl);
+      document.head.appendChild(m);
+    }
+
+    // Both JSON-LD blocks are built here (not hand-written per category page)
+    // so they can never drift from what's actually rendered — the same slug
+    // resolution and post list drive the visible page and the structured data.
+    const breadcrumbLD = document.createElement('script');
+    breadcrumbLD.type = 'application/ld+json';
+    breadcrumbLD.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://scalpclock.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://scalpclock.com/blog' },
+        { '@type': 'ListItem', position: 3, name: displayName, item: `https://scalpclock.com/blog/category/${slug}` },
+      ],
+    });
+    document.head.appendChild(breadcrumbLD);
+
+    if (catPosts.length) {
+      const itemListLD = document.createElement('script');
+      itemListLD.type = 'application/ld+json';
+      itemListLD.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: catPosts.map((p, i) => ({
+          '@type': 'ListItem', position: i + 1, url: `https://scalpclock.com/blog/${p.slug}`,
+        })),
+      });
+      document.head.appendChild(itemListLD);
+    }
+
+    let page = getPageParam();
+    function render() {
+      page = renderPostPage(grid, pagerWrap, catPosts, page, 'No articles in this category yet — check back soon.', (p) => {
+        page = p;
+        setPageParam(page);
+        render();
+        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
     render();
   });
 }

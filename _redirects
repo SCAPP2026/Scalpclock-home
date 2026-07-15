@@ -1,2 +1,8 @@
 /replay /scalpchart.html?tab=replay 301
 /replay.html /scalpchart.html?tab=replay 301
+
+# Any /blog/category/<slug> without its own static HTML file falls back to
+# the generic template, which reads the slug from the URL and renders
+# whatever posts.json has for that category (or an honest "nothing yet").
+# Exact static files (trading-education.html etc.) still win over this.
+/blog/category/* /blog/category/_generic.html 200

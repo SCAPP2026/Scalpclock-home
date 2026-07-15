@@ -139,17 +139,6 @@ a{color:var(--green);text-decoration:none;}
 .promo-bar-btn:hover{background:#0a2416;}
 @media(max-width:640px){.promo-bar{flex-direction:column;gap:8px;padding:12px 16px;}.promo-bar-btn{width:100%;}}
 
-/* FOUNDING MEMBER — HERO CARD */
-.founding-hero-card{margin-top:28px;background:linear-gradient(160deg,rgba(245,166,35,.10),rgba(14,22,16,.85));border:1px solid rgba(245,166,35,.35);border-radius:16px;padding:24px 26px;max-width:480px;}
-.founding-hero-title{font-family:var(--disp);font-weight:700;font-size:1.15rem;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.founding-hero-sub{font-size:.85rem;color:var(--t80);margin-bottom:14px;}
-.founding-hero-checks{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
-.founding-hero-checks li{font-size:.9rem;color:var(--text);display:flex;align-items:center;gap:8px;}
-.founding-hero-checks li b{color:var(--gold);}
-.founding-hero-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--gold);color:#1a0d00;font-family:var(--disp);font-weight:700;font-size:.95rem;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:.15s;}
-.founding-hero-btn:hover{background:#ffb84d;transform:translateY(-1px);}
-.founding-hero-note{font-size:.75rem;color:var(--t30);margin-top:12px;line-height:1.5;}
-
 /* FOUNDING MEMBER — PRICING SECTION */
 .founding-section{padding:80px 24px;max-width:640px;margin:0 auto;text-align:center;}
 .founding-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:24px 0 32px;}
@@ -417,20 +406,6 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <div class="hero-eyebrow">AI Trading Coach · Learn While You Trade</div>
       <h1>Stop Guessing.<br><em>Start Understanding.</em></h1>
       <p class="hero-sub">Most traders stare at charts hoping for a signal. ScalpClock's AI trading coach SampsonX reads every candle, explains candlestick patterns, technical analysis, and price action in plain English — teaching you options and stock trading while you trade real signals.</p>
-
-      <!-- FOUNDING MEMBER HERO CARD (hidden until /api/founding-status confirms the offer is active) -->
-      <div class="founding-hero-card" id="foundingHeroCard" style="display:none">
-        <div class="founding-hero-title">🔥 Founding Member Offer</div>
-        <div class="founding-hero-sub">Only the first 500 members can lock in this price.</div>
-        <ul class="founding-hero-checks">
-          <li><b>✓</b> $1.99/month</li>
-          <li><b>✓</b> 5-Day Free Trial</li>
-          <li><b>✓</b> Price Locked For Life</li>
-          <li><b>✓</b> Cancel Anytime</li>
-        </ul>
-        <button type="button" class="founding-hero-btn" onclick="startFoundingCheckout()">Become a Founding Member</button>
-        <div class="founding-hero-note">After the first 500 members, ScalpClock Pro will increase to $9.99/month. Founding Members keep their $1.99/month pricing as long as their subscription remains active.</div>
-      </div>
 
       <div class="hero-btns">
         <a class="btn-primary" href="/login?tab=signup">Start Free →</a>
@@ -779,7 +754,6 @@ async function loadFoundingStatus() {
     if (!data.active) return; // single source of truth — inactive means every founding element on this page stays hidden
 
     document.getElementById('promoBar').style.display = '';
-    document.getElementById('foundingHeroCard').style.display = '';
     document.getElementById('founding').style.display = '';
 
     const pct = Math.max(0, Math.min(100, (data.remaining / data.cap) * 100));

@@ -118,26 +118,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .email-capture-msg.is-success{color:var(--green);}
 .email-capture-msg.is-error{color:var(--red);}
 .email-capture-privacy{font-size:.75rem;color:var(--t30);margin-top:8px;}
+
+/* PAGER */
+.post-pager{display:flex;align-items:center;justify-content:center;gap:18px;padding:0 24px 60px;position:relative;z-index:1;}
+.pager-btn{font-family:var(--disp);font-weight:600;font-size:.85rem;padding:9px 18px;border-radius:9px;border:1px solid var(--line);background:none;color:var(--text);cursor:pointer;transition:.15s;}
+.pager-btn:hover:not(:disabled){border-color:rgba(22,217,126,.4);color:var(--green);}
+.pager-btn:disabled{opacity:.35;cursor:default;}
+.pager-info{font-size:.82rem;color:var(--t55);}
+.post-empty{grid-column:1/-1;text-align:center;color:var(--t55);padding:40px 0;}
 </style>
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type":"ListItem","position":1,"name":"Home","item":"https://scalpclock.com/"},
-    {"@type":"ListItem","position":2,"name":"Blog","item":"https://scalpclock.com/blog"},
-    {"@type":"ListItem","position":3,"name":"Trading Education","item":"https://scalpclock.com/blog/category/trading-education"}
-  ]
-}</script>
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "itemListElement": [
-    {"@type":"ListItem","position":1,"url":"https://scalpclock.com/blog/how-to-read-candlestick-patterns"},
-    {"@type":"ListItem","position":2,"url":"https://scalpclock.com/blog/scalping-mistakes-new-traders-make"},
-    {"@type":"ListItem","position":3,"url":"https://scalpclock.com/blog/support-and-resistance-made-simple"},
-    {"@type":"ListItem","position":4,"url":"https://scalpclock.com/blog/how-traders-build-pattern-recognition-skills"}
-  ]
-}</script>
 </head>
 <body>
 
@@ -184,39 +173,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
 </div>
 
-<div class="breadcrumbs"><a href="/">Home</a> / <a href="/blog/">Blog</a> / Trading Education</div>
+<div class="breadcrumbs"><a href="/">Home</a> / <a href="/blog/">Blog</a> / <span id="catCrumb">Trading Education</span></div>
 
 <div class="blog-hero">
-  <h1>Trading <em>Education</em></h1>
+  <h1 id="catH1">Trading <em>Education</em></h1>
   <p>Candlesticks, support and resistance, common scalping mistakes, and how pattern recognition actually develops — the fundamentals, explained plainly.</p>
 </div>
 
-<div class="post-grid">
-  <a class="post-card" href="/blog/how-to-read-candlestick-patterns">
-    <span class="post-cat">Trading Education</span>
-    <h3>How to Read Candlestick Patterns (Without Memorizing 50 Shapes)</h3>
-    <p>Most candlestick guides throw a wall of shapes at you. Here's the small set of patterns that actually show up often enough to matter.</p>
-    <span class="post-date">2026-06-16</span>
-  </a>
-  <a class="post-card" href="/blog/scalping-mistakes-new-traders-make">
-    <span class="post-cat">Trading Education</span>
-    <h3>7 Scalping Mistakes New Traders Make (And How to Fix Them)</h3>
-    <p>Overtrading, chasing green candles, ignoring volume — here's how to spot the mistakes that account for most blown-up scalping accounts.</p>
-    <span class="post-date">2026-06-19</span>
-  </a>
-  <a class="post-card" href="/blog/support-and-resistance-made-simple">
-    <span class="post-cat">Trading Education</span>
-    <h3>Support and Resistance Made Simple</h3>
-    <p>Support and resistance aren't exact lines — they're zones. Here's how to draw them without overthinking it.</p>
-    <span class="post-date">2026-06-27</span>
-  </a>
-  <a class="post-card" href="/blog/how-traders-build-pattern-recognition-skills">
-    <span class="post-cat">Trading Education</span>
-    <h3>How Traders Actually Build Pattern Recognition Skills</h3>
-    <p>Pattern recognition isn't memorization — it's repetition with feedback. Here's what the research says.</p>
-    <span class="post-date">2026-07-07</span>
-  </a>
-</div>
+<div class="post-grid" id="postGrid"></div>
+<div class="post-pager" id="postPager"></div>
 
 <div class="email-capture">
   <h3>Get one trading lesson a week</h3>
@@ -254,6 +219,7 @@ function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.
 function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
 initEmailCapture('emailCapture', 'blog-category');
+initCategoryPage();
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
