@@ -127,7 +127,8 @@ function collectPublicPages() {
   for (const file of files) {
     // "index.html" -> "", "blog/index.html" -> "blog", "about.html" -> "about"
     const withoutExt = file.replace(/\.html$/, "");
-    const urlKey = withoutExt === "index" || withoutExt.endsWith("/index")
+    const isDirIndex = withoutExt !== "index" && withoutExt.endsWith("/index");
+    const urlKey = withoutExt === "index" || isDirIndex
       ? withoutExt.slice(0, -"index".length).replace(/\/$/, "")
       : withoutExt;
     if (redirectSources.has(urlKey || "index")) continue; // aliased/redirected away
@@ -135,7 +136,11 @@ function collectPublicPages() {
     const html = fs.readFileSync(path.join(ROOT, file), "utf8");
     if (isNoindex(html)) continue;
 
-    const urlPath = urlKey ? `/${urlKey}` : "/";
+    // Nested directory indexes (e.g. blog/index.html) are served by Cloudflare
+    // Pages at a trailing-slash URL — a bare "/blog" request 308s to "/blog/".
+    // Emit the URL that actually resolves 200 so it matches each page's own
+    // canonical tag instead of pointing at a redirect.
+    const urlPath = urlKey ? (isDirIndex ? `/${urlKey}/` : `/${urlKey}`) : "/";
     const meta = metaFor(urlKey || "index");
     pages.push({
       loc: `${DOMAIN}${urlPath}`,
