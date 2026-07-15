@@ -775,6 +775,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <span class="account-key">Subscription</span>
       <span class="badge free" id="accountSubBadge">FREE</span>
     </div>
+    <div class="account-row" id="foundingRow" style="display:none">
+      <span class="account-key">Status</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.05em;padding:4px 12px;border-radius:20px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.35);color:#f5a623;">🏆 FOUNDING MEMBER</span>
+    </div>
     <div class="account-row">
       <span class="account-key">Email Verified</span>
       <span class="account-val" id="emailVerified">—</span>
@@ -1095,6 +1099,9 @@ async function checkSubscription(isRetry = false) {
       ? await sb.auth.refreshSession()
       : await sb.auth.getSession();
     let plan = session?.user?.app_metadata?.plan || 'free';
+    const isFounding = session?.user?.app_metadata?.founding_member === true;
+    const foundingRow = document.getElementById('foundingRow');
+    if (foundingRow) foundingRow.style.display = isFounding ? '' : 'none';
 
     // If still free but we just came from a successful checkout, wait and retry once —
     // the activate endpoint may not have finished yet

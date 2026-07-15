@@ -103,11 +103,11 @@ a{color:inherit;text-decoration:none;}
 
 /* CARDS */
 .plans{position:relative;z-index:1;padding:40px 0 80px;}
-.plans-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start;max-width:760px;margin:0 auto;}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,330px));gap:20px;align-items:stretch;justify-content:center;max-width:1080px;margin:0 auto;}
 @media(max-width:900px){.plans-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto;}}
-.plan-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;gap:0;transition:.2s;}
+.plan-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;gap:0;transition:.2s;}
 .plan-card:hover{border-color:rgba(120,200,160,.3);}
-.plan-card.featured{border-color:var(--green);box-shadow:0 0 40px rgba(22,217,126,.15);position:relative;}
+.plan-card.featured{border-color:var(--green);box-shadow:0 0 40px rgba(22,217,126,.15);}
 .plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.06em;padding:4px 14px;border-radius:20px;white-space:nowrap;}
 .plan-badge.pro{background:var(--green);color:#04150d;}
 .plan-name{font-family:var(--disp);font-weight:700;font-size:1.4rem;margin-bottom:6px;}
@@ -154,14 +154,9 @@ a{color:inherit;text-decoration:none;}
 .compare-note a{color:var(--green);font-size:.9rem;}
 
 /* FOUNDING MEMBER */
-.founding-banner{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin-top:20px;padding:16px 26px;background:var(--gold-dim);border:1px solid rgba(245,166,35,.35);border-radius:14px;}
-.founding-banner-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
-.founding-banner-body{font-size:.92rem;color:var(--text);line-height:1.6;text-align:center;max-width:440px;}
-.founding-banner-body strong{color:var(--gold);}
-.founding-banner-limit{font-size:.78rem;color:var(--t55);}
 .plan-card.founding-active{border-color:var(--gold);box-shadow:0 0 40px rgba(245,166,35,.15);}
 .plan-badge.founding{background:var(--gold);color:#1a0d00;}
-.founding-checks{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0 20px;}
+.founding-checks{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0 20px;flex:1;}
 .founding-checks li{font-size:.9rem;color:var(--text);}
 .founding-checks li b{color:var(--gold);}
 .plan-cta.cta-founding{background:var(--gold);color:#1a0d00;box-shadow:0 0 24px rgba(245,166,35,.3);}
@@ -469,18 +464,16 @@ a{color:inherit;text-decoration:none;}
         <div class="plan-name">Founding Member</div>
         <div class="plan-price">
           <span class="amount">$1.99</span>
-          <span class="per">/month, locked for life</span>
+          <span class="per">/month</span>
         </div>
-        <div class="founding-banner">
-          <div class="founding-banner-label">First 500 traders only</div>
-          <div class="founding-banner-body">Lock in <strong>$1.99/mo</strong> forever — early supporters keep this price even as ScalpClock grows.</div>
-          <div class="founding-banner-limit" id="foundingLimitText">Loading spots remaining…</div>
+        <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:20px;margin-bottom:10px;">
+          <span style="font-size:.75rem;font-weight:700;color:var(--gold);letter-spacing:.04em;">🏆 LOCKED FOR LIFE</span>
         </div>
-        <div class="plan-desc">Everything in Pro, at founding pricing — locked in for as long as your subscription stays active.</div>
+        <div class="plan-desc" id="foundingLimitText">Everything in Pro, at a price that never goes up — reserved for the first 500 traders.</div>
         <hr class="plan-divider">
         <ul class="founding-checks">
           <li><b>✓</b> All Pro features — signals, charts, exit assistant, journal</li>
-          <li><b>✓</b> Price locked at $1.99/mo for life — never increases</li>
+          <li><b>✓</b> Price locked at $1.99/mo — never increases</li>
           <li><b>✓</b> 5-day free trial, cancel anytime</li>
           <li><b>✓</b> Founding Member badge on your profile</li>
         </ul>
@@ -694,7 +687,8 @@ async function loadFoundingStatus() {
     document.getElementById('foundingCountdown').style.display = '';
     const spotsText = `${data.remaining} of ${data.cap} spots left`;
     document.getElementById('cdSpots').textContent = spotsText;
-    document.getElementById('foundingLimitText').textContent = spotsText + ' at this price';
+    document.getElementById('foundingLimitText').textContent =
+      `${spotsText} — everything in Pro, locked at this price for life.`;
     startFoundingCountdown(new Date(data.cutoff).getTime());
   } catch (e) {
     console.warn('founding status failed:', e.message);

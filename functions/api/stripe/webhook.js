@@ -112,10 +112,27 @@ export async function onRequest(context) {
   });
 }
 
-// Update Supabase auth app_metadata — no profiles table needed, service role bypasses RLS
+// Update Supabase auth app_metadata — no profiles table needed, service role bypasses RLS.
+// Fetches the current app_metadata first and merges client-side rather than trusting
+// the admin API to deep-merge on our behalf — a plan-only patch (e.g. trial→pro on
+// customer.subscription.updated) must never silently drop founding_member/stripe_sub_id
+// that an earlier event already set.
 async function upsertProfile(userId, patch, serviceKey) {
   try {
-    const appMeta = {};
+    let existing = {};
+    try {
+      const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+        headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+      });
+      if (getRes.ok) {
+        const userData = await getRes.json();
+        existing = (userData?.user?.app_metadata || userData?.app_metadata) || {};
+      }
+    } catch (e) {
+      console.error('Failed to fetch existing app_metadata:', e.message);
+    }
+
+    const appMeta = { ...existing };
     if (patch.plan          !== undefined) appMeta.plan          = patch.plan;
     if (patch.stripe_sub_id !== undefined) appMeta.stripe_sub_id = patch.stripe_sub_id;
     if (patch.promo_redeemed !== undefined) appMeta.promo_redeemed = patch.promo_redeemed;

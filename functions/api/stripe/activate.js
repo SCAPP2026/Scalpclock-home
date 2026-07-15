@@ -47,7 +47,28 @@ export async function onRequest(context) {
 
   if (!env.SUPABASE_SERVICE_ROLE_KEY) return json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured in Cloudflare env' }, 500);
 
+  const isFounding = session.metadata?.founding_member === 'true';
+
   try {
+    // Fetch existing app_metadata first and merge — this call can race with the
+    // checkout.session.completed webhook, and neither write should be able to
+    // clobber a field (like founding_member) the other just set.
+    let existing = {};
+    try {
+      const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+        headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+      });
+      if (getRes.ok) {
+        const userData = await getRes.json();
+        existing = (userData?.user?.app_metadata || userData?.app_metadata) || {};
+      }
+    } catch (e) {
+      console.error('Failed to fetch existing app_metadata:', e.message);
+    }
+
+    const appMeta = { ...existing, plan: 'trial', stripe_sub_id: session.subscription || null };
+    if (isFounding) appMeta.founding_member = true;
+
     const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
       method:  'PUT',
       headers: {
@@ -55,9 +76,7 @@ export async function onRequest(context) {
         Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        app_metadata: { plan: 'trial', stripe_sub_id: session.subscription || null },
-      }),
+      body: JSON.stringify({ app_metadata: appMeta }),
     });
     if (!r.ok) {
       const text = await r.text();
