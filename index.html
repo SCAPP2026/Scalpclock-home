@@ -125,7 +125,13 @@ a{color:var(--green);text-decoration:none;}
 .hw-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
 .hw-canvas{display:block;width:100%;}
 .hw-sampson{padding:12px 18px;border-top:1px solid var(--line);background:rgba(22,217,126,.04);}
-.hw-sx-label{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+.hw-sx-label{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.sx-avatar-svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+.sx-mood-neutral{color:var(--t55);}
+.sx-mood-bull{color:var(--green);}
+.sx-mood-bear{color:#ff6b6b;}
+.sx-mood-thinking{color:var(--gold);animation:sx-pulse 1.4s ease-in-out infinite;}
+@keyframes sx-pulse{0%,100%{opacity:1}50%{opacity:.45}}
 .hw-sx-text{font-size:.82rem;color:var(--t80);line-height:1.5;}
 @media(max-width:860px){
   .hero{grid-template-columns:1fr;gap:40px;padding:60px 20px 40px;}
@@ -419,7 +425,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       </div>
       <canvas class="hw-canvas" id="heroCanvas" height="180"></canvas>
       <div class="hw-sampson">
-        <div class="hw-sx-label">SampsonX</div>
+        <div class="hw-sx-label"><svg class="sx-avatar-svg sx-mood-bull" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg> SampsonX</div>
         <div class="hw-sx-text" id="heroSXText">Reading the chart…</div>
       </div>
     </div>
@@ -510,6 +516,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       </div>
       <div class="demo-panel">
         <div class="demo-p-header">
+          <svg class="sx-avatar-svg sx-mood-neutral" id="demoAvatarSvg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
           <span class="demo-p-name">SampsonX</span>
           <span style="font-size:.72rem;color:var(--t55);">AI Coach</span>
         </div>
@@ -609,6 +616,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       </div>
       <div class="learn-example">
         <div class="le-header">
+          <svg class="sx-avatar-svg sx-mood-bull" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
           <span class="le-name">SampsonX</span>
           <span class="le-tag">· Example analysis</span>
         </div>
@@ -893,6 +901,8 @@ document.addEventListener('click',function(e){
       </div>
       <div class="dp-section"><div class="dp-label">SampsonX</div><div class="dp-text">${a.sc>=80?'STRONG LONG. High confidence setup.':a.sc>=65?'Long bias — watch for volume to confirm.':a.sc>=50?'Neutral — wait for clearer signal.':'Avoid — low confidence setup.'}</div></div>
     `;
+    const avatarEl=document.getElementById('demoAvatarSvg');
+    if(avatarEl)avatarEl.setAttribute('class','sx-avatar-svg sx-mood-'+(a.sc>=65?'bull':a.sc<50?'bear':'neutral'));
   }
 
   function draw(){

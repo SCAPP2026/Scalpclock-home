@@ -634,7 +634,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="signal-board-wrap" id="signalPreview">
     <div class="sb-search">
       <input type="text" id="sbSearchInput" placeholder="Search any ticker (e.g. AAPL)" maxlength="10" onkeydown="if(event.key==='Enter')searchSampsonX()">
-      <button onclick="searchSampsonX()" id="sbSearchBtn">🤖 Ask SampsonX</button>
+      <button onclick="searchSampsonX()" id="sbSearchBtn"><svg class="sx-avatar-svg sx-mood-neutral" id="sxAvatarSvgDash" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg> <span id="sbSearchBtnLabel">Ask SampsonX</span></button>
     </div>
     <div id="sbSearchResult"></div>
     <div class="sb-range-tabs" id="sbRangeTabs">
@@ -1665,8 +1665,9 @@ async function searchSampsonX() {
   if (!symbol) return;
 
   btn.disabled = true;
-  btn.textContent = '⏳ Asking...';
+  document.getElementById('sbSearchBtnLabel').textContent = '⏳ Asking...';
   resultEl.innerHTML = '<div class="sb-loading">SampsonX is checking the chart…</div>';
+  setSxAvatarMood('thinking');
 
   try {
     const res  = await fetch(`/api/signals?symbol=${encodeURIComponent(symbol)}&range=${_signalsRange}`);
@@ -1674,6 +1675,7 @@ async function searchSampsonX() {
 
     if (!data.result) {
       resultEl.innerHTML = `<div class="sx-result hold"><div class="sx-msg">🤖 ${data.sampsonX || 'No data found for that ticker.'}</div></div>`;
+      setSxAvatarMood('neutral');
       return;
     }
 
@@ -1696,12 +1698,19 @@ async function searchSampsonX() {
         <div class="sx-msg">🤖 ${data.sampsonX}</div>
         ${warn}
       </div>`;
+    setSxAvatarMood(r.tone === 'buy' ? 'bull' : r.tone === 'sell' ? 'bear' : 'neutral');
   } catch (e) {
     resultEl.innerHTML = '<div class="sx-result hold"><div class="sx-msg">⚠ Could not reach SampsonX — check your connection and try again.</div></div>';
+    setSxAvatarMood('neutral');
   } finally {
     btn.disabled = false;
-    btn.textContent = '🤖 Ask SampsonX';
+    document.getElementById('sbSearchBtnLabel').textContent = 'Ask SampsonX';
   }
+}
+
+function setSxAvatarMood(mood) {
+  const el = document.getElementById('sxAvatarSvgDash');
+  if (el) el.setAttribute('class', 'sx-avatar-svg sx-mood-' + mood);
 }
 
 function renderSignalGroup(list, emptyLabel) {

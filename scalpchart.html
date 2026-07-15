@@ -548,6 +548,13 @@
   .sx-dir.neut { background: rgba(255,255,255,.06); color: var(--muted); }
   .sx-arrow { font-size: 10px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
   .sx-arrow.open { transform: rotate(180deg); }
+  /* ── SampsonX avatar mark (shared across live bar, Coach panel, Replay) ── */
+  .sx-avatar-svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+  .sx-mood-neutral { color: var(--muted, #8aa4c0); }
+  .sx-mood-bull { color: var(--bull, var(--green, #16d97e)); }
+  .sx-mood-bear { color: var(--bear, #ff4566); }
+  .sx-mood-thinking { color: var(--accent, var(--gold, #f5a623)); animation: sx-pulse 1.4s ease-in-out infinite; }
+  @keyframes sx-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   .sx-expand {
     display: none; padding: 10px 16px 14px;
     background: rgba(0,212,170,.02); border-bottom: 1px solid var(--border);
@@ -1062,6 +1069,7 @@
 
 <div id="livePanel">
 <div class="sx-bar" id="sxBar" onclick="toggleSampsonX()">
+  <svg class="sx-avatar-svg sx-mood-neutral" id="sxAvatarSvg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
   <div class="sx-label">SampsonX</div>
   <div class="sx-track"><div class="sx-fill" id="sxFill" style="width:0%"></div></div>
   <div class="sx-pct" id="sxPct" style="color:var(--muted)">—</div>
@@ -1750,6 +1758,8 @@ function updateSampsonX() {
   const dirEl = document.getElementById('sxDir');
   dirEl.textContent = direction;
   dirEl.className = 'sx-dir ' + (direction === 'BULLISH' ? 'bull' : direction === 'BEARISH' ? 'bear' : 'neut');
+  const avatarMood = direction === 'BULLISH' ? 'bull' : direction === 'BEARISH' ? 'bear' : 'neutral';
+  document.getElementById('sxAvatarSvg').setAttribute('class', 'sx-avatar-svg sx-mood-' + avatarMood);
   document.getElementById('sxExpand').innerHTML =
     `<div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Market Confidence Breakdown</div>
      <div class="conf-cats">
@@ -2316,11 +2326,11 @@ function calcConfidenceBreakdown(candle, idx, visible) {
     ? (rsi<30?90:rsi<50?70:rsi<65?52:rsi<75?36:20)
     : (rsi>70?90:rsi>50?70:rsi>35?52:rsi>25?36:20);
   const cats = [
-    { name:'Pattern Strength',     score:patScore   },
-    { name:'Volume Confirmation',  score:volScore   },
-    { name:'Trend Alignment',      score:trendScore },
-    { name:'Support / Resistance', score:srScore    },
-    { name:'Momentum',             score:momScore   },
+    { name:'Candle (body/wick structure)',  score:patScore   },
+    { name:'Confirm (volume)',              score:volScore   },
+    { name:'Context (trend alignment)',     score:trendScore },
+    { name:'Support / Resistance',          score:srScore    },
+    { name:'Momentum',                      score:momScore   },
   ];
   const overall = Math.round(cats.reduce((s,c)=>s+c.score,0)/cats.length);
   const grade = overall>=85?'A+':overall>=75?'A':overall>=65?'B+':overall>=55?'B':overall>=45?'C':'D';
@@ -2554,6 +2564,8 @@ function showCoach(candle, idx, visible) {
   const badge = document.getElementById('coachBadge');
   badge.textContent = isBull ? '▲ BULLISH' : '▼ BEARISH';
   badge.className = 'coach-candle-badge ' + (isBull ? 'bull' : 'bear');
+  const coachAvatar = document.getElementById('coachAvatarSvg');
+  if (coachAvatar) coachAvatar.setAttribute('class', 'sx-avatar-svg sx-mood-' + (isBull ? 'bull' : 'bear'));
 
   const volFmt = v => v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;
   document.getElementById('coachOHLC').innerHTML =
@@ -2603,7 +2615,7 @@ function showCoach(candle, idx, visible) {
       ${notes.map(n=>`<div class="coach-note-item"><span style="flex-shrink:0">${noteIcon(n)}</span><span>${n.text}</span></div>`).join('')}
     </div>
 
-    <div class="coach-section-head">SampsonX</div>
+    <div class="coach-section-head">SampsonX — The 4 C's</div>
     <div class="coach-tip-box">${tip}</div>
 
     <div class="coach-section-head">Confidence Breakdown</div>
@@ -2622,6 +2634,7 @@ function showCoach(candle, idx, visible) {
         <div style="margin-bottom:7px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;background:${ts.color}22;color:${ts.color};border:1px solid ${ts.color}44">Grade ${ts.grade}</span></div>
         <div class="trade-score-reasons">
           ${ts.reasons.map(r=>`<div class="score-reason-item">${r.pos?'✅':'⚠️'} ${r.text}</div>`).join('')}
+          <div class="score-reason-item">📌 <strong>Commit:</strong> wait for the next candle to confirm before sizing up — one candle tells a story, two candles tell the truth.</div>
         </div>
       </div>
     </div>
@@ -2772,7 +2785,7 @@ document.addEventListener('visibilitychange', () => {
   <div class="coach-handle"></div>
   <div class="coach-header">
     <div>
-      <div class="coach-title">🤖 SampsonX Coach</div>
+      <div class="coach-title"><svg class="sx-avatar-svg sx-mood-neutral" id="coachAvatarSvg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg> SampsonX Coach</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <span class="coach-candle-badge" id="coachBadge">—</span>
@@ -3321,9 +3334,9 @@ function rpShowEdu(patterns,candles,idx){
       <span class="rp-edu-conf">${info.confidence}% confidence</span>
     </div>
     <div class="rp-edu-body">
-      <div><div class="rp-edu-sec-lbl">📖 What Is This?</div><div class="rp-edu-sec-txt">${info.definition}</div></div>
-      <div><div class="rp-edu-sec-lbl">🧠 What's Happening</div><div class="rp-edu-sec-txt">${info.psychology}</div></div>
-      <div><div class="rp-edu-sec-lbl">📊 How to Trade It</div>
+      <div><div class="rp-edu-sec-lbl">📖 Candle — What Is This?</div><div class="rp-edu-sec-txt">${info.definition}</div></div>
+      <div><div class="rp-edu-sec-lbl">🧠 Context — What's Happening</div><div class="rp-edu-sec-txt">${info.psychology}</div></div>
+      <div><div class="rp-edu-sec-lbl">📊 Confirm — How to Trade It</div>
         <div class="rp-edu-grid">
           <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">When to Enter</div><div class="rp-edu-stat-val">${info.entry}</div></div>
           <div class="rp-edu-stat"><div class="rp-edu-stat-lbl">Get Out If Wrong</div><div class="rp-edu-stat-val">${info.stop}</div></div>
@@ -3334,6 +3347,7 @@ function rpShowEdu(patterns,candles,idx){
       <div><div class="rp-edu-sec-lbl">✅ When It Works Best</div><ul class="rp-edu-list">${(info.best||[]).map(x=>`<li>${x}</li>`).join('')}</ul></div>
       <div><div class="rp-edu-sec-lbl">❌ Traps to Avoid</div><ul class="rp-edu-list">${(info.mistakes||[]).map(x=>`<li class="bad">${x}</li>`).join('')}</ul></div>
       <div class="rp-edu-quote"><p>${info.quote}</p></div>
+      <div class="rp-edu-sec-txt" style="opacity:.75">📌 <strong>Commit:</strong> don't act on this candle alone — wait for the next one to confirm before you follow through.</div>
     </div>
     <div class="rp-quiz" id="rpQuizSection">${rpBuildQuiz(info,candles,idx)}</div>
   `;
@@ -3363,7 +3377,9 @@ function rpAnswerQuiz(answer,idx){
   btns.forEach((b,i)=>{b.disabled=true;if(answers[i]===actual)b.classList.add('correct');else if(answers[i]===answer&&!isCorrect)b.classList.add('wrong');});
   const quiz=document.getElementById('rpQuizSection'),res=document.createElement('div');
   res.innerHTML=`<div class="rp-quiz-result ${isCorrect?'win':'lose'}"><div class="rp-quiz-xp">${isCorrect?'✅ Correct!':'❌ Incorrect'} +${xpGained} XP</div>Next: <strong>${actualLabel}</strong></div><button type="button" class="rp-quiz-next show" onclick="rpGoNext()">Next Candle ▶</button>`;
-  quiz.appendChild(res);rpUpdateProgressUI();
+  quiz.appendChild(res);
+  rpCheckMissionProgress();
+  rpUpdateProgressUI();
 }
 
 // ─── PROGRESS ────────────────────────────────────────────────
@@ -3375,7 +3391,12 @@ function rpUpdateProgressUI(){
   const grid=document.getElementById('rpMasteryGrid');
   const keys=Object.keys(rpProgress).sort((a,b)=>(rpProgress[b].c/(rpProgress[b].t||1))-(rpProgress[a].c/(rpProgress[a].t||1)));
   if(!keys.length){grid.innerHTML='<div class="rp-mastery-empty">No patterns seen yet — make your first prediction!</div>';return;}
-  grid.innerHTML=keys.map(k=>{const{c,t}=rpProgress[k],pct=t?Math.round(c/t*100):0;return`<div class="rp-mastery-row"><div class="rp-mastery-name">${k}<span>${pct}%</span></div><div class="rp-mastery-track"><div class="rp-mastery-fill" style="width:${pct}%"></div></div></div>`;}).join('');
+  grid.innerHTML=keys.map(k=>{
+    const{c,t}=rpProgress[k],pct=t?Math.round(c/t*100):0;
+    const mIdx=RP_MISSIONS.findIndex(m=>m.pattern===k);
+    const missionTag=mIdx>=0?`<span>${rpMissionsState[RP_MISSIONS[mIdx].id]?.completedAt?'✅':'🎯'} M${mIdx+1}</span>`:'';
+    return`<div class="rp-mastery-row"><div class="rp-mastery-name">${k}${missionTag}<span>${pct}%</span></div><div class="rp-mastery-track"><div class="rp-mastery-fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
 }
 
 // ─── UTILS ───────────────────────────────────────────────────
@@ -3421,14 +3442,102 @@ let rpSessionStartXP=0,rpSessionStartCorrect=0,rpSessionStartQuizTotal=0;
 let rpCompletionShown=false;
 let rpCurrentChallenge='';
 
+// ─── PATTERN MISSIONS ─────────────────────────────────────────
+// A guided, unlockable sequence built on the 9 clearest BOOK patterns
+// (easiest single-candle reads first, 3-candle patterns last). Once every
+// mission is complete, sessions fall back to the freeform RP_CHALLENGES
+// pool above so practice keeps giving XP without an artificial ceiling.
+const RP_MISSIONS=[
+  {id:'doji',           pattern:'Doji',                  goal:"Use the 4 C's to find a Doji before SampsonX reveals it."},
+  {id:'hammer',         pattern:'Hammer',                goal:"Use the 4 C's to find a Hammer before SampsonX reveals it."},
+  {id:'shooting_star',  pattern:'Shooting Star',         goal:"Use the 4 C's to find a Shooting Star before SampsonX reveals it."},
+  {id:'bull_engulf',    pattern:'Bullish Engulfing',     goal:"Use the 4 C's to find a Bullish Engulfing before SampsonX reveals it."},
+  {id:'bear_engulf',    pattern:'Bearish Engulfing',     goal:"Use the 4 C's to find a Bearish Engulfing before SampsonX reveals it."},
+  {id:'morning_star',   pattern:'Morning Star',          goal:"Use the 4 C's to find a Morning Star before SampsonX reveals it."},
+  {id:'evening_star',   pattern:'Evening Star',          goal:"Use the 4 C's to find an Evening Star before SampsonX reveals it."},
+  {id:'three_soldiers', pattern:'Three White Soldiers',  goal:"Use the 4 C's to find Three White Soldiers before SampsonX reveals it."},
+  {id:'three_crows',    pattern:'Three Black Crows',     goal:"Use the 4 C's to find Three Black Crows before SampsonX reveals it."},
+];
+const RP_MISSION_UNLOCK_MIN_ATTEMPTS=2;
+const RP_MISSION_UNLOCK_ACCURACY=0.7;
+
+function rpLoadMissions(){
+  let m=rpLSGet('sc_missions_progress',null);
+  if(!m||typeof m!=='object'){
+    m={};
+    RP_MISSIONS.forEach((mi,i)=>{m[mi.id]={unlocked:i===0,attempts:0,correct:0,completedAt:null};});
+    rpLSSet('sc_missions_progress',m);
+  }
+  return m;
+}
+let rpMissionsState=rpLoadMissions();
+let rpCurrentMission=null;
+let rpSessionNewBadges=[];
+
+function rpPickNextMission(){
+  return RP_MISSIONS.find(m=>rpMissionsState[m.id]?.unlocked&&!rpMissionsState[m.id]?.completedAt)||null;
+}
+
+// Mirrors learn.html's earnBadge()/sc_earned_badges exactly (same shape,
+// same localStorage key) so badges earned here show up on /learn's badge
+// wall too — there's no shared JS module between static pages, so this is
+// a local copy of the same three lines rather than an import.
+function scEarnBadge(id){
+  try{
+    const arr=JSON.parse(localStorage.getItem('sc_earned_badges')||'[]');
+    if(!arr.includes(id)){arr.push(id);localStorage.setItem('sc_earned_badges',JSON.stringify(arr));return true;}
+  }catch(_){}
+  return false;
+}
+
+function rpCheckFamilyBadges(){
+  const done=id=>!!rpMissionsState[id]?.completedAt;
+  const reversalIds=['bull_engulf','bear_engulf','morning_star','evening_star'];
+  const momentumIds=['three_soldiers','three_crows'];
+  const allIds=RP_MISSIONS.map(m=>m.id);
+  if(reversalIds.every(done)&&scEarnBadge('mission_reversal'))rpSessionNewBadges.push({icon:'🔄',name:'Reversal Reader'});
+  if(momentumIds.every(done)&&scEarnBadge('mission_momentum'))rpSessionNewBadges.push({icon:'📶',name:'Momentum Tracker'});
+  if(allIds.every(done)&&scEarnBadge('mission_all9'))rpSessionNewBadges.push({icon:'🧭',name:'Chart Navigator'});
+}
+
+function rpRenderGoalText(){
+  const el=document.getElementById('rpGoalTxt');
+  if(!el)return;
+  if(rpCurrentMission){
+    const num=RP_MISSIONS.findIndex(m=>m.id===rpCurrentMission.id)+1;
+    el.innerHTML=`<span style="color:var(--accent);font-weight:700;margin-right:6px;white-space:nowrap;">Mission ${num}/${RP_MISSIONS.length}</span>${rpCurrentMission.goal}`;
+  }else{
+    el.textContent=rpCurrentChallenge;
+  }
+}
+
+function rpCheckMissionProgress(){
+  if(!rpCurrentMission)return;
+  const st=rpMissionsState[rpCurrentMission.id];
+  const prog=rpProgress[rpCurrentMission.pattern];
+  if(!st||st.completedAt||!prog)return;
+  if(prog.t>=RP_MISSION_UNLOCK_MIN_ATTEMPTS&&prog.c/prog.t>=RP_MISSION_UNLOCK_ACCURACY){
+    st.completedAt=Date.now();st.attempts=prog.t;st.correct=prog.c;
+    const idx=RP_MISSIONS.findIndex(m=>m.id===rpCurrentMission.id);
+    if(RP_MISSIONS[idx+1])rpMissionsState[RP_MISSIONS[idx+1].id].unlocked=true;
+    rpLSSet('sc_missions_progress',rpMissionsState);
+    rpCheckFamilyBadges();
+    rpCurrentMission=rpPickNextMission();
+    rpRenderGoalText();
+  }
+}
+
 function rpBeginSession(){
-  rpCurrentChallenge=RP_CHALLENGES[Math.floor(Math.random()*RP_CHALLENGES.length)];
+  rpMissionsState=rpLoadMissions();
+  rpCurrentMission=rpPickNextMission();
+  rpCurrentChallenge=rpCurrentMission?rpCurrentMission.goal:RP_CHALLENGES[Math.floor(Math.random()*RP_CHALLENGES.length)];
+  rpSessionNewBadges=[];
   rpHintsRemaining=RP_HINT_BUDGET;
   rpSessionStartXP=rpTotalXP;rpSessionStartCorrect=rpCorrect;rpSessionStartQuizTotal=rpQuizTotal;
   rpCompletionShown=false;
   document.getElementById('rpIntro').style.display='none';
   document.getElementById('rpMain').style.display='flex';
-  document.getElementById('rpGoalTxt').textContent=rpCurrentChallenge;
+  rpRenderGoalText();
   document.getElementById('rpHintBanner').classList.remove('show');
   document.getElementById('rpCompleteOverlay').classList.remove('open');
   if(!rpChart){rpInitChart();rpInitDate();}
@@ -3546,10 +3655,11 @@ function rpShowCompletion(){
   const dailyStreak=rpBumpDailyStreak();
 
   const badges=[];
-  if(sessionQuizTotal>=3&&acc>=90)badges.push({icon:'🎯',name:'Sharp Eye'});
-  if(rpStreak>=5)badges.push({icon:'🔥',name:'Hot Streak'});
-  if(patternsIdentified>=5)badges.push({icon:'📚',name:'Pattern Explorer'});
-  if(sessionQuizTotal>0&&sessionCorrect===sessionQuizTotal)badges.push({icon:'💯',name:'Perfect Session'});
+  if(sessionQuizTotal>=3&&acc>=90&&scEarnBadge('replay_sharp_eye'))badges.push({icon:'🎯',name:'Sharp Eye'});
+  if(rpStreak>=5&&scEarnBadge('replay_hot_streak'))badges.push({icon:'🔥',name:'Hot Streak'});
+  if(patternsIdentified>=5&&scEarnBadge('replay_pattern_explorer'))badges.push({icon:'📚',name:'Pattern Explorer'});
+  if(sessionQuizTotal>0&&sessionCorrect===sessionQuizTotal&&scEarnBadge('replay_perfect_session'))badges.push({icon:'💯',name:'Perfect Session'});
+  badges.push(...rpSessionNewBadges);
 
   document.getElementById('rpCompleteGrid').innerHTML=`
     <div class="rp-complete-stat"><div class="rp-complete-val">${patternsIdentified}</div><div class="rp-complete-lbl">Patterns Identified</div></div>

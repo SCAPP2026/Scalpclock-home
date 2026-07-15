@@ -1392,7 +1392,13 @@
   .sx-summary-card { background:linear-gradient(135deg,#08121e,#111d2b);
     border-color:rgba(0,212,170,.3); }
   .sx-summary-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-  .sx-avatar { font-size:28px; line-height:1; }
+  .sx-avatar { display:inline-flex; align-items:center; }
+  .sx-avatar-svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+  .sx-mood-neutral { color: var(--muted, #8aa4c0); }
+  .sx-mood-bull { color: var(--bull, #00c96b); }
+  .sx-mood-bear { color: var(--bear, #ff4566); }
+  .sx-mood-thinking { color: var(--accent, #f5a623); animation: sx-pulse 1.4s ease-in-out infinite; }
+  @keyframes sx-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   .sx-name { font-size:17px; font-weight:800; color:var(--accent); }
   .sx-badge { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
     color:var(--muted); padding:3px 8px; border:1px solid var(--border2); border-radius:20px; }
@@ -1840,7 +1846,7 @@
     <!-- SampsonX Summary -->
     <div class="se-card sx-summary-card">
       <div class="sx-summary-header">
-        <span class="sx-avatar">🤖</span>
+        <span class="sx-avatar"><svg class="sx-avatar-svg sx-mood-neutral" id="sxAvatarSvgExit" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg></span>
         <span class="sx-name">SampsonX</span>
         <span class="sx-badge">AI EXIT COACH</span>
       </div>
@@ -4472,6 +4478,12 @@ function renderSampsonXSummary(rsiVal, vel, atrVal, vt, gainPct, sig, isPut, opt
   }
 
   el.innerHTML = parts.join(' ');
+
+  const avatarMood = level === 'EXIT NOW' ? 'bear'
+    : (level === 'TAKE PROFIT' || level === 'HOLD') ? 'bull'
+    : 'thinking'; // TRIM 50%/25%, MOVE STOP UP — cautionary
+  const avatarEl = document.getElementById('sxAvatarSvgExit');
+  if (avatarEl) avatarEl.setAttribute('class', 'sx-avatar-svg sx-mood-' + avatarMood);
 }
 </script>
 <script>

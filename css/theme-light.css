@@ -114,3 +114,11 @@
 .nav-link{color:var(--t65);text-decoration:none;transition:.15s;}
 .nav-link:hover{color:var(--text);}
 .nav-link.active{color:var(--green-ink);}
+
+/* ── SampsonX avatar mark (dashboard.html ticker search) ──────────────── */
+.sx-avatar-svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+.sx-mood-neutral{color:var(--t45);}
+.sx-mood-bull{color:var(--dk-bull);}
+.sx-mood-bear{color:var(--dk-bear);}
+.sx-mood-thinking{color:var(--gold-ink);animation:sx-pulse 1.4s ease-in-out infinite;}
+@keyframes sx-pulse{0%,100%{opacity:1}50%{opacity:.45}}
