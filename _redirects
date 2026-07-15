@@ -4,5 +4,15 @@
 # Any /blog/category/<slug> without its own static HTML file falls back to
 # the generic template, which reads the slug from the URL and renders
 # whatever posts.json has for that category (or an honest "nothing yet").
-# Exact static files (trading-education.html etc.) still win over this.
+# Cloudflare Pages evaluates _redirects wildcard rules BEFORE static-asset
+# matching (confirmed via `wrangler pages dev` — the old comment's assumption
+# that exact files "still win" was wrong), so real category pages need an
+# explicit passthrough rule ABOVE the wildcard or they get caught by it and
+# rewritten to _generic.html — which then 308s to its own extensionless URL,
+# re-matches this same wildcard, and loops forever. List every real static
+# category file here as it's added.
+/blog/category/pattern-lessons /blog/category/pattern-lessons 200
+/blog/category/scalpclock-tutorials /blog/category/scalpclock-tutorials 200
+/blog/category/trading-education /blog/category/trading-education 200
+/blog/category/_generic /blog/category/_generic 200
 /blog/category/* /blog/category/_generic.html 200
