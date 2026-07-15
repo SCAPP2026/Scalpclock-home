@@ -1851,6 +1851,7 @@
         <span class="sx-badge">AI EXIT COACH</span>
       </div>
       <div class="sx-summary-text" id="sampsonxSummary">Analyzing your trade...</div>
+      <button type="button" onclick="scSpeak('sampsonxSummary',this)" style="margin-top:10px;background:none;border:1px solid var(--border);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:.8rem;cursor:pointer;">🔊 Listen</button>
     </div>
 
     <!-- 1. EXIT RECOMMENDATION -->
@@ -4428,6 +4429,26 @@ function renderExitLevels(optMode, isPut) {
 }
 
 // ── SampsonX Plain-English Summary ──────────────────────────────────────────
+// ─── SAMPSONX VOICE (browser text-to-speech, no backend) ──────
+let scSpeakingBtn = null;
+function scSpeak(elId, btn) {
+  if (!('speechSynthesis' in window)) return;
+  if (scSpeakingBtn === btn) {
+    speechSynthesis.cancel();
+    return;
+  }
+  speechSynthesis.cancel();
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const utter = new SpeechSynthesisUtterance(el.textContent.trim());
+  scSpeakingBtn = btn;
+  if (btn) btn.textContent = '⏸ Stop';
+  const reset = () => { if (btn) btn.textContent = '🔊 Listen'; if (scSpeakingBtn === btn) scSpeakingBtn = null; };
+  utter.onend = reset;
+  utter.onerror = reset;
+  speechSynthesis.speak(utter);
+}
+
 function renderSampsonXSummary(rsiVal, vel, atrVal, vt, gainPct, sig, isPut, optMode) {
   const el = document.getElementById('sampsonxSummary');
   if (!el) return;

@@ -1339,6 +1339,7 @@
   <div id="fcResult" style="display:none;padding:24px;max-width:640px;margin:0 auto;width:100%">
     <div class="coach-section-head"><svg class="sx-avatar-svg sx-mood-neutral" id="fcResultAvatarSvg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="vertical-align:-2px;margin-right:2px"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>SampsonX — The 4 C's</div>
     <div class="coach-tip-box" id="fcFeedbackText" style="white-space:pre-wrap"></div>
+    <button type="button" onclick="scSpeak('fcFeedbackText',this)" style="margin-top:10px;background:none;border:1px solid var(--border);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:.8rem;cursor:pointer;">🔊 Listen</button>
     <button type="button" class="rp-intro-start" style="margin-top:18px" onclick="fcReset()">📁 Review Another Chart</button>
   </div>
 
@@ -1435,6 +1436,26 @@ async function fcSubmit() {
     }
   };
   reader.readAsDataURL(fcSelectedFile);
+}
+
+// ─── SAMPSONX VOICE (browser text-to-speech, no backend) ──────
+let scSpeakingBtn = null;
+function scSpeak(elId, btn) {
+  if (!('speechSynthesis' in window)) return;
+  if (scSpeakingBtn === btn) {
+    speechSynthesis.cancel();
+    return;
+  }
+  speechSynthesis.cancel();
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const utter = new SpeechSynthesisUtterance(el.textContent.trim());
+  scSpeakingBtn = btn;
+  if (btn) btn.textContent = '⏸ Stop';
+  const reset = () => { if (btn) btn.textContent = '🔊 Listen'; if (scSpeakingBtn === btn) scSpeakingBtn = null; };
+  utter.onend = reset;
+  utter.onerror = reset;
+  speechSynthesis.speak(utter);
 }
 
 function fcReset() {
@@ -2753,7 +2774,8 @@ function showCoach(candle, idx, visible) {
     </div>
 
     <div class="coach-section-head">SampsonX — The 4 C's</div>
-    <div class="coach-tip-box">${tip}</div>
+    <div class="coach-tip-box" id="coachTipText">${tip}</div>
+    <button type="button" onclick="scSpeak('coachTipText',this)" style="margin-top:8px;background:none;border:1px solid var(--border);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:.8rem;cursor:pointer;">🔊 Listen</button>
 
     <div class="coach-section-head">Confidence Breakdown</div>
     <div class="conf-cats">

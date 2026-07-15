@@ -1657,6 +1657,26 @@ function setSignalsRange(range) {
   loadLiveSignals();
 }
 
+// ─── SAMPSONX VOICE (browser text-to-speech, no backend) ──────
+let scSpeakingBtn = null;
+function scSpeak(elId, btn) {
+  if (!('speechSynthesis' in window)) return;
+  if (scSpeakingBtn === btn) {
+    speechSynthesis.cancel();
+    return;
+  }
+  speechSynthesis.cancel();
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const utter = new SpeechSynthesisUtterance(el.textContent.trim());
+  scSpeakingBtn = btn;
+  if (btn) btn.textContent = '⏸ Stop';
+  const reset = () => { if (btn) btn.textContent = '🔊 Listen'; if (scSpeakingBtn === btn) scSpeakingBtn = null; };
+  utter.onend = reset;
+  utter.onerror = reset;
+  speechSynthesis.speak(utter);
+}
+
 async function searchSampsonX() {
   const input     = document.getElementById('sbSearchInput');
   const btn       = document.getElementById('sbSearchBtn');
@@ -1695,7 +1715,8 @@ async function searchSampsonX() {
           <span class="sx-result-price">$${r.price.toFixed(2)} <span style="color:${chgColor}">${chgStr}</span></span>
           <span class="sx-badge ${r.tone}">${badgeText}</span>
         </div>
-        <div class="sx-msg">🤖 ${data.sampsonX}</div>
+        <div class="sx-msg" id="sbSxMsg">🤖 ${data.sampsonX}</div>
+        <button type="button" onclick="scSpeak('sbSxMsg',this)" style="margin-top:6px;background:none;border:1px solid var(--line);color:var(--green-ink);border-radius:8px;padding:5px 11px;font-size:.78rem;cursor:pointer;">🔊 Listen</button>
         ${warn}
       </div>`;
     setSxAvatarMood(r.tone === 'buy' ? 'bull' : r.tone === 'sell' ? 'bear' : 'neutral');
