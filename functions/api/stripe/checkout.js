@@ -60,6 +60,17 @@ async function handleCheckout(env, request) {
 
   const isFounding = tier === 'founding_member';
 
+  // A checkout session with no userId can never be linked back to a Supabase
+  // account (activate.js and the webhook both require client_reference_id to
+  // set app_metadata.plan). Without this gate, a user who pays before they're
+  // signed in gets charged but their account never unlocks — they land back
+  // on /dashboard's session check, which bounces them to /login, and it reads
+  // as "I paid and now I can't log in." Fail closed instead of silently
+  // taking payment for an account we can't activate.
+  if (!userId) {
+    return json({ error: 'Please sign in or create a free account first, then choose your plan.' }, 400);
+  }
+
   // Re-check eligibility server-side — never trust the client's claim that
   // the offer is still active. A cached page or a direct API call after
   // the 500th spot (or past the cutoff date) must not still get $1.99/mo.

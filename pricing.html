@@ -582,6 +582,11 @@ async function startCheckout(isTrial) {
     userId = session?.user?.id || null;
   } catch(_) {}
 
+  if (!userId) {
+    window.location.href = '/login?tab=signup&from=' + encodeURIComponent('/pricing');
+    return;
+  }
+
   try {
     const body = {
       tier:    'pro',
@@ -627,6 +632,11 @@ async function startFoundingCheckout() {
     const { data: { session } } = await _sb.auth.getSession();
     userId = session?.user?.id || null;
   } catch(_) {}
+
+  if (!userId) {
+    window.location.href = '/login?tab=signup&from=' + encodeURIComponent('/pricing');
+    return;
+  }
 
   try {
     const body = { tier: 'founding_member', billing: 'monthly', trial: true };

@@ -734,6 +734,11 @@ async function startFoundingCheckout() {
     userId = session?.user?.id || null;
   } catch(_) {}
 
+  if (!userId) {
+    window.location.href = '/login?tab=signup&from=' + encodeURIComponent('/');
+    return;
+  }
+
   try {
     const body = { tier: 'founding_member', billing: 'monthly', trial: true };
     if (userId) body.userId = userId;
