@@ -1325,7 +1325,9 @@
         <li>Up to 5 reviews per day</li>
       </ul>
       <input type="file" id="fcFileInput" accept="image/png,image/jpeg" style="display:none" onchange="fcHandleFile(this)">
+      <input type="file" id="fcCameraInput" accept="image/png,image/jpeg" capture="environment" style="display:none" onchange="fcHandleFile(this)">
       <button type="button" class="rp-intro-start" onclick="document.getElementById('fcFileInput').click()">📁 Choose Screenshot</button>
+      <button type="button" class="rp-intro-start" style="background:transparent;border:1px solid var(--border);color:var(--text);margin-top:8px" onclick="document.getElementById('fcCameraInput').click()">📸 Take Photo of a Chart</button>
       <div id="fcPreviewWrap" style="display:none;margin-top:14px">
         <img id="fcPreviewImg" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border)" alt="Chart preview">
         <button type="button" class="rp-intro-start" id="fcSubmitBtn" style="margin-top:14px" onclick="fcSubmit()" disabled>

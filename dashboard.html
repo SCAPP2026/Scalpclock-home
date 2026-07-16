@@ -623,6 +623,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <span>📡 Scalp Signals</span>
     <div style="display:flex;align-items:center;gap:8px;">
       <span id="signalStatusBadge" style="font-family:var(--mono);font-size:.65rem;"></span>
+      <button onclick="scAlertsToggle()" id="scAlertsBtn" title="Get notified when a strong signal appears"
+        style="background:none;border:1px solid var(--line);color:var(--t65);border-radius:6px;padding:3px 10px;font-size:.78rem;cursor:pointer;transition:.15s;">🔔 Enable Signal Alerts</button>
       <button onclick="loadLiveSignals()" id="signalRefreshBtn" title="Refresh signals"
         style="background:none;border:1px solid var(--line);color:var(--t65);border-radius:6px;padding:3px 8px;font-size:.78rem;cursor:pointer;transition:.15s;" onmouseover="this.style.color='var(--green-ink)'" onmouseout="this.style.color='var(--t65)'">↻</button>
     </div>
@@ -1023,6 +1025,62 @@ async function init() {
   loadAllTrades();
   checkSubscription();
   loadLiveSignals();
+  scUpdateAlertsBtn();
+  setInterval(loadLiveSignals, 60000);
+}
+
+// ─── SIGNAL ALERTS (native-style notifications for strong signals) ──
+let scAlertsEnabled = localStorage.getItem('sc_alerts_enabled') === '1';
+let scAlertsSeen = new Set(JSON.parse(localStorage.getItem('sc_alerts_seen') || '[]'));
+
+function scUpdateAlertsBtn() {
+  const btn = document.getElementById('scAlertsBtn');
+  if (!btn) return;
+  btn.textContent = scAlertsEnabled ? '🔔 Alerts On' : '🔔 Enable Signal Alerts';
+  btn.style.color = scAlertsEnabled ? 'var(--green-ink)' : 'var(--t65)';
+  btn.style.borderColor = scAlertsEnabled ? 'var(--green)' : 'var(--line)';
+}
+
+async function scAlertsToggle() {
+  if (scAlertsEnabled) {
+    scAlertsEnabled = false;
+    localStorage.setItem('sc_alerts_enabled', '0');
+    scUpdateAlertsBtn();
+    return;
+  }
+  if (!('Notification' in window)) {
+    alert('Notifications are not supported in this browser.');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') {
+    alert('Enable notifications in your browser/app settings to get signal alerts.');
+    return;
+  }
+  scAlertsEnabled = true;
+  localStorage.setItem('sc_alerts_enabled', '1');
+  scUpdateAlertsBtn();
+}
+
+function scCheckSignalAlerts(data) {
+  if (!scAlertsEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const strong = [...(data.calls || []), ...(data.puts || [])].filter(t => t.conviction === 'HARD');
+  const seenNow = new Set();
+  strong.forEach((t) => {
+    const key = `${t.symbol}:${t.tone}`;
+    seenNow.add(key);
+    if (!scAlertsSeen.has(key)) {
+      const title = t.tone === 'buy' ? `⚡ Strong CALLS: ${t.symbol}` : `⚡ Strong PUTS: ${t.symbol}`;
+      const body = t.explain || 'A high-confidence setup just appeared.';
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((reg) => reg.showNotification(title, { body, icon: '/icon-192.png', tag: key }));
+      } else {
+        new Notification(title, { body, icon: '/icon-192.png' });
+      }
+    }
+  });
+  scAlertsSeen = seenNow;
+  localStorage.setItem('sc_alerts_seen', JSON.stringify([...scAlertsSeen]));
 }
 
 // ── Streak ────────────────────────────────────────────────────────────────────
@@ -1803,6 +1861,7 @@ async function loadLiveSignals() {
     }
 
     renderSignalBoard(data);
+    scCheckSignalAlerts(data);
 
     const timeStr   = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     const liveColor = data.marketOpen ? 'var(--green-ink)' : 'var(--t45)';
