@@ -1,4 +1,4 @@
-const CACHE = 'sc-v22';
+const CACHE = 'sc-v23';
 const STATIC = [
   '/',
   '/index.html',
@@ -52,8 +52,15 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // Always network-first for API calls
-  if (url.pathname.startsWith('/api/')) {
+  // Always network-first for this site's own API routes, and for every
+  // cross-origin request (Supabase REST/auth calls above all — trades,
+  // watchlist, session, etc.). Without the origin check, a Supabase GET
+  // (different origin, so it never matches /api/) fell through to the
+  // cache-first branch below and got permanently cached on first load —
+  // e.g. closing a trade updated the DB fine, but the Trade Journal kept
+  // showing the pre-close data from cache until a hard refresh bypassed
+  // the service worker entirely.
+  if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) {
     e.respondWith(
       fetch(e.request).catch(() =>
         new Response(JSON.stringify({ error: 'offline' }), {
