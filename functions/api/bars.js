@@ -46,9 +46,13 @@ export async function onRequest(context) {
       // wrapped in an HTTP 200 — indistinguishable client-side from "market
       // has no data," which flips the chart to "DEMO — API offline" with no
       // trace of the real cause anywhere. Log it and say so instead.
+      // Status 400, not 502/503/504 — Cloudflare's edge replaces the body of
+      // those with its own generic error page even for a Function's own
+      // Response, which would silently swallow this message right back out
+      // (res.json() on the client would just throw on the non-JSON page).
       console.error('Alpaca bars error:', res.status, JSON.stringify(data));
       return new Response(JSON.stringify({ error: data.message || `Market data provider returned ${res.status}` }), {
-        status: 502,
+        status: 400,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
     }

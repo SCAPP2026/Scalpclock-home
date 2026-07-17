@@ -51,7 +51,10 @@ export async function onRequest(context) {
     if (!userRes.ok) return json({ error: 'Sign in required' }, 401);
     user = await userRes.json();
   } catch (e) {
-    return json({ error: 'Could not verify your session — try again in a moment' }, 502);
+    // Not 502/503/504 — Cloudflare's edge replaces the body of those with its
+    // own generic error page even for a Function's own Response, silently
+    // swallowing this message right back out.
+    return json({ error: 'Could not verify your session — try again in a moment' }, 400);
   }
 
   const plan = user?.app_metadata?.plan;
@@ -119,13 +122,13 @@ export async function onRequest(context) {
     if (!aiRes.ok) {
       const detail = await aiRes.text();
       console.error('Anthropic request failed:', detail);
-      return json({ error: "⚠ Could not reach SampsonX — check your connection and try again." }, 502);
+      return json({ error: "⚠ Could not reach SampsonX — check your connection and try again." }, 400);
     }
     const data = await aiRes.json();
     const textBlock = (data.content || []).find((b) => b.type === 'text');
     feedback = textBlock?.text || "SampsonX couldn't find anything to say about that image — try a clearer screenshot.";
   } catch (e) {
-    return json({ error: "⚠ Could not reach SampsonX — check your connection and try again." }, 502);
+    return json({ error: "⚠ Could not reach SampsonX — check your connection and try again." }, 400);
   }
 
   // Best-effort counters — a rare race under concurrent requests just lets a
