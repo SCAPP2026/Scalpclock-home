@@ -1811,6 +1811,13 @@ function startSimulation() {
       updateOHLC(candles[candles.length - 1]);
       runPatternDetection();
       drawChart();
+      // Bars are flowing again — clear a prior DEMO/offline state instead of
+      // leaving the label stuck on it forever even though real data (and the
+      // patterns/OHLC above) already recovered.
+      const sl = document.getElementById('dataStatusLabel');
+      const dot = document.getElementById('liveDot');
+      if (sl && sl.textContent !== 'LIVE') { sl.textContent = 'LIVE'; sl.style.color = ''; }
+      if (dot) dot.style.background = '';
     }
   }, 15000); // refresh candle shapes every 15 seconds
 }
@@ -1826,6 +1833,10 @@ function startPricePoller() {
         currentPrice = data.price;
         const open = candles.length ? candles[0].open : data.price;
         updatePrice(data.price, open);
+        // Price is flowing again — only clear a STALE state we set ourselves;
+        // leave a DEMO/offline state alone since that reflects bars, not price.
+        const sl = document.getElementById('dataStatusLabel');
+        if (sl && sl.textContent === 'STALE') { sl.textContent = 'LIVE'; sl.style.color = ''; }
       }
     } catch (e) {
       const sl = document.getElementById('dataStatusLabel');

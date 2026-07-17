@@ -40,6 +40,19 @@ export async function onRequest(context) {
     const res  = await fetch(stockUrl, { headers });
     const data = await res.json();
 
+    if (!res.ok) {
+      // Alpaca error bodies (rate limit, bad key, upstream outage) don't have
+      // a .bars field, so without this check they silently became candles:[]
+      // wrapped in an HTTP 200 — indistinguishable client-side from "market
+      // has no data," which flips the chart to "DEMO — API offline" with no
+      // trace of the real cause anywhere. Log it and say so instead.
+      console.error('Alpaca bars error:', res.status, JSON.stringify(data));
+      return new Response(JSON.stringify({ error: data.message || `Market data provider returned ${res.status}` }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
     const candles = (data.bars ?? []).reverse().map(b => ({
       time:   b.t,
       open:   b.o,
