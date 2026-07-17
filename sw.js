@@ -1,4 +1,4 @@
-const CACHE = 'sc-v24';
+const CACHE = 'sc-v25';
 const STATIC = [
   '/',
   '/index.html',
@@ -11,6 +11,7 @@ const STATIC = [
   '/faq.html',
   '/learn.html',
   '/about.html',
+  '/trading-resources.html',
   '/blog/',
   '/blog/posts.json',
   '/js/blog-chart.js',

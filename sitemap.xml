@@ -43,6 +43,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/trading-resources</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/blog/breakout-trading-explained</loc>
     <lastmod>2026-07-14</lastmod>
     <changefreq>monthly</changefreq>
