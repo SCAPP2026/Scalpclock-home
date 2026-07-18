@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Options Trading | Beginner Options Education | ScalpClock</title>
+<meta name="description" content="Learn options trading step-by-step with ScalpClock. Master calls, puts, strategies, technical analysis, trading psychology, and options scalping through interactive lessons.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="Learn Options Trading | Beginner Options Education | ScalpClock">
+<meta property="og:description" content="Learn options trading step-by-step with ScalpClock. Master calls, puts, strategies, technical analysis, trading psychology, and options scalping through interactive lessons.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Learn Options Trading | Beginner Options Education | ScalpClock">
+<meta name="twitter:description" content="Learn options trading step-by-step with ScalpClock. Master calls, puts, strategies, technical analysis, trading psychology, and options scalping through interactive lessons.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --gold:#f5a623;--gold-dim:rgba(245,166,35,.12);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);
+  --red:#ff4566;--red-dim:rgba(255,69,102,.12);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;visibility:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.10),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:var(--green);text-decoration:none;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1180px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;align-items:center;gap:5px;}
+.nav-links a{font-size:.85rem;color:var(--t80);padding:7px 11px;border-radius:8px;transition:color .15s,background .15s;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{background:var(--green)!important;color:#070a08!important;font-weight:600;border-radius:8px;padding:7px 16px!important;}
+.nav-cta:hover{background:#12c470!important;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.ham span{display:block;width:22px;height:2px;background:var(--t80);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:80px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;overflow-y:auto;}
+.nav-drawer.open{transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--g-dim);}
+.nav-drawer a.active{color:var(--green);}
+@media(max-width:960px){
+  .nav-links{display:none;}
+  .ham{display:flex;}
+  .nav-drawer{display:flex;}
+}
+
+/* HERO */
+.hub-hero{max-width:820px;margin:0 auto;padding:88px 24px 56px;text-align:center;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:20px;}
+.hero-eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hub-hero h1{font-family:var(--disp);font-size:clamp(2.1rem,5.6vw,3.4rem);font-weight:700;line-height:1.15;letter-spacing:.01em;margin-bottom:18px;}
+.hub-hero h1 em{color:var(--green);font-style:normal;}
+.hub-hero p{font-size:1.05rem;color:var(--t80);line-height:1.75;max-width:640px;margin:0 auto 36px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.btn-primary{background:var(--green);color:#070a08;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-primary:hover{background:#12c470;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.95rem;padding:14px 24px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
+.btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
+.btn-gold{background:var(--gold);color:#1a0d00;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-gold:hover{background:#ffb84d;transform:translateY(-1px);}
+
+/* SECTION BASE */
+.section{padding:72px 24px;max-width:1180px;margin:0 auto;}
+.section-narrow{max-width:760px;margin:0 auto;padding:56px 24px;}
+.sec-label{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:14px;}
+.sec-title{font-family:var(--disp);font-size:clamp(1.6rem,3.8vw,2.3rem);font-weight:700;line-height:1.15;letter-spacing:.01em;margin-bottom:14px;}
+.sec-sub{font-size:.98rem;color:var(--t55);line-height:1.7;max-width:620px;margin-bottom:36px;}
+.alt-bg{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+
+/* OVERALL PROGRESS BAR */
+.overall-progress{max-width:520px;margin:0 auto 8px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;}
+.op-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.op-label{font-family:var(--disp);font-size:.82rem;font-weight:700;color:var(--t80);}
+.op-stat{font-family:var(--mono,var(--disp));font-size:.78rem;color:var(--green);font-weight:700;}
+.op-track{height:8px;background:rgba(120,200,160,.1);border-radius:5px;overflow:hidden;}
+.op-fill{height:100%;background:linear-gradient(90deg,var(--green),#0fe6a0);border-radius:5px;transition:width .5s ease;}
+
+/* CATEGORY GRID */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+@media(max-width:960px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.cat-grid{grid-template-columns:1fr;}}
+.cat-card{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 24px;transition:border-color .2s,box-shadow .2s,transform .2s;}
+.cat-card:hover{border-color:var(--accent,var(--green));box-shadow:0 0 30px var(--accent-glow,rgba(22,217,126,.14));transform:translateY(-3px);}
+.cat-icon{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;font-size:1.4rem;background:var(--accent-dim,var(--g-dim));border:1px solid var(--accent,var(--green));margin-bottom:16px;}
+.cat-card h3{font-family:var(--disp);font-size:1.15rem;font-weight:700;margin-bottom:8px;color:var(--text);}
+.cat-card p{font-size:.86rem;color:var(--t55);line-height:1.6;margin-bottom:18px;flex:1;}
+.cat-progress-wrap{margin-bottom:14px;}
+.cat-progress-label{display:flex;justify-content:space-between;font-size:.68rem;color:var(--t55);margin-bottom:6px;font-weight:600;letter-spacing:.02em;}
+.cat-progress-track{height:6px;background:rgba(120,200,160,.1);border-radius:4px;overflow:hidden;}
+.cat-progress-fill{height:100%;background:var(--accent,var(--green));border-radius:4px;transition:width .5s ease;}
+.cat-link{display:inline-flex;align-items:center;gap:6px;font-size:.86rem;font-weight:700;color:var(--accent,var(--green));}
+.cat-card:hover .cat-link{gap:9px;}
+.cat-link svg{width:14px;height:14px;transition:transform .15s;}
+
+/* LEARNING PATH TRACKER */
+.path-tracker{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:8px 4px 16px;-webkit-overflow-scrolling:touch;}
+.path-step{position:relative;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 28px;min-width:120px;}
+.path-step:not(:last-child)::after{content:'';position:absolute;top:22px;left:calc(50% + 34px);width:calc(100% - 8px);height:2px;background:var(--line);}
+.path-step.done:not(:last-child)::after{background:var(--green);}
+.path-dot{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.15rem;background:var(--panel);border:2px solid var(--line);z-index:1;transition:border-color .2s,background .2s;}
+.path-step.done .path-dot{background:var(--g-dim);border-color:var(--green);color:var(--green);}
+.path-step.current .path-dot{border-color:var(--gold);box-shadow:0 0 14px rgba(245,166,35,.4);}
+.path-step-label{font-size:.76rem;font-weight:600;color:var(--t55);text-align:center;white-space:nowrap;}
+.path-step.done .path-step-label,.path-step.current .path-step-label{color:var(--text);}
+
+/* AUTHOR / TRUST BOX */
+.author-box{display:flex;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px;}
+.author-avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 40% 35%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.5);display:grid;place-items:center;font-size:1.4rem;}
+.author-box h3{font-family:var(--disp);font-size:1.02rem;font-weight:700;margin-bottom:4px;color:var(--text);}
+.author-box p{font-size:.86rem;color:var(--t55);line-height:1.6;}
+@media(max-width:520px){.author-box{flex-direction:column;text-align:center;}}
+
+/* CTA */
+.cta-section{text-align:center;padding:92px 24px;}
+.cta-section h2{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.8rem);font-weight:700;letter-spacing:.01em;margin-bottom:16px;}
+.cta-section p{font-size:1rem;color:var(--t80);line-height:1.7;max-width:520px;margin:0 auto 40px;}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
+.foot-in{max-width:1180px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Learn Options Trading | Beginner Options Education | ScalpClock",
+  "url": "https://scalpclock.com/learn-options-trading",
+  "description": "Learn options trading step-by-step with ScalpClock. Master calls, puts, strategies, technical analysis, trading psychology, and options scalping through interactive lessons.",
+  "isPartOf": { "@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com" },
+  "author": { "@type": "Organization", "name": "ScalpClock Education Team" },
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Options Basics", "url": "https://scalpclock.com/learn-options-trading/options-basics" },
+      { "@type": "ListItem", "position": 2, "name": "Options Strategies", "url": "https://scalpclock.com/learn-options-trading/strategies" },
+      { "@type": "ListItem", "position": 3, "name": "Technical Analysis", "url": "https://scalpclock.com/learn-options-trading/technical-analysis" },
+      { "@type": "ListItem", "position": 4, "name": "Options Scalping", "url": "https://scalpclock.com/learn-options-trading/scalping" },
+      { "@type": "ListItem", "position": 5, "name": "Trading Psychology", "url": "https://scalpclock.com/learn-options-trading/psychology" },
+      { "@type": "ListItem", "position": 6, "name": "Broker Guides", "url": "https://scalpclock.com/learn-options-trading/brokers" }
+    ]
+  }
+}</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/learn-options-trading" class="active">Learn Options Trading</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/trading-resources">Trading Resources</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+      <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    </nav>
+    <button class="ham" onclick="toggleDrawer()" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeDrawer()">Home</a>
+  <a href="/learn-options-trading" class="active" onclick="closeDrawer()">Learn Options Trading</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/trading-resources" onclick="closeDrawer()">Trading Resources</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<!-- HERO -->
+<section class="hub-hero reveal">
+  <div class="hero-eyebrow">Learn Options Trading</div>
+  <h1>Learn Options Trading <em style="white-space:nowrap">Step-by-Step</em></h1>
+  <p>Master options trading with beginner-friendly lessons, interactive charts, quizzes, and real-world examples designed to help you build confidence before risking real money.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+    <a class="btn-ghost" href="#categories">Explore Lessons</a>
+  </div>
+</section>
+
+<!-- OVERALL PROGRESS -->
+<div class="section-narrow reveal" style="padding-top:0;padding-bottom:0;">
+  <div class="overall-progress" id="overallProgress">
+    <div class="op-row">
+      <span class="op-label">Your Learning Path</span>
+      <span class="op-stat" id="opStat">0 of 5 lessons complete</span>
+    </div>
+    <div class="op-track"><div class="op-fill" id="opFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- CATEGORY GRID -->
+<section class="section" id="categories">
+  <div class="sec-label">Browse by Topic</div>
+  <h2 class="sec-title">Six Paths to Becoming a Better Options Trader</h2>
+  <p class="sec-sub">Start anywhere, or follow the path in order — from options basics through strategies, technical analysis, scalping, psychology, and broker selection.</p>
+
+  <div class="cat-grid">
+    <a class="cat-card reveal" href="/learn-options-trading/options-basics" style="--accent:var(--green);--accent-dim:var(--g-dim);--accent-glow:rgba(22,217,126,.18)" data-cat="options-basics">
+      <div class="cat-icon" aria-hidden="true">📘</div>
+      <h3>Options Basics</h3>
+      <p>Learn the fundamentals of options trading including calls, puts, contracts, expiration dates, and terminology.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/7 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/strategies" style="--accent:var(--blue);--accent-dim:var(--blue-dim);--accent-glow:rgba(59,130,246,.18)" data-cat="strategies">
+      <div class="cat-icon" aria-hidden="true">🎯</div>
+      <h3>Options Strategies</h3>
+      <p>Understand popular options strategies and when traders use them — covered calls, spreads, and risk management.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/technical-analysis" style="--accent:var(--gold);--accent-dim:var(--gold-dim);--accent-glow:rgba(245,166,35,.18)" data-cat="technical-analysis">
+      <div class="cat-icon" aria-hidden="true">📊</div>
+      <h3>Technical Analysis</h3>
+      <p>Learn how traders analyze charts, trends, and price movement — candlesticks, support/resistance, and indicators.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/6 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/scalping" style="--accent:var(--red);--accent-dim:var(--red-dim);--accent-glow:rgba(255,69,102,.18)" data-cat="scalping">
+      <div class="cat-icon" aria-hidden="true">⚡</div>
+      <h3>Options Scalping</h3>
+      <p>Learn short-term options trading concepts and how ScalpClock helps traders practice without risking real money.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/psychology" style="--accent:var(--purple);--accent-dim:var(--purple-dim);--accent-glow:rgba(167,139,250,.18)" data-cat="psychology">
+      <div class="cat-icon" aria-hidden="true">🧠</div>
+      <h3>Trading Psychology</h3>
+      <p>Develop the mindset and discipline needed to become a better trader — emotion control, routine, and patience.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/brokers" style="--accent:var(--green);--accent-dim:var(--g-dim);--accent-glow:rgba(22,217,126,.18)" data-cat="brokers">
+      <div class="cat-icon" aria-hidden="true">🏦</div>
+      <h3>Broker Guides</h3>
+      <p>Compare popular brokerages and learn what platforms offer, from beginner-friendly apps to professional tools.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span style="font-size:.68rem;color:var(--t55);font-weight:600;">Reviews &amp; comparisons</span></div>
+      </div>
+      <span class="cat-link">Compare Brokers <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+  </div>
+</section>
+
+<!-- LEARNING PATH -->
+<div class="alt-bg">
+  <section class="section reveal">
+    <div class="sec-label">Suggested Order</div>
+    <h2 class="sec-title">Your Learning Path</h2>
+    <p class="sec-sub">New to options? Follow this path from start to finish. Already know the basics? Jump straight to any category above.</p>
+    <div class="path-tracker" id="pathTracker">
+      <div class="path-step" data-cat="options-basics"><div class="path-dot">📘</div><div class="path-step-label">Options Basics</div></div>
+      <div class="path-step" data-cat="strategies"><div class="path-dot">🎯</div><div class="path-step-label">Strategies</div></div>
+      <div class="path-step" data-cat="technical-analysis"><div class="path-dot">📊</div><div class="path-step-label">Technical Analysis</div></div>
+      <div class="path-step" data-cat="scalping"><div class="path-dot">⚡</div><div class="path-step-label">Scalping</div></div>
+      <div class="path-step" data-cat="psychology"><div class="path-dot">🧠</div><div class="path-step-label">Psychology</div></div>
+      <div class="path-step" data-cat="brokers"><div class="path-dot">🏦</div><div class="path-step-label">Broker Guides</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- AUTHOR TRUST -->
+<section class="section-narrow reveal">
+  <div class="author-box">
+    <div class="author-avatar" aria-hidden="true">🎓</div>
+    <div>
+      <h3>ScalpClock Education Team</h3>
+      <p>ScalpClock creates educational resources designed to help traders understand options, technical analysis, and trading discipline. Every lesson is reviewed for accuracy and written to be usable by a complete beginner.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+  <h2>Ready to Start Learning?</h2>
+  <p>Every lesson here connects back to real tools — ScalpCharts, Chart Replay, and Exit Assistant — so you can turn what you read into practice.</p>
+  <div class="cta-btns">
+    <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+    <a class="btn-gold" href="/pricing">Explore ScalpClock PRO</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog/">Blog</a>
+      <a href="/trading-resources">Trading Resources</a>
+      <a href="/learn-options-trading">Learn Options Trading</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Daily Learn Hub</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:admin@scalpclock.com" style="color:inherit;text-decoration:underline;">admin@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<script src="/js/sc-learn-progress.js"></script>
+<script>
+document.body.style.visibility='visible';
+
+// Nav drawer
+function toggleDrawer(){
+  const open = document.getElementById('navDrawer').classList.toggle('open');
+  document.querySelector('.ham').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeDrawer(){
+  document.getElementById('navDrawer').classList.remove('open');
+  document.querySelector('.ham').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.ham'))closeDrawer();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
+
+// Scroll reveal
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(el=>el.classList.add('in'));return;}
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in');io.unobserve(entry.target);}
+    });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(el=>io.observe(el));
+})();
+
+// Populate progress from SC_LEARN (see /js/sc-learn-progress.js)
+(function(){
+  if (typeof SC_LEARN === 'undefined') return;
+  const totals = SC_LEARN.CATEGORY_TOTALS;
+  const readByCategory = SC_LEARN.readByCategory();
+  let doneTotal = 0, availableTotal = 0;
+  document.querySelectorAll('.cat-card[data-cat]').forEach(card => {
+    const cat = card.dataset.cat;
+    if (cat === 'brokers') return; // brokers links out to /trading-resources, no local progress
+    const total = totals[cat] || 0;
+    const read = readByCategory[cat] || 0;
+    availableTotal += total;
+    doneTotal += read;
+    const pct = total ? Math.round((read/total)*100) : 0;
+    const fill = card.querySelector('.cat-progress-fill');
+    const text = card.querySelector('.cat-progress-text');
+    if (fill) fill.style.width = pct + '%';
+    if (text) text.textContent = `${read}/${total} read`;
+  });
+
+  const opFill = document.getElementById('opFill');
+  const opStat = document.getElementById('opStat');
+  const availableArticles = SC_LEARN.AVAILABLE_ARTICLES;
+  const readCount = SC_LEARN.getReadArticles().filter(s => availableArticles.includes(s)).length;
+  const pct = availableArticles.length ? Math.round((readCount/availableArticles.length)*100) : 0;
+  if (opFill) opFill.style.width = pct + '%';
+  if (opStat) opStat.textContent = `${readCount} of ${availableArticles.length} lessons complete`;
+
+  // Path tracker: mark a category "done" once its one available flagship
+  // article is read (path visual is designed to scale as more articles
+  // per category go live — "done" simply means "no unread articles in
+  // this category among the ones currently published").
+  let reachedCurrent = false;
+  document.querySelectorAll('.path-step[data-cat]').forEach(step => {
+    const cat = step.dataset.cat;
+    if (cat === 'brokers') return;
+    const total = totals[cat] || 0;
+    const read = readByCategory[cat] || 0;
+    if (total > 0 && read >= Math.min(1, total)) {
+      step.classList.add('done');
+    } else if (!reachedCurrent) {
+      step.classList.add('current');
+      reachedCurrent = true;
+    }
+  });
+})();
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+</script>
+</body>
+</html>
