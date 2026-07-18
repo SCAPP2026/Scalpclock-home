@@ -298,6 +298,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .btn-modal-submit:disabled{opacity:.5;cursor:not-allowed;}
   .btn-modal-cancel{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:11px 18px;border-radius:9px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;transition:.15s;}
   .btn-modal-cancel:hover{border-color:var(--t45);color:var(--text);}
+  .checklist-items{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+  .checklist-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:11px;cursor:pointer;transition:border-color .15s,background .15s;}
+  .checklist-item:hover{border-color:var(--line-strong);background:var(--panel-alt);}
+  .checklist-item:has(.checklist-check:checked){border-color:var(--green);background:var(--green-soft);}
+  .checklist-check{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--green);cursor:pointer;}
+  .checklist-item span{font-size:.85rem;color:var(--t65);line-height:1.5;}
+  .checklist-item:has(.checklist-check:checked) span{color:var(--text);}
+  .checklist-item strong{color:inherit;}
 
   /* ── EARNINGS CALENDAR ── */
   .earnings-wrap{margin-top:32px;}
@@ -697,7 +705,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="section-title" style="margin:0">Trade Journal</div>
     <div style="display:flex;gap:8px;align-items:center">
       <button class="earnings-refresh" onclick="loadAllTrades()">↻ Refresh</button>
-      <button class="btn-log-trade" onclick="openLogModal()">+ Log New Trade</button>
+      <button class="btn-log-trade" onclick="openPreTradeChecklist()">+ Log New Trade</button>
     </div>
   </div>
 
@@ -825,6 +833,36 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <span class="ob-dot"></span><span class="ob-dot"></span><span class="ob-dot"></span><span class="ob-dot"></span>
       </div>
       <div id="obBody"></div>
+    </div>
+  </div>
+
+  <!-- Pre-Trade Checklist -->
+  <div id="checklistModal" class="modal-overlay" style="display:none">
+    <div class="modal-card">
+      <div class="modal-title">Pre-Trade <span>Checklist</span></div>
+      <p class="modal-note" style="margin-bottom:18px">Answer honestly before every trade — this takes 15 seconds and catches most of the mistakes covered in our <a href="/learn-options-trading/psychology" style="color:var(--green-ink);text-decoration:underline">Trading Psychology</a> guides.</p>
+      <div class="checklist-items" id="checklistItems">
+        <label class="checklist-item">
+          <input type="checkbox" class="checklist-check" onchange="updateChecklistState()">
+          <span>I have a <strong>specific reason</strong> for this entry — not FOMO or chasing a move that already happened.</span>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="checklist-check" onchange="updateChecklistState()">
+          <span>My <strong>position size</strong> fits my risk plan — I'm fully comfortable losing this entire premium.</span>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="checklist-check" onchange="updateChecklistState()">
+          <span>I've already decided my <strong>profit target and stop-loss</strong> — not planning to figure that out mid-trade.</span>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="checklist-check" onchange="updateChecklistState()">
+          <span>I am <strong>not</strong> trying to win back a previous loss with this trade.</span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeChecklistModal()">Cancel</button>
+        <button class="btn-modal-submit" id="checklist-btn" onclick="passChecklistAndLogTrade()" disabled>Continue to Trade Entry</button>
+      </div>
     </div>
   </div>
 
@@ -1423,6 +1461,26 @@ function fmtContract(t) {
 }
 
 /* ── Log Trade Modal ── */
+/* ── Pre-Trade Checklist — mandatory gate before every logged trade,
+   live or simulated. Resets every time so it can't be "remembered"
+   and skipped — the whole point is a 15-second honesty check before
+   money (real or practice) goes on the line. ── */
+function openPreTradeChecklist() {
+  document.querySelectorAll('.checklist-check').forEach(cb => cb.checked = false);
+  updateChecklistState();
+  document.getElementById('checklistModal').style.display = 'flex';
+}
+function closeChecklistModal() { document.getElementById('checklistModal').style.display = 'none'; }
+function updateChecklistState() {
+  const boxes = document.querySelectorAll('.checklist-check');
+  const allChecked = Array.from(boxes).every(cb => cb.checked);
+  document.getElementById('checklist-btn').disabled = !allChecked;
+}
+function passChecklistAndLogTrade() {
+  closeChecklistModal();
+  openLogModal();
+}
+
 function openLogModal() {
   document.getElementById('lt-symbol').value   = '';
   document.getElementById('lt-entry').value    = '';
