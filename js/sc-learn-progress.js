@@ -29,10 +29,33 @@
   // picks it up automatically everywhere (hub + category pages).
   const ARTICLE_CATEGORY = {
     'options-basics/what-is-options-trading': 'options-basics',
+    'options-basics/how-do-options-work': 'options-basics',
+    'options-basics/calls-vs-puts-explained': 'options-basics',
+    'options-basics/stock-trading-vs-options-trading': 'options-basics',
+    'options-basics/how-much-money-do-you-need-to-start-trading-options': 'options-basics',
+    'options-basics/can-you-make-money-trading-options': 'options-basics',
+    'options-basics/common-mistakes-beginner-options-traders-make': 'options-basics',
     'strategies/best-options-strategies-for-beginners': 'strategies',
+    'strategies/covered-calls-explained': 'strategies',
+    'strategies/bull-call-spreads-explained': 'strategies',
+    'strategies/bear-put-spreads-explained': 'strategies',
+    'strategies/risk-management-in-options-trading': 'strategies',
     'technical-analysis/how-to-read-candlestick-charts': 'technical-analysis',
+    'technical-analysis/support-and-resistance-explained': 'technical-analysis',
+    'technical-analysis/best-indicators-for-options-trading': 'technical-analysis',
+    'technical-analysis/vwap-trading-strategy-explained': 'technical-analysis',
+    'technical-analysis/moving-averages-explained': 'technical-analysis',
+    'technical-analysis/how-to-identify-trend-reversals': 'technical-analysis',
     'scalping/what-is-options-scalping': 'scalping',
+    'scalping/how-options-scalping-works': 'scalping',
+    'scalping/day-trading-vs-options-scalping': 'scalping',
+    'scalping/risk-management-for-scalpers': 'scalping',
+    'scalping/how-to-practice-options-scalping-without-losing-money': 'scalping',
     'psychology/why-most-options-traders-fail': 'psychology',
+    'psychology/trading-discipline-explained': 'psychology',
+    'psychology/controlling-emotions-while-trading': 'psychology',
+    'psychology/creating-a-trading-routine': 'psychology',
+    'psychology/the-importance-of-patience-in-trading': 'psychology',
   };
 
   const AVAILABLE_ARTICLES = Object.keys(ARTICLE_CATEGORY);
