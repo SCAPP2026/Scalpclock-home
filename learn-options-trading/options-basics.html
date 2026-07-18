@@ -156,6 +156,18 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Options Basics \u2014 Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/options-basics", "description": "Learn options trading basics: calls, puts, contracts, expiration dates, and the terminology every beginner options trader needs to know.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "What Is Options Trading? A Beginner's Guide", "url": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading"}, {"@type": "ListItem", "position": 2, "name": "How Do Options Work?"}, {"@type": "ListItem", "position": 3, "name": "Calls vs Puts Explained"}, {"@type": "ListItem", "position": 4, "name": "Stock Trading vs Options Trading"}, {"@type": "ListItem", "position": 5, "name": "How Much Money Do You Need To Start Trading Options?"}, {"@type": "ListItem", "position": 6, "name": "Can You Make Money Trading Options?"}, {"@type": "ListItem", "position": 7, "name": "Common Mistakes Beginner Options Traders Make"}]}}</script>
 </head>
@@ -179,7 +191,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     </a>
     <nav class="nav-links">
       <a href="/">Home</a>
-      <a href="/learn-options-trading" class="active">Learn Options Trading</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
@@ -195,7 +214,10 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <a href="/learn-options-trading" class="active" onclick="closeDrawer()">Learn Options Trading</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
@@ -302,6 +324,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <script src="/js/sc-learn-progress.js"></script>
 <script>
 document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
 
 function toggleDrawer(){
   const open = document.getElementById('navDrawer').classList.toggle('open');

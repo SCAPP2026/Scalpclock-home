@@ -189,6 +189,18 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Why Most Options Traders Fail", "description": "Most new options traders lose money \u2014 not because the strategies don't work, but for predictable, avoidable reasons. Here's what actually causes most traders to fail.", "url": "https://scalpclock.com/learn-options-trading/psychology/why-most-options-traders-fail", "datePublished": "2026-07-17", "dateModified": "2026-07-17", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/psychology/why-most-options-traders-fail"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What percentage of options traders lose money?", "acceptedAnswer": {"@type": "Answer", "text": "Options trading, like other forms of active trading, has a high rate of unprofitable participants, particularly among beginners who trade without adequate preparation. The specific percentage varies by study and market conditions, but the consistent pattern is that education, risk management, and discipline are the biggest differentiators between traders who succeed and those who don't."}}, {"@type": "Question", "name": "What is the biggest mistake new options traders make?", "acceptedAnswer": {"@type": "Answer", "text": "Overleveraging \u2014 putting too large a percentage of an account into a single trade \u2014 is one of the most damaging mistakes, because it turns a single bad trade into a potentially account-ending event rather than a manageable, recoverable loss."}}, {"@type": "Question", "name": "How do I stop emotional trading?", "acceptedAnswer": {"@type": "Answer", "text": "Having a written trading plan with a defined entry, profit target, and stop-loss before you enter a position removes much of the in-the-moment decision-making where emotion tends to take over. Tools like ScalpClock's Exit Assistant are built specifically to help define that plan ahead of time."}}, {"@type": "Question", "name": "Is options trading gambling?", "acceptedAnswer": {"@type": "Answer", "text": "Options trading involves real risk and can be used in a gambling-like way if approached without a plan, education, or risk management \u2014 but it can also be approached as a disciplined, analytical activity, similar to any other form of active trading. The difference lies almost entirely in preparation and discipline, not the instrument itself."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Trading Psychology", "item": "https://scalpclock.com/learn-options-trading/psychology"}, {"@type": "ListItem", "position": 4, "name": "Why Most Options Traders Fail", "item": "https://scalpclock.com/learn-options-trading/psychology/why-most-options-traders-fail"}]}]}</script>
 </head>
@@ -211,7 +223,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
     </a>
     <nav class="nav-links">
       <a href="/">Home</a>
-      <a href="/learn-options-trading" class="active">Learn Options Trading</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
@@ -227,7 +246,10 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <a href="/learn-options-trading" class="active" onclick="closeDrawer()">Learn Options Trading</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
@@ -424,6 +446,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <script src="/js/sc-learn-progress.js"></script>
 <script>
 document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
 
 function toggleDrawer(){
   const open = document.getElementById('navDrawer').classList.toggle('open');

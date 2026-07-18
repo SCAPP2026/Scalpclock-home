@@ -491,6 +491,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.85rem;color:rgba(13,26,19,.65);background:none;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#0d1a13;background:rgba(22,217,126,.12);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:#ffffff;border:1px solid rgba(13,26,19,.12);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(13,26,19,.14);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(13,26,19,.65);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#0d1a13;background:rgba(22,217,126,.12);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0a7a4a;padding:14px 16px 2px;}
 </style>
 </head>
 <body>
@@ -512,13 +524,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </a>
     <div class="nav-page-links">
       <a href="/">Home</a>
-      <a href="/learn-options-trading">Learn Options Trading</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
       <a href="/about">About</a>
-      <a href="/learn">Learn</a>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="/blog/">Blog</a>
       <a href="/trading-resources">Trading Resources</a>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard" class="active">Dashboard</a>
@@ -534,13 +551,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeNavDrawer()">Home</a>
-  <a href="/learn-options-trading" onclick="closeNavDrawer()">Learn Options Trading</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeNavDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeNavDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeNavDrawer()" style="padding-left:28px">Blog</a>
   <a href="/about" onclick="closeNavDrawer()">About</a>
-  <a href="/learn" onclick="closeNavDrawer()">Learn</a>
   <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
-  <a href="/blog/" onclick="closeNavDrawer()">Blog</a>
   <a href="/trading-resources" onclick="closeNavDrawer()">Trading Resources</a>
   <a href="/pricing" onclick="closeNavDrawer()">Pricing</a>
   <a href="/dashboard" class="active" onclick="closeNavDrawer()">Dashboard</a>
@@ -1903,6 +1921,17 @@ async function signOut() {
 
 function toggleNavDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
 function closeNavDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
 document.addEventListener('click',function(e){
   const d=document.getElementById('navDrawer');
   if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))d.classList.remove('open');

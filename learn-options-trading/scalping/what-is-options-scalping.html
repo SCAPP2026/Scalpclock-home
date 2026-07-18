@@ -189,6 +189,18 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "What Is Options Scalping?", "description": "Options scalping explained: what it is, how it differs from day trading and swing trading, the tools scalpers rely on, and how to practice safely.", "url": "https://scalpclock.com/learn-options-trading/scalping/what-is-options-scalping", "datePublished": "2026-07-17", "dateModified": "2026-07-17", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/scalping/what-is-options-scalping"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is options scalping profitable?", "acceptedAnswer": {"@type": "Answer", "text": "Options scalping can be profitable for traders who have built strong chart-reading skills, fast decision-making, and disciplined risk management \u2014 but it's also one of the harder trading styles to execute consistently, and many beginners lose money attempting it without enough practice first."}}, {"@type": "Question", "name": "How is options scalping different from day trading?", "acceptedAnswer": {"@type": "Answer", "text": "Day trading means opening and closing positions within a single day without holding overnight. Scalping is a faster subset of day trading, where positions are typically held for just minutes, with the goal of capturing small, quick price movements repeatedly throughout a session."}}, {"@type": "Question", "name": "What timeframe is best for options scalping?", "acceptedAnswer": {"@type": "Answer", "text": "Scalpers typically watch very short timeframes \u2014 often 1-minute or 5-minute charts \u2014 since they need to react to price movement as it happens rather than waiting for a broader trend to develop."}}, {"@type": "Question", "name": "Can beginners practice options scalping safely?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, by practicing on historical data with tools like ScalpClock's Chart Replay before using real money. This builds the pattern-recognition and decision-making speed scalping requires, without the financial risk of practicing on a live account."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Scalping", "item": "https://scalpclock.com/learn-options-trading/scalping"}, {"@type": "ListItem", "position": 4, "name": "What Is Options Scalping?", "item": "https://scalpclock.com/learn-options-trading/scalping/what-is-options-scalping"}]}]}</script>
 </head>
@@ -211,7 +223,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
     </a>
     <nav class="nav-links">
       <a href="/">Home</a>
-      <a href="/learn-options-trading" class="active">Learn Options Trading</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
@@ -227,7 +246,10 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <a href="/learn-options-trading" class="active" onclick="closeDrawer()">Learn Options Trading</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
@@ -430,6 +452,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <script src="/js/sc-learn-progress.js"></script>
 <script>
 document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
 
 function toggleDrawer(){
   const open = document.getElementById('navDrawer').classList.toggle('open');
