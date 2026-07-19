@@ -1,10 +1,14 @@
-const CACHE = 'sc-v31';
+const CACHE = 'sc-v32';
 const STATIC = [
   '/',
   '/index.html',
   '/offline.html',
   '/login.html',
   '/dashboard.html',
+  '/signals.html',
+  '/journal.html',
+  '/news.html',
+  '/settings.html',
   '/exitassistant.html',
   '/scalpchart.html',
   '/pricing.html',

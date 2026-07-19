@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Market News</title>
+<meta name="description" content="Live market-moving news headlines from Massive and Finnhub, filterable by source, with ticker tags.">
+<link rel="canonical" href="https://scalpclock.com/news">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock — Market News">
+<meta property="og:description" content="Live market-moving news headlines from Massive and Finnhub, filterable by source, with ticker tags.">
+<meta property="og:url" content="https://scalpclock.com/news">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock — Market News">
+<meta name="twitter:description" content="Live market-moving news headlines from Massive and Finnhub, filterable by source, with ticker tags.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{ --max:1000px; }
+*{box-sizing:border-box;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.08),transparent 68%),
+  linear-gradient(var(--line) 1px,transparent 1px),
+  linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);
+  background:rgba(247,249,247,.85);border-bottom:1px solid var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green-ink);opacity:.9;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-page-links{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;}
+.nav-page-links a{font-size:.85rem;color:var(--t65);padding:6px 12px;border-radius:8px;text-decoration:none;transition:color .15s,background .15s;}
+.nav-page-links a:hover,.nav-page-links a.active{color:var(--text);background:var(--green-soft);}
+.nav-page-links a.active{color:var(--green-ink);}
+.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--t65);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(247,249,247,.98);backdrop-filter:blur(16px);z-index:65;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer.open{display:flex;transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t65);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);text-decoration:none;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--green-soft);}
+.nav-drawer a.active{color:var(--green-ink);}
+@media(max-width:600px){.nav-page-links{display:none;}.nav-ham{display:flex;}}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-email{font-size:.82rem;color:var(--t65);font-family:var(--mono);}
+.btn-signout{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:7px 16px;
+  border-radius:8px;background:transparent;border:1px solid var(--line-strong);
+  color:var(--t65);cursor:pointer;transition:.15s;}
+.btn-signout:hover{border-color:var(--green);color:var(--green-ink);}
+
+/* MAIN */
+.shell{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:40px 24px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--t65);text-decoration:none;margin-bottom:18px;transition:.15s;}
+.back-link:hover{color:var(--green-ink);}
+.welcome{margin-bottom:32px;}
+.welcome h1{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--text);}
+.welcome h1 span{color:var(--green-ink);}
+.welcome p{color:var(--t65);margin-top:8px;font-size:.95rem;}
+.section-title{font-family:var(--disp);font-weight:700;font-size:1.2rem;margin-bottom:16px;color:var(--t85);}
+
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* NEWS FEED */
+.news-wrap{margin-top:0;}
+.news-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.news-refresh{background:transparent;border:1px solid var(--line-strong);color:var(--t65);font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:var(--disp);transition:.15s;}
+.news-refresh:hover{color:var(--text);border-color:var(--t45);}
+.news-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.news-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;letter-spacing:.07em;padding:5px 14px;border-radius:20px;border:1px solid var(--line);color:var(--t65);background:transparent;cursor:pointer;transition:.15s;}
+.news-pill:hover{color:var(--text);border-color:var(--t45);}
+.news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media(max-width:680px){.news-grid{grid-template-columns:1fr;}}
+.news-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;transition:.18s;text-decoration:none;color:var(--text);}
+.news-card:hover{border-color:rgba(13,26,19,.25);transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.news-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.news-source{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.07em;padding:2px 9px;border-radius:4px;}
+.news-time{font-family:var(--mono);font-size:.65rem;color:var(--t45);margin-left:auto;}
+.news-title{font-size:.85rem;font-weight:600;color:var(--text);line-height:1.45;}
+.news-summary{font-size:.76rem;color:var(--t65);line-height:1.55;}
+.news-tickers{display:flex;flex-wrap:wrap;gap:4px;}
+.news-ticker{font-family:var(--mono);font-size:.58rem;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--green-soft);color:var(--green-ink);border:1px solid rgba(22,217,126,.25);}
+.news-loading,.news-empty{text-align:center;padding:24px 0;color:var(--t45);font-family:var(--mono);font-size:.78rem;grid-column:1/-1;}
+.news-toggle{grid-column:1/-1;background:var(--panel-alt);border:1px solid var(--line);border-radius:10px;color:var(--green-ink);font-family:var(--disp);font-weight:700;font-size:.82rem;padding:12px 16px;cursor:pointer;transition:.15s;text-align:center;}
+.news-toggle:hover{background:var(--green-soft);}
+
+/* NAV DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.85rem;color:rgba(13,26,19,.65);background:none;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#0d1a13;background:rgba(22,217,126,.12);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:#ffffff;border:1px solid rgba(13,26,19,.12);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(13,26,19,.14);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(13,26,19,.65);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#0d1a13;background:rgba(22,217,126,.12);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0a7a4a;padding:14px 16px 2px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <div class="nav-page-links">
+      <a href="/">Home</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+        </div>
+      </div>
+      <a href="/about">About</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/trading-resources">Trading Resources</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-dropdown" id="userDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleUserDropdown(event)" aria-haspopup="true" aria-expanded="false"><span class="nav-email" id="userEmail">Loading...</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu" style="right:0;left:auto;">
+          <a href="/dashboard">Dashboard</a>
+          <a href="/settings">Settings</a>
+          <a href="#" onclick="signOut();return false;">Sign Out</a>
+        </div>
+      </div>
+    </div>
+    <button class="nav-ham" onclick="toggleNavDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeNavDrawer()">Home</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeNavDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeNavDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeNavDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/about" onclick="closeNavDrawer()">About</a>
+  <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
+  <a href="/trading-resources" onclick="closeNavDrawer()">Trading Resources</a>
+  <a href="/pricing" onclick="closeNavDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeNavDrawer()">Dashboard</a>
+  <div class="drawer-group-label">Account</div>
+  <a href="/settings" onclick="closeNavDrawer()" style="padding-left:28px">Settings</a>
+  <a href="#" onclick="signOut();return false;" style="padding-left:28px">Sign Out</a>
+</div>
+
+<div class="shell">
+
+  <a class="back-link" href="/dashboard">&larr; Dashboard</a>
+
+  <div class="welcome">
+    <h1>📰 Market <span>News</span></h1>
+    <p>Market-moving headlines, filterable by source, with tagged tickers so you can spot what's driving the tape.</p>
+  </div>
+
+  <div class="news-wrap" id="newsWrap">
+    <div class="news-header">
+      <div class="section-title" style="margin:0">Latest Headlines</div>
+      <button class="news-refresh" onclick="loadNews()">↻ Refresh</button>
+    </div>
+    <div class="news-filters" id="newsFilters">
+      <button class="news-pill" data-src="all" onclick="filterNews('all')">ALL</button>
+      <button class="news-pill" data-src="polygon" onclick="filterNews('polygon')" style="--nc:#7c5cd6">MASSIVE</button>
+      <button class="news-pill" data-src="finnhub" onclick="filterNews('finnhub')" style="--nc:#2f6fd6">FINNHUB</button>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <div class="news-loading">Loading market news…</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
+
+async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login'; return; }
+  document.getElementById('userEmail').textContent = session.user.email || '';
+}
+
+var _newsArticles = [];
+var _newsFilter   = 'all';
+var _newsExpanded = false;
+var NEWS_PREVIEW_COUNT = 12;
+var NEWS_COLORS = { polygon: '#7c5cd6', finnhub: '#2f6fd6', all: 'var(--green-ink)' };
+
+function toggleNewsExpanded() {
+  _newsExpanded = !_newsExpanded;
+  renderNewsGrid();
+}
+
+function newsEsc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function newsAgo(iso) {
+  var s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60)    return 'just now';
+  if (s < 3600)  return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+
+function renderNewsGrid() {
+  var grid = document.getElementById('newsGrid');
+  if (!grid) return;
+  var list = _newsFilter === 'all' ? _newsArticles : _newsArticles.filter(function (a) { return a.source === _newsFilter; });
+  if (!list.length) {
+    grid.innerHTML = '<div class="news-empty">No articles from this source yet — check back soon.</div>';
+    return;
+  }
+  var visible = _newsExpanded ? list.slice(0, 20) : list.slice(0, NEWS_PREVIEW_COUNT);
+  var hidden  = Math.min(list.length, 20) - visible.length;
+  var cardsHtml = visible.map(function (a) {
+    var c   = a.color || NEWS_COLORS[a.source] || 'var(--t45)';
+    var bg  = c + '18';
+    var bd  = c + '44';
+    var tix = (a.tickers || []).slice(0, 5)
+      .map(function (t) { return '<span class="news-ticker">' + newsEsc(t) + '</span>'; }).join('');
+    var sum = (a.summary || '').slice(0, 130);
+    if (a.summary && a.summary.length > 130) sum += '…';
+    return '<a class="news-card" href="' + newsEsc(a.url) + '" target="_blank" rel="noopener noreferrer">' +
+      '<div class="news-meta">' +
+        '<span class="news-source" style="background:' + bg + ';color:' + c + ';border:1px solid ' + bd + '">' +
+          newsEsc(a.sourceLabel) +
+        '</span>' +
+        '<span class="news-time">' + newsAgo(a.publishedAt) + '</span>' +
+      '</div>' +
+      '<div class="news-title">' + newsEsc(a.title) + '</div>' +
+      (sum ? '<div class="news-summary">' + newsEsc(sum) + '</div>' : '') +
+      (tix ? '<div class="news-tickers">' + tix + '</div>' : '') +
+    '</a>';
+  }).join('');
+
+  var toggleHtml = list.length > NEWS_PREVIEW_COUNT
+    ? '<button class="news-toggle" onclick="toggleNewsExpanded()">' +
+        (_newsExpanded ? 'Show Fewer ▴' : 'Show More Articles ▾ (' + hidden + ' more)') +
+      '</button>'
+    : '';
+
+  grid.innerHTML = cardsHtml + toggleHtml;
+}
+
+window.filterNews = function (src) {
+  _newsFilter = src;
+  _newsExpanded = false;
+  document.querySelectorAll('.news-pill').forEach(function (p) {
+    var match = p.dataset.src === src;
+    var c = NEWS_COLORS[p.dataset.src] || 'var(--green-ink)';
+    if (match) {
+      p.style.color       = c;
+      p.style.borderColor = c;
+      p.style.background  = c + '18';
+    } else {
+      p.style.color       = '';
+      p.style.borderColor = '';
+      p.style.background  = '';
+    }
+  });
+  renderNewsGrid();
+};
+
+async function loadNews() {
+  var grid = document.getElementById('newsGrid');
+  if (grid) grid.innerHTML = '<div class="news-loading">Loading market news…</div>';
+  try {
+    const res  = await fetch('/api/news');
+    const data = await res.json();
+    _newsArticles = data.articles || [];
+    renderNewsGrid();
+  } catch {
+    if (grid) grid.innerHTML = '<div class="news-empty">Unable to load news right now.</div>';
+  }
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = '/';
+}
+
+function toggleNavDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
+function closeNavDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+function toggleUserDropdown(e){
+  e.stopPropagation();
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const ud=document.getElementById('userDropdown');
+  if(ud&&ud.classList.contains('open')&&!ud.contains(e.target))ud.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const ud=document.getElementById('userDropdown');if(ud)ud.classList.remove('open');
+  }
+});
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))d.classList.remove('open');
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+init();
+loadNews();
+</script>
+</body>
+</html>
