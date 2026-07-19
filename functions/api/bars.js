@@ -37,10 +37,18 @@ export async function onRequest(context) {
       + `&start=${encodeURIComponent(startISO)}`
       + '&limit=100&sort=desc&feed=iex';
 
-    const res  = await fetch(stockUrl, { headers });
-    const data = await res.json();
+    const res     = await fetch(stockUrl, { headers });
+    const rawBody = await res.text();
+    // Alpaca error bodies (rate limit, bad key, upstream outage — or, seen in
+    // production, an HTML error page from an intermediary when the key is
+    // rejected) aren't guaranteed to be valid JSON. Parsing unconditionally
+    // with res.json() throws on those, gets caught by the outer catch below,
+    // and reports a useless "Unexpected token '<'" instead of what actually
+    // went wrong — parse defensively so the real cause survives.
+    let data = null;
+    try { data = JSON.parse(rawBody); } catch { /* non-JSON body handled below */ }
 
-    if (!res.ok) {
+    if (!res.ok || !data) {
       // Alpaca error bodies (rate limit, bad key, upstream outage) don't have
       // a .bars field, so without this check they silently became candles:[]
       // wrapped in an HTTP 200 — indistinguishable client-side from "market
@@ -50,8 +58,11 @@ export async function onRequest(context) {
       // those with its own generic error page even for a Function's own
       // Response, which would silently swallow this message right back out
       // (res.json() on the client would just throw on the non-JSON page).
-      console.error('Alpaca bars error:', res.status, JSON.stringify(data));
-      return new Response(JSON.stringify({ error: data.message || `Market data provider returned ${res.status}` }), {
+      console.error('Alpaca bars error:', res.status, rawBody.slice(0, 500));
+      const message = data?.message || (res.status === 401 || res.status === 403
+        ? 'Market data provider rejected our credentials — check ALPACA_KEY_ID/ALPACA_SECRET.'
+        : `Market data provider returned ${res.status}`);
+      return new Response(JSON.stringify({ error: message }), {
         status: 400,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
