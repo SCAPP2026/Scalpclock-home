@@ -176,7 +176,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
     </a>
     <div class="nav-page-links">
-      <a href="/">Home</a>
+      <a href="/dashboard">Dashboard</a>
       <div class="nav-dropdown" id="learnDropdown">
         <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
@@ -191,7 +191,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
       <a href="/pricing">Pricing</a>
-      <a href="/dashboard">Dashboard</a>
     </div>
     <div class="nav-right">
       <div class="nav-dropdown" id="userDropdown">
@@ -209,7 +208,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 </nav>
 <div class="nav-drawer" id="navDrawer">
-  <a href="/" onclick="closeNavDrawer()">Home</a>
+  <a href="/dashboard" onclick="closeNavDrawer()">Dashboard</a>
   <div class="drawer-group-label">Learn</div>
   <a href="/learn" onclick="closeNavDrawer()" style="padding-left:28px">Daily Lessons</a>
   <a href="/learn-options-trading" onclick="closeNavDrawer()" style="padding-left:28px">Guides</a>
@@ -220,7 +219,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
   <a href="/pricing" onclick="closeNavDrawer()">Pricing</a>
-  <a href="/dashboard" onclick="closeNavDrawer()">Dashboard</a>
   <div class="drawer-group-label">Account</div>
   <a href="/settings" class="active" onclick="closeNavDrawer()" style="padding-left:28px">Settings</a>
   <a href="#" onclick="signOut();return false;" style="padding-left:28px">Sign Out</a>

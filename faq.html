@@ -383,5 +383,26 @@ document.addEventListener('click',function(e){const d=document.getElementById('n
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 <p style="text-align:center;padding:16px 20px 8px;font-size:.9rem;color:#7a9bb5;">Still have a question? Email us at <a href="mailto:admin@scalpclock.com" style="color:#16d97e;text-decoration:none;">admin@scalpclock.com</a></p>
 <p style="text-align:center;padding:8px 20px 40px;font-size:11px;color:#3a4f6a;line-height:1.7">&copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('nav a[href="/"], .nav-drawer a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === 'Home') {
+        a.textContent = 'Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('nav a[href="/dashboard"]:not([data-home-swap]), .nav-drawer a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>
