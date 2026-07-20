@@ -1083,9 +1083,12 @@ function renderWatchStep(body,footer) {
   footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" onclick="nextStep()">Next: Practice →</button>`;
 }
 
+const DEFAULT_PRACTICE={scenario:'Based on what you learned, which action would you take?',options:['Buy','Sell','Hold'],correct:0,feedback:['Correct!','Not quite.','Not quite.']};
+function getPracticeData(l){return l.practice||DEFAULT_PRACTICE;}
+
 function renderPracticeStep(body,footer) {
   const l=modalLesson;
-  const p=l.practice||{scenario:'Based on what you learned, which action would you take?',options:['Buy','Sell','Hold'],correct:0,feedback:['Correct!','Not quite.','Not quite.']};
+  const p=getPracticeData(l);
   practiceAnswered=false;
   body.innerHTML=`<div class="step-tag">Step 3 of 5 · Practice</div>
 <div class="step-title">Apply It</div>
@@ -1100,7 +1103,7 @@ function renderPracticeStep(body,footer) {
 function answerPractice(idx) {
   if(practiceAnswered)return;
   practiceAnswered=true;
-  const p=modalLesson.practice;
+  const p=getPracticeData(modalLesson);
   document.querySelectorAll('.practice-btn').forEach((b,i)=>b.classList.add(i===p.correct?'correct':'wrong'));
   const fb=document.getElementById('pfb');
   fb.className='practice-fb '+(idx===p.correct?'correct':'wrong');
