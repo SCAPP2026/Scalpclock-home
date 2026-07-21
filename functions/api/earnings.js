@@ -7,8 +7,8 @@ export async function onRequest(context) {
 
   // Date range: today through next 10 trading days
   const today = new Date();
-  const from  = fmt(today);
-  const to    = fmt(new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000));
+  const from  = url.searchParams.get('from') || fmt(today);
+  const to    = url.searchParams.get('to') || fmt(new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000));
 
   const [finn, fmp, names] = await Promise.allSettled([
     fetchFinnhub(env.FINNHUB_KEY, from, to),
