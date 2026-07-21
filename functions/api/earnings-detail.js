@@ -15,34 +15,32 @@ export async function onRequest(context) {
   const url    = new URL(request.url);
   const symbol = (url.searchParams.get('symbol') || '').toUpperCase().replace(/[^A-Z0-9.\-]/g, '').slice(0, 10);
   if (!symbol) return json({ error: 'symbol required' }, 400);
-  const debug = url.searchParams.get('debug') === '1';
 
   try {
-    return await handleDetail(env, symbol, debug);
+    return await handleDetail(env, symbol);
   } catch (e) {
     console.error('earnings-detail fatal:', e.message);
     return json({ symbol, error: `Internal error: ${e.message}` }, 200);
   }
 }
 
-async function handleDetail(env, symbol, debug) {
+async function handleDetail(env, symbol) {
   const out = { symbol, lastEarnings: null };
 
   if (!env.FINNHUB_KEY) return json(out, 200);
 
   // /stock/earnings gives real actual/estimate EPS but only the fiscal
   // *quarter-end* date in `period` — not the date the company actually
-  // reported (companies report weeks after quarter-end). Using `period`
-  // directly as the report date pointed the price-reaction lookup at a
-  // random ordinary trading day near quarter-end instead of the real
-  // earnings-day move.
-  //
-  // /calendar/earnings has the real report `date` + `hour` (bmo/amc), but
-  // its `symbol=` filter returns an empty result on this API plan (verified
-  // via ?debug=1 — status 200, earningsCalendar: []), so instead of filtering
-  // server-side we fetch a date-bounded *unfiltered* calendar window (just
-  // after the known quarter-end, when this company would plausibly have
-  // reported) and filter for the symbol ourselves.
+  // reported (companies report weeks after quarter-end). /calendar/earnings
+  // has the real report date + bmo/amc timing, but on this API plan it
+  // returns zero rows for any *past* date range (verified directly — even an
+  // unfiltered historical window comes back empty), so it can't be used to
+  // recover the true report date. Instead, findReaction() below scans Alpaca
+  // daily bars across the plausible post-quarter-end reporting window and
+  // treats the single largest one-day move as the report day — real earnings
+  // reactions are reliably the biggest outlier in that window, so this finds
+  // both a much more accurate report date AND the actual reaction size,
+  // without needing the report date up front.
   const today = new Date().toISOString().slice(0, 10);
 
   const histRes = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol}&token=${env.FINNHUB_KEY}`);
@@ -56,21 +54,6 @@ async function handleDetail(env, symbol, debug) {
   if (!pastQuarters.length) return json(out, 200);
   const quarter = pastQuarters[0];
 
-  // Reporting lag is almost always within ~10 weeks of quarter-end.
-  const calFrom = quarter.period;
-  const calTo   = new Date(new Date(quarter.period).getTime() + 70 * 86400000).toISOString().slice(0, 10);
-  const calRes  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?from=${calFrom}&to=${calTo}&token=${env.FINNHUB_KEY}`);
-  const calData = await calRes.json().catch(() => null);
-  const cal     = Array.isArray(calData?.earningsCalendar) ? calData.earningsCalendar : [];
-  const match   = cal.find(e => e.symbol === symbol);
-
-  if (debug) {
-    return json({ symbol, DEBUG: true, quarter, calFrom, calTo, calCount: cal.length, match }, 200);
-  }
-
-  const reportDate = match?.date && match.date < today ? match.date : quarter.period;
-  const hour       = match?.hour || null;
-
   const estimate = quarter.estimate ?? null;
   const actual   = quarter.actual ?? null;
   const surprisePercent = quarter.surprisePercent ?? ((estimate != null && actual != null && estimate !== 0)
@@ -78,7 +61,7 @@ async function handleDetail(env, symbol, debug) {
     : null);
 
   const entry = {
-    period:          reportDate,
+    period:          quarter.period,
     epsEstimate:     estimate,
     epsActual:       actual,
     surprisePercent,
@@ -86,58 +69,49 @@ async function handleDetail(env, symbol, debug) {
   };
 
   if (env.ALPACA_KEY_ID && env.ALPACA_SECRET) {
-    entry.priceMovePercent = await priceReaction(env, symbol, reportDate, hour);
+    const reaction = await findReaction(env, symbol, quarter.period);
+    if (reaction) {
+      entry.priceMovePercent = reaction.pct;
+      entry.period = reaction.date; // the actual report day, not just the quarter-end
+    }
   }
 
   out.lastEarnings = entry;
   return json(out, 200);
 }
 
-async function priceReaction(env, symbol, reportDate, hour) {
+// Scans daily closes from quarter-end through ~65 days later (reporting lag
+// is almost always inside that window) and returns the single largest
+// one-day % move — a strong proxy for the real earnings-reaction day when
+// the exact report date/timing isn't available.
+async function findReaction(env, symbol, quarterEndDate) {
   const headers = {
     'APCA-API-KEY-ID':     env.ALPACA_KEY_ID,
     'APCA-API-SECRET-KEY': env.ALPACA_SECRET,
   };
-  const start = new Date(new Date(reportDate).getTime() - 6 * 86400000).toISOString().slice(0, 10);
-  const end   = new Date(new Date(reportDate).getTime() + 6 * 86400000).toISOString().slice(0, 10);
+  const start = quarterEndDate;
+  const end   = new Date(new Date(quarterEndDate).getTime() + 65 * 86400000).toISOString().slice(0, 10);
 
   try {
     const res = await fetch(
-      `https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/bars?timeframe=1Day&start=${start}&end=${end}&limit=20&sort=asc&feed=iex`,
+      `https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/bars?timeframe=1Day&start=${start}&end=${end}&limit=100&sort=asc&feed=iex`,
       { headers }
     );
-    const data  = await res.json();
-    const bars  = data.bars || [];
+    const data = await res.json();
+    const bars = data.bars || [];
     if (bars.length < 2) return null;
 
-    // Trading day matching the report date if the market was open that day,
-    // else the nearest trading day at/before it.
-    let onIdx = -1, beforeIdx = -1;
-    for (let i = 0; i < bars.length; i++) {
-      const d = bars[i].t.slice(0, 10);
-      if (d === reportDate) onIdx = i;
-      if (d <= reportDate) beforeIdx = i;
+    let best = null;
+    for (let i = 1; i < bars.length; i++) {
+      const before = bars[i - 1].c;
+      const after  = bars[i].c;
+      if (!before) continue;
+      const pct = ((after - before) / before) * 100;
+      if (!best || Math.abs(pct) > Math.abs(best.pct)) {
+        best = { pct: Number(pct.toFixed(2)), date: bars[i].t.slice(0, 10) };
+      }
     }
-    const reportIdx = onIdx !== -1 ? onIdx : beforeIdx;
-    if (reportIdx === -1) return null;
-
-    let before, after;
-    if (hour === 'bmo') {
-      // Reported before the open: the reaction is priced in overnight, so the
-      // gap shows up between the PRIOR close and the report day's own close.
-      if (reportIdx - 1 < 0) return null;
-      before = bars[reportIdx - 1].c;
-      after  = bars[reportIdx].c;
-    } else {
-      // Reported after the close (or unknown timing): the reaction shows up
-      // between the report day's close and the NEXT trading day's close.
-      if (reportIdx + 1 >= bars.length) return null;
-      before = bars[reportIdx].c;
-      after  = bars[reportIdx + 1].c;
-    }
-    if (!before) return null;
-
-    return Number((((after - before) / before) * 100).toFixed(2));
+    return best;
   } catch {
     return null;
   }
