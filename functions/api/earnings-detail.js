@@ -29,41 +29,56 @@ async function handleDetail(env, symbol) {
 
   if (!env.FINNHUB_KEY) return json(out, 200);
 
-  const histRes = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol}&token=${env.FINNHUB_KEY}`);
-  const hist    = await histRes.json().catch(() => []);
-  if (!Array.isArray(hist) || !hist.length) return json(out, 200);
-
+  // Use the calendar endpoint (not /stock/earnings) for history too: /stock/earnings
+  // only returns the fiscal *quarter-end* date in `period`, not the actual report
+  // date — companies report weeks after quarter-end, so using `period` as the report
+  // date pointed the price-reaction lookup at a random ordinary trading day near
+  // quarter-end instead of the real earnings-day move. /calendar/earnings?symbol=
+  // gives the real report `date` plus `hour` (bmo/amc), which we also need to pick
+  // the correct before/after trading day below.
   const today = new Date().toISOString().slice(0, 10);
-  const past  = hist
-    .filter(q => q.period && q.period < today)
-    .sort((a, b) => b.period.localeCompare(a.period));
+  const from  = new Date(Date.now() - 400 * 86400000).toISOString().slice(0, 10);
+
+  const calRes  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?symbol=${symbol}&from=${from}&to=${today}&token=${env.FINNHUB_KEY}`);
+  const calData = await calRes.json().catch(() => null);
+  const cal     = Array.isArray(calData?.earningsCalendar) ? calData.earningsCalendar : [];
+
+  const past = cal
+    .filter(e => e.date && e.date < today && e.epsActual != null)
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   if (!past.length) return json(out, 200);
   const last = past[0];
 
+  const estimate = last.epsEstimate ?? null;
+  const actual   = last.epsActual ?? null;
+  const surprisePercent = (estimate != null && actual != null && estimate !== 0)
+    ? Number((((actual - estimate) / Math.abs(estimate)) * 100).toFixed(4))
+    : null;
+
   const entry = {
-    period:          last.period,
-    epsEstimate:     last.estimate ?? null,
-    epsActual:       last.actual   ?? null,
-    surprisePercent: last.surprisePercent ?? null,
+    period:          last.date,
+    epsEstimate:     estimate,
+    epsActual:       actual,
+    surprisePercent,
     priceMovePercent: null,
   };
 
   if (env.ALPACA_KEY_ID && env.ALPACA_SECRET) {
-    entry.priceMovePercent = await priceReaction(env, symbol, last.period);
+    entry.priceMovePercent = await priceReaction(env, symbol, last.date, last.hour);
   }
 
   out.lastEarnings = entry;
   return json(out, 200);
 }
 
-async function priceReaction(env, symbol, periodDate) {
+async function priceReaction(env, symbol, reportDate, hour) {
   const headers = {
     'APCA-API-KEY-ID':     env.ALPACA_KEY_ID,
     'APCA-API-SECRET-KEY': env.ALPACA_SECRET,
   };
-  const start = new Date(new Date(periodDate).getTime() - 6 * 86400000).toISOString().slice(0, 10);
-  const end   = new Date(new Date(periodDate).getTime() + 6 * 86400000).toISOString().slice(0, 10);
+  const start = new Date(new Date(reportDate).getTime() - 6 * 86400000).toISOString().slice(0, 10);
+  const end   = new Date(new Date(reportDate).getTime() + 6 * 86400000).toISOString().slice(0, 10);
 
   try {
     const res = await fetch(
@@ -74,16 +89,31 @@ async function priceReaction(env, symbol, periodDate) {
     const bars  = data.bars || [];
     if (bars.length < 2) return null;
 
-    // Closest trading day at/before the report, and the next trading day after.
-    let beforeIdx = -1;
+    // Trading day matching the report date if the market was open that day,
+    // else the nearest trading day at/before it.
+    let onIdx = -1, beforeIdx = -1;
     for (let i = 0; i < bars.length; i++) {
       const d = bars[i].t.slice(0, 10);
-      if (d <= periodDate) beforeIdx = i;
+      if (d === reportDate) onIdx = i;
+      if (d <= reportDate) beforeIdx = i;
     }
-    if (beforeIdx === -1 || beforeIdx + 1 >= bars.length) return null;
+    const reportIdx = onIdx !== -1 ? onIdx : beforeIdx;
+    if (reportIdx === -1) return null;
 
-    const before = bars[beforeIdx].c;
-    const after  = bars[beforeIdx + 1].c;
+    let before, after;
+    if (hour === 'bmo') {
+      // Reported before the open: the reaction is priced in overnight, so the
+      // gap shows up between the PRIOR close and the report day's own close.
+      if (reportIdx - 1 < 0) return null;
+      before = bars[reportIdx - 1].c;
+      after  = bars[reportIdx].c;
+    } else {
+      // Reported after the close (or unknown timing): the reaction shows up
+      // between the report day's close and the NEXT trading day's close.
+      if (reportIdx + 1 >= bars.length) return null;
+      before = bars[reportIdx].c;
+      after  = bars[reportIdx + 1].c;
+    }
     if (!before) return null;
 
     return Number((((after - before) / before) * 100).toFixed(2));
