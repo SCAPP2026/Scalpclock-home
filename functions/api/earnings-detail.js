@@ -15,16 +15,17 @@ export async function onRequest(context) {
   const url    = new URL(request.url);
   const symbol = (url.searchParams.get('symbol') || '').toUpperCase().replace(/[^A-Z0-9.\-]/g, '').slice(0, 10);
   if (!symbol) return json({ error: 'symbol required' }, 400);
+  const debug = url.searchParams.get('debug') === '1';
 
   try {
-    return await handleDetail(env, symbol);
+    return await handleDetail(env, symbol, debug);
   } catch (e) {
     console.error('earnings-detail fatal:', e.message);
     return json({ symbol, error: `Internal error: ${e.message}` }, 200);
   }
 }
 
-async function handleDetail(env, symbol) {
+async function handleDetail(env, symbol, debug) {
   const out = { symbol, lastEarnings: null };
 
   if (!env.FINNHUB_KEY) return json(out, 200);
@@ -42,6 +43,10 @@ async function handleDetail(env, symbol) {
   const calRes  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?symbol=${symbol}&from=${from}&to=${today}&token=${env.FINNHUB_KEY}`);
   const calData = await calRes.json().catch(() => null);
   const cal     = Array.isArray(calData?.earningsCalendar) ? calData.earningsCalendar : [];
+
+  if (debug) {
+    return json({ symbol, DEBUG: true, status: calRes.status, from, today, raw: calData }, 200);
+  }
 
   const past = cal
     .filter(e => e.date && e.date < today && e.epsActual != null)
