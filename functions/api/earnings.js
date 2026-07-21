@@ -16,6 +16,19 @@ export async function onRequest(context) {
     fetchSymbolNames(env.FINNHUB_KEY),
   ]);
 
+  if (url.searchParams.get('debug') === '1') {
+    const byDay = (arr) => {
+      const c = {};
+      for (const e of arr) c[e.date] = (c[e.date] || 0) + 1;
+      return c;
+    };
+    return json({
+      DEBUG: true, from, to,
+      finn: { status: finn.status, count: finn.status === 'fulfilled' ? finn.value.length : null, error: finn.status === 'rejected' ? String(finn.reason) : null, byDay: finn.status === 'fulfilled' ? byDay(finn.value) : null },
+      fmp:  { status: fmp.status,  count: fmp.status  === 'fulfilled' ? fmp.value.length  : null, error: fmp.status  === 'rejected' ? String(fmp.reason)  : null, byDay: fmp.status  === 'fulfilled' ? byDay(fmp.value)  : null },
+    });
+  }
+
   let items = [];
 
   if (finn.status === 'fulfilled' && finn.value.length) {

@@ -30,39 +30,55 @@ async function handleDetail(env, symbol, debug) {
 
   if (!env.FINNHUB_KEY) return json(out, 200);
 
-  // Use the calendar endpoint (not /stock/earnings) for history too: /stock/earnings
-  // only returns the fiscal *quarter-end* date in `period`, not the actual report
-  // date — companies report weeks after quarter-end, so using `period` as the report
-  // date pointed the price-reaction lookup at a random ordinary trading day near
-  // quarter-end instead of the real earnings-day move. /calendar/earnings?symbol=
-  // gives the real report `date` plus `hour` (bmo/amc), which we also need to pick
-  // the correct before/after trading day below.
+  // /stock/earnings gives real actual/estimate EPS but only the fiscal
+  // *quarter-end* date in `period` — not the date the company actually
+  // reported (companies report weeks after quarter-end). Using `period`
+  // directly as the report date pointed the price-reaction lookup at a
+  // random ordinary trading day near quarter-end instead of the real
+  // earnings-day move.
+  //
+  // /calendar/earnings has the real report `date` + `hour` (bmo/amc), but
+  // its `symbol=` filter returns an empty result on this API plan (verified
+  // via ?debug=1 — status 200, earningsCalendar: []), so instead of filtering
+  // server-side we fetch a date-bounded *unfiltered* calendar window (just
+  // after the known quarter-end, when this company would plausibly have
+  // reported) and filter for the symbol ourselves.
   const today = new Date().toISOString().slice(0, 10);
-  const from  = new Date(Date.now() - 400 * 86400000).toISOString().slice(0, 10);
 
-  const calRes  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?symbol=${symbol}&from=${from}&to=${today}&token=${env.FINNHUB_KEY}`);
+  const histRes = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol}&token=${env.FINNHUB_KEY}`);
+  const hist    = await histRes.json().catch(() => []);
+  if (!Array.isArray(hist) || !hist.length) return json(out, 200);
+
+  const pastQuarters = hist
+    .filter(q => q.period && q.period < today && q.actual != null)
+    .sort((a, b) => b.period.localeCompare(a.period));
+
+  if (!pastQuarters.length) return json(out, 200);
+  const quarter = pastQuarters[0];
+
+  // Reporting lag is almost always within ~10 weeks of quarter-end.
+  const calFrom = quarter.period;
+  const calTo   = new Date(new Date(quarter.period).getTime() + 70 * 86400000).toISOString().slice(0, 10);
+  const calRes  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?from=${calFrom}&to=${calTo}&token=${env.FINNHUB_KEY}`);
   const calData = await calRes.json().catch(() => null);
   const cal     = Array.isArray(calData?.earningsCalendar) ? calData.earningsCalendar : [];
+  const match   = cal.find(e => e.symbol === symbol);
 
   if (debug) {
-    return json({ symbol, DEBUG: true, status: calRes.status, from, today, raw: calData }, 200);
+    return json({ symbol, DEBUG: true, quarter, calFrom, calTo, calCount: cal.length, match }, 200);
   }
 
-  const past = cal
-    .filter(e => e.date && e.date < today && e.epsActual != null)
-    .sort((a, b) => b.date.localeCompare(a.date));
+  const reportDate = match?.date && match.date < today ? match.date : quarter.period;
+  const hour       = match?.hour || null;
 
-  if (!past.length) return json(out, 200);
-  const last = past[0];
-
-  const estimate = last.epsEstimate ?? null;
-  const actual   = last.epsActual ?? null;
-  const surprisePercent = (estimate != null && actual != null && estimate !== 0)
+  const estimate = quarter.estimate ?? null;
+  const actual   = quarter.actual ?? null;
+  const surprisePercent = quarter.surprisePercent ?? ((estimate != null && actual != null && estimate !== 0)
     ? Number((((actual - estimate) / Math.abs(estimate)) * 100).toFixed(4))
-    : null;
+    : null);
 
   const entry = {
-    period:          last.date,
+    period:          reportDate,
     epsEstimate:     estimate,
     epsActual:       actual,
     surprisePercent,
@@ -70,7 +86,7 @@ async function handleDetail(env, symbol, debug) {
   };
 
   if (env.ALPACA_KEY_ID && env.ALPACA_SECRET) {
-    entry.priceMovePercent = await priceReaction(env, symbol, last.date, last.hour);
+    entry.priceMovePercent = await priceReaction(env, symbol, reportDate, hour);
   }
 
   out.lastEarnings = entry;
