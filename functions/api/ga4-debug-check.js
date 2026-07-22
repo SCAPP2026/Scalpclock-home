@@ -1,6 +1,7 @@
 // TEMPORARY diagnostic — confirms GA4_API_SECRET is set correctly using
 // Google's official validation endpoint (validates only, never records real
 // data). Not wired to any billing logic. Delete after use.
+// (redeploy nudge)
 const GA4_MEASUREMENT_ID = 'G-M4F7X9HDDW';
 
 export async function onRequest(context) {
