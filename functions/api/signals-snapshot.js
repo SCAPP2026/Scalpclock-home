@@ -38,7 +38,10 @@ export async function onRequest(context) {
         apikey:         env.SUPABASE_SERVICE_ROLE_KEY,
         Authorization:  `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
-        Prefer:         'resolution=ignore-duplicates,return=minimal',
+        // return=representation (not minimal) so `inserted` below reflects
+        // rows actually written, not rows attempted — ignore-duplicates
+        // silently drops same-day symbol+tone repeats via the unique index.
+        Prefer:         'resolution=ignore-duplicates,return=representation',
       },
       body: JSON.stringify(rows),
     });
@@ -49,7 +52,8 @@ export async function onRequest(context) {
       return json({ error: 'Could not save snapshot.' }, 200);
     }
 
-    return json({ ok: true, inserted: rows.length }, 200);
+    const inserted = await insertRes.json().catch(() => []);
+    return json({ ok: true, attempted: rows.length, inserted: Array.isArray(inserted) ? inserted.length : null }, 200);
   } catch (e) {
     console.error('signals-snapshot fatal:', e.message);
     return json({ error: e.message }, 200);
