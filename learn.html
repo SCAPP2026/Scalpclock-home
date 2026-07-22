@@ -1230,6 +1230,9 @@ function computeRewards() {
   addXP(totalXP);
   const dayNum=ALL_DAYS.indexOf(l)+1;
   const wasAlreadyDone=isDone(dayNum);
+  if(!wasAlreadyDone&&typeof gtag==='function'){
+    gtag('event','lesson_complete',{day:dayNum,quiz_pct:Math.round(pct*100),first_try_pass:firstTryPass});
+  }
   markDone(dayNum);
   if(!wasAlreadyDone)bumpDailyCount();
   const newStreak=bumpStreak();

@@ -51,9 +51,9 @@ async function isFoundingOfferActive(serviceKey) {
 }
 
 async function handleCheckout(env, request) {
-  let tier, billing, trial, promoId, userId;
+  let tier, billing, trial, promoId, userId, gaClientId;
   try {
-    ({ tier, billing, trial, promoId, userId } = await request.json());
+    ({ tier, billing, trial, promoId, userId, gaClientId } = await request.json());
   } catch {
     return json({ error: 'Invalid JSON body' }, 400);
   }
@@ -131,6 +131,15 @@ async function handleCheckout(env, request) {
   if (userId) {
     params.set('client_reference_id', userId);
     params.set('subscription_data[metadata][user_id]', userId);
+  }
+
+  // GA4 client_id (from the browser's _ga cookie, if present) so the
+  // webhook can attribute the eventual `purchase` event back to the
+  // visitor's actual acquisition/session data instead of firing as an
+  // anonymous server-side event. Best-effort — checkout must never fail
+  // because analytics attribution is missing.
+  if (gaClientId && /^[\w.-]{1,80}$/.test(gaClientId)) {
+    params.set('metadata[ga_client_id]', gaClientId);
   }
 
   if (isFounding) {

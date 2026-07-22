@@ -591,6 +591,15 @@ async function applyPromo() {
   btn.disabled    = false;
 }
 
+// GA4 client_id from the browser's own _ga cookie (format "GA1.1.X.Y" or
+// "GA1.2.X.Y" — the client_id GA4 itself uses is just "X.Y"), so a
+// server-side purchase event can attribute back to this visitor's real
+// acquisition/session data instead of firing as anonymous.
+function getGaClientId() {
+  const m = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+  return m ? m[1] : null;
+}
+
 async function startCheckout(isTrial) {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
@@ -618,6 +627,9 @@ async function startCheckout(isTrial) {
     };
     if (_promoId) body.promoId = _promoId;
     if (userId)   body.userId  = userId;
+    const gaClientId = getGaClientId();
+    if (gaClientId) body.gaClientId = gaClientId;
+    if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
 
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',

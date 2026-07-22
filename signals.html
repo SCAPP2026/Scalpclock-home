@@ -395,8 +395,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <p>AI-powered scanning across 100+ of the market's most active tickers — RSI, VWAP, and volume conditions that flag potential day trading and scalping setups.</p>
       <div class="ap-stat-row" id="apStatRow"></div>
       <div class="ap-cta-row">
-        <a class="ap-btn-primary" href="/login?tab=signup">Unlock Full Signals</a>
-        <a class="ap-btn-ghost" href="/login?tab=signup">Start Free Trial</a>
+        <a class="ap-btn-primary" href="/login?tab=signup" onclick="apTrackCta('hero_unlock')">Unlock Full Signals</a>
+        <a class="ap-btn-ghost" href="/login?tab=signup" onclick="apTrackCta('hero_trial')">Start Free Trial</a>
       </div>
     </div>
 
@@ -422,8 +422,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <h2>Stop guessing your next trade.</h2>
       <p>Get the complete signal scan, real-time refreshes, and trade plans for every setup.</p>
       <div class="ap-cta-row">
-        <a class="ap-btn-primary" href="/login?tab=signup">Start Free Trial</a>
-        <a class="ap-btn-ghost" href="/pricing">Upgrade to Pro</a>
+        <a class="ap-btn-primary" href="/login?tab=signup" onclick="apTrackCta('bottom_trial')">Start Free Trial</a>
+        <a class="ap-btn-ghost" href="/pricing" onclick="apTrackCta('bottom_pricing')">Upgrade to Pro</a>
       </div>
     </div>
   </div>
@@ -472,11 +472,17 @@ async function init() {
 }
 
 // ── Anonymous public preview ────────────────────────────────────────────
+function apTrackCta(location) {
+  if (typeof gtag === 'function') gtag('event', 'click_signals_cta', { cta_location: location });
+}
+
 async function renderAnonymousPreview() {
   const featuredEl = document.getElementById('apFeaturedSignals');
   try {
     const res  = await fetch('/api/signals?range=day');
     const data = await res.json();
+
+    if (typeof gtag === 'function') gtag('event', 'view_signals_preview', { market_open: !!data.marketOpen });
 
     // Hero stat row — same fields the authed badge already uses.
     const statRow = document.getElementById('apStatRow');
@@ -593,7 +599,7 @@ function renderApSignalCard(t, showLock) {
       <div class="sp-lock">
         <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
         <div class="sp-lock-msg">Unlock Pro to see the complete trade plan</div>
-        <button type="button" class="sp-lock-btn" onclick="window.location.href='/pricing'">View Membership</button>
+        <button type="button" class="sp-lock-btn" onclick="apTrackCta('locked_trade_plan');window.location.href='/pricing'">View Membership</button>
       </div>
     </div>` : '';
 
@@ -619,6 +625,11 @@ async function checkSignalsAccess() {
   } catch(_) {}
 }
 
+function getGaClientId() {
+  const m = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+  return m ? m[1] : null;
+}
+
 async function startCheckout(btn) {
   const original = btn.textContent;
   btn.disabled = true;
@@ -627,6 +638,9 @@ async function startCheckout(btn) {
     const body = { tier: 'pro', billing: _billing, trial: !_promoId };
     if (_promoId) body.promoId = _promoId;
     if (_uid)     body.userId  = _uid;
+    const gaClientId = getGaClientId();
+    if (gaClientId) body.gaClientId = gaClientId;
+    if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
     const res = await fetch('/api/stripe/checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -1071,6 +1071,11 @@ async function loadAllTrades() {
 }
 
 
+function getGaClientId() {
+  const m = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+  return m ? m[1] : null;
+}
+
 async function startCheckout(btn) {
   const original = btn.textContent;
   btn.disabled = true;
@@ -1078,6 +1083,9 @@ async function startCheckout(btn) {
   try {
     const body = { tier: 'pro', billing: 'monthly', trial: true };
     if (_uid) body.userId = _uid;
+    const gaClientId = getGaClientId();
+    if (gaClientId) body.gaClientId = gaClientId;
+    if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
 
     const res = await fetch('/api/stripe/checkout', {
       method:  'POST',

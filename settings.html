@@ -475,6 +475,11 @@ async function applyDashPromo() {
   btn.disabled    = false;
 }
 
+function getGaClientId() {
+  const m = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+  return m ? m[1] : null;
+}
+
 async function startCheckout(btn) {
   btn = btn || document.getElementById('upgradeBtn');
   const original = btn.textContent;
@@ -484,6 +489,9 @@ async function startCheckout(btn) {
     const body = { tier: 'pro', billing: _billing, trial: !_promoId };
     if (_promoId) body.promoId = _promoId;
     if (_uid)     body.userId  = _uid;
+    const gaClientId = getGaClientId();
+    if (gaClientId) body.gaClientId = gaClientId;
+    if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
     const res = await fetch('/api/stripe/checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },

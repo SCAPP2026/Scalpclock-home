@@ -1,4 +1,30 @@
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const GA4_MEASUREMENT_ID = 'G-M4F7X9HDDW'; // same public ID used by gtag.js on every page
+
+// Server-side GA4 event via the Measurement Protocol. Best-effort — never
+// throws, so a missing/misconfigured GA4_API_SECRET or an analytics-side
+// outage can never block a real billing event from completing.
+async function sendGA4Event(env, clientId, name, params) {
+  if (!env.GA4_API_SECRET) return;
+  try {
+    await fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${env.GA4_API_SECRET}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          // Falls back to a fresh random client_id (not tied to any real
+          // visitor) when the checkout session has no ga_client_id — still
+          // records the conversion in GA4's totals, just without session
+          // attribution back to the original visit.
+          client_id: clientId || crypto.randomUUID(),
+          events: [{ name, params }],
+        }),
+      }
+    );
+  } catch (e) {
+    console.error('GA4 event failed:', name, e.message);
+  }
+}
 
 export async function onRequest(context) {
   const { env, request } = context;
@@ -53,6 +79,21 @@ export async function onRequest(context) {
       if (isFounding && env.SUPABASE_SERVICE_ROLE_KEY) {
         await recordFoundingMember(userId, session.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
       }
+
+      // Real conversion tracking. Fired server-side (not from the client
+      // after Stripe redirect) because a user can close the tab, get
+      // interrupted by their bank's 3DS challenge, etc. between paying and
+      // returning to /success — client-side purchase events silently miss
+      // exactly the sessions most worth measuring accurately.
+      await sendGA4Event(env, session.metadata?.ga_client_id, 'purchase', {
+        transaction_id: session.id,
+        value:          session.amount_total != null ? session.amount_total / 100 : undefined,
+        currency:       session.currency ? session.currency.toUpperCase() : 'USD',
+        items: [{
+          item_id:   isFounding ? 'founding_member' : 'pro',
+          item_name: isFounding ? 'Founding Member' : 'Pro',
+        }],
+      });
       break;
     }
 
