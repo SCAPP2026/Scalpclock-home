@@ -218,6 +218,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .ap-lock-rows{filter:blur(5px);user-select:none;pointer-events:none;}
 .ap-lock-row{display:flex;justify-content:space-between;font-size:.85rem;color:var(--dk-text);padding:5px 0;border-bottom:1px solid var(--dk-border);}
 
+.ap-perf-summary{font-size:.85rem;color:var(--dk-muted);margin-bottom:12px;}
+.ap-perf-summary b{color:var(--dk-text);}
+.ap-perf-row{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--dk-surface);border:1px solid var(--dk-border);border-radius:8px;margin-bottom:6px;font-size:.82rem;}
+.ap-perf-sym{font-family:var(--disp);font-weight:700;color:var(--dk-text);min-width:56px;}
+.ap-perf-tone{font-family:var(--mono);font-size:.7rem;color:var(--dk-muted);min-width:44px;}
+.ap-perf-move{font-family:var(--mono);font-weight:700;margin-left:auto;}
+.ap-perf-move.win{color:var(--dk-bull);}
+.ap-perf-move.loss{color:var(--dk-bear);}
+.ap-perf-move.flat{color:var(--dk-muted);}
+.ap-perf-building{font-size:.85rem;color:var(--dk-muted);padding:14px 0;}
 .ap-faq{margin-top:36px;}
 .ap-faq-item{border-bottom:1px solid var(--line);padding:16px 0;}
 .ap-faq-q{font-weight:600;color:var(--text);font-size:.95rem;margin-bottom:6px;}
@@ -398,6 +408,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="ap-featured-title">🎯 Featured Signals</div>
     <div id="apFeaturedSignals"><div class="sb-loading">Scanning the market…</div></div>
 
+    <div class="ap-featured-title" id="apPerfTitle" style="display:none;">📊 Recent Signal Performance</div>
+    <div id="apPerformance"></div>
+
     <div class="ap-faq" id="apFaq">
       <div class="ap-faq-item"><div class="ap-faq-q">What are options and stock signals?</div><div class="ap-faq-a">ScalpClock's signals scan the market's most active stocks for RSI, VWAP, and volume conditions that historically precede a directional move, then flag each ticker as a potential Calls (bullish) or Puts (bearish) setup.</div></div>
       <div class="ap-faq-item"><div class="ap-faq-q">How often do signals update?</div><div class="ap-faq-a">Signals refresh continuously throughout market hours, scanning 100+ of the most active tickers using live RSI(14), VWAP distance, and volume-surge data.</div></div>
@@ -441,6 +454,7 @@ async function init() {
     document.getElementById('anonPreview').style.display = 'block';
     document.getElementById('authedView').style.display = 'none';
     renderAnonymousPreview();
+    renderApPerformance();
     return;
   }
 
@@ -515,6 +529,42 @@ async function renderAnonymousPreview() {
     }
   } catch (e) {
     featuredEl.innerHTML = '<div class="sb-error">⚠ Could not reach the signal feed — check your connection and refresh.</div>';
+  }
+}
+
+async function renderApPerformance() {
+  const titleEl = document.getElementById('apPerfTitle');
+  const el = document.getElementById('apPerformance');
+  try {
+    const res = await fetch('/api/signal-performance');
+    const data = await res.json();
+
+    if (!data.results || !data.results.length) {
+      // Honest empty state — no fabricated history.
+      titleEl.style.display = 'block';
+      el.innerHTML = '<div class="ap-perf-building">Building performance history — check back after a few trading days for real tracked results.</div>';
+      return;
+    }
+
+    titleEl.style.display = 'block';
+    const summary = data.winRate != null
+      ? `<div class="ap-perf-summary">Win rate: <b>${data.winRate}%</b> over the last ${data.results.length} evaluated signals (wins and losses both shown for transparency).</div>`
+      : '';
+
+    const rows = data.results.map(r => {
+      const cls = r.result === 'win' ? 'win' : r.result === 'loss' ? 'loss' : 'flat';
+      const sign = r.movePct != null && r.movePct >= 0 ? '+' : '';
+      return `<div class="ap-perf-row">
+        <span class="ap-perf-sym">${r.symbol}</span>
+        <span class="ap-perf-tone">${r.tone === 'buy' ? 'CALLS' : 'PUTS'}</span>
+        <span class="ap-perf-move ${cls}">${r.movePct != null ? sign + r.movePct.toFixed(2) + '%' : '—'} ${r.result ? '(' + r.result.toUpperCase() + ')' : ''}</span>
+      </div>`;
+    }).join('');
+
+    el.innerHTML = summary + rows;
+  } catch (e) {
+    titleEl.style.display = 'none';
+    el.innerHTML = '';
   }
 }
 
