@@ -19,7 +19,7 @@ create table if not exists signal_history (
   conviction     text,
   snapshot_price numeric not null,
   snapshot_at    timestamptz not null default now(),
-  snapshot_date  date generated always as (snapshot_at::date) stored,
+  snapshot_date  date generated always as ((snapshot_at at time zone 'utc')::date) stored,
   eval_price     numeric,
   eval_at        timestamptz,
   result         text check (result in ('win', 'loss', 'flat'))
