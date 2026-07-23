@@ -165,6 +165,23 @@ try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { cons
 
 const _from = new URLSearchParams(location.search).get('from') || '/dashboard';
 
+// Founding Member referral program — the /r/CODE Function sets this cookie
+// server-side; /join?ref=CODE lands here (see _redirects) and this is where
+// that second entry point sets the identical cookie, so both paths converge
+// on one mechanism. 60 days is the default; the real value lives in
+// Supabase's referral_program_settings and only matters server-side when
+// the cookie is first set — reading it back here just needs the value that's
+// already there.
+function setReferralCookie(code, days) {
+  document.cookie = `scalpclock_ref=${encodeURIComponent(code)}; Max-Age=${days * 86400}; Path=/; SameSite=Lax`;
+}
+function getReferralCookie() {
+  const m = document.cookie.match(/(?:^|;\s*)scalpclock_ref=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+const _refFromQuery = new URLSearchParams(location.search).get('ref');
+if (_refFromQuery) setReferralCookie(_refFromQuery, 60);
+
 if (sb) sb.auth.getSession().then(({ data: { session } }) => {
   if (session) window.location.href = _from;
 });
@@ -215,16 +232,22 @@ async function signUp() {
   if (pass.length < 6) return showMsg('Password must be at least 6 characters.', 'error');
   const btn = document.getElementById('su-btn');
   btn.disabled = true; btn.textContent = 'Creating account...';
+  const _refCode = getReferralCookie();
+  const signUpMeta = {
+    first_name: capName(firstName),
+    last_name:  capName(lastName),
+    full_name:  capName(firstName) + ' ' + capName(lastName),
+  };
+  // Stored in user_metadata here purely as a hint — it's client-writable,
+  // so the webhook re-derives the real referral relationship at the
+  // referred user's first successful checkout rather than trusting this
+  // directly (see functions/api/stripe/webhook.js's recordReferralIfAttributed).
+  if (_refCode) signUpMeta.referred_by_code = _refCode;
+
   const { data, error } = await sb.auth.signUp({
     email,
     password: pass,
-    options: {
-      data: {
-        first_name: capName(firstName),
-        last_name:  capName(lastName),
-        full_name:  capName(firstName) + ' ' + capName(lastName),
-      },
-    },
+    options: { data: signUpMeta },
   });
   if (error) {
     showMsg(error.message, 'error');

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Referral Dashboard</title>
+<meta name="description" content="Track your Founding Member referrals and recurring commissions.">
+<link rel="canonical" href="https://scalpclock.com/referrals">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock — Referral Dashboard">
+<meta property="og:description" content="Track your Founding Member referrals and recurring commissions.">
+<meta property="og:url" content="https://scalpclock.com/referrals">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock — Referral Dashboard">
+<meta name="twitter:description" content="Track your Founding Member referrals and recurring commissions.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{ --max:1000px; }
+*{box-sizing:border-box;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.08),transparent 68%),
+  linear-gradient(var(--line) 1px,transparent 1px),
+  linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);
+  background:rgba(247,249,247,.85);border-bottom:1px solid var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green-ink);opacity:.9;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-email{font-size:.82rem;color:var(--t65);font-family:var(--mono);}
+.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--t65);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(247,249,247,.98);backdrop-filter:blur(16px);z-index:65;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer.open{display:flex;transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t65);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);text-decoration:none;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--green-soft);}
+@media(max-width:600px){.nav-ham{display:flex;}}
+
+/* MAIN */
+.shell{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:40px 24px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--t65);text-decoration:none;margin-bottom:18px;transition:.15s;}
+.back-link:hover{color:var(--green-ink);}
+.welcome{margin-bottom:28px;}
+.welcome h1{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--text);}
+.welcome h1 span{color:var(--green-ink);}
+.welcome p{color:var(--t65);margin-top:8px;font-size:.95rem;}
+
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* GATE (non-founders) */
+.gate-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:40px 32px;text-align:center;}
+.gate-card h2{font-family:var(--disp);font-weight:700;font-size:1.4rem;margin-bottom:10px;color:var(--text);}
+.gate-card p{color:var(--t65);font-size:.92rem;max-width:440px;margin:0 auto 20px;line-height:1.6;}
+.gate-btn{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:11px 24px;border-radius:9px;background:var(--green);color:var(--on-green);text-decoration:none;display:inline-block;}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;}
+.stat-icon{font-size:1.3rem;margin-bottom:6px;}
+.stat-label{font-size:.72rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.stat-val{font-family:var(--mono);font-weight:700;font-size:1.5rem;color:var(--text);margin-top:2px;}
+
+/* RATE BANNER */
+.rate-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--green-soft);border:1px solid rgba(22,217,126,.3);border-radius:10px;padding:12px 16px;margin-bottom:28px;font-size:.85rem;color:var(--green-ink);}
+
+/* TOOLS CARD */
+.section-title{font-family:var(--disp);font-weight:700;font-size:1.1rem;margin-bottom:14px;color:var(--t85);}
+.tools-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:24px;margin-bottom:28px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;}
+@media(max-width:640px){.tools-card{grid-template-columns:1fr;}}
+.tools-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.tools-row:last-child{margin-bottom:0;}
+.tools-label{font-size:.72rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;width:90px;flex-shrink:0;}
+.tools-val{font-family:var(--mono);font-size:.9rem;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;flex:1;overflow-x:auto;white-space:nowrap;}
+.tools-btn{font-family:var(--disp);font-weight:700;font-size:.78rem;padding:8px 14px;border-radius:8px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;transition:.15s;white-space:nowrap;}
+.tools-btn:hover{border-color:var(--green);color:var(--green-ink);}
+#qrCanvasWrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+#qrCanvasWrap canvas{border-radius:10px;background:#fff;padding:8px;}
+#qrCanvasWrap span{font-size:.7rem;color:var(--t65);}
+
+/* REFERRALS LIST */
+.ref-list{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow:hidden;}
+.ref-row{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);font-size:.85rem;}
+.ref-row:last-child{border-bottom:none;}
+.ref-status{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px;margin-left:auto;}
+.ref-status.active{background:var(--green-soft);color:var(--green-ink);}
+.ref-status.inactive{background:rgba(245,166,35,.12);color:#c98a1a;}
+.ref-empty{padding:24px 18px;text-align:center;color:var(--t65);font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <div class="nav-right">
+      <span class="nav-email" id="userEmail">Loading...</span>
+    </div>
+    <button class="nav-ham" onclick="toggleNavDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/dashboard" onclick="closeNavDrawer()">Dashboard</a>
+  <a href="/settings" onclick="closeNavDrawer()">Settings</a>
+  <a href="#" onclick="signOut();return false;">Sign Out</a>
+</div>
+
+<div class="shell">
+
+  <a class="back-link" href="/dashboard">&larr; Dashboard</a>
+
+  <div class="welcome">
+    <h1>🎯 Referral <span>Dashboard</span></h1>
+    <p>Earn recurring monthly commissions for every trader you bring to ScalpClock.</p>
+  </div>
+
+  <div id="gateView" style="display:none;">
+    <div class="gate-card">
+      <h2>Founding Members Only</h2>
+      <p>Referral commissions are an exclusive benefit for ScalpClock's first 500 Founding Members. Once all spots are claimed, this opportunity closes.</p>
+      <a class="gate-btn" href="/founders">See Founding Member Details →</a>
+    </div>
+  </div>
+
+  <div id="founderView" style="display:none;">
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-label">Founder Number</div><div class="stat-val" id="statFounderNum">—</div></div>
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Active Referrals</div><div class="stat-val" id="statActive">—</div></div>
+      <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Monthly Residual</div><div class="stat-val" id="statMonthly">—</div></div>
+      <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-label">Lifetime Earnings</div><div class="stat-val" id="statLifetime">—</div></div>
+    </div>
+
+    <div class="rate-banner" id="rateBanner">Loading current commission rate…</div>
+
+    <div class="section-title">Your Referral Tools</div>
+    <div class="tools-card">
+      <div>
+        <div class="tools-row">
+          <span class="tools-label">Code</span>
+          <span class="tools-val" id="refCode">—</span>
+          <button class="tools-btn" onclick="copyText(document.getElementById('refCode').textContent, this)">Copy Code</button>
+        </div>
+        <div class="tools-row">
+          <span class="tools-label">Link</span>
+          <span class="tools-val" id="refLink">—</span>
+          <button class="tools-btn" onclick="copyText(document.getElementById('refLink').textContent, this)">Copy Link</button>
+        </div>
+        <div class="tools-row" id="shareRow" style="display:none;">
+          <span class="tools-label"></span>
+          <button class="tools-btn" onclick="shareLink()">📤 Share</button>
+        </div>
+      </div>
+      <div id="qrCanvasWrap">
+        <canvas id="qrCanvas" width="132" height="132"></canvas>
+        <span>Scan to join</span>
+      </div>
+    </div>
+
+    <div class="section-title">Your Referrals</div>
+    <div class="ref-list" id="refList">
+      <div class="ref-empty">Loading…</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="/js/qrcode-generator.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
+
+let _uid = null;
+let _refreshTimer = null;
+
+async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login'; return; }
+
+  _uid = session.user.id;
+  document.getElementById('userEmail').textContent = session.user.email || '';
+
+  const isFounding = session.user.app_metadata?.founding_member === true;
+  if (!isFounding) {
+    document.getElementById('gateView').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('founderView').style.display = 'block';
+  await loadDashboard();
+  clearTimeout(_refreshTimer);
+  _refreshTimer = setTimeout(function tick() {
+    loadDashboard();
+    _refreshTimer = setTimeout(tick, 45000);
+  }, 45000);
+}
+
+async function loadDashboard() {
+  try {
+    const [founderRes, referralsRes, commissionsRes, rateRes] = await Promise.all([
+      sb.from('founding_members').select('founder_number, referral_code').eq('user_id', _uid).single(),
+      sb.from('referrals').select('id, status, created_at').eq('referrer_id', _uid).order('created_at', { ascending: false }),
+      sb.from('referral_commissions').select('amount').eq('referrer_id', _uid),
+      fetch('/api/founding-status').then(r => r.json()).catch(() => null),
+    ]);
+
+    const founder = founderRes.data;
+    const referrals = referralsRes.data || [];
+    const commissions = commissionsRes.data || [];
+
+    if (founder) {
+      document.getElementById('statFounderNum').textContent = '#' + founder.founder_number;
+      document.getElementById('refCode').textContent = founder.referral_code;
+      const link = location.origin + '/r/' + founder.referral_code;
+      document.getElementById('refLink').textContent = link;
+      renderQR(link);
+    }
+
+    const activeReferrals = referrals.filter(r => r.status === 'active').length;
+    const lifetimeEarnings = commissions.reduce((s, c) => s + Number(c.amount || 0), 0);
+
+    document.getElementById('statActive').textContent = activeReferrals;
+    document.getElementById('statLifetime').textContent = '$' + lifetimeEarnings.toFixed(2);
+
+    const rateBanner = document.getElementById('rateBanner');
+    if (rateRes && rateRes.currentReferralRate != null) {
+      const rate = Number(rateRes.currentReferralRate);
+      document.getElementById('statMonthly').textContent = '$' + (activeReferrals * rate).toFixed(2);
+      const capFilled = (rateRes.claimed || 0) >= (rateRes.cap || 500);
+      rateBanner.textContent = capFilled
+        ? `🎉 All Founding spots are claimed — you're earning $${rate.toFixed(2)}/mo per active referral.`
+        : `Current rate: $${rate.toFixed(2)}/mo per active referral. Once all ${rateRes.cap || 500} Founding spots fill, this rises to $1.99/mo automatically.`;
+    } else {
+      document.getElementById('statMonthly').textContent = '$' + (activeReferrals * 1).toFixed(2);
+      rateBanner.textContent = 'Commission rate unavailable right now — showing an estimate.';
+    }
+
+    renderReferralsList(referrals);
+
+    if (navigator.share) document.getElementById('shareRow').style.display = 'flex';
+  } catch (e) {
+    console.error('loadDashboard failed:', e.message);
+  }
+}
+
+function renderReferralsList(referrals) {
+  const el = document.getElementById('refList');
+  if (!referrals.length) {
+    el.innerHTML = '<div class="ref-empty">No referrals yet — share your link to start earning.</div>';
+    return;
+  }
+  el.innerHTML = referrals.map(r => {
+    const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `<div class="ref-row">
+      <span>Referral joined ${date}</span>
+      <span class="ref-status ${r.status}">${r.status.toUpperCase()}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderQR(text) {
+  try {
+    const qr = qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    const canvas = document.getElementById('qrCanvas');
+    const ctx = canvas.getContext('2d');
+    const count = qr.getModuleCount();
+    const cell = Math.floor(canvas.width / count);
+    const offset = Math.floor((canvas.width - cell * count) / 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000000';
+    for (let r = 0; r < count; r++) {
+      for (let c = 0; c < count; c++) {
+        if (qr.isDark(r, c)) ctx.fillRect(offset + c * cell, offset + r * cell, cell, cell);
+      }
+    }
+  } catch (e) {
+    console.error('QR render failed:', e.message);
+  }
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = original; }, 1500);
+  }).catch(() => {});
+}
+
+function shareLink() {
+  const link = document.getElementById('refLink').textContent;
+  if (navigator.share) {
+    navigator.share({ title: 'Join ScalpClock', text: 'Learn options trading with an AI coach — join me on ScalpClock:', url: link }).catch(() => {});
+  }
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = '/';
+}
+
+function toggleNavDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
+function closeNavDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))d.classList.remove('open');
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,6 +1,13 @@
 /replay /scalpchart.html?tab=replay 301
 /replay.html /scalpchart.html?tab=replay 301
 
+# Founding Member referral program: /join?ref=CODE is the alternate entry
+# point alongside /r/CODE (a Cloudflare Pages Function, functions/r/[code].js)
+# — both must work per the program spec. Cloudflare Pages preserves the
+# query string on a plain redirect, so ?ref=CODE survives onto /login, where
+# a small snippet reads it and sets the same scalpclock_ref cookie /r/CODE sets.
+/join /login 302
+
 # Any /blog/category/<slug> without its own static HTML file falls back to
 # the generic template, which reads the slug from the URL and renders
 # whatever posts.json has for that category (or an honest "nothing yet").

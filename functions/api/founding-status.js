@@ -33,7 +33,33 @@ export async function getFoundingStatus(serviceKey) {
   }
   const remaining = Math.max(0, CAP - claimed);
   const active    = ACTIVE_OVERRIDE && remaining > 0 && Date.now() < new Date(CUTOFF).getTime();
-  return { claimed, remaining, cap: CAP, cutoff: CUTOFF, active };
+
+  // Referral program's current commission rate — read fresh from
+  // referral_program_settings (not hardcoded) so the referral dashboard
+  // shows the real rate rather than a duplicated client-side constant. This
+  // is a separate config source from CAP above on purpose: CAP gates the
+  // founding-tier *pricing* promotion, founding_member_limit gates the
+  // referral *commission* rate — they default to the same 500 today, but
+  // are independently adjustable.
+  let currentReferralRate = null, referralProgramEnabled = false;
+  try {
+    const settingsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/referral_program_settings?id=eq.1&select=*`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+    );
+    const rows = await settingsRes.json().catch(() => []);
+    const settings = Array.isArray(rows) ? rows[0] : null;
+    if (settings) {
+      referralProgramEnabled = settings.referral_program_enabled === true;
+      currentReferralRate = claimed >= settings.founding_member_limit
+        ? settings.commission_rate_post_cap
+        : settings.commission_rate_pre_cap;
+    }
+  } catch (e) {
+    console.error('founding-status referral rate lookup failed:', e.message);
+  }
+
+  return { claimed, remaining, cap: CAP, cutoff: CUTOFF, active, currentReferralRate, referralProgramEnabled };
 }
 
 export async function onRequest(context) {

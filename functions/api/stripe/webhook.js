@@ -80,6 +80,13 @@ export async function onRequest(context) {
         await recordFoundingMember(userId, session.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
       }
 
+      // Referral attribution — checked for EVERY paying user, not just
+      // founders, since the referred person doesn't need to be a founder
+      // themselves, only signed up via one's link.
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+        await recordReferralIfAttributed(userId, env.SUPABASE_SERVICE_ROLE_KEY);
+      }
+
       // Real conversion tracking. Fired server-side (not from the client
       // after Stripe redirect) because a user can close the tab, get
       // interrupted by their bank's 3DS challenge, etc. between paying and
@@ -142,6 +149,25 @@ export async function onRequest(context) {
 
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
         await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
+        await setReferralStatus(userId, 'inactive', env.SUPABASE_SERVICE_ROLE_KEY);
+      }
+      break;
+    }
+
+    case 'invoice.payment_succeeded': {
+      const inv    = event.data.object;
+      const userId = inv.subscription_details?.metadata?.user_id;
+      console.log('Payment succeeded:', inv.customer_email, inv.id, 'user:', userId, 'amount_paid:', inv.amount_paid);
+
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+        // Resumes the dashboard's "active" display after a prior failure —
+        // does not itself gate commission creation.
+        await setReferralStatus(userId, 'active', env.SUPABASE_SERVICE_ROLE_KEY);
+
+        // $0 trial invoices must never create a commission.
+        if (inv.amount_paid > 0) {
+          await createReferralCommission(userId, inv.id, env.SUPABASE_SERVICE_ROLE_KEY);
+        }
       }
       break;
     }
@@ -198,31 +224,216 @@ async function upsertProfile(userId, patch, serviceKey) {
   }
 }
 
+// Unambiguous alphabet (no 0/O/1/I/L confusion) for founder referral codes.
+function generateReferralCode() {
+  const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const bytes = crypto.getRandomValues(new Uint8Array(7));
+  return Array.from(bytes, b => alphabet[b % alphabet.length]).join('');
+}
+
 // Insert-only — no upsert/uniqueness needed since each checkout.session.completed
 // event fires once per new subscription. This row is purely what
-// functions/api/founding-status.js counts to compute spots remaining.
+// functions/api/founding-status.js counts to compute spots remaining. Also
+// assigns the referral program's founder_number (a DB column default pulling
+// from a Postgres sequence — race-safe under concurrent webhook deliveries,
+// no count-then-increment) and a unique referral_code.
 async function recordFoundingMember(userId, subscriptionId, serviceKey) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const code = generateReferralCode();
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/founding_members`, {
+        method:  'POST',
+        headers: {
+          apikey:         serviceKey,
+          Authorization:  `Bearer ${serviceKey}`,
+          'Content-Type': 'application/json',
+          Prefer:         'return=representation',
+        },
+        body: JSON.stringify({
+          user_id:                userId || null,
+          stripe_subscription_id: subscriptionId || null,
+          referral_code:          code,
+        }),
+      });
+      if (r.ok) {
+        const rows = await r.json().catch(() => []);
+        const row  = Array.isArray(rows) ? rows[0] : null;
+        console.log('Founding member recorded for:', userId, 'referral_code:', code, 'founder_number:', row?.founder_number);
+        return;
+      }
+      const text = await r.text();
+      // referral_code is UNIQUE — a collision is vanishingly rare with a
+      // 7-char/32-symbol code, but retry with a fresh code rather than fail
+      // the whole checkout completion over it.
+      if (r.status === 409 && attempt < 2) {
+        console.warn('referral_code collision, retrying:', text);
+        continue;
+      }
+      console.error('founding_members insert error:', r.status, text);
+      return;
+    } catch (e) {
+      console.error('Failed to record founding member:', e.message);
+      return;
+    }
+  }
+}
+
+// If this newly-paying user signed up via a founder's referral link/code
+// (captured client-side at signup into user_metadata.referred_by_code — see
+// login.html), record the referral now, at verified payment, rather than
+// trusting user_metadata at signup time (it's client-writable, so it isn't
+// safe to treat as commission-bearing truth until real money has moved).
+async function recordReferralIfAttributed(referredUserId, serviceKey) {
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/founding_members`, {
+    const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${referredUserId}`, {
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    });
+    if (!getRes.ok) return;
+    const userData = await getRes.json();
+    const userMeta = (userData?.user?.user_metadata || userData?.user_metadata) || {};
+    const code = userMeta.referred_by_code;
+    if (!code || typeof code !== 'string') return;
+
+    const founderRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/founding_members?referral_code=eq.${encodeURIComponent(code)}&select=user_id`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+    );
+    const founders   = await founderRes.json().catch(() => []);
+    const referrerId = Array.isArray(founders) && founders[0]?.user_id;
+    if (!referrerId) { console.warn('Referral code not found:', code); return; }
+
+    if (referrerId === referredUserId) {
+      console.warn('Self-referral blocked for user:', referredUserId);
+      return;
+    }
+
+    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/referrals`, {
       method:  'POST',
+      headers: {
+        apikey:         serviceKey,
+        Authorization:  `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+        // referred_user_id is UNIQUE — a subscriber can only ever be
+        // attributed to one referrer, ever. A redelivered webhook (or any
+        // other double-fire) silently no-ops here instead of erroring.
+        Prefer:         'resolution=ignore-duplicates,return=minimal',
+      },
+      body: JSON.stringify({
+        referrer_id:      referrerId,
+        referred_user_id: referredUserId,
+        referral_code:    code,
+      }),
+    });
+    if (!insertRes.ok) {
+      const text = await insertRes.text();
+      console.error('referrals insert error:', insertRes.status, text);
+    } else {
+      console.log('Referral recorded:', referrerId, '->', referredUserId, 'code:', code);
+    }
+  } catch (e) {
+    console.error('recordReferralIfAttributed failed:', e.message);
+  }
+}
+
+// Flips a referred subscriber's referral row between active/inactive on
+// payment success/failure — display-only, does not gate commission logic
+// (commissions simply stop being created when payments stop succeeding).
+async function setReferralStatus(referredUserId, status, serviceKey) {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/referrals?referred_user_id=eq.${referredUserId}`, {
+      method:  'PATCH',
       headers: {
         apikey:         serviceKey,
         Authorization:  `Bearer ${serviceKey}`,
         'Content-Type': 'application/json',
         Prefer:         'return=minimal',
       },
-      body: JSON.stringify({
-        user_id:                userId || null,
-        stripe_subscription_id: subscriptionId || null,
-      }),
+      body: JSON.stringify({ status }),
     });
-    console.log('Founding member recorded for:', userId, 'status:', r.status);
     if (!r.ok) {
       const text = await r.text();
-      console.error('founding_members insert error:', text);
+      console.error('referrals status update error:', r.status, text);
     }
   } catch (e) {
-    console.error('Failed to record founding member:', e.message);
+    console.error('setReferralStatus failed:', e.message);
+  }
+}
+
+// Reads the CURRENT commission rate at the moment of payment (never stored
+// on the referral row itself) so existing referrals automatically jump from
+// $1.00 to $1.99/mo the instant the 500th founding spot fills — no backfill
+// needed. Returns null (meaning: create no commission) if the program is
+// disabled or settings can't be read — fails closed.
+async function getCurrentCommissionRate(serviceKey) {
+  try {
+    const settingsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/referral_program_settings?id=eq.1&select=*`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+    );
+    const rows     = await settingsRes.json().catch(() => []);
+    const settings = Array.isArray(rows) ? rows[0] : null;
+    if (!settings || settings.referral_program_enabled === false) return null;
+
+    // Same live-COUNT idiom as functions/api/founding-status.js.
+    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/founding_members?select=id`, {
+      headers: {
+        apikey:        serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        Prefer:        'count=exact',
+        Range:         '0-0',
+      },
+    });
+    const range   = countRes.headers.get('content-range'); // "0-0/N"
+    const claimed = range ? (parseInt(range.split('/')[1], 10) || 0) : 0;
+
+    return claimed >= settings.founding_member_limit
+      ? settings.commission_rate_post_cap
+      : settings.commission_rate_pre_cap;
+  } catch (e) {
+    console.error('getCurrentCommissionRate failed:', e.message);
+    return null;
+  }
+}
+
+// Creates one referral_commissions row for a successful recurring payment.
+// stripe_invoice_id is UNIQUE, so Stripe's at-least-once webhook redelivery
+// can never double-pay the same invoice.
+async function createReferralCommission(referredUserId, invoiceId, serviceKey) {
+  try {
+    const refRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/referrals?referred_user_id=eq.${referredUserId}&select=referrer_id`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+    );
+    const refs       = await refRes.json().catch(() => []);
+    const referrerId = Array.isArray(refs) && refs[0]?.referrer_id;
+    if (!referrerId) return; // this subscriber wasn't referred by anyone
+
+    const rate = await getCurrentCommissionRate(serviceKey);
+    if (rate == null) return;
+
+    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/referral_commissions`, {
+      method:  'POST',
+      headers: {
+        apikey:         serviceKey,
+        Authorization:  `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+        Prefer:         'resolution=ignore-duplicates,return=minimal',
+      },
+      body: JSON.stringify({
+        referrer_id:       referrerId,
+        subscriber_id:     referredUserId,
+        stripe_invoice_id: invoiceId,
+        amount:            rate,
+      }),
+    });
+    if (!insertRes.ok) {
+      const text = await insertRes.text();
+      console.error('referral_commissions insert error:', insertRes.status, text);
+    } else {
+      console.log('Commission recorded:', referrerId, 'for', referredUserId, '$' + rate);
+    }
+  } catch (e) {
+    console.error('createReferralCommission failed:', e.message);
   }
 }
 
