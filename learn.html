@@ -174,6 +174,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(247,249,247,.92);backdrop-
 .btn-p:hover{opacity:.88;}
 .btn-s{background:var(--bg2);color:var(--t65);font-weight:600;font-size:.9rem;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;}
 
+/* PICTIONARY PROMO */
+.pic-promo{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:32px;text-decoration:none;transition:border-color .15s;}
+.pic-promo:hover{border-color:rgba(22,217,126,.5);}
+.pic-promo-icon{font-size:1.6rem;flex-shrink:0;}
+.pic-promo-text{flex:1;min-width:0;}
+.pic-promo-title{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--text);margin-bottom:2px;}
+.pic-promo-sub{font-size:.82rem;color:var(--t65);}
+.pic-promo-arrow{font-family:var(--disp);font-weight:700;color:var(--green-ink);font-size:.85rem;flex-shrink:0;}
+
 /* WATCH */
 .chart-wrap{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0;}
 .chart-wrap svg{display:block;width:100%;height:160px;}
@@ -292,6 +301,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(247,249,247,.92);backdrop-
         <a href="/learn-options-trading">Guides</a>
         <a href="/blog/">Blog</a>
         <a href="/trading-resources">Trading Resources</a>
+        <a href="/trading-pictionary">Pictionary</a>
       </div>
     </div>
     <a href="/about">About</a>
@@ -322,6 +332,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(247,249,247,.92);backdrop-
   <a href="/learn-options-trading" style="padding-left:28px">Guides</a>
   <a href="/blog/" style="padding-left:28px">Blog</a>
   <a href="/trading-resources" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" style="padding-left:28px">Pictionary</a>
   <a href="/about">About</a>
   <a href="/scalpchart">ScalpCharts</a>
   <a href="/scalpchart?tab=replay">Replay</a>
@@ -380,6 +391,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(247,249,247,.92);backdrop-
     </div>
     <button class="today-cta" id="today-cta">Start Lesson →</button>
   </div>
+
+  <a href="/trading-pictionary" class="pic-promo">
+    <div class="pic-promo-icon">🖼️</div>
+    <div class="pic-promo-text">
+      <div class="pic-promo-title">New: The Trading Pictionary</div>
+      <div class="pic-promo-sub">Every price-action and options term, with a definition and a diagram — searchable, free to browse.</div>
+    </div>
+    <div class="pic-promo-arrow">Explore →</div>
+  </a>
 
   <div class="section-hd"><h2>Learning Path</h2><span class="pill">365 Days</span></div>
   <div id="path-container"></div>
