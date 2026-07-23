@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Pictionary — Visual Glossary of Trading & Options Terms</title>
+<meta name="description" content="A picture dictionary for traders: price action, candlesticks, options basics, the Greeks, and risk management — every term paired with a definition and a diagram.">
+<link rel="canonical" href="https://scalpclock.com/trading-pictionary">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="Trading Pictionary — Visual Glossary of Trading & Options Terms">
+<meta property="og:description" content="A picture dictionary for traders: price action, candlesticks, options basics, the Greeks, and risk management — every term paired with a definition and a diagram.">
+<meta property="og:url" content="https://scalpclock.com/trading-pictionary">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Trading Pictionary — Visual Glossary of Trading & Options Terms">
+<meta name="twitter:description" content="A picture dictionary for traders: price action, candlesticks, options basics, the Greeks, and risk management — every term paired with a definition and a diagram.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;--panel:rgba(14,22,16,.85);--line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --red:#f54242;
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;--max:1100px;--r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.11),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:inherit;text-decoration:none;}
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.75);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-family:var(--disp);font-weight:600;font-size:.9rem;color:var(--t55);padding:8px 14px;border-radius:8px;transition:.15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(22,217,126,.08);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:9px 20px;border-radius:9px;background:var(--green);color:#04150d;transition:.15s;}
+.nav-cta:hover{background:#20e88a;}
+.nav-burger{display:none;background:none;border:none;color:var(--t55);cursor:pointer;padding:8px;border-radius:8px;font-size:1.5rem;line-height:1;transition:color .15s;}
+.nav-burger:hover{color:#fff;}
+.nav-drawer{display:none;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1a2b22;z-index:59;padding:4px 0 20px;}
+.nav-drawer.open{display:flex;}
+.nav-drawer a{font-family:var(--disp);font-weight:600;font-size:1.05rem;color:#8899b0;padding:16px 28px;border-bottom:1px solid #1a2b22;text-decoration:none;transition:color .15s,background .15s;}
+.nav-drawer a:hover,.nav-drawer a:active{color:#fff;background:rgba(22,217,126,.07);}
+@media(max-width:720px){.nav-links{display:none;}.nav-burger{display:block;}.nav-cta{display:none;}}
+.breadcrumbs{max-width:1100px;margin:0 auto;padding:20px 24px 0;font-size:.82rem;color:var(--t30);position:relative;z-index:1;}
+.breadcrumbs a{color:var(--t55);}
+.breadcrumbs a:hover{color:var(--green);}
+.cta-box{background:var(--panel);border:1px solid rgba(22,217,126,.3);border-radius:var(--r);padding:32px;text-align:center;margin:32px 0;}
+.cta-box p{color:var(--t80);margin-bottom:18px;font-size:1.05rem;}
+.btn{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:12px 24px;border-radius:10px;transition:.15s;display:inline-block;}
+.btn-green{background:var(--green);color:#04150d;}
+.btn-green:hover{background:#20e88a;}
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
+.foot-in{max-width:1140px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.mini-cta{max-width:1100px;margin:0 auto 8px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--g-dim);border:1px solid rgba(22,217,126,.25);border-radius:10px;padding:14px 20px;}
+.mini-cta p{color:var(--t80);font-size:.92rem;margin:0;}
+.mini-cta .btn{padding:9px 18px;font-size:.85rem;white-space:nowrap;}
+
+/* pictionary-specific */
+.pic-hero{max-width:820px;margin:0 auto;padding:44px 24px 20px;text-align:center;position:relative;z-index:1;}
+.pic-hero .article-cat{font-family:var(--disp);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);}
+.pic-hero h1{font-family:var(--disp);font-size:clamp(1.9rem,4.8vw,2.7rem);font-weight:700;margin:12px 0 14px;line-height:1.2;}
+.pic-hero h1 em{color:var(--green);font-style:normal;}
+.pic-hero p{color:var(--t55);font-size:1.02rem;line-height:1.6;}
+.pic-controls{max-width:1100px;margin:24px auto 0;padding:0 24px;position:relative;z-index:1;}
+.pic-search{width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-family:var(--body);font-size:.92rem;margin-bottom:14px;}
+.pic-search::placeholder{color:var(--t30);}
+.pic-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.pic-tab{font-family:var(--disp);font-weight:600;font-size:.82rem;color:var(--t55);background:var(--panel);border:1px solid var(--line);padding:8px 16px;border-radius:20px;cursor:pointer;transition:.15s;}
+.pic-tab:hover{border-color:rgba(22,217,126,.4);color:var(--text);}
+.pic-tab.active{background:var(--green);color:#04150d;border-color:var(--green);}
+.pic-count{color:var(--t30);font-size:.8rem;margin:10px 2px 0;}
+.pic-grid{max-width:1100px;margin:18px auto 0;padding:0 24px 8px;position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.pic-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;transition:.15s;display:flex;flex-direction:column;}
+.pic-card:hover{border-color:rgba(22,217,126,.4);}
+.pic-icon{width:100%;height:70px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.pic-icon svg{width:100%;height:100%;max-width:130px;}
+.pic-cat{font-family:var(--disp);font-weight:700;font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;color:var(--green);opacity:.85;}
+.pic-term{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin:6px 0 8px;line-height:1.25;}
+.pic-def{color:var(--t80);font-size:.87rem;line-height:1.55;}
+.pic-empty{grid-column:1/-1;text-align:center;color:var(--t30);padding:40px 0;font-size:.92rem;}
+.pic-body{max-width:1100px;margin:24px auto 0;padding:0 24px 40px;position:relative;z-index:1;}
+.pic-body h2{font-family:var(--disp);font-size:1.3rem;font-weight:700;color:var(--text);margin:32px 0 12px;}
+.pic-body p{color:var(--t80);font-size:.98rem;line-height:1.7;margin-bottom:14px;max-width:760px;}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "name": "ScalpClock Trading Pictionary",
+  "description": "A visual glossary of price action, candlestick, options, and risk-management terms for traders.",
+  "url": "https://scalpclock.com/trading-pictionary"
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://scalpclock.com/"},
+    {"@type":"ListItem","position":2,"name":"Trading Pictionary","item":"https://scalpclock.com/trading-pictionary"}
+  ]
+}</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/learn" class="active">Learn</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog/">Blog</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+    </div>
+    <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeDrawer()">Home</a>
+  <a href="/about" onclick="closeDrawer()">About</a>
+  <a href="/learn" class="active" onclick="closeDrawer()">Learn</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/blog/" onclick="closeDrawer()">Blog</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<div class="breadcrumbs"><a href="/">Home</a> / <a href="/learn">Learn</a> / Trading Pictionary</div>
+
+<div class="pic-hero">
+  <span class="article-cat">Visual Glossary</span>
+  <h1>The Scalp<em>Clock</em> Trading Pictionary</h1>
+  <p>Every trading term is easier to remember with a picture next to it. Search or filter below to find a word, see its definition, and see exactly what it looks like on a chart.</p>
+</div>
+
+<div class="mini-cta">
+  <p>Want these concepts to actually stick? The Learn Hub turns each one into a lesson with a quiz.</p>
+  <a class="btn btn-green" href="/learn">Open Learn Hub →</a>
+</div>
+
+<div class="pic-controls">
+  <input class="pic-search" id="picSearch" type="text" placeholder="Search terms — try &quot;delta&quot;, &quot;breakout&quot;, &quot;stop loss&quot;…" autocomplete="off">
+  <div class="pic-tabs" id="picTabs"></div>
+  <div class="pic-count" id="picCount"></div>
+</div>
+
+<div class="pic-grid" id="picGrid"></div>
+
+<div class="pic-body">
+  <h2>Why a Pictionary Instead of a Word List</h2>
+  <p>Trading vocabulary is easy to read and hard to retain — "support" and "resistance" mean nothing until you've actually seen price react at a level. Pairing each definition with a small diagram closes that gap faster than text alone, the same way a chart makes a setup click in a way a paragraph never does.</p>
+  <p>This covers the core price-action vocabulary you'll hear in any Learn Hub lesson, plus the options-specific terms — strikes, Greeks, ITM/OTM — that trip up traders moving from stock to options trading.</p>
+
+  <div class="cta-box">
+    <p>See these concepts on a live chart instead of a diagram — start free on ScalpCharts.</p>
+    <a class="btn btn-green" href="/login?tab=signup">Start Free →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog/">Blog</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Learn</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:admin@scalpclock.com" style="color:inherit;text-decoration:underline;">admin@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<script src="/js/pictionary.js"></script>
+<script>
+document.body.style.visibility='visible';
+function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
+function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
+document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
+initPictionary();
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
