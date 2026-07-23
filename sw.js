@@ -1,4 +1,4 @@
-const CACHE = 'sc-v35';
+const CACHE = 'sc-v36';
 const STATIC = [
   '/',
   '/index.html',
@@ -78,7 +78,41 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Cache-first for static assets
+  // Network-first for HTML pages/navigations. Twice now, a content update
+  // to a precached page (learn.html, signals.html, pricing.html, etc.) sat
+  // invisible for every returning visitor until someone remembered to bump
+  // CACHE by hand — cache-first on HTML means "stale until a human
+  // remembers" is the default failure mode, not an edge case. HTML is
+  // cheap to refetch and changes far more often than static assets, so it
+  // gets its own branch: try the network, update the cache opportunistically
+  // for offline use, and only fall back to whatever's cached (or the
+  // offline page) if the network genuinely fails.
+  const isHTML = e.request.mode === 'navigate'
+    || e.request.destination === 'document'
+    || (e.request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTML) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok && e.request.method === 'GET') {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        // Redirected responses (e.g. /blog -> /blog/) can't be replayed by
+        // the service worker as-is — Chrome throws "Response served by
+        // service worker has redirections". Rebuild a fresh, non-redirected
+        // Response with the same body/status so the browser can render it.
+        return res.redirected
+          ? new Response(res.body, { status: res.status, statusText: res.statusText, headers: res.headers })
+          : res;
+      }).catch(() => caches.match(e.request).then(cached => cached || caches.match('/offline.html')))
+    );
+    return;
+  }
+
+  // Cache-first for everything else (JS, CSS, images, manifest) — static
+  // assets that are far less staleness-sensitive and benefit from instant
+  // cache hits.
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
@@ -87,16 +121,10 @@ self.addEventListener('fetch', e => {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
-        // Navigations can't be satisfied by a redirected Response (e.g. /blog
-        // -> /blog/) — Chrome throws "Response served by service worker has
-        // redirections". Rebuild a fresh, non-redirected Response with the
-        // same body/status so the browser can render it.
         return res.redirected
           ? new Response(res.body, { status: res.status, statusText: res.statusText, headers: res.headers })
           : res;
       }).catch(() => {
-        // Full-page navigations fall back to a dedicated offline page;
-        // other assets (images, scripts) just fail through.
         if (e.request.mode === 'navigate') return caches.match('/offline.html');
       });
     })
