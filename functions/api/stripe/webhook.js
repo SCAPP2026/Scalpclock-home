@@ -316,7 +316,10 @@ async function recordReferralIfAttributed(referredUserId, serviceKey) {
         // referred_user_id is UNIQUE — a subscriber can only ever be
         // attributed to one referrer, ever. A redelivered webhook (or any
         // other double-fire) silently no-ops here instead of erroring.
-        Prefer:         'resolution=ignore-duplicates,return=minimal',
+        // return=representation (not minimal) so we can tell a genuine new
+        // insert apart from a suppressed duplicate — only a genuine insert
+        // should fire a notification/milestone check below.
+        Prefer:         'resolution=ignore-duplicates,return=representation',
       },
       body: JSON.stringify({
         referrer_id:      referrerId,
@@ -327,9 +330,14 @@ async function recordReferralIfAttributed(referredUserId, serviceKey) {
     if (!insertRes.ok) {
       const text = await insertRes.text();
       console.error('referrals insert error:', insertRes.status, text);
-    } else {
-      console.log('Referral recorded:', referrerId, '->', referredUserId, 'code:', code);
+      return;
     }
+    const inserted = await insertRes.json().catch(() => []);
+    if (!Array.isArray(inserted) || inserted.length === 0) return; // duplicate, already recorded
+    console.log('Referral recorded:', referrerId, '->', referredUserId, 'code:', code);
+
+    await createNotification(referrerId, 'new_referral', '🎉 New Referral', 'Someone just joined ScalpClock through your link.', serviceKey);
+    await maybeNotifyMilestone(referrerId, serviceKey);
   } catch (e) {
     console.error('recordReferralIfAttributed failed:', e.message);
   }
@@ -417,7 +425,10 @@ async function createReferralCommission(referredUserId, invoiceId, serviceKey) {
         apikey:         serviceKey,
         Authorization:  `Bearer ${serviceKey}`,
         'Content-Type': 'application/json',
-        Prefer:         'resolution=ignore-duplicates,return=minimal',
+        // return=representation so a genuine insert is distinguishable from
+        // a suppressed duplicate (Stripe webhook redelivery) — only a
+        // genuine insert should fire a notification below.
+        Prefer:         'resolution=ignore-duplicates,return=representation',
       },
       body: JSON.stringify({
         referrer_id:       referrerId,
@@ -429,11 +440,74 @@ async function createReferralCommission(referredUserId, invoiceId, serviceKey) {
     if (!insertRes.ok) {
       const text = await insertRes.text();
       console.error('referral_commissions insert error:', insertRes.status, text);
-    } else {
-      console.log('Commission recorded:', referrerId, 'for', referredUserId, '$' + rate);
+      return;
     }
+    const inserted = await insertRes.json().catch(() => []);
+    if (!Array.isArray(inserted) || inserted.length === 0) return; // duplicate invoice, already recorded
+    console.log('Commission recorded:', referrerId, 'for', referredUserId, '$' + rate);
+
+    await createNotification(referrerId, 'commission', '💰 Commission Earned', `You earned $${Number(rate).toFixed(2)} from a referral.`, serviceKey);
   } catch (e) {
     console.error('createReferralCommission failed:', e.message);
+  }
+}
+
+// Fire-and-forget in-app notification. Best-effort — a failure here must
+// never break referral/commission recording itself (called after the write
+// it's reporting on has already succeeded).
+async function createNotification(userId, type, title, body, serviceKey) {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/notifications`, {
+      method:  'POST',
+      headers: {
+        apikey:         serviceKey,
+        Authorization:  `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+        Prefer:         'return=minimal',
+      },
+      body: JSON.stringify({ user_id: userId, type, title, body }),
+    });
+    if (!r.ok) console.error('notifications insert error:', r.status, await r.text());
+  } catch (e) {
+    console.error('createNotification failed:', e.message);
+  }
+}
+
+const MILESTONE_THRESHOLDS = [1, 5, 10, 25];
+
+// Same live-COUNT-via-Range idiom as founding-status.js/getCurrentCommissionRate.
+async function countActiveReferrals(referrerId, serviceKey) {
+  const r = await fetch(
+    `${SUPABASE_URL}/rest/v1/referrals?referrer_id=eq.${referrerId}&status=eq.active&select=id`,
+    {
+      headers: {
+        apikey:        serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        Prefer:        'count=exact',
+        Range:         '0-0',
+      },
+    }
+  );
+  const range = r.headers.get('content-range'); // "0-0/N"
+  return range ? (parseInt(range.split('/')[1], 10) || 0) : 0;
+}
+
+// Fires once, the moment a referrer's active-referral count exactly crosses
+// a threshold — checked right after a new referral insert.
+async function maybeNotifyMilestone(referrerId, serviceKey) {
+  try {
+    const count = await countActiveReferrals(referrerId, serviceKey);
+    if (MILESTONE_THRESHOLDS.includes(count)) {
+      await createNotification(
+        referrerId,
+        'milestone',
+        '🏅 Milestone Unlocked',
+        `You've reached ${count} active referral${count === 1 ? '' : 's'}!`,
+        serviceKey
+      );
+    }
+  } catch (e) {
+    console.error('maybeNotifyMilestone failed:', e.message);
   }
 }
 

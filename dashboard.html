@@ -676,7 +676,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="link-title">Account / Pro</div>
       <div class="link-desc">Manage your plan, subscription details, and Pro access.</div>
     </a>
-    <a class="link-card" href="/referrals">
+    <a class="link-card" href="/referrals" style="position:relative;">
+      <span id="referralNotifDot" style="display:none;position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--red);"></span>
       <div class="link-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M17 3.5a4 4 0 0 1 0 7.5"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
       <div class="link-title">Founder Referrals</div>
       <div class="link-desc">Share your link, track referrals, and see your recurring commissions.</div>
@@ -841,6 +842,23 @@ async function init() {
   loadAllTrades();
   checkSubscription();
   loadSignalsPreview();
+
+  if (user.app_metadata?.founding_member === true) checkReferralNotifications();
+}
+
+// Small unread-count dot on the Founder Referrals tile — skipped entirely
+// for non-founders, since only founders can ever have referral/commission
+// notifications (see functions/api/stripe/webhook.js).
+async function checkReferralNotifications() {
+  try {
+    const { count } = await sb.from('notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', _uid)
+      .eq('read', false);
+    if (count > 0) document.getElementById('referralNotifDot').style.display = 'block';
+  } catch (e) {
+    console.warn('checkReferralNotifications failed:', e.message);
+  }
 }
 
 // ── Streak ────────────────────────────────────────────────────────────────────

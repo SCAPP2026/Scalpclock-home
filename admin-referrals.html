@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referral Program — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{ --max:1100px; }
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(247,249,247,.9);border-bottom:1px solid var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-title{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--text);}
+.nav-title span{color:var(--green-ink);}
+.nav-back{font-size:.82rem;color:var(--t65);text-decoration:none;}
+
+.shell{max-width:var(--max);margin:0 auto;padding:32px 24px;}
+
+.deny-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:40px 32px;text-align:center;max-width:480px;margin:60px auto;}
+.deny-card h2{font-family:var(--disp);font-weight:700;font-size:1.3rem;margin-bottom:10px;}
+.deny-card p{color:var(--t65);font-size:.9rem;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:16px 18px;}
+.stat-label{font-size:.7rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.stat-val{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--text);margin-top:2px;}
+
+.section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:28px 0 12px;color:var(--t85);}
+.tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.83rem;}
+th{text-align:left;padding:10px 14px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.68rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;font-family:var(--mono);}
+tr:last-child td{border-bottom:none;}
+.status-pill{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px;}
+.status-pill.active{background:var(--green-soft);color:var(--green-ink);}
+.status-pill.inactive{background:rgba(245,166,35,.12);color:#c98a1a;}
+.toggle-btn{font-family:var(--disp);font-weight:700;font-size:.72rem;padding:5px 11px;border-radius:6px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;}
+.toggle-btn:hover{border-color:var(--red);color:var(--red-ink);}
+.empty-row td{text-align:center;color:var(--t65);font-family:var(--body);padding:24px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <span class="nav-title">Scalp<span>Clock</span> — Referral Admin</span>
+    <a class="nav-back" href="/dashboard">&larr; Dashboard</a>
+  </div>
+</nav>
+
+<div class="shell">
+  <div id="denyView" style="display:none;">
+    <div class="deny-card">
+      <h2>Access Denied</h2>
+      <p>This page is restricted to ScalpClock admins.</p>
+    </div>
+  </div>
+
+  <div id="adminView" style="display:none;">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Founders</div><div class="stat-val" id="statFounders">—</div></div>
+      <div class="stat-card"><div class="stat-label">Active Referrals</div><div class="stat-val" id="statActive">—</div></div>
+      <div class="stat-card"><div class="stat-label">Inactive Referrals</div><div class="stat-val" id="statInactive">—</div></div>
+      <div class="stat-card"><div class="stat-label">Commissions Paid</div><div class="stat-val" id="statCommTotal">—</div></div>
+    </div>
+
+    <div class="section-title">Referrals</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Founder</th><th>Referred User</th><th>Status</th><th>Created</th><th></th></tr></thead>
+        <tbody id="refsBody"><tr class="empty-row"><td colspan="5">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Recent Commissions</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Founder</th><th>Amount</th><th>Date</th></tr></thead>
+        <tbody id="commsBody"><tr class="empty-row"><td colspan="3">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
+
+let _token = null;
+
+async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login'; return; }
+
+  if (session.user.app_metadata?.is_admin !== true) {
+    document.getElementById('denyView').style.display = 'block';
+    return;
+  }
+
+  _token = session.access_token;
+  document.getElementById('adminView').style.display = 'block';
+  await Promise.all([loadOverview(), loadReferrals()]);
+}
+
+async function authedFetch(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    headers: { ...(options.headers || {}), Authorization: `Bearer ${_token}` },
+  });
+}
+
+async function loadOverview() {
+  try {
+    const res = await authedFetch('/api/admin/overview');
+    if (!res.ok) throw new Error('overview fetch failed: ' + res.status);
+    const data = await res.json();
+
+    document.getElementById('statFounders').textContent = data.founders;
+    document.getElementById('statActive').textContent = data.activeReferrals;
+    document.getElementById('statInactive').textContent = data.inactiveReferrals;
+    document.getElementById('statCommTotal').textContent = '$' + Number(data.commissionTotal || 0).toFixed(2);
+
+    renderCommissions(data.recentCommissions || []);
+  } catch (e) {
+    console.error('loadOverview failed:', e.message);
+  }
+}
+
+async function loadReferrals() {
+  try {
+    const res = await authedFetch('/api/admin/referrals');
+    if (!res.ok) throw new Error('referrals fetch failed: ' + res.status);
+    const data = await res.json();
+    renderReferrals(data.referrals || []);
+  } catch (e) {
+    console.error('loadReferrals failed:', e.message);
+  }
+}
+
+function renderReferrals(rows) {
+  const body = document.getElementById('refsBody');
+  if (!rows.length) {
+    body.innerHTML = '<tr class="empty-row"><td colspan="5">No referrals yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr data-id="${r.id}">
+      <td>${r.founderNumber != null ? '#' + r.founderNumber : '—'}</td>
+      <td>${r.referredUserId.slice(0, 8)}…</td>
+      <td><span class="status-pill ${r.status}">${r.status.toUpperCase()}</span></td>
+      <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+      <td><button class="toggle-btn" onclick="toggleStatus(${r.id}, '${r.status}', this)">${r.status === 'active' ? 'Flag' : 'Unflag'}</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderCommissions(rows) {
+  const body = document.getElementById('commsBody');
+  if (!rows.length) {
+    body.innerHTML = '<tr class="empty-row"><td colspan="3">No commissions yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(c => `
+    <tr>
+      <td>${c.founderNumber != null ? '#' + c.founderNumber : '—'}</td>
+      <td>$${Number(c.amount).toFixed(2)}</td>
+      <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+    </tr>
+  `).join('');
+}
+
+async function toggleStatus(id, currentStatus, btn) {
+  const nextStatus = currentStatus === 'active' ? 'inactive' : 'active';
+  btn.disabled = true;
+  try {
+    const res = await authedFetch('/api/admin/referrals', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: nextStatus }),
+    });
+    if (!res.ok) throw new Error('patch failed: ' + res.status);
+    await loadReferrals();
+  } catch (e) {
+    console.error('toggleStatus failed:', e.message);
+    btn.disabled = false;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

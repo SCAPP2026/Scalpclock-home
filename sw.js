@@ -1,4 +1,4 @@
-const CACHE = 'sc-v37';
+const CACHE = 'sc-v38';
 const STATIC = [
   '/',
   '/index.html',
@@ -19,6 +19,8 @@ const STATIC = [
   '/learn-options-trading.html',
   '/referrals.html',
   '/founders.html',
+  '/leaderboard.html',
+  '/admin-referrals.html',
   '/js/sc-learn-progress.js',
   '/blog/',
   '/blog/posts.json',
