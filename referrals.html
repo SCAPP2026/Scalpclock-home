@@ -47,7 +47,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{ --max:1000px; }
 *{box-sizing:border-box;}
-body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.08),transparent 68%),
   linear-gradient(var(--line) 1px,transparent 1px),
