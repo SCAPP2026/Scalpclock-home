@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Is Options Trading? A Beginner's Guide | ScalpClock</title>
+<meta name="description" content="New to options? This beginner's guide explains what options trading is, how calls and puts work, and the key terms every new trader needs to know.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="What Is Options Trading? A Beginner's Guide | ScalpClock">
+<meta property="og:description" content="New to options? This beginner's guide explains what options trading is, how calls and puts work, and the key terms every new trader needs to know.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What Is Options Trading? A Beginner's Guide | ScalpClock">
+<meta name="twitter:description" content="New to options? This beginner's guide explains what options trading is, how calls and puts work, and the key terms every new trader needs to know.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --gold:#f5a623;--gold-dim:rgba(245,166,35,.12);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);
+  --red:#ff4566;--red-dim:rgba(255,69,102,.12);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;visibility:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.10),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:var(--green);}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1180px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;align-items:center;gap:5px;}
+.nav-links a{font-size:.85rem;color:var(--t80);padding:7px 11px;border-radius:8px;transition:color .15s,background .15s;text-decoration:none;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{background:var(--green)!important;color:#070a08!important;font-weight:600;border-radius:8px;padding:7px 16px!important;}
+.nav-cta:hover{background:#12c470!important;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.ham span{display:block;width:22px;height:2px;background:var(--t80);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:80px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;overflow-y:auto;}
+.nav-drawer.open{transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);text-decoration:none;display:block;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--g-dim);}
+.nav-drawer a.active{color:var(--green);}
+@media(max-width:960px){
+  .nav-links{display:none;}
+  .ham{display:flex;}
+  .nav-drawer{display:flex;}
+}
+
+/* BREADCRUMB */
+.crumb{max-width:760px;margin:0 auto;padding:20px 24px 0;font-size:.82rem;color:var(--t55);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.crumb a{color:var(--t55);text-decoration:none;}
+.crumb a:hover{color:var(--green);}
+.crumb span{color:var(--t30);}
+.crumb .current{color:var(--t80);}
+
+/* ARTICLE HEADER */
+.art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--g-dim);color:var(--green);border:1px solid var(--green);margin-bottom:18px;text-decoration:none;}
+.art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
+.art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
+.art-meta span{display:inline-flex;align-items:center;gap:6px;}
+
+/* PROSE */
+.art-body{max-width:760px;margin:0 auto;padding:0 24px;font-size:1.02rem;line-height:1.85;color:var(--t80);}
+.art-body h2{font-family:var(--disp);font-size:clamp(1.35rem,3vw,1.7rem);font-weight:700;color:var(--text);margin:44px 0 16px;letter-spacing:.005em;}
+.art-body h3{font-family:var(--disp);font-size:1.15rem;font-weight:700;color:var(--text);margin:30px 0 12px;}
+.art-body p{margin-bottom:18px;}
+.art-body ul,.art-body ol{margin:0 0 18px 22px;}
+.art-body li{margin-bottom:9px;}
+.art-body strong{color:var(--text);font-weight:700;}
+.art-body a{text-decoration:underline;text-decoration-color:rgba(22,217,126,.35);text-underline-offset:3px;}
+.art-body a:hover{text-decoration-color:var(--green);}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:36px;}
+.toc-title{font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:12px;}
+.toc ol{margin:0 0 0 20px;}
+.toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
+.toc a:hover{color:var(--green);}
+.callout{background:var(--g-dim);border:1px solid var(--green);border-left:3px solid var(--green);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.callout p:last-child{margin-bottom:0;}
+
+/* MID-ARTICLE CTA */
+.mid-cta{background:linear-gradient(135deg,rgba(22,217,126,.1),rgba(22,217,126,.02));border:1px solid rgba(22,217,126,.28);border-radius:16px;padding:28px 26px;margin:40px 0;text-align:center;}
+.mid-cta h2{margin-top:0!important;font-size:1.3rem!important;}
+.mid-cta p{color:var(--t80);margin-bottom:18px;}
+.mid-cta .btn-primary{margin:0 auto;}
+.btn-primary{background:var(--green);color:#070a08;font-weight:700;font-size:.92rem;padding:13px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none!important;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-primary:hover{background:#12c470;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.92rem;padding:13px 22px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none!important;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
+.btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
+
+/* FAQ */
+.faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
+.faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--green);flex-shrink:0;transition:transform .2s;}
+.faq-item[open] summary::after{transform:rotate(45deg);}
+.faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
+
+/* AUTHOR BOX */
+.author-box{display:flex;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin:40px 0;}
+.author-avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 40% 35%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.5);display:grid;place-items:center;font-size:1.4rem;}
+.author-box h3{font-family:var(--disp);font-size:1.02rem;font-weight:700;margin-bottom:4px;color:var(--text);}
+.author-box p{font-size:.86rem;color:var(--t55);line-height:1.6;margin:0;}
+@media(max-width:520px){.author-box{flex-direction:column;text-align:center;}}
+
+/* RELATED */
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
+.related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
+.related-card:hover{border-color:var(--green);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:6px;display:block;}
+.related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
+
+/* CTA SECTION */
+.cta-section{text-align:center;padding:76px 24px 92px;max-width:760px;margin:0 auto;}
+.cta-section h2{font-family:var(--disp);font-size:clamp(1.7rem,4vw,2.3rem);font-weight:700;letter-spacing:.01em;margin-bottom:16px;}
+.cta-section p{font-size:1rem;color:var(--t80);line-height:1.7;max-width:480px;margin:0 auto 30px;}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;margin-top:20px;}
+.foot-in{max-width:1180px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;text-decoration:none;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* READ TOAST */
+#readToast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--panel);border:1px solid var(--green);border-radius:12px;padding:14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:200;transition:transform .35s ease;max-width:calc(100vw - 32px);}
+#readToast.show{transform:translateX(-50%) translateY(0);}
+#readToast .rt-icon{font-size:1.3rem;}
+#readToast .rt-title{font-family:var(--disp);font-weight:700;font-size:.88rem;color:var(--text);}
+#readToast .rt-sub{font-size:.76rem;color:var(--t55);}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "What Is Options Trading? A Beginner's Guide", "description": "New to options? This beginner's guide explains what options trading is, how calls and puts work, and the key terms every new trader needs to know.", "url": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading", "datePublished": "2026-07-17", "dateModified": "2026-07-17", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is options trading good for beginners?", "acceptedAnswer": {"@type": "Answer", "text": "Options trading can be learned by beginners, but it requires more upfront education than buying stocks. Start with the basics \u2014 calls, puts, strike prices, and expiration \u2014 before using real money, and consider practicing with tools like ScalpClock's Chart Replay first."}}, {"@type": "Question", "name": "How much money do I need to start trading options?", "acceptedAnswer": {"@type": "Answer", "text": "Some options contracts can be bought for well under $100 in premium, but you should also budget for losing trades and factor in your brokerage's account minimums. See our full guide on how much money you need to start trading options for a detailed breakdown."}}, {"@type": "Question", "name": "What's the difference between a call and a put?", "acceptedAnswer": {"@type": "Answer", "text": "A call option gives you the right to buy 100 shares at a set price, and traders buy calls when they expect the price to rise. A put option gives you the right to sell 100 shares at a set price, and traders buy puts when they expect the price to fall."}}, {"@type": "Question", "name": "Can you lose more than you invested in options trading?", "acceptedAnswer": {"@type": "Answer", "text": "If you only buy calls or puts (rather than selling them), your maximum loss is limited to the premium you paid. Selling options, especially uncovered/&quot;naked&quot; positions, can carry much larger \u2014 sometimes theoretically unlimited \u2014 risk, which is why beginners should fully understand a strategy before using it."}}, {"@type": "Question", "name": "What happens when an option expires?", "acceptedAnswer": {"@type": "Answer", "text": "If an option is \"in the money\" at expiration (profitable to exercise), it's typically automatically exercised or its value is settled in cash, depending on the option type and broker. If it's \"out of the money,\" it expires worthless and the buyer loses the premium paid."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Basics", "item": "https://scalpclock.com/learn-options-trading/options-basics"}, {"@type": "ListItem", "position": 4, "name": "What Is Options Trading? A Beginner's Guide", "item": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading"}]}]}</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+          <a href="/trading-resources">Trading Resources</a>
+          <a href="/trading-pictionary">Pictionary</a>
+        </div>
+      </div>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+      <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    </nav>
+    <button class="ham" onclick="toggleDrawer()" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeDrawer()">Home</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<div class="crumb reveal">
+  <a href="/">Home</a><span>/</span>
+  <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
+  <a href="/learn-options-trading/options-basics">Options Basics</a><span>/</span>
+  <span class="current">What Is Options Trading? A Beginner's Guide</span>
+</div>
+
+<header class="art-header reveal">
+  <a class="art-cat-pill" href="/learn-options-trading/options-basics">📘 Options Basics</a>
+  <h1>What Is Options Trading? A Beginner's Guide</h1>
+  <div class="art-meta">
+    <span>⏱ 9 min read</span>
+    <span>📅 Updated July 17, 2026</span>
+    <span>✍️ ScalpClock Education Team</span>
+  </div>
+</header>
+
+<article class="art-body reveal">
+<nav class="toc" aria-label="Table of contents">
+  <div class="toc-title">In This Article</div>
+  <ol>
+    <li><a href="#what-is-an-option">What Is an Option?</a></li>
+    <li><a href="#calls-and-puts">Calls and Puts, in Plain English</a></li>
+    <li><a href="#contract-anatomy">The Parts of an Options Contract</a></li>
+    <li><a href="#why-trade-options">Why Traders Use Options</a></li>
+    <li><a href="#an-example">A Simple Example</a></li>
+    <li><a href="#risks">The Risks You Need to Understand</a></li>
+    <li><a href="#getting-started">How to Get Started the Right Way</a></li>
+  </ol>
+</nav>
+
+<p>If you've ever heard someone talk about "buying calls" on a stock, or watched a headline about a trader turning a few hundred dollars into a huge win (or a total loss) overnight, you were probably looking at options trading. It sounds complicated from the outside, but the core idea is simpler than most explanations make it seem.</p>
+
+<p>This guide breaks down <strong>what options trading actually is</strong>, in plain English, with no assumed background in finance. By the end, you'll understand what an option is, how calls and puts differ, what the pieces of a contract mean, and — just as importantly — what the real risks are before you ever place a trade.</p>
+
+<h2 id="what-is-an-option">What Is an Option?</h2>
+<p>An <strong>option</strong> is a contract that gives you the <em>right</em>, but not the <em>obligation</em>, to buy or sell 100 shares of a stock at a specific price, by a specific date. That's the whole idea. Everything else in options trading is a variation on that one sentence.</p>
+<p>Compare that to buying a stock outright. When you buy 100 shares of a company, you own those shares — you can hold them for years, sell them whenever you want, and you have no deadline. An option is different: it's a contract with an expiration date, and it only represents the <em>right</em> to a trade, not ownership of the company itself.</p>
+<p>Think of an option like a reservation. If you put down a deposit to reserve a hotel room at today's price for a date next month, you've locked in that price — but you're not obligated to actually stay there. If the price of a room at that hotel goes up before your date, your reservation is now more valuable than what you paid for it. If it goes down, your reservation isn't worth much. Options work on a similar logic, applied to stock prices instead of hotel rooms.</p>
+
+<h2 id="calls-and-puts">Calls and Puts, in Plain English</h2>
+<p>There are only two types of options: <strong>calls</strong> and <strong>puts</strong>.</p>
+<ul>
+<li><strong>A call option</strong> gives you the right to <em>buy</em> 100 shares of a stock at a set price. Traders buy calls when they think a stock's price is going to go <em>up</em>.</li>
+<li><strong>A put option</strong> gives you the right to <em>sell</em> 100 shares of a stock at a set price. Traders buy puts when they think a stock's price is going to go <em>down</em>.</li>
+</ul>
+<p>If that's the only thing you take away from this article, you're already ahead of most beginners: <strong>calls = betting up, puts = betting down.</strong> Everything else builds on that foundation. For a deeper comparison of how these two behave differently in practice, see our <a href="/learn-options-trading/options-basics">Options Basics</a> category for more lessons as they're published.</p>
+
+<h2 id="contract-anatomy">The Parts of an Options Contract</h2>
+<p>Every options contract has four pieces that define exactly what you're trading. Once you can read these four things, you can read <em>any</em> options contract.</p>
+<h3>1. The Underlying Stock</h3>
+<p>This is the company the option is based on — Apple, Tesla, an ETF like SPY, and so on. The option's value moves based on what this stock's price does.</p>
+<h3>2. The Strike Price</h3>
+<p>This is the set price at which you can buy (for a call) or sell (for a put) the stock. If you own a $150 call on a stock, "$150" is your strike price — the price you're locked in at, regardless of where the stock actually trades.</p>
+<h3>3. The Expiration Date</h3>
+<p>Every option has a deadline. After this date, the contract no longer exists — it either gets exercised, or it expires worthless. Expiration dates can range from a few days away to more than a year, depending on what's available for that stock.</p>
+<h3>4. The Premium</h3>
+<p>This is the price you actually pay to buy the option — think of it as the cost of the "reservation" from our earlier example. The premium is quoted per share, but since one contract controls 100 shares, a premium of $2.00 actually costs $200 (2.00 × 100).</p>
+
+<div class="callout">
+<div class="callout-label">Quick Recap</div>
+<p>A "SPY $520 Call expiring in 30 days for a $3.00 premium" means: you're paying $300 total for the right to buy 100 shares of SPY at $520 each, anytime before that contract expires in 30 days.</p>
+</div>
+
+<h2 id="why-trade-options">Why Traders Use Options</h2>
+<p>Options exist for a few different reasons, and understanding <em>why</em> someone would use one helps the whole concept click into place.</p>
+<ul>
+<li><strong>Leverage.</strong> Options let you control 100 shares of a stock for a fraction of what it would cost to buy those shares outright. This magnifies both potential gains and potential losses — which is exactly why risk management matters so much (more on that below).</li>
+<li><strong>Defined risk (when buying).</strong> When you <em>buy</em> a call or put, the most you can ever lose is the premium you paid — no matter how far the stock moves against you. That's a very different risk profile than short-selling a stock, where losses are theoretically unlimited.</li>
+<li><strong>Hedging.</strong> Investors who already own stock sometimes buy puts as a kind of insurance policy, to protect against a price drop without having to sell their shares.</li>
+<li><strong>Income.</strong> Some strategies involve <em>selling</em> options to collect premium from other traders — we cover this in <a href="/learn-options-trading/strategies">Options Strategies</a>, starting with covered calls.</li>
+</ul>
+
+<h2 id="an-example">A Simple Example</h2>
+<p>Let's walk through a basic example using a call option.</p>
+<p>Say a stock is trading at $100 per share. You believe it's going to rise over the next month, but you don't want to spend $10,000 buying 100 shares outright. Instead, you buy <strong>one call option</strong> with a $100 strike price, expiring in 30 days, for a premium of $3.00 per share — a total cost of $300.</p>
+<p>Here's what can happen:</p>
+<ul>
+<li><strong>The stock rises to $110.</strong> Your option is now worth roughly $10 per share (the difference between the stock price and your $100 strike), or about $1,000 total — more than triple what you paid. You could sell the option itself for a profit, without ever having to buy the actual shares.</li>
+<li><strong>The stock stays flat at $100.</strong> Depending on how close you are to expiration, your option may be worth very little, since there's no reason to exercise a right to buy at the exact price the stock is already trading at.</li>
+<li><strong>The stock falls to $90.</strong> Your option is likely worthless, since nobody would pay $100 for a stock trading at $90. You lose your $300 premium — but nothing more than that.</li>
+</ul>
+<p>That last point matters: as a buyer, your loss is capped at what you paid, even if the stock crashes to zero. That's very different from owning the shares outright, where a crash to zero means losing the entire $10,000.</p>
+
+<h2 id="risks">The Risks You Need to Understand</h2>
+<p>Options aren't automatically riskier or safer than stocks — they're just <em>different</em>, and that difference needs to be understood before you trade with real money.</p>
+<ul>
+<li><strong>Time works against you.</strong> Every option loses value as it approaches expiration, a concept called <em>time decay</em>. Even if you're right about the direction, being too slow can still cost you money.</li>
+<li><strong>Options can expire worthless.</strong> Unlike a stock you can hold indefinitely and wait for a recovery, an option that's wrong at expiration is simply gone.</li>
+<li><strong>Leverage cuts both ways.</strong> The same leverage that can triple your money on a good trade can also wipe out your entire premium quickly on a bad one.</li>
+<li><strong>Selling options carries different (often larger) risk</strong> than buying them — some selling strategies have theoretically unlimited risk. This is not something to attempt as a complete beginner without understanding the strategy fully first.</li>
+</ul>
+<p>This is exactly why <a href="/learn-options-trading/psychology">trading psychology and discipline</a> matter as much as understanding the mechanics — knowing how a call option works is only half the job.</p>
+
+<h2 id="getting-started">How to Get Started the Right Way</h2>
+<p>If you're serious about learning options trading, the order matters:</p>
+<ol>
+<li><strong>Learn the vocabulary first</strong> — calls, puts, strike, premium, expiration. You just did that above.</li>
+<li><strong>Study basic strategies</strong> before you study advanced ones. Start with our guide to <a href="/learn-options-trading/strategies/best-options-strategies-for-beginners">Best Options Strategies for Beginners</a>.</li>
+<li><strong>Learn to read a chart.</strong> Timing matters enormously in options because of expiration dates — our guide on <a href="/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">how to read candlestick charts</a> is a good next step.</li>
+<li><strong>Practice without risking real money.</strong> ScalpClock's <a href="/scalpchart?tab=replay">Chart Replay</a> tool lets you practice reading real historical price action, one candle at a time, before you ever place a live trade.</li>
+<li><strong>Choose a brokerage.</strong> You'll need an options-enabled brokerage account to trade for real — see our <a href="/trading-resources">Trading Resources</a> page for a comparison of beginner-friendly brokers.</li>
+</ol>
+<p>Options trading rewards patience and preparation far more than it rewards speed. The traders who last are the ones who understood what they were doing <em>before</em> they had money on the line — not after.</p>
+
+
+<div class="mid-cta reveal">
+  <h2>Ready To Practice What You Learned?</h2>
+  <p>Turn knowledge into skill with ScalpClock interactive lessons, chart replay, and trading challenges.</p>
+  <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+</div>
+
+<h2 id="faq">Frequently Asked Questions</h2>
+<details class="faq-item">
+  <summary>Is options trading good for beginners?</summary>
+  <div class="faq-a">Options trading can be learned by beginners, but it requires more upfront education than buying stocks. Start with the basics — calls, puts, strike prices, and expiration — before using real money, and consider practicing with tools like ScalpClock's Chart Replay first.</div>
+</details>
+<details class="faq-item">
+  <summary>How much money do I need to start trading options?</summary>
+  <div class="faq-a">Some options contracts can be bought for well under $100 in premium, but you should also budget for losing trades and factor in your brokerage's account minimums. See our full guide on how much money you need to start trading options for a detailed breakdown.</div>
+</details>
+<details class="faq-item">
+  <summary>What's the difference between a call and a put?</summary>
+  <div class="faq-a">A call option gives you the right to buy 100 shares at a set price, and traders buy calls when they expect the price to rise. A put option gives you the right to sell 100 shares at a set price, and traders buy puts when they expect the price to fall.</div>
+</details>
+<details class="faq-item">
+  <summary>Can you lose more than you invested in options trading?</summary>
+  <div class="faq-a">If you only buy calls or puts (rather than selling them), your maximum loss is limited to the premium you paid. Selling options, especially uncovered/&quot;naked&quot; positions, can carry much larger — sometimes theoretically unlimited — risk, which is why beginners should fully understand a strategy before using it.</div>
+</details>
+<details class="faq-item">
+  <summary>What happens when an option expires?</summary>
+  <div class="faq-a">If an option is "in the money" at expiration (profitable to exercise), it's typically automatically exercised or its value is settled in cash, depending on the option type and broker. If it's "out of the money," it expires worthless and the buyer loses the premium paid.</div>
+</details>
+
+<div class="author-box reveal">
+  <div class="author-avatar" aria-hidden="true">🎓</div>
+  <div>
+    <h3>ScalpClock Education Team</h3>
+    <p>ScalpClock creates educational resources designed to help traders understand options, technical analysis, and trading discipline.</p>
+  </div>
+</div>
+
+<h2>Continue Learning</h2>
+<div class="related-grid reveal">
+  <a class="related-card" href="/learn-options-trading/strategies/best-options-strategies-for-beginners">
+    <span class="rc-label">Options Strategies</span>
+    <span class="rc-title">Best Options Strategies for Beginners</span>
+  </a>
+  <a class="related-card" href="/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">
+    <span class="rc-label">Technical Analysis</span>
+    <span class="rc-title">How To Read Candlestick Charts</span>
+  </a>
+  <a class="related-card" href="/learn-options-trading/psychology/why-most-options-traders-fail">
+    <span class="rc-label">Trading Psychology</span>
+    <span class="rc-title">Why Most Options Traders Fail</span>
+  </a>
+</div>
+
+</article>
+
+<section class="cta-section reveal">
+  <h2>Turn Reading Into Practice</h2>
+  <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
+  <div class="cta-btns">
+    <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+    <a class="btn-ghost" href="/learn-options-trading/options-basics">Back to Options Basics</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog/">Blog</a>
+      <a href="/trading-resources">Trading Resources</a>
+      <a href="/learn-options-trading">Learn Options Trading</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Daily Learn Hub</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:admin@scalpclock.com" style="color:inherit;text-decoration:underline;">admin@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<div id="readToast">
+  <span class="rt-icon">✅</span>
+  <div>
+    <div class="rt-title" id="rtTitle">Lesson complete! +15 XP</div>
+    <div class="rt-sub" id="rtSub"></div>
+  </div>
+</div>
+
+<script src="/js/sc-learn-progress.js"></script>
+<script>
+document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
+
+function toggleDrawer(){
+  const open = document.getElementById('navDrawer').classList.toggle('open');
+  document.querySelector('.ham').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeDrawer(){
+  document.getElementById('navDrawer').classList.remove('open');
+  document.querySelector('.ham').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.ham'))closeDrawer();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
+
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(el=>el.classList.add('in'));return;}
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in');io.unobserve(entry.target);}
+    });
+  },{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+  els.forEach(el=>io.observe(el));
+})();
+
+// Mark this lesson read once the reader has genuinely scrolled through the
+// body (70% of article height) or spent 25s on the page — whichever comes
+// first — then award XP via the shared SC_LEARN module and show a toast.
+// A page-load timer alone would count a bounce; scroll-depth alone would
+// miss slow readers who stop scrolling to actually read a section.
+(function(){
+  if (typeof SC_LEARN === 'undefined') return;
+  const SLUG = 'options-basics/what-is-options-trading';
+  let done = false;
+  function complete(){
+    if (done) return;
+    done = true;
+    const badges = SC_LEARN.markRead(SLUG);
+    const toast = document.getElementById('readToast');
+    const sub = document.getElementById('rtSub');
+    if (badges.length) sub.textContent = 'Badge earned: ' + badges.map(b=>b.icon+' '+b.name).join(', ');
+    else sub.textContent = 'Progress saved to your Learning Path';
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 5000);
+  }
+  const timer = setTimeout(complete, 25000);
+  window.addEventListener('scroll', () => {
+    const art = document.querySelector('.art-body');
+    if (!art) return;
+    const rect = art.getBoundingClientRect();
+    const scrolled = (window.innerHeight - rect.top) / rect.height;
+    if (scrolled > 0.7) { clearTimeout(timer); complete(); }
+  }, { passive: true });
+})();
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+</script>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('nav a[href="/"], .nav-drawer a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === 'Home') {
+        a.textContent = 'Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('nav a[href="/dashboard"]:not([data-home-swap]), .nav-drawer a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>

@@ -144,6 +144,18 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .email-capture-msg.is-success{color:var(--green);}
 .email-capture-msg.is-error{color:var(--red);}
 .email-capture-privacy{font-size:.75rem;color:var(--t30);margin-top:8px;}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -187,12 +199,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+          <a href="/trading-resources">Trading Resources</a>
+          <a href="/trading-pictionary">Pictionary</a>
+        </div>
+      </div>
       <a href="/about">About</a>
-      <a href="/learn">Learn</a>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="/blog/" class="active">Blog</a>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
     </div>
@@ -202,12 +222,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
   <a href="/about" onclick="closeDrawer()">About</a>
-  <a href="/learn" onclick="closeDrawer()">Learn</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
-  <a href="/blog/" class="active" onclick="closeDrawer()">Blog</a>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -320,6 +344,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/exitassistant">Exit Assistant</a>
       <a href="/blog/">Blog</a>
+      <a href="/trading-resources">Trading Resources</a>
       <a href="/pricing">Pricing</a>
       <a href="/learn">Learn</a>
       <a href="/about">About</a>
@@ -335,6 +360,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <script src="/js/blog-chart.js"></script>
 <script>
 document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
 function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
 function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
@@ -342,5 +380,26 @@ renderBlogChart('featChart', [{o:50,h:51,l:49,c:49.3},{o:49.3,h:50,l:48.5,c:49},
 initEmailCapture('emailCapture', 'blog-article');
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('nav a[href="/"], .nav-drawer a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === 'Home') {
+        a.textContent = 'Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('nav a[href="/dashboard"]:not([data-home-swap]), .nav-drawer a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>

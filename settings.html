@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock — Settings</title>
+<meta name="description" content="Manage your ScalpClock account details, subscription, and billing.">
+<link rel="canonical" href="https://scalpclock.com/settings">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock — Settings">
+<meta property="og:description" content="Manage your ScalpClock account details, subscription, and billing.">
+<meta property="og:url" content="https://scalpclock.com/settings">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock — Settings">
+<meta name="twitter:description" content="Manage your ScalpClock account details, subscription, and billing.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{ --max:1000px; }
+*{box-sizing:border-box;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.08),transparent 68%),
+  linear-gradient(var(--line) 1px,transparent 1px),
+  linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);
+  background:rgba(247,249,247,.85);border-bottom:1px solid var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;height:64px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green-ink);opacity:.9;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-page-links{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;}
+.nav-page-links a{font-size:.85rem;color:var(--t65);padding:6px 12px;border-radius:8px;text-decoration:none;transition:color .15s,background .15s;}
+.nav-page-links a:hover,.nav-page-links a.active{color:var(--text);background:var(--green-soft);}
+.nav-page-links a.active{color:var(--green-ink);}
+.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--t65);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(247,249,247,.98);backdrop-filter:blur(16px);z-index:65;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
+.nav-drawer.open{display:flex;transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t65);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);text-decoration:none;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--green-soft);}
+.nav-drawer a.active{color:var(--green-ink);}
+@media(max-width:600px){.nav-page-links{display:none;}.nav-ham{display:flex;}}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-email{font-size:.82rem;color:var(--t65);font-family:var(--mono);}
+.btn-signout{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:7px 16px;
+  border-radius:8px;background:transparent;border:1px solid var(--line-strong);
+  color:var(--t65);cursor:pointer;transition:.15s;}
+.btn-signout:hover{border-color:var(--green);color:var(--green-ink);}
+
+/* MAIN */
+.shell{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:40px 24px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--t65);text-decoration:none;margin-bottom:18px;transition:.15s;}
+.back-link:hover{color:var(--green-ink);}
+.welcome{margin-bottom:32px;}
+.welcome h1{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--text);}
+.welcome h1 span{color:var(--green-ink);}
+.welcome p{color:var(--t65);margin-top:8px;font-size:.95rem;}
+.section-title{font-family:var(--disp);font-weight:700;font-size:1.2rem;margin-bottom:16px;color:var(--t85);}
+
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ACCOUNT INFO */
+.account-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:24px;margin-bottom:32px;}
+.account-row{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);font-size:.9rem;}
+.account-row:last-child{border-bottom:none;padding-bottom:0;}
+.account-key{color:var(--t65);}
+.account-val{font-family:var(--mono);font-size:.82rem;color:var(--text);}
+.name-edit-btn{font-size:.72rem;padding:3px 10px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--green-ink);cursor:pointer;transition:.15s;}
+.name-edit-btn:hover{background:var(--green-soft);}
+.name-edit-inputs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 0 4px;}
+.name-edit-inputs input{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--text);font-size:.82rem;width:130px;outline:none;}
+.name-edit-inputs input:focus{border-color:rgba(22,217,126,.5);}
+.name-save-btn{font-size:.78rem;padding:6px 14px;border-radius:8px;border:none;background:var(--green);color:var(--on-green);font-weight:700;cursor:pointer;}
+.name-cancel-btn{font-size:.78rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--t65);cursor:pointer;}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:700;
+  font-family:var(--mono);letter-spacing:.08em;}
+.badge.free{background:var(--bg2);color:var(--t65);border:1px solid var(--line-strong);}
+.badge.pro{background:var(--green-soft);color:var(--green-ink);border:1px solid rgba(22,217,126,.35);}
+
+/* UPGRADE */
+.upgrade{background:radial-gradient(circle at 50% -10%,var(--green-soft),transparent 65%),var(--panel);
+  border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;}
+.upgrade h2{font-family:var(--disp);font-weight:700;font-size:1.5rem;margin-bottom:8px;color:var(--text);}
+.upgrade h2 span{color:var(--green-ink);}
+.upgrade p{color:var(--t65);font-size:.9rem;margin-bottom:16px;}
+.upgrade-toggle{display:inline-flex;align-items:center;gap:10px;margin-bottom:20px;
+  background:var(--bg2);border:1px solid var(--line);border-radius:30px;padding:4px 6px;}
+.upgrade-toggle button{font-family:var(--disp);font-weight:600;font-size:.8rem;padding:6px 16px;
+  border-radius:24px;border:none;cursor:pointer;transition:.15s;
+  background:transparent;color:var(--t65);}
+.upgrade-toggle button.active{background:var(--green);color:var(--on-green);}
+.upgrade-save{display:inline-block;font-size:.72rem;font-weight:700;font-family:var(--mono);
+  color:var(--green-ink);background:var(--green-soft);border:1px solid rgba(22,217,126,.3);
+  border-radius:20px;padding:2px 9px;margin-left:6px;letter-spacing:.04em;}
+.btn-upgrade{font-family:var(--disp);font-weight:700;font-size:1rem;padding:12px 28px;
+  border-radius:10px;background:var(--green);color:var(--on-green);border:none;cursor:pointer;transition:.15s;}
+.btn-upgrade:hover{background:#20e88a;transform:translateY(-1px);}
+
+/* NAV DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.85rem;color:rgba(13,26,19,.65);background:none;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#0d1a13;background:rgba(22,217,126,.12);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:#ffffff;border:1px solid rgba(13,26,19,.12);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(13,26,19,.14);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(13,26,19,.65);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#0d1a13;background:rgba(22,217,126,.12);}
+.nav-dropdown-menu a.active{color:#0a7a4a;background:rgba(22,217,126,.1);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0a7a4a;padding:14px 16px 2px;}
+@media(max-width:520px){
+  .nav-email{display:none;}
+  .account-val{word-break:break-all;font-size:.75rem;}
+  .account-row{flex-direction:column;align-items:flex-start;gap:4px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <div class="nav-page-links">
+      <a href="/dashboard">Dashboard</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+          <a href="/trading-resources">Trading Resources</a>
+          <a href="/trading-pictionary">Pictionary</a>
+        </div>
+      </div>
+      <a href="/about">About</a>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/pricing">Pricing</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-dropdown" id="userDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleUserDropdown(event)" aria-haspopup="true" aria-expanded="false"><span class="nav-email" id="userEmail">Loading...</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu" style="right:0;left:auto;">
+          <a href="/dashboard">Dashboard</a>
+          <a href="/settings" class="active">Settings</a>
+          <a href="#" onclick="signOut();return false;">Sign Out</a>
+        </div>
+      </div>
+    </div>
+    <button class="nav-ham" onclick="toggleNavDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/dashboard" onclick="closeNavDrawer()">Dashboard</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeNavDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeNavDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeNavDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/trading-resources" onclick="closeNavDrawer()" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" onclick="closeNavDrawer()" style="padding-left:28px">Pictionary</a>
+  <a href="/about" onclick="closeNavDrawer()">About</a>
+  <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
+  <a href="/pricing" onclick="closeNavDrawer()">Pricing</a>
+  <div class="drawer-group-label">Account</div>
+  <a href="/settings" class="active" onclick="closeNavDrawer()" style="padding-left:28px">Settings</a>
+  <a href="#" onclick="signOut();return false;" style="padding-left:28px">Sign Out</a>
+</div>
+
+<div class="shell">
+
+  <a class="back-link" href="/dashboard">&larr; Dashboard</a>
+
+  <div class="welcome">
+    <h1>⚙️ <span>Settings</span></h1>
+    <p>Manage your account details and subscription.</p>
+  </div>
+
+  <div class="section-title">Account Details</div>
+  <div class="account-card">
+    <div class="account-row">
+      <span class="account-key">Name</span>
+      <span class="account-val" id="accountName">—</span>
+      <button class="name-edit-btn" id="nameEditBtn" onclick="startNameEdit()">Edit</button>
+    </div>
+    <div id="nameEditRow" style="display:none;padding:0 0 8px;">
+      <div class="name-edit-inputs">
+        <input type="text" id="editFirstName" placeholder="First name">
+        <input type="text" id="editLastName" placeholder="Last name">
+        <button class="name-save-btn" onclick="saveName()">Save</button>
+        <button class="name-cancel-btn" onclick="cancelNameEdit()">Cancel</button>
+      </div>
+      <div id="nameEditMsg" style="font-size:.75rem;color:#ff5a5a;padding:0 0 4px;"></div>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Email</span>
+      <span class="account-val" id="accountEmail">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">User ID</span>
+      <span class="account-val" id="accountId">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Member Since</span>
+      <span class="account-val" id="memberSince">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Subscription</span>
+      <span class="badge free" id="accountSubBadge">FREE</span>
+    </div>
+    <div class="account-row" id="foundingRow" style="display:none">
+      <span class="account-key">Status</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.05em;padding:4px 12px;border-radius:20px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.35);color:#f5a623;">🏆 FOUNDING MEMBER</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Email Verified</span>
+      <span class="account-val" id="emailVerified">—</span>
+    </div>
+  </div>
+
+  <div class="upgrade">
+    <h2>Unlock <span>Pro</span> Access</h2>
+    <p>Unlimited real-time signals, options recommendations, confidence scoring, and live pattern alerts.</p>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);border-radius:10px;margin-bottom:16px;">
+      <span style="font-size:1rem;">🎁</span>
+      <span style="font-size:.82rem;color:var(--text);font-weight:500;"><strong style="color:var(--green-ink);">FREE 5-Day Trial</strong> — Cancel anytime. Won't be charged until day 6.</span>
+    </div>
+    <div class="upgrade-toggle">
+      <button type="button" id="toggleMonthly" class="active" onclick="setBilling('monthly')">Monthly</button>
+      <button type="button" id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
+    </div>
+    <br>
+    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Start 5-Day Free Trial</button>
+    <p style="text-align:center;font-size:.75rem;color:var(--t65);margin-top:8px;">Then $9.99/mo · Cancel anytime</p>
+    <div style="margin-top:14px;">
+      <button type="button" onclick="toggleDashPromo()" style="background:none;border:none;color:var(--t65);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
+    </div>
+    <div id="dashPromoBox" style="display:none;margin-top:10px;max-width:340px;margin-left:auto;margin-right:auto;">
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="dashPromoCode" placeholder="ENTER CODE" maxlength="32"
+          style="flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font-size:.85rem;outline:none;font-family:var(--body);text-transform:uppercase;letter-spacing:.06em;">
+        <button type="button" id="dashPromoApplyBtn" onclick="applyDashPromo()"
+          style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:9px 16px;border-radius:8px;background:var(--green-soft-strong);border:1px solid rgba(22,217,126,.35);color:var(--green-ink);cursor:pointer;white-space:nowrap;">Apply</button>
+      </div>
+      <div id="dashPromoMsg" style="display:none;margin-top:8px;font-size:.8rem;padding:8px 12px;border-radius:7px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
+
+let _uid = null;
+let _meta = {};
+let _billing = 'monthly';
+let _promoId = null;
+
+async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login'; return; }
+
+  const user = session.user;
+  _uid  = user.id;
+  _meta = user.user_metadata || {};
+  const email = user.email || '';
+
+  function capName(s) {
+    return s ? s.trim().charAt(0).toUpperCase() + s.trim().slice(1).toLowerCase() : '';
+  }
+
+  let displayName;
+  if (_meta.first_name || _meta.last_name) {
+    displayName = [capName(_meta.first_name), capName(_meta.last_name)].filter(Boolean).join(' ');
+  } else if (_meta.full_name) {
+    displayName = _meta.full_name.trim().split(/\s+/).map(capName).join(' ');
+  } else {
+    const prefix = (email.split('@')[0] || '').replace(/[._]/g, ' ').trim();
+    displayName = prefix.split(/\s+/).map(capName).filter(Boolean).join(' ') || 'Trader';
+  }
+
+  document.getElementById('userEmail').textContent = email;
+  document.getElementById('accountName').textContent = displayName;
+  document.getElementById('accountEmail').textContent = email;
+  document.getElementById('accountId').textContent = user.id.substring(0, 16) + '...';
+  document.getElementById('emailVerified').textContent = user.email_confirmed_at ? '✓ Verified' : '✗ Not verified';
+
+  const created = new Date(user.created_at);
+  document.getElementById('memberSince').textContent = created.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  checkAccountStatus();
+  checkUpgradeReturn();
+}
+
+async function checkAccountStatus(isRetry = false) {
+  try {
+    const { data: { session } } = isRetry
+      ? await sb.auth.refreshSession()
+      : await sb.auth.getSession();
+    let plan = session?.user?.app_metadata?.plan || 'free';
+    const isFounding = session?.user?.app_metadata?.founding_member === true;
+    const foundingRow = document.getElementById('foundingRow');
+    if (foundingRow) foundingRow.style.display = isFounding ? '' : 'none';
+
+    const justPaid = !!localStorage.getItem('sc_trial_start') &&
+      (Date.now() - new Date(localStorage.getItem('sc_trial_start')).getTime()) < 120000;
+    if (plan === 'free' && justPaid && !isRetry) {
+      setTimeout(() => checkAccountStatus(true), 3000);
+      return;
+    }
+    const isTrial   = plan === 'trial';
+    const isPro     = plan === 'pro';
+    const isPaid    = isTrial || isPro;
+    const isExpired = plan === 'expired';
+
+    const subBadge = document.getElementById('accountSubBadge');
+    if (isPaid) {
+      const upg = document.querySelector('.upgrade');
+      if (upg) upg.style.display = 'none';
+      if (subBadge) { subBadge.textContent = 'PRO'; subBadge.className = 'badge pro'; }
+    } else if (isExpired) {
+      if (subBadge) { subBadge.textContent = 'EXPIRED'; subBadge.style.cssText = 'background:rgba(245,166,35,.14);color:var(--amber-ink);border:1px solid rgba(245,166,35,.35);'; }
+    }
+  } catch(_) {}
+}
+
+function startNameEdit() {
+  document.getElementById('editFirstName').value = _meta.first_name || '';
+  document.getElementById('editLastName').value  = _meta.last_name  || '';
+  document.getElementById('nameEditRow').style.display = 'block';
+  document.getElementById('nameEditBtn').style.display = 'none';
+  document.getElementById('nameEditMsg').textContent   = '';
+}
+
+function cancelNameEdit() {
+  document.getElementById('nameEditRow').style.display = 'none';
+  document.getElementById('nameEditBtn').style.display = '';
+}
+
+async function saveName() {
+  const first = document.getElementById('editFirstName').value.trim();
+  const last  = document.getElementById('editLastName').value.trim();
+  if (!first || !last) {
+    document.getElementById('nameEditMsg').textContent = 'Enter both first and last name.';
+    return;
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
+  const firstName = cap(first);
+  const lastName  = cap(last);
+  const saveBtn = document.querySelector('.name-save-btn');
+  saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+  const { error } = await sb.auth.updateUser({
+    data: { first_name: firstName, last_name: lastName, full_name: firstName + ' ' + lastName }
+  });
+  saveBtn.disabled = false; saveBtn.textContent = 'Save';
+  if (error) {
+    document.getElementById('nameEditMsg').textContent = error.message;
+  } else {
+    _meta.first_name = firstName;
+    _meta.last_name  = lastName;
+    _meta.full_name  = firstName + ' ' + lastName;
+    document.getElementById('accountName').textContent = firstName + ' ' + lastName;
+    cancelNameEdit();
+  }
+}
+
+function setBilling(mode) {
+  _billing = mode;
+  document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
+  document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
+  const btn = document.getElementById('upgradeBtn');
+  btn.textContent = _promoId ? 'Claim Free Month' : 'Start 5-Day Free Trial';
+}
+
+function toggleDashPromo() {
+  const box = document.getElementById('dashPromoBox');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display === 'block') setTimeout(() => document.getElementById('dashPromoCode').focus(), 50);
+}
+
+async function applyDashPromo() {
+  const code = (document.getElementById('dashPromoCode').value || '').trim().toUpperCase();
+  if (!code) return;
+  const btn = document.getElementById('dashPromoApplyBtn');
+  const msg = document.getElementById('dashPromoMsg');
+  btn.textContent = '…';
+  btn.disabled    = true;
+  msg.style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/stripe/validate-promo', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ code, userId: _uid }),
+    });
+    const data = await res.json();
+    if (data.valid) {
+      _promoId = data.promoId;
+      const enteredCode = (document.getElementById('dashPromoCode').value || '').trim().toUpperCase();
+      msg.innerHTML = `✓ <strong>${data.discountText}</strong> — click below, then enter <strong style="letter-spacing:.06em">${enteredCode}</strong> in the promo field at checkout.`;
+      msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:var(--green-soft);border:1px solid rgba(22,217,126,.3);color:var(--green-ink);';
+      document.getElementById('upgradeBtn').textContent = 'Go to Checkout →';
+    } else {
+      _promoId = null;
+      msg.textContent = data.error || 'Invalid or expired code.';
+      msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(245,66,66,.1);border:1px solid rgba(245,66,66,.3);color:var(--red-ink);';
+    }
+  } catch(_) {
+    msg.textContent = 'Could not validate — please try again.';
+    msg.style.cssText = 'display:block;padding:8px 12px;border-radius:7px;font-size:.8rem;background:rgba(245,66,66,.1);border:1px solid rgba(245,66,66,.3);color:var(--red-ink);';
+  }
+  btn.textContent = 'Apply';
+  btn.disabled    = false;
+}
+
+function getGaClientId() {
+  const m = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+  return m ? m[1] : null;
+}
+
+async function startCheckout(btn) {
+  btn = btn || document.getElementById('upgradeBtn');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Redirecting to Stripe…';
+  try {
+    const body = { tier: 'pro', billing: _billing, trial: !_promoId };
+    if (_promoId) body.promoId = _promoId;
+    if (_uid)     body.userId  = _uid;
+    const gaClientId = getGaClientId();
+    if (gaClientId) body.gaClientId = gaClientId;
+    if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
+    const res = await fetch('/api/stripe/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      btn.disabled = false;
+      btn.textContent = original;
+      alert(data.error || 'Could not start checkout. Please try again.');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    setBilling(_billing);
+  }
+}
+
+function checkUpgradeReturn() {
+  if (new URLSearchParams(location.search).get('upgraded') !== '1') return;
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:200;background:var(--green);color:var(--on-green);font-family:var(--disp);font-weight:700;font-size:.95rem;padding:13px 28px;border-radius:12px;box-shadow:var(--shadow-lg);';
+  toast.textContent = '🎉 Welcome to Pro! Your subscription is active.';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 6000);
+  history.replaceState({}, '', '/settings');
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = '/';
+}
+
+function toggleNavDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
+function closeNavDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+function toggleUserDropdown(e){
+  e.stopPropagation();
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const ud=document.getElementById('userDropdown');
+  if(ud&&ud.classList.contains('open')&&!ud.contains(e.target))ud.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const ud=document.getElementById('userDropdown');if(ud)ud.classList.remove('open');
+  }
+});
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))d.classList.remove('open');
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+init();
+</script>
+</body>
+</html>

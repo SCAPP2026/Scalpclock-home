@@ -1299,9 +1299,6 @@
   /* ── HEADER (minimal) ── */
   header { display:flex; align-items:center; gap:14px; padding:11px 20px;
     background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:wrap; }
-  .logo { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:700;
-    color:var(--accent); letter-spacing:-0.5px; white-space:nowrap; flex-shrink:0; }
-  .logo span { color:var(--muted); font-weight:400; }
   .back-link { display:inline-flex; align-items:center; gap:5px; font-size:11px;
     color:var(--muted); text-decoration:none; padding:4px 8px; border:1px solid var(--border);
     border-radius:5px; transition:color .15s; flex-shrink:0; }
@@ -1627,6 +1624,18 @@
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -1651,12 +1660,15 @@
   </div>
   <div class="sc-drawer-links">
     <a href="/">🏠 Home</a>
+    <div class="drawer-group-label">Learn</div>
+    <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+    <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+    <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+    <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
     <a href="/about">ℹ️ About</a>
-    <a href="/learn">📚 Learn</a>
     <a href="/scalpchart">📊 ScalpCharts</a>
     <a href="/scalpchart?tab=replay">📅 Replay</a>
     <a href="/exitassistant" class="sc-active">🚪 Exit Assistant</a>
-    <a href="/blog/">📖 Blog</a>
     <a href="/pricing">💳 Pricing</a>
     <a href="/dashboard">⚙️ Dashboard</a>
     <a href="/login?tab=signup" class="sc-cta">Start Free →</a>
@@ -4517,5 +4529,26 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
   &copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.<br>
   For informational purposes only. Not financial advice. Options trading carries substantial risk of loss.
 </footer>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('.sc-drawer-links a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === '🏠 Home') {
+        a.textContent = '⚙️ Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('.sc-drawer-links a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>

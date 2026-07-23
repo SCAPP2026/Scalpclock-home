@@ -88,22 +88,49 @@ function titleCase(s) {
     .replace(/\bUsa\b/g, 'USA').replace(/\bU\.s\.\b/g, 'U.S.');
 }
 
+// Finnhub silently truncates /calendar/earnings once the result set for the
+// requested range gets large (observed: a 14-day request capped at exactly
+// 1500 rows and *dropped the earliest ~6 days entirely* even though a
+// request scoped to just those days returned 400+ real rows). A single wide
+// request is therefore unsafe — fetch one day at a time in parallel and
+// merge, so no single call's result size can hit that cap.
 async function fetchFinnhub(key, from, to) {
   if (!key) return [];
-  const res  = await fetch(
-    `https://finnhub.io/api/v1/calendar/earnings?from=${from}&to=${to}&token=${key}`
-  );
-  const data = await res.json();
-  return (data.earningsCalendar || []).map(e => ({
-    symbol:            e.symbol,
-    company:           e.symbol, // filled in from fetchSymbolNames when available
-    date:              e.date,
-    time:              e.hour === 'bmo' ? 'pre-market' : e.hour === 'amc' ? 'after-close' : 'unknown',
-    epsEstimate:       e.epsEstimate ?? null,
-    epsActual:         e.epsActual   ?? null,
-    revenueEstimate:   e.revenueEstimate ?? null,
-    source:            'finnhub',
-  }));
+  const days = dateRange(from, to);
+  const results = await Promise.all(days.map(d => fetchFinnhubDay(key, d)));
+  return results.flat();
+}
+
+async function fetchFinnhubDay(key, day) {
+  try {
+    const res  = await fetch(
+      `https://finnhub.io/api/v1/calendar/earnings?from=${day}&to=${day}&token=${key}`
+    );
+    const data = await res.json();
+    return (data.earningsCalendar || []).map(e => ({
+      symbol:            e.symbol,
+      company:           e.symbol, // filled in from fetchSymbolNames when available
+      date:              e.date,
+      time:              e.hour === 'bmo' ? 'pre-market' : e.hour === 'amc' ? 'after-close' : 'unknown',
+      epsEstimate:       e.epsEstimate ?? null,
+      epsActual:         e.epsActual   ?? null,
+      revenueEstimate:   e.revenueEstimate ?? null,
+      source:            'finnhub',
+    }));
+  } catch {
+    return [];
+  }
+}
+
+function dateRange(from, to) {
+  const days = [];
+  const cur = new Date(from + 'T00:00:00Z');
+  const end = new Date(to + 'T00:00:00Z');
+  while (cur <= end) {
+    days.push(cur.toISOString().slice(0, 10));
+    cur.setUTCDate(cur.getUTCDate() + 1);
+  }
+  return days;
 }
 
 async function fetchFMP(key, from, to) {

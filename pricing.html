@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalpClock · Pricing — Free & Pro</title>
-<meta name="description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and live pattern alerts.">
+<title>AI Trading Signals &amp; Tools Pricing | ScalpClock</title>
+<meta name="description" content="Start free with delayed options and stock signals. Upgrade to Pro for real-time day trading and scalping signals, live pattern alerts, and AI trade coaching.">
 <link rel="canonical" href="https://scalpclock.com/pricing">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="ScalpClock · Pricing — Free & Pro">
-<meta property="og:description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and live pattern alerts.">
+<meta property="og:title" content="AI Trading Signals &amp; Tools Pricing | ScalpClock">
+<meta property="og:description" content="Start free with delayed options and stock signals. Upgrade to Pro for real-time day trading and scalping signals, live pattern alerts, and AI trade coaching.">
 <meta property="og:url" content="https://scalpclock.com/pricing">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ScalpClock · Pricing — Free & Pro">
-<meta name="twitter:description" content="Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and live pattern alerts.">
+<meta name="twitter:title" content="AI Trading Signals &amp; Tools Pricing | ScalpClock">
+<meta name="twitter:description" content="Start free with delayed options and stock signals. Upgrade to Pro for real-time day trading and scalping signals, live pattern alerts, and AI trade coaching.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -179,12 +179,25 @@ a{color:inherit;text-decoration:none;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "ScalpClock Pro",
-  "description": "Start free with delayed signals. Upgrade to Pro for real-time options timing, unlimited signals, and live pattern alerts.",
+  "description": "Start free with delayed options and stock signals. Upgrade to Pro for real-time day trading and scalping signals, unlimited signals, and live pattern alerts.",
+  "category": "AI trading tools",
   "brand": {
     "@type": "Brand",
     "name": "ScalpClock"
@@ -228,12 +241,20 @@ a{color:inherit;text-decoration:none;}
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+          <a href="/trading-resources">Trading Resources</a>
+          <a href="/trading-pictionary">Pictionary</a>
+        </div>
+      </div>
       <a href="/about">About</a>
-      <a href="/learn">Learn</a>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="/blog/">Blog</a>
       <a href="/pricing" class="active">Pricing</a>
       <a href="/dashboard">Dashboard</a>
     </div>
@@ -243,12 +264,16 @@ a{color:inherit;text-decoration:none;}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
   <a href="/about" onclick="closeDrawer()">About</a>
-  <a href="/learn" onclick="closeDrawer()">Learn</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
-  <a href="/blog/" onclick="closeDrawer()">Blog</a>
   <a href="/pricing" class="active" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -256,7 +281,7 @@ a{color:inherit;text-decoration:none;}
 
 <div class="page-hero">
   <h1>Simple, <em>Transparent</em> Pricing</h1>
-  <p>Start free and experience the platform. Upgrade when you're ready to trade with real-time edge.</p>
+  <p>Start free and experience our AI trading tools for day trading and scalping. Upgrade when you're ready for real-time options and stock signals.</p>
   <div style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:12px 22px;background:rgba(22,217,126,.07);border:1px solid rgba(22,217,126,.25);border-radius:12px;">
     <span style="font-size:1.3rem;">🎁</span>
     <span style="font-size:.9rem;color:var(--text);font-weight:500;">Start your <strong style="color:var(--green);">FREE 5-Day Trial</strong>. Cancel anytime during the trial and you won't be charged.</span>
@@ -568,6 +593,15 @@ async function applyPromo() {
   btn.disabled    = false;
 }
 
+// GA4 client_id from the browser's own _ga cookie (format "GA1.1.X.Y" or
+// "GA1.2.X.Y" — the client_id GA4 itself uses is just "X.Y"), so a
+// server-side purchase event can attribute back to this visitor's real
+// acquisition/session data instead of firing as anonymous.
+function getGaClientId() {
+  const m = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+  return m ? m[1] : null;
+}
+
 async function startCheckout(isTrial) {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
@@ -595,6 +629,9 @@ async function startCheckout(isTrial) {
     };
     if (_promoId) body.promoId = _promoId;
     if (userId)   body.userId  = userId;
+    const gaClientId = getGaClientId();
+    if (gaClientId) body.gaClientId = gaClientId;
+    if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
 
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',
@@ -726,5 +763,26 @@ function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.g
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('nav a[href="/"], .nav-drawer a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === 'Home') {
+        a.textContent = 'Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('nav a[href="/dashboard"]:not([data-home-swap]), .nav-drawer a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>

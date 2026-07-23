@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How To Read Candlestick Charts | ScalpClock</title>
+<meta name="description" content="Learn how to read candlestick charts step-by-step — what each candle represents, common patterns like doji and hammer, and how traders use them to time entries.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="How To Read Candlestick Charts | ScalpClock">
+<meta property="og:description" content="Learn how to read candlestick charts step-by-step — what each candle represents, common patterns like doji and hammer, and how traders use them to time entries.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How To Read Candlestick Charts | ScalpClock">
+<meta name="twitter:description" content="Learn how to read candlestick charts step-by-step — what each candle represents, common patterns like doji and hammer, and how traders use them to time entries.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070a08;--bg2:#0b110d;
+  --panel:rgba(14,22,16,.85);
+  --line:rgba(120,200,160,.13);
+  --green:#16d97e;--g-dim:rgba(22,217,126,.08);
+  --gold:#f5a623;--gold-dim:rgba(245,166,35,.12);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);
+  --red:#ff4566;--red-dim:rgba(255,69,102,.12);
+  --text:#eef3f0;--t80:rgba(238,243,240,.80);--t55:rgba(238,243,240,.55);--t30:rgba(238,243,240,.30);
+  --disp:'Rajdhani',sans-serif;--body:'Inter',system-ui,sans-serif;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;visibility:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% -5%,rgba(22,217,126,.10),transparent 68%),
+  linear-gradient(rgba(120,200,160,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
+  background-size:auto,48px 48px,48px 48px;}
+a{color:var(--green);}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1180px;margin:0 auto;padding:0 24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.brand-text{display:flex;flex-direction:column;gap:2px;}
+.brand-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;letter-spacing:.02em;color:var(--text);line-height:1;}
+.brand-name em{color:var(--green);font-style:normal;}
+.brand-motto{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;white-space:nowrap;}
+.b-mark{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 50% 40%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 18px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+.b-mark svg{width:18px;height:18px;}
+.nav-links{display:flex;align-items:center;gap:5px;}
+.nav-links a{font-size:.85rem;color:var(--t80);padding:7px 11px;border-radius:8px;transition:color .15s,background .15s;text-decoration:none;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(22,217,126,.07);}
+.nav-links a.active{color:var(--green);}
+.nav-cta{background:var(--green)!important;color:#070a08!important;font-weight:600;border-radius:8px;padding:7px 16px!important;}
+.nav-cta:hover{background:#12c470!important;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
+.ham span{display:block;width:22px;height:2px;background:var(--t80);border-radius:2px;transition:.2s;}
+.nav-drawer{display:none;position:fixed;top:80px;left:0;right:0;bottom:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);z-index:55;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;overflow-y:auto;}
+.nav-drawer.open{transform:translateX(0);}
+.nav-drawer a{font-size:1.1rem;color:var(--t80);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);text-decoration:none;display:block;}
+.nav-drawer a:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer a.active{color:var(--text);background:var(--g-dim);}
+.nav-drawer a.active{color:var(--green);}
+@media(max-width:960px){
+  .nav-links{display:none;}
+  .ham{display:flex;}
+  .nav-drawer{display:flex;}
+}
+
+/* BREADCRUMB */
+.crumb{max-width:760px;margin:0 auto;padding:20px 24px 0;font-size:.82rem;color:var(--t55);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.crumb a{color:var(--t55);text-decoration:none;}
+.crumb a:hover{color:var(--green);}
+.crumb span{color:var(--t30);}
+.crumb .current{color:var(--t80);}
+
+/* ARTICLE HEADER */
+.art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold);margin-bottom:18px;text-decoration:none;}
+.art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
+.art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
+.art-meta span{display:inline-flex;align-items:center;gap:6px;}
+
+/* PROSE */
+.art-body{max-width:760px;margin:0 auto;padding:0 24px;font-size:1.02rem;line-height:1.85;color:var(--t80);}
+.art-body h2{font-family:var(--disp);font-size:clamp(1.35rem,3vw,1.7rem);font-weight:700;color:var(--text);margin:44px 0 16px;letter-spacing:.005em;}
+.art-body h3{font-family:var(--disp);font-size:1.15rem;font-weight:700;color:var(--text);margin:30px 0 12px;}
+.art-body p{margin-bottom:18px;}
+.art-body ul,.art-body ol{margin:0 0 18px 22px;}
+.art-body li{margin-bottom:9px;}
+.art-body strong{color:var(--text);font-weight:700;}
+.art-body a{text-decoration:underline;text-decoration-color:rgba(22,217,126,.35);text-underline-offset:3px;}
+.art-body a:hover{text-decoration-color:var(--green);}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:36px;}
+.toc-title{font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:12px;}
+.toc ol{margin:0 0 0 20px;}
+.toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
+.toc a:hover{color:var(--green);}
+.callout{background:var(--gold-dim);border:1px solid var(--gold);border-left:3px solid var(--gold);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.callout p:last-child{margin-bottom:0;}
+
+/* MID-ARTICLE CTA */
+.mid-cta{background:linear-gradient(135deg,rgba(22,217,126,.1),rgba(22,217,126,.02));border:1px solid rgba(22,217,126,.28);border-radius:16px;padding:28px 26px;margin:40px 0;text-align:center;}
+.mid-cta h2{margin-top:0!important;font-size:1.3rem!important;}
+.mid-cta p{color:var(--t80);margin-bottom:18px;}
+.mid-cta .btn-primary{margin:0 auto;}
+.btn-primary{background:var(--green);color:#070a08;font-weight:700;font-size:.92rem;padding:13px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none!important;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
+.btn-primary:hover{background:#12c470;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.92rem;padding:13px 22px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none!important;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
+.btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
+
+/* FAQ */
+.faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
+.faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.faq-item[open] summary::after{transform:rotate(45deg);}
+.faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
+
+/* AUTHOR BOX */
+.author-box{display:flex;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin:40px 0;}
+.author-avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 40% 35%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.5);display:grid;place-items:center;font-size:1.4rem;}
+.author-box h3{font-family:var(--disp);font-size:1.02rem;font-weight:700;margin-bottom:4px;color:var(--text);}
+.author-box p{font-size:.86rem;color:var(--t55);line-height:1.6;margin:0;}
+@media(max-width:520px){.author-box{flex-direction:column;text-align:center;}}
+
+/* RELATED */
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
+.related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
+.related-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block;}
+.related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
+
+/* CTA SECTION */
+.cta-section{text-align:center;padding:76px 24px 92px;max-width:760px;margin:0 auto;}
+.cta-section h2{font-family:var(--disp);font-size:clamp(1.7rem,4vw,2.3rem);font-weight:700;letter-spacing:.01em;margin-bottom:16px;}
+.cta-section p{font-size:1rem;color:var(--t80);line-height:1.7;max-width:480px;margin:0 auto 30px;}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;margin-top:20px;}
+.foot-in{max-width:1180px;margin:0 auto;}
+.foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+.foot-links a{font-size:.82rem;color:var(--t55);transition:color .15s;text-decoration:none;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:.78rem;color:var(--t30);}
+.clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+.clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+@keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* READ TOAST */
+#readToast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--panel);border:1px solid var(--green);border-radius:12px;padding:14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:200;transition:transform .35s ease;max-width:calc(100vw - 32px);}
+#readToast.show{transform:translateX(-50%) translateY(0);}
+#readToast .rt-icon{font-size:1.3rem;}
+#readToast .rt-title{font-family:var(--disp);font-weight:700;font-size:.88rem;color:var(--text);}
+#readToast .rt-sub{font-size:.76rem;color:var(--t55);}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "How To Read Candlestick Charts", "description": "Learn how to read candlestick charts step-by-step \u2014 what each candle represents, common patterns like doji and hammer, and how traders use them to time entries.", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/how-to-read-candlestick-charts", "datePublished": "2026-07-17", "dateModified": "2026-07-17", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/technical-analysis/how-to-read-candlestick-charts"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the easiest candlestick pattern to learn first?", "acceptedAnswer": {"@type": "Answer", "text": "The doji, hammer, and shooting star are good starting points because each has a clear, simple shape and a well-known meaning. Start by learning to spot these three reliably before moving on to multi-candle patterns."}}, {"@type": "Question", "name": "Do candlestick patterns actually work?", "acceptedAnswer": {"@type": "Answer", "text": "Candlestick patterns reflect real supply-and-demand behavior and can improve the odds of a trade when combined with other context like trend direction and support/resistance \u2014 but no pattern works 100% of the time, and they should never be used in isolation."}}, {"@type": "Question", "name": "What timeframe should I use for options trading?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on your strategy and how long you plan to hold the option. Short-term scalpers often use 1-minute or 5-minute charts, while traders holding options for days or weeks typically look at daily charts to understand the broader trend."}}, {"@type": "Question", "name": "What's the difference between a candlestick chart and a line chart?", "acceptedAnswer": {"@type": "Answer", "text": "A line chart only shows closing prices connected over time, while a candlestick chart shows the open, high, low, and close for each period \u2014 giving a much fuller picture of how price actually moved within that timeframe."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Technical Analysis", "item": "https://scalpclock.com/learn-options-trading/technical-analysis"}, {"@type": "ListItem", "position": 4, "name": "How To Read Candlestick Charts", "item": "https://scalpclock.com/learn-options-trading/technical-analysis/how-to-read-candlestick-charts"}]}]}</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <div class="b-mark">
+        <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="9" r="7"/>
+          <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+          <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Scalp<em>Clock</em></span>
+        <span class="brand-motto">The Time To Profit Is Now</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+          <a href="/trading-resources">Trading Resources</a>
+          <a href="/trading-pictionary">Pictionary</a>
+        </div>
+      </div>
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay">Replay</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/dashboard">Dashboard</a>
+      <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    </nav>
+    <button class="ham" onclick="toggleDrawer()" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/" onclick="closeDrawer()">Home</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <a href="/pricing" onclick="closeDrawer()">Pricing</a>
+  <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+</div>
+
+<div class="crumb reveal">
+  <a href="/">Home</a><span>/</span>
+  <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
+  <a href="/learn-options-trading/technical-analysis">Technical Analysis</a><span>/</span>
+  <span class="current">How To Read Candlestick Charts</span>
+</div>
+
+<header class="art-header reveal">
+  <a class="art-cat-pill" href="/learn-options-trading/technical-analysis">📊 Technical Analysis</a>
+  <h1>How To Read Candlestick Charts</h1>
+  <div class="art-meta">
+    <span>⏱ 9 min read</span>
+    <span>📅 Updated July 17, 2026</span>
+    <span>✍️ ScalpClock Education Team</span>
+  </div>
+</header>
+
+<article class="art-body reveal">
+<nav class="toc" aria-label="Table of contents">
+  <div class="toc-title">In This Article</div>
+  <ol>
+    <li><a href="#what-is-a-candlestick">What Is a Candlestick?</a></li>
+    <li><a href="#anatomy">The Anatomy of a Candlestick</a></li>
+    <li><a href="#color">What Candle Color Tells You</a></li>
+    <li><a href="#timeframes">Timeframes Change What You See</a></li>
+    <li><a href="#single-patterns">Common Single-Candle Patterns</a></li>
+    <li><a href="#multi-patterns">Multi-Candle Patterns</a></li>
+    <li><a href="#worked-example">A Worked Example</a></li>
+    <li><a href="#why-it-matters">Why Candlesticks Matter for Options Traders</a></li>
+    <li><a href="#practice">How to Practice Reading Charts</a></li>
+  </ol>
+</nav>
+
+<p>Candlestick charts are the standard way traders visualize price movement — and once you understand what a single candle represents, whole chart patterns start to make a lot more sense. This guide covers the fundamentals of reading a candlestick chart from scratch.</p>
+
+<h2 id="what-is-a-candlestick">What Is a Candlestick?</h2>
+<p>A candlestick is a way of showing four pieces of price information — the open, high, low, and close — for a specific period of time, all in one shape. That period could be one minute, five minutes, one day, or any other timeframe, depending on the chart's settings.</p>
+<p>Instead of a simple line connecting closing prices (a line chart), a candlestick chart shows the full range of price action within each period, which reveals a lot more about how a battle between buyers and sellers actually played out.</p>
+
+<h2 id="anatomy">The Anatomy of a Candlestick</h2>
+<p>Every candlestick has two main parts:</p>
+<ul>
+<li><strong>The body</strong> — the thick rectangular part, representing the range between the opening price and the closing price for that period.</li>
+<li><strong>The wicks (or shadows)</strong> — the thin lines above and below the body, representing the highest and lowest prices reached during that period, even if the price didn't close there.</li>
+</ul>
+<p>A long body means the price moved a lot between open and close. A long wick means the price tried to move further in that direction but got pushed back before the period ended — that rejection is often just as meaningful as the body itself.</p>
+
+<h2 id="color">What Candle Color Tells You</h2>
+<p>Candles are typically colored (commonly green/white for up, red/black for down) to instantly show direction:</p>
+<ul>
+<li><strong>A bullish (up) candle</strong> means the close was higher than the open — buyers were in control for that period.</li>
+<li><strong>A bearish (down) candle</strong> means the close was lower than the open — sellers were in control for that period.</li>
+</ul>
+<p>On ScalpClock's <a href="/scalpchart">ScalpCharts</a>, bullish and bearish candles are color-coded the same way, so you can build the habit of reading direction at a glance before diving into more advanced pattern recognition.</p>
+
+<h2 id="timeframes">Timeframes Change What You See</h2>
+<p>The same stock can look completely different depending on the timeframe you're viewing. A 1-minute chart shows every small wiggle in price throughout the day — useful for short-term, fast-moving trades. A daily chart compresses an entire day of trading into a single candle — useful for spotting bigger, longer-term trends.</p>
+<p>Neither timeframe is "correct" — it depends on what kind of trader you are. Short-term options traders and scalpers tend to watch shorter timeframes (1-minute, 5-minute, 15-minute), while swing traders and longer-term investors lean toward daily or weekly charts. Our guide on <a href="/learn-options-trading/scalping/what-is-options-scalping">options scalping</a> covers how short-term traders use fast timeframes specifically.</p>
+
+<h2 id="single-patterns">Common Single-Candle Patterns</h2>
+<p>Certain individual candle shapes come up often enough that traders give them names. Here are three of the most common ones to learn first:</p>
+<h3>Doji</h3>
+<p>A doji has a very small or nonexistent body, meaning the open and close were nearly identical, with wicks on either side. It represents indecision — buyers and sellers fought to a draw. A doji appearing after a strong trend can signal that the trend is losing steam.</p>
+<h3>Hammer</h3>
+<p>A hammer has a small body near the top of the candle's range, with a long lower wick and little or no upper wick. It shows that sellers pushed the price down during the period, but buyers stepped in and pushed it back up before the close. A hammer appearing after a downtrend is often watched as a possible reversal signal.</p>
+<h3>Shooting Star</h3>
+<p>The mirror image of a hammer: a small body near the bottom of the candle's range, with a long upper wick. It shows buyers pushed the price up, but sellers took back control before the close. A shooting star after an uptrend is often watched as a possible bearish reversal signal.</p>
+
+<div class="callout">
+<div class="callout-label">Important Context</div>
+<p>No single candle pattern is a guarantee of what happens next — they're probabilities, not certainties, and they mean more when combined with the broader trend, support/resistance levels, and volume. Treat individual patterns as one input, not the whole decision.</p>
+</div>
+
+<h2 id="multi-patterns">Multi-Candle Patterns</h2>
+<p>Beyond single candles, some of the most reliable signals come from how two or three candles relate to each other. Three worth learning early:</p>
+<h3>Bullish and Bearish Engulfing</h3>
+<p>An engulfing pattern happens when one candle's body completely "engulfs" the body of the candle before it. A <strong>bullish engulfing</strong> pattern — a small down candle followed by a larger up candle that fully covers it — suggests buyers have decisively taken control after a period of selling. A <strong>bearish engulfing</strong> pattern is the mirror image, suggesting sellers have taken control after a period of buying.</p>
+<h3>Morning Star and Evening Star</h3>
+<p>These are three-candle patterns that often appear at the end of a trend. A <strong>morning star</strong> forms after a downtrend: a large down candle, followed by a small-bodied candle (indecision), followed by a large up candle — a visual "sunrise" shape that suggests a bottom may be forming. An <strong>evening star</strong> is the same idea in reverse, appearing after an uptrend and suggesting a potential top.</p>
+<h3>Three White Soldiers / Three Black Crows</h3>
+<p>Three consecutive strong candles in the same direction — three up candles for "three white soldiers," three down candles for "three black crows" — signal strong, sustained momentum in one direction, often used to confirm that a new trend has real conviction behind it rather than being a single-candle fluke.</p>
+
+<h2 id="worked-example">A Worked Example</h2>
+<p>Imagine a stock has been sliding lower for several days. On the chart, you notice: a long red candle continuing the decline, followed the next period by a candle with a small body and a long lower wick — a hammer. The day after that, price opens higher and closes as a strong green candle.</p>
+<p>Read individually, the hammer suggested sellers tried to push the price lower but buyers stepped in and defended that level. The strong green candle that followed added confirmation — buyers weren't just defending, they were taking control. A trader watching for this exact sequence might view it as an early signal that the downtrend is losing strength, and start paying closer attention to potential call option entries rather than puts.</p>
+<p>Notice what this example does <em>not</em> do: it doesn't guarantee the stock reverses, and it doesn't tell you how far it will move if it does. Candlestick reading gives you probabilities and context — not certainty — which is exactly why it's paired with other tools like support/resistance levels and volume in a complete trading approach.</p>
+
+<h2 id="why-it-matters">Why Candlesticks Matter for Options Traders</h2>
+<p>Because options have expiration dates, <em>timing</em> matters in a way it doesn't for a long-term stock investor. Reading candlesticks well helps you:</p>
+<ul>
+<li>Identify likely entry points before committing premium to a trade.</li>
+<li>Recognize when a trend might be reversing, which matters enormously if you're holding a directional call or put.</li>
+<li>Avoid buying options right as momentum is fading, which is one of the most common ways new options traders lose money.</li>
+</ul>
+<p>This is also where ScalpClock's real-time pattern detection comes in — <a href="/scalpchart">ScalpCharts</a> automatically scans live charts for recognizable candlestick patterns and surfaces them as alerts, so you can start connecting the patterns you're learning here to what's actually happening on a live chart.</p>
+
+<h2 id="practice">How to Practice Reading Charts</h2>
+<p>Reading charts is a skill built through repetition, not memorization. The fastest way to build it without risking money is to study historical price action directly:</p>
+<ol>
+<li>Open <a href="/scalpchart?tab=replay">Chart Replay</a> and load a real historical trading day.</li>
+<li>Step through the chart one candle at a time, and try to predict what happens next before revealing it.</li>
+<li>Compare your prediction to what actually happened, and look for the pattern you might have missed.</li>
+</ol>
+<p>Do this consistently across different stocks and different market conditions, and candlestick reading stops being abstract theory and starts becoming pattern recognition you can act on.</p>
+
+
+<div class="mid-cta reveal">
+  <h2>Ready To Practice What You Learned?</h2>
+  <p>Turn knowledge into skill with ScalpClock interactive lessons, chart replay, and trading challenges.</p>
+  <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+</div>
+
+<h2 id="faq">Frequently Asked Questions</h2>
+<details class="faq-item">
+  <summary>What is the easiest candlestick pattern to learn first?</summary>
+  <div class="faq-a">The doji, hammer, and shooting star are good starting points because each has a clear, simple shape and a well-known meaning. Start by learning to spot these three reliably before moving on to multi-candle patterns.</div>
+</details>
+<details class="faq-item">
+  <summary>Do candlestick patterns actually work?</summary>
+  <div class="faq-a">Candlestick patterns reflect real supply-and-demand behavior and can improve the odds of a trade when combined with other context like trend direction and support/resistance — but no pattern works 100% of the time, and they should never be used in isolation.</div>
+</details>
+<details class="faq-item">
+  <summary>What timeframe should I use for options trading?</summary>
+  <div class="faq-a">It depends on your strategy and how long you plan to hold the option. Short-term scalpers often use 1-minute or 5-minute charts, while traders holding options for days or weeks typically look at daily charts to understand the broader trend.</div>
+</details>
+<details class="faq-item">
+  <summary>What's the difference between a candlestick chart and a line chart?</summary>
+  <div class="faq-a">A line chart only shows closing prices connected over time, while a candlestick chart shows the open, high, low, and close for each period — giving a much fuller picture of how price actually moved within that timeframe.</div>
+</details>
+
+<div class="author-box reveal">
+  <div class="author-avatar" aria-hidden="true">🎓</div>
+  <div>
+    <h3>ScalpClock Education Team</h3>
+    <p>ScalpClock creates educational resources designed to help traders understand options, technical analysis, and trading discipline.</p>
+  </div>
+</div>
+
+<h2>Continue Learning</h2>
+<div class="related-grid reveal">
+  <a class="related-card" href="/learn-options-trading/options-basics/what-is-options-trading">
+    <span class="rc-label">Options Basics</span>
+    <span class="rc-title">What Is Options Trading? A Beginner's Guide</span>
+  </a>
+  <a class="related-card" href="/learn-options-trading/scalping/what-is-options-scalping">
+    <span class="rc-label">Options Scalping</span>
+    <span class="rc-title">What Is Options Scalping?</span>
+  </a>
+  <a class="related-card" href="/learn-options-trading/strategies/best-options-strategies-for-beginners">
+    <span class="rc-label">Options Strategies</span>
+    <span class="rc-title">Best Options Strategies for Beginners</span>
+  </a>
+</div>
+
+</article>
+
+<section class="cta-section reveal">
+  <h2>Turn Reading Into Practice</h2>
+  <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
+  <div class="cta-btns">
+    <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+    <a class="btn-ghost" href="/learn-options-trading/technical-analysis">Back to Technical Analysis</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-links">
+      <a href="/scalpchart">ScalpCharts</a>
+      <a href="/exitassistant">Exit Assistant</a>
+      <a href="/blog/">Blog</a>
+      <a href="/trading-resources">Trading Resources</a>
+      <a href="/learn-options-trading">Learn Options Trading</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/learn">Daily Learn Hub</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:admin@scalpclock.com" style="color:inherit;text-decoration:underline;">admin@scalpclock.com</a></div>
+  </div>
+</footer>
+
+<div id="readToast">
+  <span class="rt-icon">✅</span>
+  <div>
+    <div class="rt-title" id="rtTitle">Lesson complete! +15 XP</div>
+    <div class="rt-sub" id="rtSub"></div>
+  </div>
+</div>
+
+<script src="/js/sc-learn-progress.js"></script>
+<script>
+document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
+
+function toggleDrawer(){
+  const open = document.getElementById('navDrawer').classList.toggle('open');
+  document.querySelector('.ham').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeDrawer(){
+  document.getElementById('navDrawer').classList.remove('open');
+  document.querySelector('.ham').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click',function(e){
+  const d=document.getElementById('navDrawer');
+  if(d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.ham'))closeDrawer();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
+
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(el=>el.classList.add('in'));return;}
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in');io.unobserve(entry.target);}
+    });
+  },{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+  els.forEach(el=>io.observe(el));
+})();
+
+// Mark this lesson read once the reader has genuinely scrolled through the
+// body (70% of article height) or spent 25s on the page — whichever comes
+// first — then award XP via the shared SC_LEARN module and show a toast.
+// A page-load timer alone would count a bounce; scroll-depth alone would
+// miss slow readers who stop scrolling to actually read a section.
+(function(){
+  if (typeof SC_LEARN === 'undefined') return;
+  const SLUG = 'technical-analysis/how-to-read-candlestick-charts';
+  let done = false;
+  function complete(){
+    if (done) return;
+    done = true;
+    const badges = SC_LEARN.markRead(SLUG);
+    const toast = document.getElementById('readToast');
+    const sub = document.getElementById('rtSub');
+    if (badges.length) sub.textContent = 'Badge earned: ' + badges.map(b=>b.icon+' '+b.name).join(', ');
+    else sub.textContent = 'Progress saved to your Learning Path';
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 5000);
+  }
+  const timer = setTimeout(complete, 25000);
+  window.addEventListener('scroll', () => {
+    const art = document.querySelector('.art-body');
+    if (!art) return;
+    const rect = art.getBoundingClientRect();
+    const scrolled = (window.innerHeight - rect.top) / rect.height;
+    if (scrolled > 0.7) { clearTimeout(timer); complete(); }
+  }, { passive: true });
+})();
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+</script>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('nav a[href="/"], .nav-drawer a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === 'Home') {
+        a.textContent = 'Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('nav a[href="/dashboard"]:not([data-home-swap]), .nav-drawer a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>

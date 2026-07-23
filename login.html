@@ -194,6 +194,7 @@ async function signIn() {
     showMsg(error.message, 'error');
     btn.disabled = false; btn.textContent = 'Sign In';
   } else {
+    if (typeof gtag === 'function') gtag('event', 'login', { method: 'email' });
     window.location.href = _from;
   }
 }
@@ -235,6 +236,7 @@ async function signUp() {
         await sb.from('profiles').upsert({ id: data.user.id, plan: 'free' }, { onConflict: 'id' });
       } catch (_) {}
     }
+    if (typeof gtag === 'function') gtag('event', 'sign_up', { method: 'email' });
     showMsg('Account created! Check your email to confirm, then sign in below.', 'success');
     // Auto-switch to sign-in tab after 2 seconds
     setTimeout(() => showTab('signin'), 2000);

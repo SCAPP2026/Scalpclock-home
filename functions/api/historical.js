@@ -65,7 +65,10 @@ export async function onRequest(context) {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        return json({ error: err.message || `Market data provider returned ${res.status}` }, 502);
+        // Not 502/503/504 — Cloudflare's edge replaces the body of those with
+        // its own generic error page even for a Function's own Response,
+        // which would silently swallow this message right back out.
+        return json({ error: err.message || `Market data provider returned ${res.status}` }, 400);
       }
 
       const data = await res.json();

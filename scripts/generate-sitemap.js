@@ -38,11 +38,13 @@ const SKIP_DIRS = new Set([
 const PAGE_META = {
   index: { priority: "1.0", changefreq: "daily" },
   learn: { priority: "0.9", changefreq: "daily" },
+  "learn-options-trading": { priority: "0.9", changefreq: "weekly" },
   scalpchart: { priority: "0.8", changefreq: "daily" },
   pricing: { priority: "0.8", changefreq: "weekly" },
   blog: { priority: "0.8", changefreq: "weekly" },
   "blog/category": { priority: "0.6", changefreq: "weekly" },
   exitassistant: { priority: "0.7", changefreq: "weekly" },
+  "trading-resources": { priority: "0.7", changefreq: "monthly" },
   about: { priority: "0.7", changefreq: "monthly" },
   faq: { priority: "0.6", changefreq: "monthly" },
   login: { priority: "0.5", changefreq: "monthly" },
@@ -51,11 +53,19 @@ const PAGE_META = {
 };
 const DEFAULT_META = { priority: "0.5", changefreq: "monthly" };
 const BLOG_POST_META = { priority: "0.6", changefreq: "monthly" };
+// learn-options-trading/<category> (one segment deep) vs
+// learn-options-trading/<category>/<article> (two segments deep)
+const LEARN_CATEGORY_META = { priority: "0.7", changefreq: "monthly" };
+const LEARN_ARTICLE_META = { priority: "0.6", changefreq: "monthly" };
 
 function metaFor(urlKey) {
   if (PAGE_META[urlKey]) return PAGE_META[urlKey];
   if (urlKey.startsWith("blog/category/")) return PAGE_META["blog/category"];
   if (urlKey.startsWith("blog/")) return BLOG_POST_META;
+  if (urlKey.startsWith("learn-options-trading/")) {
+    const depth = urlKey.split("/").length - 1; // segments after "learn-options-trading"
+    return depth >= 2 ? LEARN_ARTICLE_META : LEARN_CATEGORY_META;
+  }
   return DEFAULT_META;
 }
 

@@ -8,5 +8,8 @@
 # Nested clone (accidental git clone inside repo)
 Scalpclock-home/
 
+# Claude Code worktrees (used for background/agent sessions, not project source)
+.claude/
+
 # OS
 .DS_Store

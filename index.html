@@ -12,19 +12,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Learn Options &amp; Stock Trading While You Trade | ScalpClock</title>
-<meta name="description" content="ScalpClock is the Duolingo of options trading — an AI coach that teaches candlestick patterns and price action while you trade real signals. Free to start.">
+<meta name="description" content="ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock &amp; options signals. Free to start.">
 <link rel="canonical" href="https://scalpclock.com">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
 <meta property="og:title" content="Learn Options &amp; Stock Trading While You Trade | ScalpClock">
-<meta property="og:description" content="ScalpClock is the Duolingo of options trading — an AI coach that teaches candlestick patterns and price action while you trade real signals. Free to start.">
+<meta property="og:description" content="ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock &amp; options signals. Free to start.">
 <meta property="og:url" content="https://scalpclock.com">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Learn Options &amp; Stock Trading While You Trade | ScalpClock">
-<meta name="twitter:description" content="ScalpClock is the Duolingo of options trading — an AI coach that teaches candlestick patterns and price action while you trade real signals. Free to start.">
+<meta name="twitter:description" content="ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock &amp; options signals. Free to start.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -149,11 +149,6 @@ a{color:var(--green);text-decoration:none;}
 .founding-section{padding:80px 24px;max-width:640px;margin:0 auto;text-align:center;}
 .founding-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:24px 0 32px;}
 .founding-badge{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,166,35,.3);padding:6px 14px;border-radius:20px;}
-.founding-progress-wrap{margin-bottom:32px;text-align:left;}
-.founding-progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--t55);margin-bottom:8px;}
-.founding-progress-label b{color:var(--gold);}
-.founding-progress-track{height:10px;border-radius:6px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);overflow:hidden;}
-.founding-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ffb84d);border-radius:6px;transition:width .6s ease;width:0%;}
 .founding-price-card{background:var(--panel);border:1px solid rgba(245,166,35,.4);border-radius:20px;padding:36px 28px;box-shadow:0 0 50px rgba(245,166,35,.12);text-align:left;}
 .founding-price-name{font-family:var(--disp);font-weight:700;font-size:1.5rem;color:var(--text);margin-bottom:6px;}
 .founding-price-amount{font-family:var(--disp);font-size:2.8rem;font-weight:700;color:var(--gold);line-height:1;}
@@ -291,6 +286,18 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">[
   {
@@ -299,14 +306,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     "name": "ScalpClock",
     "url": "https://scalpclock.com",
     "logo": "https://scalpclock.com/icon-512.png",
-    "description": "ScalpClock is the Duolingo of options trading — an AI coach that teaches candlestick patterns and price action while you trade real signals. Free to start."
+    "description": "ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock & options signals. Free to start."
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "ScalpClock",
     "url": "https://scalpclock.com",
-    "description": "ScalpClock is the Duolingo of options trading — an AI coach that teaches candlestick patterns and price action while you trade real signals. Free to start."
+    "description": "ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock & options signals. Free to start."
   },
   {
     "@context": "https://schema.org",
@@ -314,6 +321,21 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     "name": "ScalpClock",
     "url": "https://scalpclock.com",
     "description": "ScalpClock teaches options trading, stock trading, technical analysis, and candlestick pattern recognition through an AI trading coach and a daily lesson curriculum."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ScalpClock",
+    "url": "https://scalpclock.com",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "description": "An AI trading tool for day trading and scalping — live options and stock signals, candlestick pattern recognition, and an AI trade coach that explains price action in plain English.",
+    "keywords": "AI trading tools, options signals, stock signals, day trading, scalping, candlestick patterns, technical analysis",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
   }
 ]</script>
 </head>
@@ -343,12 +365,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     </a>
     <nav class="nav-links">
       <a href="/" class="active">Home</a>
+      <div class="nav-dropdown" id="learnDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleLearnDropdown(event)" aria-haspopup="true" aria-expanded="false">Learn<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/learn">Daily Lessons</a>
+          <a href="/learn-options-trading">Guides</a>
+          <a href="/blog/">Blog</a>
+          <a href="/trading-resources">Trading Resources</a>
+          <a href="/trading-pictionary">Pictionary</a>
+        </div>
+      </div>
       <a href="/about">About</a>
-      <a href="/learn">Learn</a>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
-      <a href="/blog/">Blog</a>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -360,12 +390,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" class="active" onclick="closeDrawer()">Home</a>
+  <div class="drawer-group-label">Learn</div>
+  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
   <a href="/about" onclick="closeDrawer()">About</a>
-  <a href="/learn" onclick="closeDrawer()">Learn</a>
   <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
-  <a href="/blog/" onclick="closeDrawer()">Blog</a>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -411,7 +445,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <div class="hero-copy">
       <div class="hero-eyebrow">AI Trading Coach · Learn While You Trade</div>
       <h1>Stop Guessing.<br><em>Start Understanding.</em></h1>
-      <p class="hero-sub">Most traders stare at charts hoping for a signal. ScalpClock's AI trading coach SampsonX reads every candle, explains candlestick patterns, technical analysis, and price action in plain English — teaching you options and stock trading while you trade real signals.</p>
+      <p class="hero-sub">Most traders stare at charts hoping for a signal. ScalpClock's AI trading coach SampsonX reads every candle, explains candlestick patterns, technical analysis, and price action in plain English — teaching you day trading and scalping while you act on real-time stock and options signals.</p>
 
       <div class="hero-btns">
         <a class="btn-primary" href="/login?tab=signup">Start Free →</a>
@@ -437,19 +471,10 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <div class="sec-label" style="display:flex;justify-content:center;">Limited Time</div>
   <h2 class="sec-title">Lock In Founding Member Pricing</h2>
   <div class="founding-badges">
-    <span class="founding-badge">🔥 Founding Member</span>
-    <span class="founding-badge">⏰ Limited Time</span>
-    <span class="founding-badge">💎 Lifetime Price Lock</span>
-  </div>
-
-  <div class="founding-progress-wrap">
-    <div class="founding-progress-label">
-      <span>Founding Member Spots Remaining</span>
-      <b id="foundingProgressCount">Loading…</b>
-    </div>
-    <div class="founding-progress-track">
-      <div class="founding-progress-fill" id="foundingProgressFill"></div>
-    </div>
+    <span class="founding-badge">🔥 Founding Member Special</span>
+    <span class="founding-badge">💎 Lock in $1.99/month for life</span>
+    <span class="founding-badge">⏰ Only for the first 500 members</span>
+    <span class="founding-badge">🎁 Includes a 5-Day Free Trial</span>
   </div>
 
   <div class="founding-price-card">
@@ -559,12 +584,18 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <div class="section">
     <div class="sec-label">Features</div>
     <h2 class="sec-title">Everything a serious trader needs</h2>
-    <p class="sec-sub">Six core tools — designed around education first, execution second.</p>
+    <p class="sec-sub">Seven core tools — designed around education first, execution second.</p>
     <div class="feat-grid">
       <div class="feat-card">
         <div class="feat-icon">🕯️</div>
         <h3>AI Candle Analysis</h3>
         <p>SampsonX reads every candle and explains exactly what the market is communicating — body size, wicks, context, and what to expect next.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📡</div>
+        <h3>Live Options &amp; Stock Signals</h3>
+        <p>Real-time RSI, VWAP, and volume-based call/put signals scanning the market's most active tickers — built for day trading and scalping entries, not swing setups.</p>
+        <a href="/signals" class="feat-badge" style="text-decoration:none;cursor:pointer;">View Signals →</a>
       </div>
       <div class="feat-card">
         <div class="feat-icon">🔔</div>
@@ -701,6 +732,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/exitassistant">Exit Assistant</a>
       <a href="/blog/">Blog</a>
+      <a href="/trading-resources">Trading Resources</a>
       <a href="/pricing">Pricing</a>
       <a href="/learn">Learn</a>
       <a href="/about">About</a>
@@ -717,6 +749,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <script>
 // Page reveal (removed stale Supabase auth check — wrong project)
 document.body.style.visibility='visible';
+
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+});
+
 
 // ─── FOUNDING MEMBER PROMO ──────────────────────────────────────
 let _sb = null;
@@ -768,10 +813,6 @@ async function loadFoundingStatus() {
 
     document.getElementById('promoBar').style.display = '';
     document.getElementById('founding').style.display = '';
-
-    const pct = Math.max(0, Math.min(100, (data.remaining / data.cap) * 100));
-    document.getElementById('foundingProgressFill').style.width = pct + '%';
-    document.getElementById('foundingProgressCount').textContent = `${data.remaining} / ${data.cap} Remaining`;
   } catch (e) {
     console.warn('founding status failed:', e.message);
   }
@@ -946,6 +987,27 @@ document.addEventListener('click',function(e){
 })();
 
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+</script>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('nav a[href="/"], .nav-drawer a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === 'Home') {
+        a.textContent = 'Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('nav a[href="/dashboard"]:not([data-home-swap]), .nav-drawer a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>

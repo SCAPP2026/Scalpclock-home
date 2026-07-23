@@ -380,6 +380,33 @@ export async function onRequest(context) {
   const MIN_PRICE  = 5;      // filters penny/illiquid-options noise
   const MIN_VOLUME = 300000; // per-bar-window floor, same intent
 
+  // Market Pulse (SPY/QQQ trend + a realized-volatility proxy) — captured
+  // regardless of whether SPY/QQQ end up "hold" and get filtered out of
+  // calls/puts below. No real VIX feed exists on Alpaca IEX, so volatility
+  // is approximated from SPY's own realized volatility rather than faked;
+  // the bucket thresholds are tunable constants, not empirically fitted.
+  let marketPulse = null;
+  const PULSE_SYMBOLS = ['SPY', 'QQQ'];
+  function calcRealizedVol(bars) {
+    // stddev of consecutive-bar log returns, in percent
+    if (bars.length < 5) return null;
+    const rets = [];
+    for (let i = 1; i < bars.length; i++) {
+      if (bars[i - 1].c > 0 && bars[i].c > 0) rets.push(Math.log(bars[i].c / bars[i - 1].c));
+    }
+    if (rets.length < 4) return null;
+    const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+    const variance = rets.reduce((a, b) => a + (b - mean) ** 2, 0) / rets.length;
+    return Math.sqrt(variance) * 100;
+  }
+  function volLabel(rv) {
+    if (rv == null) return null;
+    if (rv < 0.08) return 'Low';
+    if (rv < 0.15) return 'Moderate';
+    if (rv < 0.28) return 'High';
+    return 'Elevated';
+  }
+
   if (range === 'day') {
     const startISO = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString();
     const prevISO  = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -390,6 +417,8 @@ export async function onRequest(context) {
       fetchAllBars(`${DATA_BASE}/stocks/bars?symbols=${symList}&timeframe=1Day&start=${prevISO}&limit=1000&feed=iex&sort=asc`, 10),
     ]);
     const latestBars = (await safeJson(latestRes)).bars || {};
+
+    const pulseBySymbol = {};
 
     for (const sym of symbols) {
       try {
@@ -411,6 +440,14 @@ export async function onRequest(context) {
         const sig       = getSignal(rsi, vwapDist, volSurge, newsTickers.has(sym));
         const changePct = (price && prevClose) ? Number((((price - prevClose) / prevClose) * 100).toFixed(2)) : null;
 
+        if (PULSE_SYMBOLS.includes(sym)) {
+          pulseBySymbol[sym] = {
+            symbol: sym, price, changePct: changePct ?? 0,
+            rsi: rsi != null ? Number(rsi.toFixed(1)) : null,
+            realizedVol: calcRealizedVol(recentBars),
+          };
+        }
+
         if (sig.tone === 'hold') continue; // only Calls / Puts candidates compete for the top-10 slots
 
         scored.push({
@@ -422,6 +459,18 @@ export async function onRequest(context) {
           ...sig,
         });
       } catch (e) { /* skip symbols with malformed data rather than fail the whole scan */ }
+    }
+
+    if (pulseBySymbol.SPY) {
+      const spy = pulseBySymbol.SPY;
+      const rv  = spy.realizedVol;
+      marketPulse = {
+        spy: { price: spy.price, changePct: spy.changePct, rsi: spy.rsi },
+        qqq: pulseBySymbol.QQQ ? { price: pulseBySymbol.QQQ.price, changePct: pulseBySymbol.QQQ.changePct, rsi: pulseBySymbol.QQQ.rsi } : null,
+        trend: spy.changePct > 0.15 ? 'Bullish' : spy.changePct < -0.15 ? 'Bearish' : 'Neutral',
+        volatility: volLabel(rv),
+        realizedVolPct: rv != null ? Number(rv.toFixed(3)) : null,
+      };
     }
   } else {
     // range === 'week' — daily bars, longer lookback for a stable daily RSI(14)
@@ -479,7 +528,7 @@ export async function onRequest(context) {
     marketOpen, asOf: new Date().toISOString(), range,
     universeSize: symbols.length, scannedCount: scored.length, source,
     newsTickersTracked: newsTickers.size,
-    calls, puts,
+    calls, puts, marketPulse,
   }), {
     headers: {
       'Content-Type':                'application/json',

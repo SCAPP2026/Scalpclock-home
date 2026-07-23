@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalpCharts — Live Pattern Scanner</title>
-<meta name="description" content="ScalpCharts: live candlestick charts with AI trade coaching. Tap any candle for a plain-English breakdown of price action, volume, and probability.">
+<title>AI Trade Coach for Day Trading &amp; Scalping | ScalpCharts</title>
+<meta name="description" content="ScalpCharts: AI trade coaching for day trading and scalping — tap any candle for plain-English candlestick pattern analysis and options signals.">
 <link rel="canonical" href="https://scalpclock.com/scalpchart">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="ScalpCharts — Live Pattern Scanner">
-<meta property="og:description" content="ScalpCharts: live candlestick charts with AI trade coaching. Tap any candle for a plain-English breakdown of price action, volume, and probability.">
+<meta property="og:title" content="AI Trade Coach for Day Trading &amp; Scalping | ScalpCharts">
+<meta property="og:description" content="ScalpCharts: AI trade coaching for day trading and scalping — tap any candle for plain-English candlestick pattern analysis and options signals.">
 <meta property="og:url" content="https://scalpclock.com/scalpchart">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ScalpCharts — Live Pattern Scanner">
-<meta name="twitter:description" content="ScalpCharts: live candlestick charts with AI trade coaching. Tap any candle for a plain-English breakdown of price action, volume, and probability.">
+<meta name="twitter:title" content="AI Trade Coach for Day Trading &amp; Scalping | ScalpCharts">
+<meta name="twitter:description" content="ScalpCharts: AI trade coaching for day trading and scalping — tap any candle for plain-English candlestick pattern analysis and options signals.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -997,6 +997,18 @@
 .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* LEARN DROPDOWN */
+.nav-dropdown{position:relative;}
+.nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
+.nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
+.nav-dropdown-trigger svg{width:12px;height:12px;transition:transform .15s;flex-shrink:0;}
+.nav-dropdown.open .nav-dropdown-trigger svg{transform:rotate(180deg);}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:170px;background:rgba(7,10,8,.98);backdrop-filter:blur(16px);border:1px solid rgba(120,200,160,.16);border-radius:10px;padding:6px;box-shadow:0 14px 32px rgba(0,0,0,.4);z-index:70;}
+.nav-dropdown.open .nav-dropdown-menu{display:block;}
+.nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
+.nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
+.drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -1005,11 +1017,23 @@
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "Web",
   "url": "https://scalpclock.com/scalpchart",
-  "description": "ScalpCharts: live candlestick charts with AI trade coaching. Tap any candle for a plain-English breakdown of price action, volume, and probability."
+  "description": "ScalpCharts: AI trade coaching for day trading and scalping — tap any candle for plain-English candlestick pattern analysis and options signals.",
+  "keywords": "AI trading tools, day trading, scalping, candlestick patterns, options signals, stock signals, chart replay",
+  "featureList": [
+    "AI candlestick pattern analysis",
+    "Live options and stock signals",
+    "Confidence-scored trade setups",
+    "Chart replay and trading simulator"
+  ],
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
 }</script>
 </head>
 <body style="visibility:hidden">
-<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">ScalpCharts — Live Options Charts, Candlestick Patterns &amp; AI Trade Coach</h1>
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">ScalpCharts — AI Trade Coach for Day Trading &amp; Scalping: Candlestick Patterns &amp; Options Signals</h1>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://unpkg.com/lightweight-charts@4.1.4/dist/lightweight-charts.standalone.production.js"></script>
 
@@ -1059,12 +1083,15 @@
   </div>
   <div class="sc-drawer-links">
     <a href="/">🏠 Home</a>
+    <div class="drawer-group-label">Learn</div>
+    <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+    <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+    <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+    <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
     <a href="/about">ℹ️ About</a>
-    <a href="/learn">📚 Learn</a>
     <a href="/scalpchart" class="sc-active">📊 ScalpCharts</a>
     <a href="#" onclick="closeSCNav();switchTab('replay');return false;">📅 Replay</a>
     <a href="/exitassistant">🚪 Exit Assistant</a>
-    <a href="/blog/">📖 Blog</a>
     <a href="/pricing">💳 Pricing</a>
     <a href="/dashboard">⚙️ Dashboard</a>
     <a href="/login?tab=signup" class="sc-cta">Start Free →</a>
@@ -1811,6 +1838,13 @@ function startSimulation() {
       updateOHLC(candles[candles.length - 1]);
       runPatternDetection();
       drawChart();
+      // Bars are flowing again — clear a prior DEMO/offline state instead of
+      // leaving the label stuck on it forever even though real data (and the
+      // patterns/OHLC above) already recovered.
+      const sl = document.getElementById('dataStatusLabel');
+      const dot = document.getElementById('liveDot');
+      if (sl && sl.textContent !== 'LIVE') { sl.textContent = 'LIVE'; sl.style.color = ''; }
+      if (dot) dot.style.background = '';
     }
   }, 15000); // refresh candle shapes every 15 seconds
 }
@@ -1826,6 +1860,10 @@ function startPricePoller() {
         currentPrice = data.price;
         const open = candles.length ? candles[0].open : data.price;
         updatePrice(data.price, open);
+        // Price is flowing again — only clear a STALE state we set ourselves;
+        // leave a DEMO/offline state alone since that reflects bars, not price.
+        const sl = document.getElementById('dataStatusLabel');
+        if (sl && sl.textContent === 'STALE') { sl.textContent = 'LIVE'; sl.style.color = ''; }
       }
     } catch (e) {
       const sl = document.getElementById('dataStatusLabel');
@@ -3890,5 +3928,26 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
   &copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.<br>
   For informational purposes only. Not financial advice. Options trading carries substantial risk of loss.
 </footer>
+<script>
+(function(){
+  try {
+    var raw = localStorage.getItem('sb-fnuqxiflqqejjttxymbz-auth-token');
+    if (!raw) return;
+    var sess = JSON.parse(raw);
+    if (!sess || !sess.access_token) return;
+    if (sess.expires_at && sess.expires_at * 1000 < Date.now()) return;
+    document.querySelectorAll('.sc-drawer-links a[href="/"]').forEach(function(a){
+      if (a.textContent.trim() === '🏠 Home') {
+        a.textContent = '⚙️ Dashboard';
+        a.href = '/dashboard';
+        a.setAttribute('data-home-swap', '1');
+      }
+    });
+    document.querySelectorAll('.sc-drawer-links a[href="/dashboard"]:not([data-home-swap])').forEach(function(a){
+      a.remove();
+    });
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>
