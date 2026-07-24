@@ -16,7 +16,7 @@ export async function onRequest(context) {
   const code    = rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
 
   if (!code || !env.SUPABASE_SERVICE_ROLE_KEY) {
-    return Response.redirect(new URL('/founders', context.request.url), 302);
+    return redirectToFounders(context.request.url);
   }
 
   try {
@@ -36,7 +36,7 @@ export async function onRequest(context) {
     // an attribution cookie — rather than showing a raw error for what's
     // meant to be a friendly marketing link.
     if (!valid) {
-      return Response.redirect(new URL('/founders', context.request.url), 302);
+      return redirectToFounders(context.request.url);
     }
 
     const cookieDays = await getCookieDays(env.SUPABASE_SERVICE_ROLE_KEY);
@@ -45,11 +45,22 @@ export async function onRequest(context) {
     const headers = new Headers();
     headers.set('Location', new URL('/founders', context.request.url).toString());
     headers.append('Set-Cookie', `scalpclock_ref=${code}; Max-Age=${maxAge}; Path=/; SameSite=Lax`);
+    // Every request here must run the lookup + set a fresh cookie for that
+    // specific visitor — this redirect must never be shared from cache
+    // across different /r/<code> visitors.
+    headers.set('Cache-Control', 'no-store');
     return new Response(null, { status: 302, headers });
   } catch (e) {
     console.error('/r/[code] failed:', e.message);
-    return Response.redirect(new URL('/founders', context.request.url), 302);
+    return redirectToFounders(context.request.url);
   }
+}
+
+function redirectToFounders(requestUrl) {
+  const headers = new Headers();
+  headers.set('Location', new URL('/founders', requestUrl).toString());
+  headers.set('Cache-Control', 'no-store');
+  return new Response(null, { status: 302, headers });
 }
 
 async function getCookieDays(serviceKey) {

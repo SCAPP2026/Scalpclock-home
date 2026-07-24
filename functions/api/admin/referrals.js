@@ -112,6 +112,6 @@ async function verifyAdmin(request) {
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS, 'Content-Type': 'application/json' },
+    headers: { ...CORS, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }

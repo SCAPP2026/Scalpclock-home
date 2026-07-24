@@ -1,2 +1,141 @@
+# ── Service worker ──────────────────────────────────────────────────────────
+# Must always be revalidated so browsers pick up new precache lists the
+# moment sw.js's CACHE version is bumped -- this is the file that has
+# caused every "stale page" bug this project has hit, so it stays on the
+# strictest policy on purpose.
 /sw.js
   Cache-Control: no-cache, must-revalidate
+
+# ── Fonts / icons / manifest ────────────────────────────────────────────────
+# These almost never change, so a long TTL is safe.
+/favicon.ico
+  Cache-Control: public, max-age=2592000
+/apple-touch-icon.png
+  Cache-Control: public, max-age=2592000
+/icon-192.png
+  Cache-Control: public, max-age=2592000
+/icon-512.png
+  Cache-Control: public, max-age=2592000
+/icon-192-maskable.png
+  Cache-Control: public, max-age=2592000
+/icon-512-maskable.png
+  Cache-Control: public, max-age=2592000
+/og-image.png
+  Cache-Control: public, max-age=2592000
+/hero.png
+  Cache-Control: public, max-age=604800
+/manifest.json
+  Cache-Control: public, max-age=3600
+
+# ── CSS / JS ─────────────────────────────────────────────────────────────────
+# NOT filename-versioned in this codebase (no content hash in the path), so
+# a full "immutable, 1 year" policy is unsafe here -- it would leave every
+# visitor's browser on stale app code for weeks after a deploy with no way
+# to bust it short of renaming the file. A shorter TTL still eliminates most
+# repeat-visit origin requests while keeping same-day deploys effective.
+# Revisit this once/if these assets get build-time content hashing.
+/css/*
+  Cache-Control: public, max-age=86400, must-revalidate
+/js/*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# ── Images ───────────────────────────────────────────────────────────────────
+# Change far less often than CSS/JS, and a stale image is a much lower-stakes
+# bug than stale app logic, so these get the long TTL treatment.
+/*.png
+  Cache-Control: public, max-age=604800
+/*.jpg
+  Cache-Control: public, max-age=604800
+/*.jpeg
+  Cache-Control: public, max-age=604800
+/*.webp
+  Cache-Control: public, max-age=604800
+/*.svg
+  Cache-Control: public, max-age=604800
+
+# ── Marketing / public content pages ────────────────────────────────────────
+# Safe to cache briefly at the edge (s-maxage) -- content doesn't change
+# minute to minute -- while keeping the browser copy (max-age) short so a
+# fresh deploy is visible on next navigation, not just next hard refresh.
+/
+  Cache-Control: public, max-age=300, s-maxage=3600
+/about
+  Cache-Control: public, max-age=300, s-maxage=3600
+/faq
+  Cache-Control: public, max-age=300, s-maxage=3600
+/pricing
+  Cache-Control: public, max-age=300, s-maxage=3600
+/terms
+  Cache-Control: public, max-age=300, s-maxage=3600
+/privacy
+  Cache-Control: public, max-age=300, s-maxage=3600
+/learn
+  Cache-Control: public, max-age=300, s-maxage=3600
+/learn-options-trading
+  Cache-Control: public, max-age=300, s-maxage=3600
+/learn-stock-trading
+  Cache-Control: public, max-age=300, s-maxage=3600
+/trading-resources
+  Cache-Control: public, max-age=300, s-maxage=3600
+/trading-pictionary
+  Cache-Control: public, max-age=300, s-maxage=3600
+/candlestick-pattern-trainer
+  Cache-Control: public, max-age=300, s-maxage=3600
+/scalping-practice-simulator
+  Cache-Control: public, max-age=300, s-maxage=3600
+/stock-trading-simulator
+  Cache-Control: public, max-age=300, s-maxage=3600
+/trading-pattern-recognition
+  Cache-Control: public, max-age=300, s-maxage=3600
+/trading-replay-tool
+  Cache-Control: public, max-age=300, s-maxage=3600
+/founders
+  Cache-Control: public, max-age=300, s-maxage=3600
+/leaderboard
+  Cache-Control: public, max-age=60, s-maxage=300
+/blog/*
+  Cache-Control: public, max-age=300, s-maxage=3600
+
+# ── Live/real-time product pages ────────────────────────────────────────────
+# Publicly reachable (no login redirect), but explicitly listed as
+# "do not cache" -- these render live chart/signal data client-side and
+# correctness there matters more than the caching win.
+/scalpchart
+  Cache-Control: no-store
+/exitassistant
+  Cache-Control: no-store
+/signals
+  Cache-Control: no-store
+
+# ── Account / dashboard / session pages ─────────────────────────────────────
+# Cloudflare Pages doesn't edge-cache HTML by default today, so this is a
+# safety net against that default ever changing (via a future Cache Rule,
+# a platform update, etc.), not a fix for an active bug.
+/dashboard
+  Cache-Control: no-store
+/login
+  Cache-Control: no-store
+/settings
+  Cache-Control: no-store
+/journal
+  Cache-Control: no-store
+/news
+  Cache-Control: no-store
+/referrals
+  Cache-Control: no-store
+/admin-referrals
+  Cache-Control: no-store
+/success
+  Cache-Control: no-store
+/debug
+  Cache-Control: no-store
+
+# ── API endpoints ────────────────────────────────────────────────────────────
+# Deliberately NOT handled here. Public market-data/aggregate endpoints
+# already set their own short Cache-Control (s-maxage 3-30s) directly in
+# code -- see functions/api/*.js -- and precedence between a _headers rule
+# and a Function-set header isn't something worth risking on a guess for
+# routes that are already correct and already verified working. Every
+# sensitive endpoint that lacked a Cache-Control header (billing, admin,
+# auth, the referral redirect) got one added directly in its own Function
+# code instead, for the same reason: certainty over a blanket rule here.

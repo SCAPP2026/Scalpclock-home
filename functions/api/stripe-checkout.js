@@ -6,7 +6,7 @@ export async function onRequestPost(context) {
   if (!STRIPE_KEY || !STRIPE_PRODUCT_ID) {
     return new Response(JSON.stringify({ error: 'Stripe not configured' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 
@@ -23,7 +23,7 @@ export async function onRequestPost(context) {
   if (!price) {
     return new Response(JSON.stringify({ error: 'No active price found for this product' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 
@@ -53,7 +53,7 @@ export async function onRequestPost(context) {
   if (session.error) {
     return new Response(JSON.stringify({ error: session.error.message }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 
@@ -61,6 +61,7 @@ export async function onRequestPost(context) {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'no-store',
     },
   });
 }

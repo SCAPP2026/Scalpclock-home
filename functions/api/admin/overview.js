@@ -123,6 +123,7 @@ function json(data, status = 200) {
     headers: {
       'Content-Type':                'application/json',
       'Access-Control-Allow-Origin': '*',
+      'Cache-Control':               'no-store',
     },
   });
 }
