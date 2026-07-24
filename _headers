@@ -40,18 +40,14 @@
   Cache-Control: public, max-age=86400, must-revalidate
 
 # ── Images ───────────────────────────────────────────────────────────────────
-# Change far less often than CSS/JS, and a stale image is a much lower-stakes
-# bug than stale app logic, so these get the long TTL treatment.
-/*.png
-  Cache-Control: public, max-age=604800
-/*.jpg
-  Cache-Control: public, max-age=604800
-/*.jpeg
-  Cache-Control: public, max-age=604800
-/*.webp
-  Cache-Control: public, max-age=604800
-/*.svg
-  Cache-Control: public, max-age=604800
+# Every current image file already has an explicit rule above (see
+# "Fonts / icons / manifest"). Deliberately NOT adding a generic /*.png-style
+# catch-all here: Cloudflare Pages merges every matching _headers rule
+# instead of letting a more specific path win, so a wildcard image rule
+# stacks a second, duplicate Cache-Control value onto any file that also has
+# an explicit rule (confirmed live -- produced a malformed header on
+# icon-192.png/og-image.png/hero.png before this was removed). Add a new
+# explicit entry above when a new image file is added instead.
 
 # ── Marketing / public content pages ────────────────────────────────────────
 # Safe to cache briefly at the edge (s-maxage) -- content doesn't change
