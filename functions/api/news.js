@@ -21,7 +21,7 @@ export async function onRequest(context) {
   const articles = [];
   for (const r of results) {
     if (r.status === 'fulfilled' && Array.isArray(r.value)) {
-      articles.push(...r.value);
+      articles.push(...r.value.filter(isEnglish));
     }
   }
 
@@ -34,6 +34,18 @@ export async function onRequest(context) {
       'Access-Control-Allow-Origin': '*',
     },
   });
+}
+
+// Polygon's aggregated news feed pulls from wire services that sometimes
+// syndicate the same story in multiple languages (seen live: Mandarin and
+// Japanese titles for the same English-language press release). There's no
+// language param on that endpoint, so filter by script instead — CJK/Hangul
+// characters anywhere in the title or summary mean it's not the English
+// version.
+const NON_LATIN_SCRIPT = /[぀-ヿ㐀-䶿一-鿿가-힯豈-﫿]/;
+
+function isEnglish({ title, summary }) {
+  return !NON_LATIN_SCRIPT.test(title || '') && !NON_LATIN_SCRIPT.test(summary || '');
 }
 
 function norm(source, { title, summary, url, publishedAt, tickers = [] }) {
