@@ -67,6 +67,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(247,249,247,.92);backdrop-
 @media(max-width:980px){.nav-links{display:none;}.nav-drawer-btn{display:block;}}
 
 /* DRAWER */
+body.drawer-open{overflow:hidden}
 .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:260px;background:var(--panel);border-left:1px solid var(--line);box-shadow:var(--shadow-lg);z-index:201;padding:20px 18px;display:flex;flex-direction:column;gap:8px;transform:translateX(100%);transition:transform .25s;}
 .drawer.open{transform:translateX(0);}
@@ -1278,8 +1279,9 @@ function computeRewards() {
 function nextStep(){if(modalStep<4){modalStep++;renderModalStep();}}
 function prevStep(){if(modalStep>0){modalStep--;renderModalStep();}}
 function goToStep(n){modalStep=n;renderModalStep();}
-function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').style.display='block';}
-function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').style.display='none';}
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').style.display='block';document.body.classList.add('drawer-open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').style.display='none';document.body.classList.remove('drawer-open');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
 function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');

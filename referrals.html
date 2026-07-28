@@ -86,6 +86,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .bell-empty{padding:20px 14px;text-align:center;font-size:.82rem;color:var(--t65);}
 .nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;}
 .nav-ham span{display:block;width:22px;height:2px;background:var(--t65);border-radius:2px;transition:.2s;}
+.nav-ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-ham.open span:nth-child(2){opacity:0;}
+.nav-ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+body.drawer-open{overflow:hidden}
 .nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(247,249,247,.98);backdrop-filter:blur(16px);z-index:65;padding:24px;flex-direction:column;gap:4px;transform:translateX(-100%);transition:transform .25s ease;}
 .nav-drawer.open{display:flex;transform:translateX(0);}
 .nav-drawer a{font-size:1.1rem;color:var(--t65);padding:14px 16px;border-radius:10px;border-bottom:1px solid var(--line);text-decoration:none;}
@@ -492,12 +496,21 @@ async function signOut() {
   window.location.href = '/';
 }
 
-function toggleNavDrawer(){document.getElementById('navDrawer').classList.toggle('open');}
-function closeNavDrawer(){document.getElementById('navDrawer').classList.remove('open');}
+function toggleNavDrawer(){
+  const open=document.getElementById('navDrawer').classList.toggle('open');
+  document.querySelector('.nav-ham').classList.toggle('open',open);
+  document.body.classList.toggle('drawer-open',open);
+}
+function closeNavDrawer(){
+  document.getElementById('navDrawer').classList.remove('open');
+  document.querySelector('.nav-ham').classList.remove('open');
+  document.body.classList.remove('drawer-open');
+}
 document.addEventListener('click',function(e){
   const d=document.getElementById('navDrawer');
-  if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))d.classList.remove('open');
+  if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))closeNavDrawer();
 });
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeNavDrawer();});
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});

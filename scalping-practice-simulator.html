@@ -75,6 +75,7 @@ a{color:inherit;text-decoration:none;}
 .nav-cta:hover{background:#20e88a;}
 .nav-burger{display:none;background:none;border:none;color:var(--t55);cursor:pointer;padding:8px;border-radius:8px;font-size:1.5rem;line-height:1;transition:color .15s;}
 .nav-burger:hover{color:#fff;}
+body.drawer-open{overflow:hidden}
 .nav-drawer{display:none;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(7,10,8,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1a2b22;z-index:59;padding:4px 0 20px;}
 .nav-drawer.open{display:flex;}
 .nav-drawer a{font-family:var(--disp);font-weight:600;font-size:1.05rem;color:#8899b0;padding:16px 28px;border-bottom:1px solid #1a2b22;text-decoration:none;transition:color .15s,background .15s;}
@@ -353,9 +354,10 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
 });
 
-function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');d.classList.toggle('open');b.textContent=d.classList.contains('open')?'✕':'☰';}
-function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';}
+function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');const open=d.classList.toggle('open');b.textContent=open?'✕':'☰';document.body.classList.toggle('drawer-open',open);}
+function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';document.body.classList.remove('drawer-open');}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
 initEmailCapture('emailCapture', 'landing-page');
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
