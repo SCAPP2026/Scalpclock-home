@@ -121,7 +121,20 @@ label{font-size:.82rem;color:var(--t65);font-weight:500;}
         <label>Password</label>
         <input type="password" id="si-pass" placeholder="••••••••">
       </div>
+      <div style="text-align:right;margin-top:-8px">
+        <a href="#" onclick="showForgot();return false;" style="font-size:.8rem;color:var(--green-ink);text-decoration:none;">Forgot password?</a>
+      </div>
       <button class="btn btn-primary" id="si-btn" onclick="signIn()" style="width:100%;margin-top:4px">Sign In</button>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div id="forgot-form" class="form" style="display:none">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="fp-email" placeholder="you@example.com">
+      </div>
+      <button class="btn btn-primary" id="fp-btn" onclick="sendResetLink()" style="width:100%;margin-top:4px">Send Reset Link</button>
+      <button class="btn btn-ghost" onclick="showTab('signin')" style="width:100%">Back to Sign In</button>
     </div>
 
     <!-- SIGN UP -->
@@ -189,11 +202,37 @@ if (sb) sb.auth.getSession().then(({ data: { session } }) => {
 if (new URLSearchParams(location.search).get('tab') === 'signup') showTab('signup');
 
 function showTab(tab) {
+  document.querySelector('.tabs').style.display = 'flex';
+  document.getElementById('forgot-form').style.display = 'none';
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
   document.getElementById('signin-form').style.display = tab === 'signin' ? 'flex' : 'none';
   document.getElementById('signup-form').style.display = tab === 'signup' ? 'flex' : 'none';
   document.getElementById('msg').innerHTML = '';
+}
+
+function showForgot() {
+  document.querySelector('.tabs').style.display = 'none';
+  document.getElementById('signin-form').style.display = 'none';
+  document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('forgot-form').style.display = 'flex';
+  document.getElementById('msg').innerHTML = '';
+}
+
+async function sendResetLink() {
+  const email = document.getElementById('fp-email').value.trim();
+  if (!email) return showMsg('Please enter your email.', 'error');
+  const btn = document.getElementById('fp-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://scalpclock.com/reset-password'
+  });
+  btn.disabled = false; btn.textContent = 'Send Reset Link';
+  if (error) {
+    showMsg(error.message, 'error');
+  } else {
+    showMsg('If an account exists for that email, a reset link has been sent.', 'success');
+  }
 }
 
 function showMsg(text, type) {
