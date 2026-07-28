@@ -50,6 +50,43 @@ async function isFoundingOfferActive(serviceKey) {
   return FOUNDING_ACTIVE_OVERRIDE && (FOUNDING_CAP - claimed) > 0 && Date.now() < new Date(FOUNDING_CUTOFF).getTime();
 }
 
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+
+// Non-terminal Stripe subscription statuses — a subscription in any of
+// these states is still "live" in Stripe and should be fixed up (payment
+// method updated, retried, or explicitly cancelled) rather than shadowed by
+// a brand new one for the same user.
+const BLOCKING_STATUSES = new Set(['trialing', 'active', 'past_due', 'unpaid']);
+
+async function findBlockingSubscription(userId, supabaseServiceKey, stripeSecretKey) {
+  try {
+    const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      headers: { apikey: supabaseServiceKey, Authorization: `Bearer ${supabaseServiceKey}` },
+    });
+    if (!getRes.ok) return null;
+    const userData = await getRes.json();
+    const appMeta   = (userData?.user?.app_metadata || userData?.app_metadata) || {};
+    const subId     = appMeta.stripe_sub_id;
+    if (!subId || !stripeSecretKey) return null;
+
+    const subRes = await fetch(`https://api.stripe.com/v1/subscriptions/${subId}`, {
+      headers: { Authorization: `Bearer ${stripeSecretKey}` },
+    });
+    if (!subRes.ok) return null; // e.g. deleted/not found — nothing to block on
+    const sub = await subRes.json();
+
+    if (BLOCKING_STATUSES.has(sub.status)) {
+      return sub.status === 'trialing' || sub.status === 'active'
+        ? 'You already have an active subscription on this account.'
+        : 'Your existing subscription has a payment issue rather than being cancelled. Email support@scalpclock.com to update your payment method — please don’t create a new subscription, as it won’t cancel the old one.';
+    }
+    return null;
+  } catch (e) {
+    console.error('findBlockingSubscription failed:', e.message);
+    return null; // fail open — never block checkout over an internal lookup error
+  }
+}
+
 async function handleCheckout(env, request) {
   let tier, billing, trial, promoId, userId, gaClientId;
   try {
@@ -69,6 +106,20 @@ async function handleCheckout(env, request) {
   // taking payment for an account we can't activate.
   if (!userId) {
     return json({ error: 'Please sign in or create a free account first, then choose your plan.' }, 400);
+  }
+
+  // Block creating a second Stripe subscription for a user who already has
+  // one on file. Without this, a user whose account reads 'expired' (e.g.
+  // trial-end renewal charge failed or is still being retried by Stripe)
+  // could repurchase from /pricing and end up with two live subscriptions
+  // for the same account — the original keeps running in Stripe and the
+  // dashboard/app_metadata only ever tracks one stripe_sub_id, so the first
+  // one silently orphans instead of being cancelled. Only blocks on
+  // non-terminal statuses; a genuinely canceled/incomplete_expired prior
+  // subscription must not block a fresh signup.
+  if (env.SUPABASE_SERVICE_ROLE_KEY) {
+    const blockMsg = await findBlockingSubscription(userId, env.SUPABASE_SERVICE_ROLE_KEY, env.STRIPE_SECRET_KEY);
+    if (blockMsg) return json({ error: blockMsg }, 409);
   }
 
   // Re-check eligibility server-side — never trust the client's claim that

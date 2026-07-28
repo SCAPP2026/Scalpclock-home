@@ -110,7 +110,7 @@ export async function onRequest(context) {
 
       console.log('Subscription updated:', sub.id, 'status:', sub.status, 'user:', userId);
 
-      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY && await isCurrentSubscription(userId, sub.id, env.SUPABASE_SERVICE_ROLE_KEY)) {
         let plan;
         if (sub.status === 'trialing')   plan = 'trial';
         else if (sub.status === 'active') plan = 'pro';
@@ -118,7 +118,7 @@ export async function onRequest(context) {
         else if (sub.status === 'canceled') plan = 'free';
 
         if (plan) {
-          await upsertProfile(userId, { id: userId, plan }, env.SUPABASE_SERVICE_ROLE_KEY);
+          await upsertProfile(userId, { id: userId, plan, stripe_sub_id: sub.id }, env.SUPABASE_SERVICE_ROLE_KEY);
         }
       }
       break;
@@ -136,7 +136,7 @@ export async function onRequest(context) {
       const userId = sub.metadata?.user_id;
       console.log('Subscription cancelled:', sub.id, sub.customer, 'user:', userId);
 
-      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY && await isCurrentSubscription(userId, sub.id, env.SUPABASE_SERVICE_ROLE_KEY)) {
         await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
@@ -157,9 +157,24 @@ export async function onRequest(context) {
     case 'invoice.payment_succeeded': {
       const inv    = event.data.object;
       const userId = inv.subscription_details?.metadata?.user_id;
-      console.log('Payment succeeded:', inv.customer_email, inv.id, 'user:', userId, 'amount_paid:', inv.amount_paid);
+      console.log('Payment succeeded:', inv.customer_email, inv.id, 'user:', userId, 'amount_paid:', inv.amount_paid, 'billing_reason:', inv.billing_reason);
 
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+        // Explicitly promote to 'pro' on a real (non-zero) subscription
+        // invoice — most notably the trial-end renewal charge, whose
+        // billing_reason is 'subscription_cycle' just like any later
+        // renewal. customer.subscription.updated (trialing -> active)
+        // normally covers this too, but Stripe does not guarantee event
+        // *order* between the two, and if that event is ever missed/delayed
+        // this would otherwise leave a successfully-charged user stuck
+        // reading 'expired' (or 'trial') until the next unrelated webhook —
+        // exactly the symptom reported: card charged fine, account still
+        // shows Expired. $0 trial-creation invoices (amount_paid === 0)
+        // must not flip plan early.
+        if (inv.amount_paid > 0 && inv.billing_reason !== 'subscription_create') {
+          await upsertProfile(userId, { id: userId, plan: 'pro' }, env.SUPABASE_SERVICE_ROLE_KEY);
+        }
+
         // Resumes the dashboard's "active" display after a prior failure —
         // does not itself gate commission creation.
         await setReferralStatus(userId, 'active', env.SUPABASE_SERVICE_ROLE_KEY);
@@ -177,6 +192,33 @@ export async function onRequest(context) {
   return new Response(JSON.stringify({ received: true }), {
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
+}
+
+// Guards customer.subscription.updated/deleted against acting on a stale or
+// duplicate subscription — see checkout.js's findBlockingSubscription for
+// the checkout-side half of this fix. If a user ever ends up with two
+// Stripe subscriptions for the same account (the exact bug this closes),
+// an event about the OLD one (including the customer just deleting it
+// themselves in the Stripe dashboard) must never overwrite plan status that
+// the CURRENT subscription already set — e.g. deleting a stale duplicate
+// must not stomp a freshly-active resubscription back to 'expired'.
+// Fails open (treats it as current) when there's no stripe_sub_id on file
+// yet, since that's the normal case for the very first event on a brand
+// new subscription racing checkout.session.completed's own write.
+async function isCurrentSubscription(userId, subId, serviceKey) {
+  try {
+    const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    });
+    if (!getRes.ok) return true;
+    const userData = await getRes.json();
+    const appMeta   = (userData?.user?.app_metadata || userData?.app_metadata) || {};
+    if (!appMeta.stripe_sub_id) return true;
+    return appMeta.stripe_sub_id === subId;
+  } catch (e) {
+    console.error('isCurrentSubscription check failed:', e.message);
+    return true; // fail open — never silently strand plan status over a lookup error
+  }
 }
 
 // Update Supabase auth app_metadata — no profiles table needed, service role bypasses RLS.
