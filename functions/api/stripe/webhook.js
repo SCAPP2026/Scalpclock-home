@@ -145,9 +145,19 @@ export async function onRequest(context) {
     case 'invoice.payment_failed': {
       const inv    = event.data.object;
       const userId = inv.subscription_details?.metadata?.user_id;
-      console.log('Payment failed:', inv.customer_email, inv.id, 'user:', userId);
+      console.log('Payment failed:', inv.customer_email, inv.id, 'user:', userId, 'subscription:', inv.subscription);
 
-      if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
+      // Same stale-subscription guard as customer.subscription.updated/deleted
+      // (see isCurrentSubscription's comment) — a failed invoice tied to an
+      // OLD subscription (Stripe keeps retrying/dunning a failed invoice for
+      // days even after that subscription is cancelled/deleted) must never
+      // overwrite plan status for the CURRENT subscription. This was the
+      // actual live bug: the account was manually corrected back to 'trial'
+      // after a duplicate subscription cleanup, then flipped back to
+      // 'expired' with no change on Stripe's side — a delayed/retried
+      // invoice.payment_failed for the deleted duplicate, unguarded, was the
+      // only handler that could do that.
+      if (userId && env.SUPABASE_SERVICE_ROLE_KEY && (!inv.subscription || await isCurrentSubscription(userId, inv.subscription, env.SUPABASE_SERVICE_ROLE_KEY))) {
         await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
         await setReferralStatus(userId, 'inactive', env.SUPABASE_SERVICE_ROLE_KEY);
       }
@@ -171,7 +181,8 @@ export async function onRequest(context) {
         // exactly the symptom reported: card charged fine, account still
         // shows Expired. $0 trial-creation invoices (amount_paid === 0)
         // must not flip plan early.
-        if (inv.amount_paid > 0 && inv.billing_reason !== 'subscription_create') {
+        if (inv.amount_paid > 0 && inv.billing_reason !== 'subscription_create'
+            && (!inv.subscription || await isCurrentSubscription(userId, inv.subscription, env.SUPABASE_SERVICE_ROLE_KEY))) {
           await upsertProfile(userId, { id: userId, plan: 'pro' }, env.SUPABASE_SERVICE_ROLE_KEY);
         }
 
