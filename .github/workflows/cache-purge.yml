@@ -1,0 +1,26 @@
+name: Purge Cloudflare cache
+
+# Cloudflare Pages auto-deploys on push, but HTML pages sit behind a
+# 1-hour edge cache (s-maxage=3600 in _headers), so a fresh deploy can
+# take up to an hour to actually reach visitors. Purge the edge cache
+# shortly after every push to main so deploys become visible in roughly
+# the time the Pages build itself takes.
+on:
+  push:
+    branches: [main]
+
+jobs:
+  purge:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Cloudflare Pages build to finish
+        run: sleep 90
+
+      - name: Purge Cloudflare cache
+        run: |
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}' \
+            --fail
