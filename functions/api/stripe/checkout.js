@@ -58,29 +58,33 @@ const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 // a brand new one for the same user.
 const BLOCKING_STATUSES = new Set(['trialing', 'active', 'past_due', 'unpaid']);
 
-async function findBlockingSubscription(userId, supabaseServiceKey, stripeSecretKey) {
+// Searches Stripe directly for any subscription tied to this user, rather
+// than trusting Supabase's cached app_metadata.stripe_sub_id -- that pointer
+// can go stale (webhook race, manual fix, migration bug, ...) and a stale
+// pointer here means this guard silently checks the wrong subscription and
+// lets a duplicate through. Every checkout session this app creates sets
+// subscription_data[metadata][user_id], so a Stripe-side search is the
+// authoritative source regardless of what Supabase currently has on file.
+// (Stripe's Search API is eventually consistent -- typically indexed within
+// seconds, occasionally longer -- same tradeoff the old lookup had anyway.)
+async function findBlockingSubscription(userId, stripeSecretKey) {
+  if (!stripeSecretKey) return null;
   try {
-    const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
-      headers: { apikey: supabaseServiceKey, Authorization: `Bearer ${supabaseServiceKey}` },
-    });
-    if (!getRes.ok) return null;
-    const userData = await getRes.json();
-    const appMeta   = (userData?.user?.app_metadata || userData?.app_metadata) || {};
-    const subId     = appMeta.stripe_sub_id;
-    if (!subId || !stripeSecretKey) return null;
+    const query = `metadata['user_id']:'${userId}'`;
+    const searchRes = await fetch(
+      `https://api.stripe.com/v1/subscriptions/search?query=${encodeURIComponent(query)}`,
+      { headers: { Authorization: `Bearer ${stripeSecretKey}` } }
+    );
+    if (!searchRes.ok) return null;
+    const { data: subs } = await searchRes.json();
+    if (!Array.isArray(subs) || subs.length === 0) return null;
 
-    const subRes = await fetch(`https://api.stripe.com/v1/subscriptions/${subId}`, {
-      headers: { Authorization: `Bearer ${stripeSecretKey}` },
-    });
-    if (!subRes.ok) return null; // e.g. deleted/not found — nothing to block on
-    const sub = await subRes.json();
+    const blocking = subs.find(sub => BLOCKING_STATUSES.has(sub.status));
+    if (!blocking) return null;
 
-    if (BLOCKING_STATUSES.has(sub.status)) {
-      return sub.status === 'trialing' || sub.status === 'active'
-        ? 'You already have an active subscription on this account.'
-        : 'Your existing subscription has a payment issue rather than being cancelled. Email support@scalpclock.com to update your payment method — please don’t create a new subscription, as it won’t cancel the old one.';
-    }
-    return null;
+    return blocking.status === 'trialing' || blocking.status === 'active'
+      ? 'You already have an active subscription on this account.'
+      : 'Your existing subscription has a payment issue rather than being cancelled. Email support@scalpclock.com to update your payment method — please don’t create a new subscription, as it won’t cancel the old one.';
   } catch (e) {
     console.error('findBlockingSubscription failed:', e.message);
     return null; // fail open — never block checkout over an internal lookup error
@@ -117,8 +121,8 @@ async function handleCheckout(env, request) {
   // one silently orphans instead of being cancelled. Only blocks on
   // non-terminal statuses; a genuinely canceled/incomplete_expired prior
   // subscription must not block a fresh signup.
-  if (env.SUPABASE_SERVICE_ROLE_KEY) {
-    const blockMsg = await findBlockingSubscription(userId, env.SUPABASE_SERVICE_ROLE_KEY, env.STRIPE_SECRET_KEY);
+  {
+    const blockMsg = await findBlockingSubscription(userId, env.STRIPE_SECRET_KEY);
     if (blockMsg) return json({ error: blockMsg }, 409);
   }
 
