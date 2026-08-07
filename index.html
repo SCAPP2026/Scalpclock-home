@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learn Options &amp; Stock Trading While You Trade | ScalpClock</title>
-<meta name="description" content="ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock &amp; options signals. Free to start.">
+<title>Learn to Read the Market | Trading Education Platform — ScalpClock</title>
+<meta name="description" content="ScalpClock is an interactive trading education platform. Learn candlesticks, price action, and options concepts, practice risk-free with Replay, then apply it live with AI-coached charts. Free to start.">
 <link rel="canonical" href="https://scalpclock.com">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="Learn Options &amp; Stock Trading While You Trade | ScalpClock">
-<meta property="og:description" content="ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock &amp; options signals. Free to start.">
+<meta property="og:title" content="Learn to Read the Market | Trading Education Platform — ScalpClock">
+<meta property="og:description" content="ScalpClock is an interactive trading education platform. Learn candlesticks, price action, and options concepts, practice risk-free with Replay, then apply it live with AI-coached charts. Free to start.">
 <meta property="og:url" content="https://scalpclock.com">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Learn Options &amp; Stock Trading While You Trade | ScalpClock">
-<meta name="twitter:description" content="ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock &amp; options signals. Free to start.">
+<meta name="twitter:title" content="Learn to Read the Market | Trading Education Platform — ScalpClock">
+<meta name="twitter:description" content="ScalpClock is an interactive trading education platform. Learn candlesticks, price action, and options concepts, practice risk-free with Replay, then apply it live with AI-coached charts. Free to start.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -107,28 +107,41 @@ body.drawer-open{overflow:hidden}
 .tape-sep{color:var(--line);font-size:1rem;}
 
 /* HERO */
-.hero{max-width:1140px;margin:0 auto;padding:80px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.hero{max-width:1140px;margin:0 auto;padding:72px 24px 56px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
 .hero-copy{}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:20px;}
 .hero-eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .hero h1{font-family:var(--disp);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:.01em;margin-bottom:20px;}
 .hero h1 em{color:var(--green);font-style:normal;}
-.hero-sub{font-size:1.05rem;color:var(--t80);line-height:1.7;margin-bottom:36px;max-width:480px;}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.hero-sub{font-size:1.05rem;color:var(--t80);line-height:1.7;margin-bottom:14px;max-width:480px;}
+.hero-sub2{font-size:.92rem;color:var(--t55);line-height:1.7;margin-bottom:32px;max-width:480px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px;}
 .btn-primary{background:var(--green);color:#070a08;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .1s;}
 .btn-primary:hover{background:#12c470;transform:translateY(-1px);}
 .btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.95rem;padding:14px 24px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
 .btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
 
-/* HERO CHART WIDGET */
+/* LEARN -> PRACTICE -> APPLY -> IMPROVE strip (used in hero + section 9) */
+.loop-strip{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-family:var(--disp);font-size:.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.loop-strip span.stage{color:var(--text);background:var(--g-dim);border:1px solid var(--line);border-radius:8px;padding:6px 12px;}
+.loop-strip span.arrow{color:var(--green);font-size:.85rem;}
+
+/* HERO LESSON WIDGET */
 .hero-widget{background:rgba(11,17,13,.9);border:1px solid rgba(22,217,126,.22);border-radius:18px;overflow:hidden;box-shadow:0 0 60px rgba(22,217,126,.10),0 24px 80px rgba(0,0,0,.5);}
 .hw-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);}
 .hw-title{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--text);}
 .hw-badge{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--green);background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.25);border-radius:20px;padding:4px 10px;}
 .hw-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
 .hw-canvas{display:block;width:100%;}
-.hw-sampson{padding:12px 18px;border-top:1px solid var(--line);background:rgba(22,217,126,.04);}
+.hw-question{padding:14px 18px 4px;font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--text);}
+.hw-predict-row{display:flex;gap:8px;padding:12px 18px;flex-wrap:wrap;}
+.predict-btn{flex:1;min-width:90px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--t80);font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.03em;padding:10px 8px;border-radius:9px;cursor:pointer;transition:.15s;text-align:center;}
+.predict-btn:hover:not(:disabled){border-color:rgba(22,217,126,.4);background:var(--g-dim);}
+.predict-btn:disabled{cursor:default;opacity:.55;}
+.predict-btn.correct{background:rgba(22,217,126,.16);border-color:var(--green);color:var(--green);opacity:1;}
+.predict-btn.incorrect{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.5);color:#ff8888;opacity:1;}
+.hw-sampson{padding:12px 18px;border-top:1px solid var(--line);background:rgba(22,217,126,.04);min-height:56px;}
 .hw-sx-label{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
 .sx-avatar-svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
 .sx-mood-neutral{color:var(--t55);}
@@ -137,8 +150,13 @@ body.drawer-open{overflow:hidden}
 .sx-mood-thinking{color:var(--gold);animation:sx-pulse 1.4s ease-in-out infinite;}
 @keyframes sx-pulse{0%,100%{opacity:1}50%{opacity:.45}}
 .hw-sx-text{font-size:.82rem;color:var(--t80);line-height:1.5;}
+.hw-chips{display:flex;gap:8px;padding:0 18px 16px;flex-wrap:wrap;}
+.hw-chip{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:700;padding:5px 12px;border-radius:20px;opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s;}
+.hw-chip.show{opacity:1;transform:translateY(0);}
+.hw-chip-xp{color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,166,35,.3);}
+.hw-chip-streak{color:var(--green);background:var(--g-dim);border:1px solid rgba(22,217,126,.25);}
 @media(max-width:860px){
-  .hero{grid-template-columns:1fr;gap:40px;padding:60px 20px 40px;}
+  .hero{grid-template-columns:1fr;gap:36px;padding:52px 20px 36px;}
   .hero-widget{max-width:480px;}
 }
 
@@ -179,24 +197,49 @@ body.drawer-open{overflow:hidden}
 .sec-title{font-family:var(--disp);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;line-height:1.15;letter-spacing:.01em;margin-bottom:16px;}
 .sec-sub{font-size:1rem;color:var(--t80);line-height:1.7;max-width:600px;margin-bottom:48px;}
 
-/* WHY SCALPCLOCK */
-.why-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-.why-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
-.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-.why-card{background:rgba(14,22,16,.7);border:1px solid var(--line);border-radius:16px;padding:28px 26px;transition:border-color .2s,box-shadow .2s;}
-.why-card:hover{border-color:rgba(22,217,126,.3);box-shadow:0 0 30px rgba(22,217,126,.08);}
-.why-icon{width:44px;height:44px;border-radius:12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.2);display:grid;place-items:center;margin-bottom:18px;font-size:1.3rem;}
-.why-card h3{font-family:var(--disp);font-size:1.2rem;font-weight:700;margin-bottom:10px;}
-.why-card p{font-size:.875rem;color:var(--t80);line-height:1.65;}
-@media(max-width:700px){.why-grid{grid-template-columns:1fr;}}
+/* LESSON PREVIEW STEPS */
+.lesson-preview{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.lesson-preview-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
+.steps-row{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-bottom:40px;}
+.step-card{background:rgba(14,22,16,.7);border:1px solid var(--line);border-radius:14px;padding:20px 16px;text-align:center;transition:border-color .2s;}
+.step-card:hover{border-color:rgba(22,217,126,.3);}
+.step-num{width:30px;height:30px;border-radius:50%;background:var(--g-dim);border:1px solid rgba(22,217,126,.3);color:var(--green);font-family:var(--disp);font-weight:700;font-size:.9rem;display:grid;place-items:center;margin:0 auto 12px;}
+.step-card h4{font-family:var(--disp);font-size:.92rem;font-weight:700;margin-bottom:6px;}
+.step-card p{font-size:.75rem;color:var(--t55);line-height:1.5;}
+@media(max-width:900px){.steps-row{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:560px){.steps-row{grid-template-columns:repeat(2,1fr);}}
 
-/* DEMO SECTION */
+/* COMPARISON */
+.comp-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.comp-in{max-width:900px;margin:0 auto;padding:80px 24px;}
+.comp-table{width:100%;border-collapse:collapse;margin-top:40px;}
+.comp-table th{padding:14px 20px;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t55);text-align:left;border-bottom:1px solid var(--line);}
+.comp-table th:nth-child(2){color:var(--t55);}
+.comp-table th:nth-child(3){color:var(--green);}
+.comp-table td{padding:14px 20px;font-size:.875rem;color:var(--t80);border-bottom:1px solid rgba(120,200,160,.06);vertical-align:middle;}
+.comp-table td:first-child{color:var(--text);font-weight:500;}
+.comp-table td:nth-child(2){color:var(--t55);}
+.comp-table td:nth-child(3){color:var(--green);}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table tr:hover td{background:var(--g-dim);}
+@media(max-width:600px){
+  .comp-table th,.comp-table td{padding:10px 12px;font-size:.8rem;}
+}
+
+/* REPLAY / PRACTICE */
 .demo-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:start;}
 .demo-canvas-wrap{background:rgba(11,17,13,.9);border:1px solid rgba(22,217,126,.2);border-radius:16px;overflow:hidden;}
 .demo-c-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);}
 .demo-c-title{font-family:var(--disp);font-weight:700;font-size:.9rem;color:var(--text);}
 .demo-hint{font-size:.75rem;color:var(--t55);}
-#demoCanvas{display:block;width:100%;cursor:pointer;}
+#demoCanvas{display:block;width:100%;}
+.demo-predict-row{display:flex;gap:8px;padding:14px 18px;border-top:1px solid var(--line);flex-wrap:wrap;}
+.demo-next-row{padding:0 18px 16px;display:none;}
+.demo-next-row.show{display:block;}
+.demo-next-btn{width:100%;background:var(--green);color:#070a08;font-family:var(--disp);font-weight:700;font-size:.85rem;padding:11px;border-radius:9px;border:none;cursor:pointer;transition:.15s;}
+.demo-next-btn:hover{background:#12c470;}
+.demo-score{display:flex;align-items:center;gap:14px;padding:0 18px 14px;font-size:.8rem;color:var(--t55);}
+.demo-score b{color:var(--green);}
 .demo-panel{background:rgba(11,17,13,.9);border:1px solid rgba(22,217,126,.2);border-radius:16px;overflow:hidden;}
 .demo-p-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;}
 .demo-p-name{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--green);}
@@ -206,6 +249,9 @@ body.drawer-open{overflow:hidden}
 .dp-section:last-child{margin-bottom:0;}
 .dp-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
 .dp-text{font-size:.83rem;color:var(--t80);line-height:1.6;}
+.dp-feedback{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:10px 14px;border-radius:9px;margin-bottom:16px;}
+.dp-feedback.correct{background:rgba(22,217,126,.12);color:var(--green);border:1px solid rgba(22,217,126,.3);}
+.dp-feedback.incorrect{background:rgba(255,107,107,.1);color:#ff8888;border:1px solid rgba(255,107,107,.3);}
 .dp-score-row{display:flex;align-items:center;gap:12px;}
 .dp-score-num{font-family:var(--disp);font-size:2rem;font-weight:700;color:var(--green);}
 .dp-score-grade{font-family:var(--disp);font-size:1.2rem;font-weight:700;padding:2px 10px;border-radius:6px;background:rgba(22,217,126,.15);color:var(--green);}
@@ -216,50 +262,51 @@ body.drawer-open{overflow:hidden}
 .dp-bar-fill{height:100%;border-radius:3px;background:var(--green);}
 @media(max-width:860px){.demo-wrap{grid-template-columns:1fr;}}
 
-/* COMPARISON */
-.comp-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-.comp-in{max-width:900px;margin:0 auto;padding:80px 24px;}
-.comp-table{width:100%;border-collapse:collapse;margin-top:40px;}
-.comp-table th{padding:14px 20px;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t55);text-align:left;border-bottom:1px solid var(--line);}
-.comp-table th:nth-child(2){color:#ff6b6b;}
-.comp-table th:nth-child(3){color:var(--green);}
-.comp-table td{padding:14px 20px;font-size:.875rem;color:var(--t80);border-bottom:1px solid rgba(120,200,160,.06);vertical-align:middle;}
-.comp-table td:first-child{color:var(--text);font-weight:500;}
-.comp-table td:nth-child(2){color:#ff8888;}
-.comp-table td:nth-child(3){color:var(--green);}
-.comp-table tr:last-child td{border-bottom:none;}
-.comp-table tr:hover td{background:var(--g-dim);}
-@media(max-width:600px){
-  .comp-table th,.comp-table td{padding:10px 12px;font-size:.8rem;}
-}
+/* SAMPSONX COACH — CHAT */
+.coach-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.coach-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
+.coach-wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:32px;align-items:center;}
+.coach-chart{background:rgba(14,22,16,.8);border:1px solid rgba(22,217,126,.2);border-radius:16px;padding:24px;}
+.coach-chat{background:rgba(14,22,16,.8);border:1px solid rgba(22,217,126,.2);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;}
+.chat-msg{max-width:88%;padding:11px 15px;border-radius:12px;font-size:.85rem;line-height:1.55;}
+.chat-msg.user{align-self:flex-end;background:rgba(255,255,255,.06);color:var(--text);border-bottom-right-radius:3px;}
+.chat-msg.bot{align-self:flex-start;background:var(--g-dim);border:1px solid rgba(22,217,126,.18);color:var(--t80);border-bottom-left-radius:3px;}
+.chat-msg.bot .chat-name{color:var(--green);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;}
+@media(max-width:860px){.coach-wrap{grid-template-columns:1fr;}}
 
-/* FEATURES */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+/* FEATURES (ScalpCharts) */
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
 .feat-card{background:rgba(14,22,16,.6);border:1px solid var(--line);border-radius:14px;padding:24px 22px;transition:border-color .2s;}
 .feat-card:hover{border-color:rgba(22,217,126,.28);}
 .feat-icon{font-size:1.5rem;margin-bottom:14px;}
 .feat-card h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:8px;}
 .feat-card p{font-size:.83rem;color:var(--t55);line-height:1.6;}
-.feat-badge{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(255,165,0,.1);color:#ffb347;border:1px solid rgba(255,165,0,.2);margin-top:10px;}
 @media(max-width:860px){.feat-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:520px){.feat-grid{grid-template-columns:1fr;}}
 
-/* LEARNING SECTION */
-.learn-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-.learn-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
-.learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
-.learn-bullets{list-style:none;display:flex;flex-direction:column;gap:16px;margin-top:32px;}
-.learn-bullets li{display:flex;align-items:flex-start;gap:14px;font-size:.9rem;color:var(--t80);line-height:1.6;}
-.learn-bullets li::before{content:'✓';font-size:.85rem;font-weight:700;color:var(--green);background:rgba(22,217,126,.1);border-radius:50%;width:22px;height:22px;min-width:22px;display:grid;place-items:center;margin-top:1px;}
-.learn-example{background:rgba(14,22,16,.8);border:1px solid rgba(22,217,126,.2);border-radius:16px;overflow:hidden;}
-.le-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;}
-.le-name{font-family:var(--disp);font-weight:700;font-size:.9rem;color:var(--green);}
-.le-tag{font-size:.7rem;color:var(--t55);}
-.le-body{padding:18px;display:flex;flex-direction:column;gap:14px;}
-.le-block{padding:12px 14px;background:rgba(22,217,126,.04);border-radius:10px;border:1px solid rgba(22,217,126,.1);}
-.le-block-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
-.le-block-text{font-size:.82rem;color:var(--t80);line-height:1.6;}
-@media(max-width:800px){.learn-grid{grid-template-columns:1fr;}}
+/* PROGRESS / GAMIFICATION */
+.progress-section{}
+.progress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.progress-tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 20px;text-align:center;}
+.progress-tile .val{font-family:var(--disp);font-size:2rem;font-weight:700;color:var(--green);line-height:1;margin-bottom:8px;}
+.progress-tile .lbl{font-size:.8rem;color:var(--t55);}
+@media(max-width:800px){.progress-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.progress-grid{grid-template-columns:1fr;}}
+
+/* LEARN -> PRACTICE -> APPLY -> IMPROVE (full section) */
+.loop-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.loop-in{max-width:1140px;margin:0 auto;padding:80px 24px;}
+.loop-grid{display:flex;align-items:stretch;gap:0;}
+.loop-card{flex:1;background:rgba(14,22,16,.7);border:1px solid var(--line);border-radius:16px;padding:26px 22px;text-align:center;position:relative;}
+.loop-card .loop-num{font-family:var(--disp);font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--green);margin-bottom:10px;}
+.loop-card h3{font-family:var(--disp);font-size:1.1rem;font-weight:700;margin-bottom:8px;}
+.loop-card p{font-size:.82rem;color:var(--t55);line-height:1.55;}
+.loop-arrow{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:36px;color:var(--green);font-size:1.3rem;font-weight:700;}
+.loop-repeat{text-align:center;margin-top:24px;font-family:var(--disp);font-weight:700;color:var(--t55);font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;}
+@media(max-width:900px){
+  .loop-grid{flex-direction:column;gap:10px;}
+  .loop-arrow{width:auto;transform:rotate(90deg);padding:2px 0;}
+}
 
 /* WHO IT'S FOR */
 .who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
@@ -317,21 +364,21 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     "name": "ScalpClock",
     "url": "https://scalpclock.com",
     "logo": "https://scalpclock.com/icon-512.png",
-    "description": "ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock & options signals. Free to start."
+    "description": "ScalpClock is an interactive trading education platform that teaches you to read the market one candle at a time — then lets you practice, apply, and improve with AI-coached tools."
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "ScalpClock",
     "url": "https://scalpclock.com",
-    "description": "ScalpClock is the Duolingo of options trading — an AI coach for day trading and scalping with candlestick lessons and real stock & options signals. Free to start."
+    "description": "ScalpClock is an interactive trading education platform that teaches you to read the market one candle at a time — then lets you practice, apply, and improve with AI-coached tools."
   },
   {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     "name": "ScalpClock",
     "url": "https://scalpclock.com",
-    "description": "ScalpClock teaches options trading, stock trading, technical analysis, and candlestick pattern recognition through an AI trading coach and a daily lesson curriculum."
+    "description": "ScalpClock teaches options trading, stock trading, technical analysis, candlestick patterns, and price action through interactive lessons, a risk-free trading simulator, and an AI trading coach."
   },
   {
     "@context": "https://schema.org",
@@ -340,8 +387,8 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     "url": "https://scalpclock.com",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web",
-    "description": "An AI trading tool for day trading and scalping — live options and stock signals, candlestick pattern recognition, and an AI trade coach that explains price action in plain English.",
-    "keywords": "AI trading tools, options signals, stock signals, day trading, scalping, candlestick patterns, technical analysis",
+    "description": "An interactive trading education platform — learn candlestick patterns and price action, practice with a trading simulator, then apply what you learn with AI-coached live charts and options signals.",
+    "keywords": "trading education, options trading education, learn options trading, learn technical analysis, learn candlestick patterns, trading simulator, trading practice, paper trading practice",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -474,36 +521,283 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </div>
 
-<!-- HERO -->
+<!-- HERO — LEARNING FIRST -->
 <section>
   <div class="hero">
     <div class="hero-copy">
-      <div class="hero-eyebrow">AI Trading Coach · Learn While You Trade</div>
-      <h1>Stop Guessing.<br><em>Start Understanding.</em></h1>
-      <p class="hero-sub">Most traders stare at charts hoping for a signal. ScalpClock's AI trading coach SampsonX reads every candle, explains candlestick patterns, technical analysis, and price action in plain English — teaching you day trading and scalping while you act on real-time stock and options signals.</p>
+      <div class="hero-eyebrow">Interactive Trading Education</div>
+      <h1>Learn to Read the Market.<br><em>One Candle at a Time.</em></h1>
+      <p class="hero-sub">ScalpClock is an interactive trading education platform that teaches you what the market is doing while you practice reading it.</p>
+      <p class="hero-sub2">Learn candlesticks, price action, volume, support and resistance, technical analysis and options concepts — then put what you learn into practice.</p>
 
       <div class="hero-btns">
-        <a class="btn-primary" href="/login?tab=signup">Start Free →</a>
-        <a class="btn-ghost" href="#demo">Watch Demo</a>
+        <a class="btn-primary" href="/login?tab=signup">Start Learning Free →</a>
+        <a class="btn-ghost" href="#how-it-works">See How It Works</a>
+      </div>
+
+      <div class="loop-strip">
+        <span class="stage">Learn</span><span class="arrow">→</span>
+        <span class="stage">Practice</span><span class="arrow">→</span>
+        <span class="stage">Apply</span><span class="arrow">→</span>
+        <span class="stage">Improve</span>
       </div>
     </div>
     <div class="hero-widget">
       <div class="hw-header">
-        <span class="hw-title">SPY · 1m</span>
+        <span class="hw-title">Today's Lesson</span>
         <span class="hw-badge">LIVE</span>
       </div>
-      <canvas class="hw-canvas" id="heroCanvas" height="180"></canvas>
+      <div style="padding:12px 18px 0;font-size:.82rem;color:var(--t55);">Understanding Bullish Engulfing Candles</div>
+      <canvas class="hw-canvas" id="lessonCanvas" height="150"></canvas>
+      <div class="hw-question" id="lessonQuestion">What happens next?</div>
+      <div class="hw-predict-row" id="lessonPredictRow">
+        <button type="button" class="predict-btn" id="lessonBtnBull" onclick="lessonPredict('bull')">Bullish</button>
+        <button type="button" class="predict-btn" id="lessonBtnBear" onclick="lessonPredict('bear')">Bearish</button>
+        <button type="button" class="predict-btn" id="lessonBtnUnsure" onclick="lessonPredict('unsure')">Not Sure</button>
+      </div>
       <div class="hw-sampson">
         <div class="hw-sx-label"><svg class="sx-avatar-svg sx-mood-bull" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg> SampsonX</div>
-        <div class="hw-sx-text" id="heroSXText">Reading the chart…</div>
+        <div class="hw-sx-text" id="lessonSXText">Look at the last two candles — click a prediction to see what happens next.</div>
+      </div>
+      <div class="hw-chips" id="lessonChips">
+        <span class="hw-chip hw-chip-xp" id="lessonChipXP">⚡ +25 XP</span>
+        <span class="hw-chip hw-chip-streak" id="lessonChipStreak">🔥 4 Day Streak</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOUNDING MEMBER PRICING SECTION (hidden until /api/founding-status confirms the offer is active) -->
+<!-- INTERACTIVE LESSON PREVIEW -->
+<div class="lesson-preview" id="how-it-works">
+  <div class="lesson-preview-in">
+    <div class="sec-label">How ScalpClock Works</div>
+    <h2 class="sec-title">Don't Just Watch the Market. Learn to Read It.</h2>
+    <p class="sec-sub">Every ScalpClock lesson follows the same loop — understand a concept, see it live, test yourself, and get coached through the result.</p>
+    <div class="steps-row">
+      <div class="step-card"><div class="step-num">1</div><h4>Learn</h4><p>Understand the concept — e.g. Support &amp; Resistance.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h4>See It</h4><p>Watch the concept play out on a real chart.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h4>Predict</h4><p>Guess what happens on the next candle.</p></div>
+      <div class="step-card"><div class="step-num">4</div><h4>Get Coached</h4><p>SampsonX explains why you were right or wrong.</p></div>
+      <div class="step-card"><div class="step-num">5</div><h4>Earn XP</h4><p>Build your streak and level up as you go.</p></div>
+      <div class="step-card"><div class="step-num">6</div><h4>Practice Again</h4><p>Repeat with a new setup until it clicks.</p></div>
+    </div>
+    <a class="btn-primary" href="/learn">Explore the Learn Hub →</a>
+  </div>
+</div>
+
+<!-- WHY SCALPCLOCK IS DIFFERENT -->
+<div class="comp-section">
+  <div class="comp-in">
+    <div class="sec-label">Why ScalpClock Is Different</div>
+    <h2 class="sec-title">Don't Just Get Signals. Understand Why.</h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Traditional Trading Tools</th>
+          <th>ScalpClock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Charts &amp; Indicators</td><td>Show you charts and indicators</td><td>✅ Teaches you what you're seeing</td></tr>
+        <tr><td>Signals</td><td>Give you signals, expect you to figure it out</td><td>✅ Explains the market concepts behind every setup</td></tr>
+        <tr><td>Prediction</td><td>Not available</td><td>✅ Lets you predict the next candle</td></tr>
+        <tr><td>Coaching</td><td>None or generic alerts</td><td>✅ Real AI coaching, candle by candle</td></tr>
+        <tr><td>Practice</td><td>Limited or none</td><td>✅ Practice without risking real money</td></tr>
+        <tr><td>Progress</td><td>Not tracked</td><td>✅ Tracks your learning progress over time</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- REPLAY / PRACTICE -->
+<section id="demo">
+  <div class="section">
+    <div class="sec-label">Practice</div>
+    <h2 class="sec-title">Practice Trading Without Risking Real Money.</h2>
+    <p class="sec-sub">Replay the market one candle at a time. See a candle, make your prediction, reveal what happened, learn why, then try again.</p>
+    <div class="demo-wrap">
+      <div class="demo-canvas-wrap">
+        <div class="demo-c-header">
+          <span class="demo-c-title">REPLAY · SPY 1m</span>
+          <span class="demo-hint" id="demoHint">Predict the next candle →</span>
+        </div>
+        <canvas id="demoCanvas" height="220"></canvas>
+        <div class="demo-predict-row" id="demoPredictRow">
+          <button type="button" class="predict-btn" onclick="replayPredict('bull')">📈 Bullish</button>
+          <button type="button" class="predict-btn" onclick="replayPredict('bear')">📉 Bearish</button>
+        </div>
+        <div class="demo-next-row" id="demoNextRow">
+          <button type="button" class="demo-next-btn" id="demoNextBtn" onclick="replayNext()">Next Candle →</button>
+        </div>
+        <div class="demo-score">Score: <b id="demoScoreVal">0/0</b>&nbsp; &nbsp;⚡ <b id="demoXPVal">0</b> XP earned</div>
+      </div>
+      <div class="demo-panel">
+        <div class="demo-p-header">
+          <svg class="sx-avatar-svg sx-mood-neutral" id="demoAvatarSvg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
+          <span class="demo-p-name">SampsonX</span>
+          <span style="font-size:.72rem;color:var(--t55);">AI Coach</span>
+        </div>
+        <div class="demo-p-body" id="demoPanel">
+          <div class="demo-p-placeholder">Make a prediction on the left to get your first coaching breakdown from SampsonX.</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <a class="btn-primary" href="/scalpchart?tab=replay">Try Replay →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPSONX AI COACH -->
+<div class="coach-section">
+  <div class="coach-in">
+    <div class="sec-label">Your AI Trading Coach</div>
+    <h2 class="sec-title">Meet SampsonX — Your AI Trading Coach.</h2>
+    <p class="sec-sub">SampsonX helps you understand what you're seeing on the chart — explaining patterns, price action, confirmations and potential invalidations. It's an educator, not a signal-spitting bot.</p>
+    <div class="coach-wrap">
+      <div class="coach-chart">
+        <svg viewBox="0 0 220 140" width="100%" height="auto" aria-hidden="true">
+          <line x1="0" y1="35" x2="220" y2="35" stroke="rgba(120,200,160,.08)"/>
+          <line x1="0" y1="70" x2="220" y2="70" stroke="rgba(120,200,160,.08)"/>
+          <line x1="0" y1="105" x2="220" y2="105" stroke="rgba(120,200,160,.08)"/>
+          <g stroke="#ff6b6b" fill="#ff6b6b"><line x1="20" y1="30" x2="20" y2="70"/><rect x="14" y="45" width="12" height="18"/></g>
+          <g stroke="#ff6b6b" fill="#ff6b6b"><line x1="46" y1="40" x2="46" y2="85"/><rect x="40" y="55" width="12" height="22"/></g>
+          <g stroke="#ff6b6b" fill="#ff6b6b"><line x1="72" y1="55" x2="72" y2="100"/><rect x="66" y="68" width="12" height="24"/></g>
+          <line x1="88" y1="60" x2="88" y2="105" stroke="rgba(120,200,160,.25)" stroke-dasharray="3,3"/>
+          <g stroke="#16d97e" fill="#16d97e"><line x1="98" y1="70" x2="98" y2="100" /><rect x="92" y="85" width="12" height="12"/></g>
+          <g stroke="#16d97e" fill="#16d97e"><line x1="124" y1="35" x2="124" y2="95"/><rect x="118" y="45" width="12" height="45"/></g>
+          <g stroke="#16d97e" fill="#16d97e"><line x1="150" y1="25" x2="150" y2="55"/><rect x="144" y="30" width="12" height="20"/></g>
+          <g stroke="#16d97e" fill="#16d97e"><line x1="176" y1="15" x2="176" y2="45"/><rect x="170" y="20" width="12" height="18"/></g>
+          <g stroke="#16d97e" fill="#16d97e"><line x1="202" y1="10" x2="202" y2="38"/><rect x="196" y="14" width="12" height="16"/></g>
+        </svg>
+        <div style="font-size:.75rem;color:var(--t55);margin-top:10px;text-align:center;">Bullish engulfing forming near support</div>
+      </div>
+      <div class="coach-chat">
+        <div class="chat-msg user">What am I looking at?</div>
+        <div class="chat-msg bot"><span class="chat-name">SampsonX</span>You're seeing a bullish engulfing pattern forming near support.</div>
+        <div class="chat-msg user">Why does that matter?</div>
+        <div class="chat-msg bot"><span class="chat-name">SampsonX</span>It can indicate buyers are stepping back in. Look for confirmation from volume and price holding above support.</div>
+        <div class="chat-msg user">What would invalidate this setup?</div>
+        <div class="chat-msg bot"><span class="chat-name">SampsonX</span>A strong move back below support would weaken the setup.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCALPCHARTS — APPLY WHAT YOU LEARN -->
+<section>
+  <div class="section">
+    <div class="sec-label">Apply What You Learned</div>
+    <h2 class="sec-title">Now Apply What You Learned.</h2>
+    <p class="sec-sub">Take the concepts you've learned into real-time market analysis with ScalpCharts — live candles, indicators, volume, VWAP, pattern recognition and SampsonX, all in one place. You learn first. Then you apply.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📡</div>
+        <h3>Live Options &amp; Stock Signals</h3>
+        <p>Real-time RSI, VWAP, and volume-based call/put signals scanning the market's most active tickers.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h3>Pattern Alerts</h3>
+        <p>Detect Engulfing, Morning Star, Doji, Hammer, and more automatically — the same patterns you just learned.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Confidence Meter</h3>
+        <p>A 5-category breakdown scores Pattern Strength, Volume, Trend Alignment, Support/Resistance, and Momentum.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🚪</div>
+        <h3>Exit Assistant</h3>
+        <p>Stop guessing when to exit. Calculates target levels, stop zones, and risk/reward based on live price action.</p>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <a class="btn-primary" href="/scalpchart">Explore ScalpCharts →</a>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING PROGRESS / GAMIFICATION -->
+<section class="progress-section">
+  <div class="section">
+    <div class="sec-label">Your Progress</div>
+    <h2 class="sec-title">Turn Trading Knowledge Into Progress.</h2>
+    <p class="sec-sub">Build your skills one lesson, one prediction and one practice session at a time.</p>
+    <div class="progress-grid">
+      <div class="progress-tile"><div class="val">🔥 7</div><div class="lbl">Day Streak</div></div>
+      <div class="progress-tile"><div class="val">⭐ 1,240</div><div class="lbl">XP Earned</div></div>
+      <div class="progress-tile"><div class="val">🏆 12</div><div class="lbl">Badges</div></div>
+      <div class="progress-tile"><div class="val">📚 34</div><div class="lbl">Lessons Completed</div></div>
+      <div class="progress-tile"><div class="val">🎯 78%</div><div class="lbl">Pattern Recognition</div></div>
+      <div class="progress-tile"><div class="val">📈 72%</div><div class="lbl">Trend Recognition</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARN -> PRACTICE -> APPLY -> IMPROVE -->
+<div class="loop-section">
+  <div class="loop-in">
+    <div class="sec-label">The ScalpClock System</div>
+    <h2 class="sec-title">Your Trading Education Loop</h2>
+    <p class="sec-sub">This is the core of how ScalpClock works — and why it works.</p>
+    <div class="loop-grid">
+      <div class="loop-card"><div class="loop-num">01 · LEARN</div><h3>Learn</h3><p>Complete interactive lessons on candles, price action and options concepts.</p></div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-card"><div class="loop-num">02 · PRACTICE</div><h3>Practice</h3><p>Test yourself with Replay — predict, reveal, and learn why.</p></div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-card"><div class="loop-num">03 · APPLY</div><h3>Apply</h3><p>Find the concepts you learned on real, live ScalpCharts setups.</p></div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-card"><div class="loop-num">04 · IMPROVE</div><h3>Improve</h3><p>Track your progress and strengthen the areas you're weakest on.</p></div>
+    </div>
+    <div class="loop-repeat">↻ Repeat</div>
+  </div>
+</div>
+
+<!-- WHO IT'S FOR -->
+<section>
+  <div class="section">
+    <div class="sec-label">Who It's For</div>
+    <h2 class="sec-title">Whether you're new or experienced — ScalpClock meets you there</h2>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-tier">Beginner</div>
+        <h3>You're starting from scratch.</h3>
+        <p>Learn the fundamentals of charts, candles, technical analysis and options — no experience required.</p>
+        <ul class="who-list">
+          <li>Plain-English candle explanations</li>
+          <li>Interactive lessons with real charts</li>
+          <li>Practice Mode to build intuition fast</li>
+        </ul>
+      </div>
+      <div class="who-card">
+        <div class="who-tier">Intermediate</div>
+        <h3>You know the basics. Now sharpen your execution.</h3>
+        <p>Practice patterns, confirmation and market structure until reading a setup becomes second nature.</p>
+        <ul class="who-list">
+          <li>5-category confidence breakdown</li>
+          <li>Replay drills on real historical data</li>
+          <li>AI coaching on every prediction</li>
+        </ul>
+      </div>
+      <div class="who-card">
+        <div class="who-tier">Advanced</div>
+        <h3>Turn knowledge into consistency.</h3>
+        <p>Analyze setups, review your decisions, and refine your process with tools built for speed.</p>
+        <ul class="who-list">
+          <li>Instant Trader Notes generation</li>
+          <li>Key level calculations in seconds</li>
+          <li>Exit Assistant for precision sizing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDING MEMBER / PRICING CTA (hidden until /api/founding-status confirms the offer is active) -->
 <section class="founding-section" id="founding" style="display:none">
-  <div class="sec-label" style="display:flex;justify-content:center;">Limited Time</div>
+  <div class="sec-label" style="display:flex;justify-content:center;">Ready to Start Learning?</div>
   <h2 class="sec-title">Lock In Founding Member Pricing</h2>
   <div class="founding-badges">
     <span class="founding-badge">🔥 Founding Member Special</span>
@@ -527,7 +821,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <li><b>✓</b> Recurring commissions on every referral</li>
       <li><b>✓</b> Future Premium Features</li>
     </ul>
-    <button type="button" class="founding-price-cta" onclick="startFoundingCheckout()">Start Free Trial</button>
+    <button type="button" class="founding-price-cta" onclick="startFoundingCheckout()">Claim Your Founding Member Spot</button>
     <div class="founding-price-limit">Limited to the first 500 members. <a href="/founders" style="color:inherit;text-decoration:underline;">See referral program details →</a></div>
   </div>
 
@@ -538,229 +832,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </section>
 
-<!-- WHY SCALPCLOCK -->
-<div class="why-section">
-  <div class="why-in">
-    <div class="sec-label">Why ScalpClock</div>
-    <h2 class="sec-title">Built for traders who want to learn, not just guess</h2>
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-icon">📚</div>
-        <h3>Learn While You Trade</h3>
-        <p>Every chart interaction teaches you something. SampsonX breaks down candle patterns, volume context, and momentum so each trade builds your knowledge.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">🤖</div>
-        <h3>SampsonX AI Coach</h3>
-        <p>Your personal trading coach lives inside ScalpCharts. It scores every setup, explains what it sees, and gives you the confidence breakdown traders actually need.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">⚡</div>
-        <h3>Learn and Earn</h3>
-        <p>Earn XP, badges, and streaks for every lesson, quiz, and chart you study in the Learn Hub — then put that trading education straight to work with pattern alerts, confidence scores, and exit levels calculated automatically.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- INTERACTIVE DEMO -->
-<section id="demo">
-  <div class="section">
-    <div class="sec-label">Interactive Demo</div>
-    <h2 class="sec-title">Click any candle. SampsonX explains it.</h2>
-    <p class="sec-sub">This is the actual ScalpCharts experience. Click a candle on the left to get a real AI coaching breakdown on the right.</p>
-    <div class="demo-wrap">
-      <div class="demo-canvas-wrap">
-        <div class="demo-c-header">
-          <span class="demo-c-title">DEMO · SPY 1m</span>
-          <span class="demo-hint">Tap any candle →</span>
-        </div>
-        <canvas id="demoCanvas" height="220"></canvas>
-      </div>
-      <div class="demo-panel">
-        <div class="demo-p-header">
-          <svg class="sx-avatar-svg sx-mood-neutral" id="demoAvatarSvg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
-          <span class="demo-p-name">SampsonX</span>
-          <span style="font-size:.72rem;color:var(--t55);">AI Coach</span>
-        </div>
-        <div class="demo-p-body" id="demoPanel">
-          <div class="demo-p-placeholder">Click a candle on the chart to get your AI coaching breakdown from SampsonX.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COMPARISON TABLE -->
-<div class="comp-section">
-  <div class="comp-in">
-    <div class="sec-label">Why We're Different</div>
-    <h2 class="sec-title">Most platforms show data. We teach you to read it.</h2>
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Other Platforms</th>
-          <th>ScalpClock</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Candle Explanations</td><td>❌ Raw chart only</td><td>✅ Plain-English AI analysis</td></tr>
-        <tr><td>Trade Education</td><td>❌ Separate courses</td><td>✅ Built into every chart</td></tr>
-        <tr><td>AI Coaching</td><td>❌ None or generic</td><td>✅ SampsonX — candle by candle</td></tr>
-        <tr><td>Confidence Score</td><td>❌ Not available</td><td>✅ 5-category breakdown + grade</td></tr>
-        <tr><td>Pattern Intelligence</td><td>⚠️ Name only</td><td>✅ Stats, conditions, expected move</td></tr>
-        <tr><td>Learn Mode</td><td>❌ Not available</td><td>✅ Hide-future candle training</td></tr>
-        <tr><td>Exit Assistant</td><td>⚠️ Manual</td><td>✅ AI-calculated levels</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- FEATURES -->
-<section>
-  <div class="section">
-    <div class="sec-label">Features</div>
-    <h2 class="sec-title">Everything a serious trader needs</h2>
-    <p class="sec-sub">Seven core tools — designed around education first, execution second.</p>
-    <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-icon">🕯️</div>
-        <h3>AI Candle Analysis</h3>
-        <p>SampsonX reads every candle and explains exactly what the market is communicating — body size, wicks, context, and what to expect next.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">📡</div>
-        <h3>Live Options &amp; Stock Signals</h3>
-        <p>Real-time RSI, VWAP, and volume-based call/put signals scanning the market's most active tickers — built for day trading and scalping entries, not swing setups.</p>
-        <a href="/signals" class="feat-badge" style="text-decoration:none;cursor:pointer;">View Signals →</a>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🔔</div>
-        <h3>Pattern Alerts</h3>
-        <p>Detect Engulfing, Morning Star, Doji, Hammer, and more patterns automatically. Each alert includes expected move % and ideal conditions.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">📊</div>
-        <h3>Confidence Meter</h3>
-        <p>A 5-category breakdown scores Pattern Strength, Volume, Trend Alignment, Support/Resistance, and Momentum — with a letter grade per setup.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🚪</div>
-        <h3>Exit Assistant</h3>
-        <p>Stop guessing when to exit. ScalpExit calculates target levels, stop zones, and risk/reward ratios based on live price action.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🤖</div>
-        <h3>SampsonX Coach</h3>
-        <p>Your AI trading coach lives inside ScalpCharts. It writes Trader Notes, Trade Summaries, and Watch Levels for every setup you analyze.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🎓</div>
-        <h3>Trading Simulator &amp; Chart Replay</h3>
-        <p>Practice risk-free with our trading simulator — replay any historical chart one candle at a time and guess the next move before it's revealed. Build real pattern recognition through repetition.</p>
-        <a href="/learn" class="feat-badge" style="text-decoration:none;cursor:pointer;">Live Now →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LEARNING SECTION -->
-<div class="learn-section">
-  <div class="learn-in">
-    <div class="sec-label">Education First</div>
-    <h2 class="sec-title">The Market Finally Speaks English</h2>
-    <div class="learn-grid">
-      <div>
-        <p style="font-size:1rem;color:var(--t80);line-height:1.7;max-width:460px;">
-          Traditional charting tools show you the data. ScalpClock tells you what it means. Every feature is designed to make you a better trader — not just a faster one.
-        </p>
-        <ul class="learn-bullets">
-          <li>Understand why a candle formed, not just what it looks like</li>
-          <li>Know when volume confirms or undermines a pattern</li>
-          <li>Read trend alignment before committing to a trade</li>
-          <li>See support and resistance in context with price action</li>
-          <li>Build intuition through Learn Mode candle-by-candle practice</li>
-        </ul>
-      </div>
-      <div class="learn-example">
-        <div class="le-header">
-          <svg class="sx-avatar-svg sx-mood-bull" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
-          <span class="le-name">SampsonX</span>
-          <span class="le-tag">· Example analysis</span>
-        </div>
-        <div class="le-body">
-          <div class="le-block">
-            <div class="le-block-label">Market Story</div>
-            <div class="le-block-text">📈 Strong bullish candle — buyers rejected the morning lows hard. Body covers 78% of the range, suggesting conviction. Volume confirms the move.</div>
-          </div>
-          <div class="le-block">
-            <div class="le-block-label">Pattern</div>
-            <div class="le-block-text">🔥 Bullish Engulfing detected — typical move +0.74% over 3 candles. Works best above VWAP with high volume. Conditions currently aligned.</div>
-          </div>
-          <div class="le-block">
-            <div class="le-block-label">What to Watch Next</div>
-            <div class="le-block-text">🎯 Target: $452.80 &nbsp;·&nbsp; Stop: $449.10 &nbsp;·&nbsp; Risk/Reward: 2.3R. Watch for volume confirmation on the next candle.</div>
-          </div>
-          <div class="le-block">
-            <div class="le-block-label">Trade Quality Score</div>
-            <div class="le-block-text">Score: <strong style="color:var(--green)">82/100 · B+</strong> — Strong pattern with volume confirmation. Trend aligned. Near key support.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- WHO IT'S FOR -->
-<section>
-  <div class="section">
-    <div class="sec-label">Who It's For</div>
-    <h2 class="sec-title">Whether you're new or experienced — ScalpClock meets you there</h2>
-    <p class="sec-sub"></p>
-    <div class="who-grid">
-      <div class="who-card">
-        <div class="who-tier">Beginner</div>
-        <h3>Options Trading for Beginners</h3>
-        <p>You know what a candle looks like but don't know what it means. SampsonX teaches you the story behind every bar in real time — no experience required.</p>
-        <ul class="who-list">
-          <li>Plain-English candle explanations</li>
-          <li>Pattern alerts with full context</li>
-          <li>Learn Mode to build intuition fast</li>
-        </ul>
-      </div>
-      <div class="who-card">
-        <div class="who-tier">Intermediate</div>
-        <h3>Trading but inconsistent</h3>
-        <p>You've been trading a while but struggle to know when a setup is actually good. The Confidence Score and Trade Quality Score cut through the noise.</p>
-        <ul class="who-list">
-          <li>5-category confidence breakdown</li>
-          <li>Trade Quality Score (0–100 + grade)</li>
-          <li>AI Trade Summary per setup</li>
-        </ul>
-      </div>
-      <div class="who-card">
-        <div class="who-tier">Advanced</div>
-        <h3>Scaling up speed</h3>
-        <p>You read charts well — you need faster analysis. ScalpClock automates the mental checklists so you can evaluate more setups in less time.</p>
-        <ul class="who-list">
-          <li>Instant Trader Notes generation</li>
-          <li>Key level calculations in seconds</li>
-          <li>Exit Assistant for precision sizing</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- FINAL CTA -->
 <section class="cta-section">
   <div class="hero-eyebrow" style="justify-content:center;margin-bottom:20px;">No credit card required</div>
-  <h2>The Time to Profit Is Now</h2>
-  <p>Join traders who are learning to read the market — one candle at a time.</p>
+  <h2>Stop Guessing. Start Understanding.</h2>
+  <p>Learn the market. Practice your skills. Build your confidence.</p>
   <div class="cta-btns">
-    <a class="btn-primary" href="/login?tab=signup">Start Free →</a>
-    <a class="btn-ghost" href="/pricing">View Pricing</a>
+    <a class="btn-primary" href="/login?tab=signup">Start Learning Free →</a>
+    <a class="btn-ghost" href="/scalpchart">Explore ScalpClock</a>
   </div>
 </section>
 
@@ -779,7 +858,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <a href="/terms">Terms</a>
       <a href="/privacy">Privacy</a>
     </div>
-    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Not financial advice. &nbsp;·&nbsp; Questions? <a href="mailto:admin@scalpclock.com" style="color:inherit;text-decoration:underline;">admin@scalpclock.com</a></div>
+    <div class="foot-copy">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. Trading and options involve risk and are not suitable for all investors. Nothing on this site is financial advice — it's education. &nbsp;·&nbsp; Questions? <a href="mailto:admin@scalpclock.com" style="color:inherit;text-decoration:underline;">admin@scalpclock.com</a></div>
   </div>
 </footer>
 
@@ -901,63 +980,93 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   syms.forEach(s=>fetch('/api/price?symbol='+s).then(r=>r.json()).then(d=>{if(d&&d.price)set(s,d.price,d.changePct||0);}).catch(()=>{}));
 })();
 
-// ─── HERO CANVAS ───────────────────────────────────────────────
+// ─── HERO "TODAY'S LESSON" PREDICTION WIDGET ────────────────────
 (function(){
-  const canvas=document.getElementById('heroCanvas');
+  const canvas=document.getElementById('lessonCanvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  const CANDLES=[
-    {o:558,h:562,l:556,c:561},{o:561,h:565,l:560,c:564},{o:564,h:566,l:562,c:563},
-    {o:563,h:568,l:561,c:567},{o:567,h:570,l:565,c:569},{o:569,h:572,l:567,c:571},
-    {o:571,h:574,l:570,c:570},{o:570,h:575,l:569,c:574},{o:574,h:577,l:572,c:576},
-    {o:576,h:579,l:574,c:578},{o:578,h:581,l:577,c:580},{o:580,h:583,l:578,c:582},
-  ];
-  let lc=582;
-  const MSGS=['Strong uptrend — buyers in control. Momentum favors continuation.','Volume confirming the breakout. Watch 583 for next resistance.','Bullish Engulfing forming. Trade quality score: 81/100.','VWAP holding as support. Trend alignment bullish across all timeframes.'];
-  let mi=0;
-  document.getElementById('heroSXText').textContent=MSGS[0];
 
-  function draw(){
-    const W=canvas.offsetWidth,H=180;
+  // A few short lesson setups to cycle through on "try again".
+  const SETUPS=[
+    {base:[{o:558,h:562,l:556,c:559},{o:559,h:561,l:553,c:554},{o:554,h:556,l:548,c:549}],
+     next:{o:549,h:560,l:548,c:559},
+     answer:'bull',
+     msg:'Look at how the second candle completely overwhelms the previous selling pressure — full-body bullish engulfing, closing above both prior opens. That’s buyers taking control.'},
+    {base:[{o:452,h:456,l:450,c:455},{o:455,h:458,l:454,c:457},{o:457,h:459,l:452,c:453}],
+     next:{o:453,h:454,l:445,c:446},
+     answer:'bear',
+     msg:'The third candle breaks below the rising structure on a wide red body — a bearish engulfing move that erases the prior two candles’ gains. Momentum just flipped.'},
+    {base:[{o:120,h:124,l:118,c:119},{o:119,h:121,l:113,c:114},{o:114,h:116,l:108,c:115}],
+     next:{o:115,h:126,l:114,c:125},
+     answer:'bull',
+     msg:'That last candle is a hammer at the bottom of a downtrend — long lower wick, close near the high. Buyers stepped in hard at support, and the next candle confirms it.'}
+  ];
+  let si=0,answered=false;
+
+  function draw(candles,highlightLast){
+    const W=canvas.offsetWidth,H=150;
     canvas.width=W;canvas.height=H;
-    const cs=[...CANDLES];
-    cs[cs.length-1]={...cs[cs.length-1],c:lc,h:Math.max(cs[cs.length-1].h,lc),l:Math.min(cs[cs.length-1].l,lc)};
-    const all=[].concat(...cs.map(c=>[c.h,c.l]));
+    const all=[].concat(...candles.map(c=>[c.h,c.l]));
     const hi=Math.max(...all),lo=Math.min(...all);
-    const pad=4,n=cs.length,cw=Math.floor((W-pad*2)/n),gap=Math.max(2,Math.floor(cw*.18)),bw=cw-gap;
-    const toY=v=>pad+(hi-v)/(hi-lo)*(H-pad*2);
+    const pad=6,n=candles.length,cw=Math.floor((W-pad*2)/Math.max(n,4)),gap=Math.max(2,Math.floor(cw*.2)),bw=cw-gap;
+    const toY=v=>pad+(hi-v)/(hi-lo||1)*(H-pad*2);
     ctx.clearRect(0,0,W,H);
     ctx.strokeStyle='rgba(22,217,126,.07)';ctx.lineWidth=1;
-    for(let g=0;g<4;g++){const y=pad+g*(H-pad*2)/3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-    cs.forEach((c,i)=>{
-      const x=pad+i*cw,bull=c.c>=c.o,col=bull?'#16d97e':'#ff6b6b';
+    for(let g=0;g<3;g++){const y=pad+g*(H-pad*2)/2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    candles.forEach((c,i)=>{
+      const x=pad+i*cw,bull=c.c>=c.o,isLast=highlightLast&&i===candles.length-1;
+      const col=bull?'#16d97e':'#ff6b6b';
+      if(isLast){ctx.fillStyle='rgba(255,224,102,.10)';ctx.fillRect(x-2,0,bw+4,H);}
       ctx.strokeStyle=col;ctx.lineWidth=1.5;
       ctx.beginPath();ctx.moveTo(x+bw/2,toY(c.h));ctx.lineTo(x+bw/2,toY(c.l));ctx.stroke();
       ctx.fillStyle=col;
       const y1=toY(Math.max(c.o,c.c)),bh=Math.max(2,Math.abs(toY(c.o)-toY(c.c)));
       ctx.fillRect(x,y1,bw,bh);
-      if(i===n-1){
-        ctx.strokeStyle='rgba(22,217,126,.6)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
-        const cy=toY(c.c);ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle='rgba(22,217,126,.9)';ctx.font='bold 10px Inter,sans-serif';
-        ctx.fillText('$'+c.c.toFixed(2),W-54,cy-5);
-      }
     });
   }
 
-  setInterval(()=>{
-    const d=(Math.random()-.38)*.8;
-    lc=Math.max(580,Math.min(585,+(lc+d).toFixed(2)));
-    draw();
-    mi=(mi+1)%MSGS.length;
-    document.getElementById('heroSXText').textContent=MSGS[mi];
-  },1400);
-  draw();
-  window.addEventListener('resize',draw);
+  function reset(){
+    answered=false;
+    const s=SETUPS[si];
+    draw(s.base,false);
+    document.getElementById('lessonQuestion').textContent='What happens next?';
+    document.getElementById('lessonSXText').textContent='Look at the last two candles — click a prediction to see what happens next.';
+    ['lessonBtnBull','lessonBtnBear','lessonBtnUnsure'].forEach(id=>{
+      const b=document.getElementById(id);
+      b.disabled=false;b.classList.remove('correct','incorrect');
+    });
+    document.getElementById('lessonChipXP').classList.remove('show');
+    document.getElementById('lessonChipStreak').classList.remove('show');
+  }
+
+  window.lessonPredict=function(guess){
+    if(answered)return;
+    answered=true;
+    const s=SETUPS[si];
+    const correct=guess===s.answer;
+    ['lessonBtnBull','lessonBtnBear','lessonBtnUnsure'].forEach(id=>{document.getElementById(id).disabled=true;});
+    const guessId='lessonBtn'+(guess==='bull'?'Bull':guess==='bear'?'Bear':'Unsure');
+    document.getElementById(guessId).classList.add(guess===s.answer?'correct':'incorrect');
+    if(guess!==s.answer){
+      const answerId='lessonBtn'+(s.answer==='bull'?'Bull':'Bear');
+      document.getElementById(answerId).classList.add('correct');
+    }
+    draw([...s.base,s.next],true);
+    document.getElementById('lessonQuestion').textContent=correct?'Correct! 🎯':(guess==='unsure'?'Here’s what happened:':'Not quite — here’s why:');
+    document.getElementById('lessonSXText').textContent=s.msg;
+    document.getElementById('lessonChipXP').classList.add('show');
+    document.getElementById('lessonChipStreak').classList.add('show');
+    setTimeout(function(){
+      si=(si+1)%SETUPS.length;
+      reset();
+    },4200);
+  };
+
+  reset();
+  window.addEventListener('resize',function(){draw(answered?[...SETUPS[si].base,SETUPS[si].next]:SETUPS[si].base,answered);});
 })();
 
-// ─── DEMO CANVAS ───────────────────────────────────────────────
+// ─── REPLAY / PRACTICE WIDGET ───────────────────────────────────
 (function(){
   const canvas=document.getElementById('demoCanvas');
   if(!canvas)return;
@@ -970,7 +1079,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
     {o:458,h:465,l:457,c:464},{o:464,h:467,l:463,c:466},{o:466,h:468,l:464,c:467},
     {o:467,h:471,l:466,c:470}
   ];
-  let sel=null;
   const DA=[
     {st:'📉 Small bearish candle opening the session. Sellers testing the water — low conviction.',pa:'Indecision open',sc:42,gr:'D',bars:[40,38,45,42,35]},
     {st:'📉 Follow-through sell but volume dropped off. This is a weak move — sellers not committed.',pa:'Weak bearish',sc:38,gr:'D',bars:[28,25,45,50,35]},
@@ -992,11 +1100,52 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   const BAR_NAMES=['Pattern','Volume','Trend','S/R','Momentum'];
   function bc(v){return v>=75?'#16d97e':v>=50?'#ffc94d':'#ff6b6b';}
 
-  function showDemo(idx){
-    sel=idx;draw();
-    const a=DA[idx],panel=document.getElementById('demoPanel');
-    if(!panel)return;
+  const START=7;
+  let shown=START,score=0,attempts=0,xp=0,awaitingNext=false;
+
+  function draw(){
+    const W=canvas.offsetWidth,H=220;
+    canvas.width=W;canvas.height=H;
+    const cs=DC.slice(0,shown);
+    const n=DC.length,all=[].concat(...DC.map(c=>[c.h,c.l]));
+    const hi=Math.max(...all),lo=Math.min(...all);
+    const pad=6,cw=Math.floor((W-pad*2)/n),gap=Math.max(2,Math.floor(cw*.2)),bw=cw-gap;
+    const toY=v=>pad+(hi-v)/(hi-lo)*(H-pad*2);
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(22,217,126,.06)';ctx.lineWidth=1;
+    for(let g=0;g<3;g++){const y=pad+g*(H-pad*2)/2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    cs.forEach((c,i)=>{
+      const x=pad+i*cw,bull=c.c>=c.o,isLast=i===shown-1;
+      const col=bull?'#16d97e':'#ff6b6b';
+      if(isLast){ctx.fillStyle='rgba(255,224,102,.08)';ctx.fillRect(x-2,0,bw+4,H);}
+      ctx.strokeStyle=col;ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(x+bw/2,toY(c.h));ctx.lineTo(x+bw/2,toY(c.l));ctx.stroke();
+      ctx.fillStyle=col;
+      const y1=toY(Math.max(c.o,c.c)),bh=Math.max(2,Math.abs(toY(c.o)-toY(c.c)));
+      ctx.fillRect(x,y1,bw,bh);
+    });
+  }
+
+  function updateScore(){
+    document.getElementById('demoScoreVal').textContent=score+'/'+attempts;
+    document.getElementById('demoXPVal').textContent=xp;
+  }
+
+  window.replayPredict=function(guess){
+    if(awaitingNext||shown>=DC.length)return;
+    const actual=DC[shown].c>=DC[shown].o?'bull':'bear';
+    const correct=guess===actual;
+    attempts++;
+    if(correct){score++;xp+=10;}else{xp+=2;}
+    shown++;
+    awaitingNext=true;
+    draw();
+    updateScore();
+
+    const a=DA[shown-2]||DA[0];
+    const panel=document.getElementById('demoPanel');
     panel.innerHTML=`
+      <div class="dp-feedback ${correct?'correct':'incorrect'}">${correct?'✅ Correct — nice read.':'❌ Not quite — here’s why:'}</div>
       <div class="dp-section"><div class="dp-label">Market Story</div><div class="dp-text">${a.st}</div></div>
       <div class="dp-section"><div class="dp-label">Pattern</div><div class="dp-text">${a.pa}</div></div>
       <div class="dp-section">
@@ -1006,44 +1155,34 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
           ${BAR_NAMES.map((n,i)=>`<div class="dp-bar-row"><div class="dp-bar-name">${n}</div><div class="dp-bar-track"><div class="dp-bar-fill" style="width:${a.bars[i]}%;background:${bc(a.bars[i])};"></div></div></div>`).join('')}
         </div>
       </div>
-      <div class="dp-section"><div class="dp-label">SampsonX</div><div class="dp-text">${a.sc>=80?'STRONG LONG. High confidence setup.':a.sc>=65?'Long bias — watch for volume to confirm.':a.sc>=50?'Neutral — wait for clearer signal.':'Avoid — low confidence setup.'}</div></div>
     `;
     const avatarEl=document.getElementById('demoAvatarSvg');
     if(avatarEl)avatarEl.setAttribute('class','sx-avatar-svg sx-mood-'+(a.sc>=65?'bull':a.sc<50?'bear':'neutral'));
-  }
 
-  function draw(){
-    const W=canvas.offsetWidth,H=220;
-    canvas.width=W;canvas.height=H;
-    const n=DC.length,all=[].concat(...DC.map(c=>[c.h,c.l]));
-    const hi=Math.max(...all),lo=Math.min(...all);
-    const pad=6,cw=Math.floor((W-pad*2)/n),gap=Math.max(2,Math.floor(cw*.2)),bw=cw-gap;
-    const toY=v=>pad+(hi-v)/(hi-lo)*(H-pad*2);
-    ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='rgba(22,217,126,.06)';ctx.lineWidth=1;
-    for(let g=0;g<3;g++){const y=pad+g*(H-pad*2)/2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-    DC.forEach((c,i)=>{
-      const x=pad+i*cw,bull=c.c>=c.o,isSel=i===sel;
-      const col=isSel?'#ffe066':bull?'#16d97e':'#ff6b6b';
-      if(isSel){ctx.fillStyle='rgba(255,224,102,.06)';ctx.fillRect(x-2,0,bw+4,H);}
-      ctx.strokeStyle=col;ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(x+bw/2,toY(c.h));ctx.lineTo(x+bw/2,toY(c.l));ctx.stroke();
-      ctx.fillStyle=col;
-      const y1=toY(Math.max(c.o,c.c)),bh=Math.max(2,Math.abs(toY(c.o)-toY(c.c)));
-      ctx.fillRect(x,y1,bw,bh);
-    });
-  }
+    document.getElementById('demoPredictRow').style.display='none';
+    const nextRow=document.getElementById('demoNextRow');
+    nextRow.classList.add('show');
+    document.getElementById('demoNextBtn').textContent = shown>=DC.length ? 'Play Again ↻' : 'Next Candle →';
+    document.getElementById('demoHint').textContent = shown>=DC.length ? 'Session complete' : 'Prediction locked in';
+  };
 
-  function handle(e){
-    const rect=canvas.getBoundingClientRect();
-    const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-    const n=DC.length,pad=6,cw=Math.floor((canvas.offsetWidth-pad*2)/n);
-    const idx=Math.floor((cx-pad)/cw);
-    if(idx>=0&&idx<n)showDemo(idx);
-  }
-  canvas.addEventListener('click',handle);
-  canvas.addEventListener('touchstart',function(e){e.preventDefault();handle(e);},{passive:false});
+  window.replayNext=function(){
+    if(shown>=DC.length){
+      shown=START;score=0;attempts=0;xp=0;
+      updateScore();
+      document.getElementById('demoPanel').innerHTML='<div class="demo-p-placeholder">Make a prediction on the left to get your first coaching breakdown from SampsonX.</div>';
+      const avatarEl=document.getElementById('demoAvatarSvg');
+      if(avatarEl)avatarEl.setAttribute('class','sx-avatar-svg sx-mood-neutral');
+    }
+    awaitingNext=false;
+    draw();
+    document.getElementById('demoPredictRow').style.display='flex';
+    document.getElementById('demoNextRow').classList.remove('show');
+    document.getElementById('demoHint').textContent='Predict the next candle →';
+  };
+
   draw();
+  updateScore();
   window.addEventListener('resize',draw);
 })();
 
