@@ -192,6 +192,13 @@ body.drawer-open{overflow:hidden}
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -253,9 +260,15 @@ body.drawer-open{overflow:hidden}
         </div>
       </div>
       <a href="/about">About</a>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing" class="active">Pricing</a>
       <a href="/dashboard">Dashboard</a>
     </div>
@@ -265,16 +278,36 @@ body.drawer-open{overflow:hidden}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
   <a href="/about" onclick="closeDrawer()">About</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" class="active" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -762,6 +795,31 @@ function joinWaitlist(tier) {
 }
 </script>
 <script>
+function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('learnDropdown').classList.toggle('open');
+}
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('learnDropdown');
+  if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
+});
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 function toggleDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');const open=d.classList.toggle('open');b.textContent=open?'✕':'☰';document.body.classList.toggle('drawer-open',open);}
 function closeDrawer(){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d)d.classList.remove('open');if(b)b.textContent='☰';document.body.classList.remove('drawer-open');}
 document.addEventListener('click',function(e){const d=document.getElementById('navDrawer'),b=document.getElementById('navBurger');if(d&&d.classList.contains('open')&&!d.contains(e.target)&&b&&!b.contains(e.target))closeDrawer();});

@@ -180,6 +180,13 @@ body.drawer-open{overflow:hidden}
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(13,26,19,.65);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#0d1a13;background:rgba(22,217,126,.12);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0a7a4a;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#0a7a4a;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 .nav-dropdown-menu a.active{color:#0a7a4a;background:rgba(22,217,126,.1);}
 
 /* ANONYMOUS PREVIEW */
@@ -314,9 +321,15 @@ body.drawer-open{overflow:hidden}
         </div>
       </div>
       <a href="/about">About</a>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger active" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/signals" class="active">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
     </div>
     <div class="nav-right" id="navRightAuthed" style="display:none;">
@@ -340,16 +353,36 @@ body.drawer-open{overflow:hidden}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/dashboard" onclick="closeNavDrawer()">Dashboard</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeNavDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeNavDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeNavDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeNavDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeNavDrawer()" style="padding-left:28px">Pictionary</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeNavDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeNavDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeNavDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeNavDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeNavDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
   <a href="/about" onclick="closeNavDrawer()">About</a>
-  <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
+  <div class="drawer-group open">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="true">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
+      <a href="/signals" onclick="closeNavDrawer()" class="active">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeNavDrawer()">Pricing</a>
   <div class="drawer-group-label">Account</div>
   <a href="/settings" onclick="closeNavDrawer()" style="padding-left:28px">Settings</a>
@@ -913,6 +946,10 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 function toggleUserDropdown(e){
   e.stopPropagation();
   document.getElementById('userDropdown').classList.toggle('open');
@@ -920,16 +957,24 @@ function toggleUserDropdown(e){
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
   const ud=document.getElementById('userDropdown');
   if(ud&&ud.classList.contains('open')&&!ud.contains(e.target))ud.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
     const ud=document.getElementById('userDropdown');if(ud)ud.classList.remove('open');
     closeNavDrawer();
   }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 document.addEventListener('click',function(e){
   const d=document.getElementById('navDrawer');
   if(d&&d.classList.contains('open')&&!d.contains(e.target)&&!e.target.closest('.nav-ham'))closeNavDrawer();
