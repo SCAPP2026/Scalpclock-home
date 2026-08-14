@@ -30,7 +30,7 @@
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#25D9A6">
+<meta name="theme-color" content="#16d97e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -38,9 +38,9 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"></noscript>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -52,22 +52,22 @@
 }</script>
 <style>
   :root{
-    --bg:#080B11;
-    --panel:#0F141D;
-    --panel-alt:#141A25;
-    --border:#212938;
-    --border-soft:#1A212D;
-    --text:#E8ECF3;
-    --text-dim:#8994A8;
-    --text-faint:#5A6478;
-    --bull:#25D9A6;
-    --bull-dim:#0F3A31;
-    --bear:#FF5D74;
-    --bear-dim:#3A1420;
-    --amber:#FFB238;
-    --amber-dim:#3A2A0C;
-    --blue:#5B8CFF;
-    --blue-dim:#101E3A;
+    --bg:#070b10;
+    --panel:#0e1824;
+    --panel-alt:#111d2b;
+    --border:#1e2d42;
+    --border-soft:#17202e;
+    --text:#dde8f5;
+    --text-dim:#8aa4c0;
+    --text-faint:#5a7292;
+    --bull:#16d97e;
+    --bull-dim:#0f2e22;
+    --bear:#ff4566;
+    --bear-dim:#3a1420;
+    --amber:#f5a623;
+    --amber-dim:#3a2a0c;
+    --blue:#5b9cf6;
+    --blue-dim:#101e3a;
     --mono:'JetBrains Mono', monospace;
     --sans:'Inter', sans-serif;
   }
@@ -78,10 +78,17 @@
 
   /* ===== Header ===== */
   header{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;gap:14px;}
-  .brand{display:flex;align-items:baseline;gap:10px;}
-  .brand .clock{font-family:var(--mono);font-size:20px;color:var(--bull);}
-  .brand h1{font-size:18px;letter-spacing:0.5px;margin:0;font-weight:800;}
-  .brand .sub{font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:1.5px;text-transform:uppercase;margin-left:4px;}
+  .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+  .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+  @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:radial-gradient(circle at 50% 40%, #1a2b22, #070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+  .logo-mark svg{width:16px;height:16px;}
+  .logo-text{display:flex;flex-direction:column;gap:1px;}
+  .logo-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:#eef3f0;line-height:1;}
+  .logo-name em{color:#16d97e;font-style:normal;}
+  .logo-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;opacity:.8;white-space:nowrap;}
 
   .hdr-left{display:flex;align-items:center;gap:12px;}
   .ham-btn{background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
@@ -247,10 +254,18 @@
       <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
-      <a href="/" class="brand" style="text-decoration:none;color:inherit;">
-        <span class="clock">◷</span>
-        <h1>SCALPCLOCK</h1>
-        <span class="sub">ORB Signal Engine · 15m</span>
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="9" cy="9" r="7"/>
+            <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+            <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">Scalp<em>ORB</em></span>
+          <span class="logo-motto">The Time To Profit Is Now</span>
+        </div>
       </a>
     </div>
     <div class="controls">
