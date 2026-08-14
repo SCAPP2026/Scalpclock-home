@@ -1,4 +1,4 @@
-const CACHE = 'sc-v41';
+const CACHE = 'sc-v42';
 const STATIC = [
   '/',
   '/index.html',
@@ -26,7 +26,6 @@ const STATIC = [
   '/blog/posts.json',
   '/js/blog-chart.js',
   '/css/theme-light.css',
-  '/hero.png',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
