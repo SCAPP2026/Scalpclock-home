@@ -209,6 +209,26 @@ body.drawer-open{overflow:hidden}
 @media(max-width:900px){.steps-row{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:560px){.steps-row{grid-template-columns:repeat(2,1fr);}}
 
+/* LEARN HUB — POPULAR LESSONS + CATEGORIES */
+.lh-subhead{font-family:var(--disp);font-weight:700;font-size:1.05rem;color:var(--text);margin:40px 0 18px;}
+.lesson-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.lesson-card{display:block;background:rgba(14,22,16,.6);border:1px solid var(--line);border-radius:14px;padding:20px 18px;text-decoration:none;color:inherit;transition:border-color .2s,transform .1s;}
+.lesson-card:hover{border-color:rgba(22,217,126,.32);transform:translateY(-1px);}
+.lesson-cat-tag{display:block;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.lesson-card h4{font-family:var(--disp);font-size:.95rem;font-weight:700;line-height:1.35;margin-bottom:8px;}
+.lesson-card p{font-size:.78rem;color:var(--t55);line-height:1.55;margin-bottom:10px;}
+.lesson-card .lesson-link{font-size:.77rem;font-weight:700;color:var(--green);}
+@media(max-width:900px){.lesson-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.lesson-grid{grid-template-columns:1fr;}}
+
+.cat-chip-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+.cat-chip{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:rgba(14,22,16,.5);border:1px solid var(--line);border-radius:12px;padding:18px 10px;text-decoration:none;color:var(--text);transition:border-color .2s,background .2s;}
+.cat-chip:hover{border-color:rgba(22,217,126,.35);background:var(--g-dim);}
+.cat-chip .cc-icon{font-size:1.35rem;}
+.cat-chip .cc-label{font-family:var(--disp);font-weight:700;font-size:.8rem;line-height:1.25;}
+@media(max-width:900px){.cat-chip-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:560px){.cat-chip-grid{grid-template-columns:repeat(2,1fr);}}
+
 /* COMPARISON */
 .comp-section{background:rgba(11,17,13,.5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
 .comp-in{max-width:900px;margin:0 auto;padding:80px 24px;}
@@ -275,7 +295,7 @@ body.drawer-open{overflow:hidden}
 @media(max-width:860px){.coach-wrap{grid-template-columns:1fr;}}
 
 /* FEATURES (ScalpCharts) */
-.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;}
 .feat-card{background:rgba(14,22,16,.6);border:1px solid var(--line);border-radius:14px;padding:24px 22px;transition:border-color .2s;}
 .feat-card:hover{border-color:rgba(22,217,126,.28);}
 .feat-icon{font-size:1.5rem;margin-bottom:14px;}
@@ -528,13 +548,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <div class="hero">
     <div class="hero-copy">
       <div class="hero-eyebrow">Interactive Trading Education</div>
-      <h1>Learn to Read the Market.<br><em>One Candle at a Time.</em></h1>
-      <p class="hero-sub">ScalpClock is an interactive trading education platform that teaches you what the market is doing while you practice reading it.</p>
-      <p class="hero-sub2">Learn candlesticks, price action, volume, support and resistance, technical analysis and options concepts — then put what you learn into practice.</p>
+      <h1>Learn Options Trading.<br>Practice It. <em>Trade Smarter.</em></h1>
+      <p class="hero-sub">ScalpClock is an interactive trading education platform that teaches you options trading, technical analysis, and candlestick patterns — then lets you practice risk-free before you trade real money.</p>
+      <p class="hero-sub2">Start in the Learn Hub with bite-sized lessons and quizzes, then apply what you learn with ScalpCharts, Replay, and Exit Assistant.</p>
 
       <div class="hero-btns">
-        <a class="btn-primary" href="/login?tab=signup">Start Learning Free →</a>
-        <a class="btn-ghost" href="#how-it-works">See How It Works</a>
+        <a class="btn-primary" href="/learn">Start Learning →</a>
+        <a class="btn-ghost" href="#learn-hub">See How It Works</a>
       </div>
 
       <div class="loop-strip">
@@ -569,12 +589,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </section>
 
-<!-- INTERACTIVE LESSON PREVIEW -->
-<div class="lesson-preview" id="how-it-works">
+<!-- LEARN HUB — IMMEDIATELY BELOW THE HERO -->
+<div class="lesson-preview" id="learn-hub">
   <div class="lesson-preview-in">
-    <div class="sec-label">How ScalpClock Works</div>
-    <h2 class="sec-title">Don't Just Watch the Market. Learn to Read It.</h2>
-    <p class="sec-sub">Every ScalpClock lesson follows the same loop — understand a concept, see it live, test yourself, and get coached through the result.</p>
+    <div class="sec-label">The Learn Hub</div>
+    <h2 class="sec-title">Everything You Need to Learn Options Trading — In One Place</h2>
+    <p class="sec-sub">Short, plain-English lessons on options, technical analysis, and candlestick patterns — with quizzes, streaks, and XP to keep you coming back.</p>
+
+    <div class="lh-subhead">How Each Lesson Works</div>
     <div class="steps-row">
       <div class="step-card"><div class="step-num">1</div><h4>Learn</h4><p>Understand the concept — e.g. Support &amp; Resistance.</p></div>
       <div class="step-card"><div class="step-num">2</div><h4>See It</h4><p>Watch the concept play out on a real chart.</p></div>
@@ -583,32 +605,73 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <div class="step-card"><div class="step-num">5</div><h4>Earn XP</h4><p>Build your streak and level up as you go.</p></div>
       <div class="step-card"><div class="step-num">6</div><h4>Practice Again</h4><p>Repeat with a new setup until it clicks.</p></div>
     </div>
-    <a class="btn-primary" href="/learn">Explore the Learn Hub →</a>
-  </div>
-</div>
 
-<!-- WHY SCALPCLOCK IS DIFFERENT -->
-<div class="comp-section">
-  <div class="comp-in">
-    <div class="sec-label">Why ScalpClock Is Different</div>
-    <h2 class="sec-title">Don't Just Get Signals. Understand Why.</h2>
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Traditional Trading Tools</th>
-          <th>ScalpClock</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Charts &amp; Indicators</td><td>Show you charts and indicators</td><td>✅ Teaches you what you're seeing</td></tr>
-        <tr><td>Signals</td><td>Give you signals, expect you to figure it out</td><td>✅ Explains the market concepts behind every setup</td></tr>
-        <tr><td>Prediction</td><td>Not available</td><td>✅ Lets you predict the next candle</td></tr>
-        <tr><td>Coaching</td><td>None or generic alerts</td><td>✅ Real AI coaching, candle by candle</td></tr>
-        <tr><td>Practice</td><td>Limited or none</td><td>✅ Practice without risking real money</td></tr>
-        <tr><td>Progress</td><td>Not tracked</td><td>✅ Tracks your learning progress over time</td></tr>
-      </tbody>
-    </table>
+    <div class="lh-subhead">Popular Lessons</div>
+    <div class="lesson-grid">
+      <a class="lesson-card" href="/learn-options-trading/options-basics/stock-trading-vs-options-trading">
+        <span class="lesson-cat-tag">Options Basics</span>
+        <h4>Stock Trading vs Options Trading</h4>
+        <p>Cost, risk, leverage, and time pressure compared — which one fits your goals.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/options-basics/common-mistakes-beginner-options-traders-make">
+        <span class="lesson-cat-tag">Options Basics</span>
+        <h4>Common Mistakes Beginner Options Traders Make</h4>
+        <p>From ignoring time decay to overleveraging — and how to avoid each one.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/strategies/best-options-strategies-for-beginners">
+        <span class="lesson-cat-tag">Options Strategies</span>
+        <h4>Best Options Strategies for Beginners</h4>
+        <p>Long calls, long puts, covered calls, and vertical spreads — when to use each.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/technical-analysis/support-and-resistance-explained">
+        <span class="lesson-cat-tag">Technical Analysis</span>
+        <h4>Support and Resistance Explained</h4>
+        <p>How to identify key levels on a chart and why they matter for options timing.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">
+        <span class="lesson-cat-tag">Candlestick Patterns</span>
+        <h4>How To Read Candlestick Charts</h4>
+        <p>What each candle represents, plus patterns like doji and hammer, step-by-step.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/scalping/how-options-scalping-works">
+        <span class="lesson-cat-tag">Scalping</span>
+        <h4>How Options Scalping Works</h4>
+        <p>Setup selection, entry, management, and exit — with a full worked example.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/scalping/how-to-practice-options-scalping-without-losing-money">
+        <span class="lesson-cat-tag">Scalping</span>
+        <h4>How To Practice Options Scalping Without Losing Money</h4>
+        <p>Historical replay, tracking results, and knowing when you're ready to go live.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+      <a class="lesson-card" href="/learn-options-trading/strategies/risk-management-in-options-trading">
+        <span class="lesson-cat-tag">Risk Management</span>
+        <h4>Risk Management in Options Trading</h4>
+        <p>Position sizing, defined exits, and diversification — the principles that keep you in the game.</p>
+        <span class="lesson-link">Read Lesson →</span>
+      </a>
+    </div>
+
+    <div class="lh-subhead">Browse by Category</div>
+    <div class="cat-chip-grid">
+      <a class="cat-chip" href="/learn-options-trading/options-basics"><span class="cc-icon">📘</span><span class="cc-label">Options Basics</span></a>
+      <a class="cat-chip" href="/learn-options-trading/strategies"><span class="cc-icon">🎯</span><span class="cc-label">Options Strategies</span></a>
+      <a class="cat-chip" href="/learn-options-trading/technical-analysis"><span class="cc-icon">📊</span><span class="cc-label">Technical Analysis</span></a>
+      <a class="cat-chip" href="/candlestick-pattern-trainer"><span class="cc-icon">🕯️</span><span class="cc-label">Candlestick Patterns</span></a>
+      <a class="cat-chip" href="/learn-options-trading/scalping"><span class="cc-icon">⚡</span><span class="cc-label">Scalping</span></a>
+      <a class="cat-chip" href="/learn-options-trading/strategies/risk-management-in-options-trading"><span class="cc-icon">🛡️</span><span class="cc-label">Risk Management</span></a>
+    </div>
+
+    <div style="margin-top:32px;display:flex;gap:14px;flex-wrap:wrap;">
+      <a class="btn-primary" href="/learn">Explore the Learn Hub →</a>
+      <a class="btn-ghost" href="/learn-options-trading">Browse All Guides →</a>
+    </div>
   </div>
 </div>
 
@@ -651,6 +714,41 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </section>
 
+<!-- PRACTICE TOOLS — SCALPCHARTS, REPLAY, EXIT ASSISTANT -->
+<section>
+  <div class="section">
+    <div class="sec-label">Practice What You Learned</div>
+    <h2 class="sec-title">Now Put It Into Practice.</h2>
+    <p class="sec-sub">Once a lesson clicks, apply it with ScalpClock's live tools — ScalpCharts for real-time analysis, Replay for risk-free repetition, and Exit Assistant for knowing when to close a trade. You learn first. Then you apply.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3><a href="/scalpchart" style="color:inherit;">ScalpCharts</a></h3>
+        <p>Live candles, indicators, VWAP, and pattern recognition with SampsonX coaching on every setup — the same patterns you just learned, live.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎬</div>
+        <h3><a href="/scalpchart?tab=replay" style="color:inherit;">Replay</a></h3>
+        <p>Step through real historical sessions candle by candle — predict, reveal, and get coached, with zero risk to real money.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🚪</div>
+        <h3><a href="/exitassistant" style="color:inherit;">Exit Assistant</a></h3>
+        <p>Stop guessing when to exit. Calculates target levels, stop zones, and risk/reward based on live price action.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📐</div>
+        <h3><a href="/orbsignalengine" style="color:inherit;">ORB Signal Engine</a></h3>
+        <p>Practice Opening Range Breakout timing — breakout and retest logic, 2R stop/target, free for everyone.</p>
+      </div>
+    </div>
+    <div style="margin-top:32px;display:flex;gap:14px;flex-wrap:wrap;">
+      <a class="btn-primary" href="/scalpchart">Explore ScalpCharts →</a>
+      <a class="btn-ghost" href="/exitassistant">Try Exit Assistant →</a>
+    </div>
+  </div>
+</section>
+
 <!-- SAMPSONX AI COACH -->
 <div class="coach-section">
   <div class="coach-in">
@@ -687,39 +785,30 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </div>
 
-<!-- SCALPCHARTS — APPLY WHAT YOU LEARN -->
-<section>
-  <div class="section">
-    <div class="sec-label">Apply What You Learned</div>
-    <h2 class="sec-title">Now Apply What You Learned.</h2>
-    <p class="sec-sub">Take the concepts you've learned into real-time market analysis with ScalpCharts — live candles, indicators, volume, VWAP, pattern recognition and SampsonX, all in one place. You learn first. Then you apply.</p>
-    <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-icon">📡</div>
-        <h3>Live Options &amp; Stock Signals</h3>
-        <p>Real-time RSI, VWAP, and volume-based call/put signals scanning the market's most active tickers.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🔔</div>
-        <h3>Pattern Alerts</h3>
-        <p>Detect Engulfing, Morning Star, Doji, Hammer, and more automatically — the same patterns you just learned.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">📊</div>
-        <h3>Confidence Meter</h3>
-        <p>A 5-category breakdown scores Pattern Strength, Volume, Trend Alignment, Support/Resistance, and Momentum.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🚪</div>
-        <h3>Exit Assistant</h3>
-        <p>Stop guessing when to exit. Calculates target levels, stop zones, and risk/reward based on live price action.</p>
-      </div>
-    </div>
-    <div style="margin-top:32px;">
-      <a class="btn-primary" href="/scalpchart">Explore ScalpCharts →</a>
-    </div>
+<!-- WHY SCALPCLOCK IS DIFFERENT -->
+<div class="comp-section">
+  <div class="comp-in">
+    <div class="sec-label">Why ScalpClock Is Different</div>
+    <h2 class="sec-title">Don't Just Get Signals. Understand Why.</h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Traditional Trading Tools</th>
+          <th>ScalpClock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Charts &amp; Indicators</td><td>Show you charts and indicators</td><td>✅ Teaches you what you're seeing</td></tr>
+        <tr><td>Signals</td><td>Give you signals, expect you to figure it out</td><td>✅ Explains the market concepts behind every setup</td></tr>
+        <tr><td>Prediction</td><td>Not available</td><td>✅ Lets you predict the next candle</td></tr>
+        <tr><td>Coaching</td><td>None or generic alerts</td><td>✅ Real AI coaching, candle by candle</td></tr>
+        <tr><td>Practice</td><td>Limited or none</td><td>✅ Practice without risking real money</td></tr>
+        <tr><td>Progress</td><td>Not tracked</td><td>✅ Tracks your learning progress over time</td></tr>
+      </tbody>
+    </table>
   </div>
-</section>
+</div>
 
 <!-- LEARNING PROGRESS / GAMIFICATION -->
 <section class="progress-section">
