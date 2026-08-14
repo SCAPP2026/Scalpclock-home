@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock · ORB Signal Engine — Opening Range Breakout Timing</title>
+<meta name="description" content="Practice and time Opening Range Breakout entries with ScalpClock's ORB Signal Engine — live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist.">
+<link rel="canonical" href="https://scalpclock.com/orbsignalengine">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock · ORB Signal Engine — Opening Range Breakout Timing">
+<meta property="og:description" content="Practice and time Opening Range Breakout entries with ScalpClock's ORB Signal Engine — live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist.">
+<meta property="og:url" content="https://scalpclock.com/orbsignalengine">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock · ORB Signal Engine — Opening Range Breakout Timing">
+<meta name="twitter:description" content="Practice and time Opening Range Breakout entries with ScalpClock's ORB Signal Engine — live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#25D9A6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalpClock ORB Signal Engine",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "url": "https://scalpclock.com/orbsignalengine",
+  "description": "Practice and time Opening Range Breakout entries with live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist."
+}</script>
+<style>
+  :root{
+    --bg:#080B11;
+    --panel:#0F141D;
+    --panel-alt:#141A25;
+    --border:#212938;
+    --border-soft:#1A212D;
+    --text:#E8ECF3;
+    --text-dim:#8994A8;
+    --text-faint:#5A6478;
+    --bull:#25D9A6;
+    --bull-dim:#0F3A31;
+    --bear:#FF5D74;
+    --bear-dim:#3A1420;
+    --amber:#FFB238;
+    --amber-dim:#3A2A0C;
+    --blue:#5B8CFF;
+    --blue-dim:#101E3A;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  body{min-width:1080px;overflow-x:auto;}
+  .wrap{max-width:1440px;margin:0 auto;padding:18px 22px 40px;}
+
+  /* ===== Header ===== */
+  header{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;gap:14px;}
+  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand .clock{font-family:var(--mono);font-size:20px;color:var(--bull);}
+  .brand h1{font-size:18px;letter-spacing:0.5px;margin:0;font-weight:800;}
+  .brand .sub{font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:1.5px;text-transform:uppercase;margin-left:4px;}
+
+  .hdr-left{display:flex;align-items:center;gap:12px;}
+  .ham-btn{background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .ham-btn span{display:block;width:18px;height:2px;background:var(--text-dim);border-radius:2px;transition:.2s;}
+  .sc-overlay{display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+  .sc-overlay.open{display:block;}
+  .sc-drawer{position:fixed;top:0;right:0;bottom:0;width:270px;background:rgba(8,11,17,.98);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:99;display:flex;flex-direction:column;padding:0;transform:translateX(100%);transition:transform .25s ease;}
+  .sc-drawer.open{transform:translateX(0);}
+  .sc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+  .sc-drawer-head span{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text);letter-spacing:.04em;}
+  .sc-drawer-head button{background:none;border:none;color:var(--text-dim);font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+  .sc-drawer-links{display:flex;flex-direction:column;gap:2px;padding:12px;}
+  .sc-drawer-links a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;font-weight:600;font-size:1.02rem;color:var(--text-dim);text-decoration:none;transition:background .15s,color .15s;border:1px solid transparent;}
+  .sc-drawer-links a:hover{color:var(--text);background:var(--panel-alt);border-color:var(--border);}
+  .sc-drawer-links a.sc-active{color:var(--bull);}
+  .sc-drawer-links .sc-cta{margin-top:12px;background:var(--bull);color:#04140F;font-weight:700;justify-content:center;border-color:transparent;}
+  .sc-drawer-links .sc-cta:hover{background:#2EEFB6;color:#04140F;}
+  .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bull);padding:14px 16px 2px;}
+  .drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:var(--bull);}
+  .drawer-group-toggle .drawer-group-label{flex:1;}
+  .drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+  .drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+  .drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+  .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+  .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
+
+  .controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .ctrl-group{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:4px 6px;}
+  .ctrl-group label{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;padding-left:4px;font-weight:600;}
+  select{background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;cursor:pointer;}
+  select:focus{outline:2px solid var(--blue);outline-offset:1px;}
+  button{font-family:var(--sans);font-weight:700;font-size:12.5px;border-radius:6px;border:1px solid var(--border);padding:7px 13px;cursor:pointer;letter-spacing:0.3px;transition:transform .06s ease, background .15s ease;}
+  button:active{transform:scale(0.96);}
+  button:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+  .btn-primary{background:var(--bull);color:#04140F;border-color:var(--bull);}
+  .btn-primary:hover{background:#2EEFB6;}
+  .btn-primary.is-pause{background:var(--amber);border-color:var(--amber);color:#2A1B00;}
+  .btn-ghost{background:var(--panel-alt);color:var(--text);}
+  .btn-ghost:hover{background:#1B2230;}
+  .btn-danger-ghost{background:var(--panel-alt);color:var(--bear);}
+  .btn-danger-ghost:hover{background:var(--bear-dim);}
+
+  /* ===== Status strip ===== */
+  .status-strip{display:flex;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;flex-wrap:wrap;}
+  .status-item{display:flex;flex-direction:column;gap:2px;}
+  .status-item .k{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+  .status-item .v{font-family:var(--mono);font-size:14px;font-weight:600;}
+  .phase-pill{font-family:var(--mono);font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;letter-spacing:0.5px;white-space:nowrap;}
+  .divider{width:1px;height:30px;background:var(--border);}
+
+  /* ===== Layout ===== */
+  .grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .card-head h2{font-size:12px;margin:0;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);font-weight:700;}
+  .card-body{padding:14px 16px;}
+
+  /* ===== Chart ===== */
+  .chart-wrap{position:relative;padding:14px 10px 4px;}
+  svg{display:block;width:100%;height:auto;overflow:visible;}
+  .axis-label{font-family:var(--mono);font-size:10px;fill:var(--text-faint);}
+  .legend{display:flex;gap:16px;padding:8px 16px 14px;flex-wrap:wrap;border-top:1px solid var(--border-soft);}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);font-family:var(--mono);}
+  .swatch{width:12px;height:3px;border-radius:2px;}
+
+  /* ===== Toasts ===== */
+  .toast-layer{position:absolute;top:10px;right:10px;width:290px;display:flex;flex-direction:column;gap:8px;z-index:20;pointer-events:none;}
+  .toast{pointer-events:auto;background:#0C1119;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,0.45);animation:slideIn .28s ease;}
+  .toast.bull{border-left-color:var(--bull);}
+  .toast.bear{border-left-color:var(--bear);}
+  .toast.amber{border-left-color:var(--amber);}
+  .toast.neutral{border-left-color:var(--text-faint);}
+  .toast .t-head{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-weight:700;font-size:12px;margin-bottom:3px;}
+  .toast .t-body{font-size:12px;color:var(--text-dim);line-height:1.4;}
+  .toast .t-time{font-family:var(--mono);font-size:10px;color:var(--text-faint);margin-left:auto;}
+  .toast .t-tag{margin-top:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:0.6px;color:var(--text-faint);text-transform:uppercase;border-top:1px dashed var(--border);padding-top:5px;}
+  @keyframes slideIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+  @keyframes fadeOut{to{opacity:0;transform:translateX(16px);}}
+
+  /* ===== Sidebar ===== */
+  .sidebar{display:flex;flex-direction:column;gap:14px;}
+  .trade-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border-soft);font-size:12.5px;}
+  .trade-row:last-child{border-bottom:none;}
+  .trade-row .k{color:var(--text-faint);}
+  .trade-row .v{font-family:var(--mono);font-weight:600;}
+  .pnl-pos{color:var(--bull);}
+  .pnl-neg{color:var(--bear);}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .stat-box{background:var(--panel-alt);border:1px solid var(--border-soft);border-radius:8px;padding:9px 6px;text-align:center;}
+  .stat-box .num{font-family:var(--mono);font-size:17px;font-weight:700;}
+  .stat-box .lbl{font-size:9.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;}
+
+  .rules{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .rules li{font-size:12px;color:var(--text-dim);line-height:1.4;padding-left:18px;position:relative;}
+  .rules li::before{content:"—";position:absolute;left:0;color:var(--text-faint);}
+
+  .log{display:flex;flex-direction:column;gap:7px;max-height:230px;overflow-y:auto;}
+  .log-item{font-size:11.5px;padding:7px 9px;background:var(--panel-alt);border-radius:6px;border-left:3px solid var(--border);}
+  .log-item .lt{font-family:var(--mono);color:var(--text-faint);font-size:10px;margin-right:6px;}
+  .log-item.bull{border-left-color:var(--bull);}
+  .log-item.bear{border-left-color:var(--bear);}
+  .log-item.amber{border-left-color:var(--amber);}
+  .log-empty{color:var(--text-faint);font-size:12px;padding:10px 2px;}
+
+  .disclaimer{font-size:10.5px;color:var(--text-faint);line-height:1.5;padding:14px 4px 0;border-top:1px solid var(--border-soft);margin-top:6px;}
+
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:#232B3A;border-radius:4px;}
+</style>
+</head>
+<body style="visibility:hidden">
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">ORB Signal Engine — Opening Range Breakout Timing Tool</h1>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+<!-- NAV -->
+<div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
+<div class="sc-drawer" id="scDrawer">
+  <div class="sc-drawer-head">
+    <span>NAVIGATE</span>
+    <button onclick="closeSCNav()">✕</button>
+  </div>
+  <div class="sc-drawer-links">
+    <a href="/">🏠 Home</a>
+    <div class="drawer-group">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+        <span class="drawer-group-label">Learn</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+          <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+          <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+          <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-group open">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="true">
+        <span class="drawer-group-label">Trade</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/scalpchart" style="padding-left:28px">📊 ScalpCharts</a>
+          <a href="/scalpchart?tab=replay" style="padding-left:28px">📅 Replay</a>
+          <a href="/exitassistant" style="padding-left:28px">🚪 Exit Assistant</a>
+          <a href="/orbsignalengine" class="sc-active" style="padding-left:28px">📐 ORB Signal Engine</a>
+          <a href="/signals" style="padding-left:28px">🔔 Signals</a>
+        </div>
+      </div>
+    </div>
+    <a href="/pricing">💳 Pricing</a>
+    <a href="/dashboard">⚙️ Dashboard</a>
+    <a href="/login?tab=signup" class="sc-cta">Start Free →</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="hdr-left">
+      <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="brand" style="text-decoration:none;color:inherit;">
+        <span class="clock">◷</span>
+        <h1>SCALPCLOCK</h1>
+        <span class="sub">ORB Signal Engine · 15m</span>
+      </a>
+    </div>
+    <div class="controls">
+      <div class="ctrl-group">
+        <label for="orSelect">Range</label>
+        <select id="orSelect">
+          <option value="1">15m (1 candle)</option>
+          <option value="2">30m (2 candles)</option>
+          <option value="4">60m (4 candles)</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label for="speedSelect">Speed</label>
+        <select id="speedSelect">
+          <option value="1400">1x</option>
+          <option value="700" selected>2x</option>
+          <option value="320">4x</option>
+        </select>
+      </div>
+      <button class="btn-primary" id="playBtn">▶ Play</button>
+      <button class="btn-ghost" id="stepBtn">Step →</button>
+      <button class="btn-ghost" id="newBtn">⟳ New Session</button>
+      <button class="btn-danger-ghost" id="resetStatsBtn">Reset Stats</button>
+    </div>
+  </header>
+
+  <div class="status-strip">
+    <div class="status-item">
+      <span class="k">Symbol</span>
+      <span class="v" id="symbolVal">—</span>
+    </div>
+    <div class="divider"></div>
+    <div class="status-item">
+      <span class="k">Session Time</span>
+      <span class="v" id="timeVal">09:30</span>
+    </div>
+    <div class="divider"></div>
+    <div class="status-item">
+      <span class="k">Last Price</span>
+      <span class="v" id="priceVal">—</span>
+    </div>
+    <div class="divider"></div>
+    <div class="status-item">
+      <span class="k">OR High / Low</span>
+      <span class="v" id="orVal">— / —</span>
+    </div>
+    <div class="divider"></div>
+    <div id="phasePill" class="phase-pill" style="background:var(--panel-alt);color:var(--text-dim);border:1px solid var(--border);">WAITING FOR SESSION</div>
+  </div>
+
+  <div class="status-strip" style="margin-top:-6px;">
+    <div class="ctrl-group">
+      <label for="symbolInput">Symbol</label>
+      <input id="symbolInput" type="text" placeholder="SPY" value="SPY" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:6px 8px;width:70px;text-transform:uppercase;">
+    </div>
+    <div class="ctrl-group">
+      <label for="dateInput">Session Date</label>
+      <input id="dateInput" type="date" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;">
+    </div>
+    <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
+    <span style="font-size:11px;color:var(--text-faint);">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15m bars from your Pro data feed.</span>
+  </div>
+
+  <div class="grid">
+    <!-- CHART -->
+    <div class="card">
+      <div class="card-head">
+        <h2>15m Candles — Live Replay</h2>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);" id="candleCountVal">0 / 26</span>
+      </div>
+      <div class="chart-wrap">
+        <div class="toast-layer" id="toastLayer"></div>
+        <svg id="chart" viewBox="0 0 1160 560" preserveAspectRatio="xMinYMin meet"></svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="swatch" style="background:var(--blue);"></span> Opening Range</div>
+        <div class="legend-item"><span class="swatch" style="background:var(--amber);"></span> Breakout Candle</div>
+        <div class="legend-item"><span class="swatch" style="background:var(--bull);"></span> Entry / Target</div>
+        <div class="legend-item"><span class="swatch" style="background:var(--bear);"></span> Stop Loss</div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="card">
+        <div class="card-head"><h2>Setup Plan (Call/Put Bias)</h2></div>
+        <div class="card-body">
+          <div class="trade-row"><span class="k">Direction</span><span class="v" id="dirVal">—</span></div>
+          <div class="trade-row"><span class="k">Entry</span><span class="v" id="entryVal">—</span></div>
+          <div class="trade-row"><span class="k">Stop</span><span class="v" id="stopVal">—</span></div>
+          <div class="trade-row"><span class="k">Target (2R)</span><span class="v" id="targetVal">—</span></div>
+          <div class="trade-row"><span class="k">Live R</span><span class="v" id="liveRVal">—</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Session Stats</h2></div>
+        <div class="card-body">
+          <div class="stats-grid">
+            <div class="stat-box"><div class="num" id="winsVal" style="color:var(--bull);">0</div><div class="lbl">Wins</div></div>
+            <div class="stat-box"><div class="num" id="lossVal" style="color:var(--bear);">0</div><div class="lbl">Losses</div></div>
+            <div class="stat-box"><div class="num" id="flatVal" style="color:var(--text-dim);">0</div><div class="lbl">No Trade</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>No-Trade Filter Checklist</h2></div>
+        <div class="card-body">
+          <ul class="rules">
+            <li>Skip if the OR range is under ~0.15% of price — too tight, high whipsaw odds.</li>
+            <li>Skip if the OR range is over ~1.2% of price — reward-to-risk degrades fast.</li>
+            <li>Only take the first clean breakout each session per direction.</li>
+            <li>Require a strong-bodied breakout candle — fade dojis and thin wicks through the level.</li>
+            <li>No new entries once price has run 3+ candles past breakout with no retest.</li>
+            <li>Flatten any open position by the final candle of the session.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Event Log</h2></div>
+        <div class="card-body">
+          <div class="log" id="logList">
+            <div class="log-empty">Press Play to start the session.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">Simulated price data by default — not connected to a live market feed and not investment advice. "BUY CALL / BUY PUT" popups signal directional bias on the underlying only (derived from OR breakout + confirmed retest) — they do not select a strike, expiry, or account for IV, theta, or liquidity, and no signal here is a guarantee of outcome. Track the win/loss tally on the right; that's the tool's real, honest accuracy — not a claimed number.</div>
+
+  <div class="disclaimer" style="margin-top:12px;">
+    <strong style="color:var(--text-dim);">Live data:</strong> enter a symbol (and optionally a date — defaults to the most recent trading session) and click "Load Live Session" to run the ORB engine on real 15-minute bars from your Pro data feed. No setup, keys, or extra deployment needed.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ================= CONFIG =================
+  let SESSION_CANDLES = 26; // 09:30 -> 16:00 in 15m steps (simulated); overridden by live bar count
+  const NO_TRADE_CUTOFF = 8;  // candles after OR set with no breakout -> stand aside
+  const RETEST_TOLERANCE = 0.0012;
+  const BODY_STRENGTH_MIN = 0.35;
+  const EXTENDED_WARN_CANDLES = 3;
+
+  const chartEl = document.getElementById('chart');
+  const toastLayer = document.getElementById('toastLayer');
+  const logList = document.getElementById('logList');
+  const CHART_W = 1160, CHART_H = 560;
+  const PAD_L = 56, PAD_R = 16, PAD_T = 14, PAD_B = 30;
+  const plotW = CHART_W - PAD_L - PAD_R, plotH = CHART_H - PAD_T - PAD_B;
+  function slotWidth(){ return plotW / SESSION_CANDLES; }
+
+  // ================= STATE =================
+  let candles = [];
+  let times = [];
+  let symbol = '';
+  let orPeriod = 1;
+  let speed = 700;
+  let revealIdx = -1;
+  let playing = false;
+  let timer = null;
+
+  let state = 'IDLE';
+  let orHigh = null, orLow = null, orSet = false;
+  let breakoutDir = null, breakoutIdx = null;
+  let entryPrice = null, stopPrice = null, targetPrice = null, entryIdx = null;
+  let result = null;
+  let flags = {};
+  let priceMin = 0, priceMax = 1;
+
+  let stats = { wins: 0, losses: 0, flats: 0 };
+  let isLiveData = false;
+
+  // ================= HELPERS =================
+  function rand(a, b){ return a + Math.random() * (b - a); }
+  function choice(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+  function fmt(n){ return n.toFixed(2); }
+  function pad2(n){ return n < 10 ? '0' + n : '' + n; }
+
+  function buildTimes(){
+    const out = [];
+    let h = 9, m = 30;
+    for (let i = 0; i < SESSION_CANDLES; i++){
+      out.push(pad2(h) + ':' + pad2(m));
+      m += 15;
+      if (m >= 60){ m -= 60; h += 1; }
+    }
+    return out;
+  }
+
+  function randomSymbol(){
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let s = '';
+    const len = Math.random() < 0.5 ? 4 : 3;
+    for (let i = 0; i < len; i++) s += letters[Math.floor(Math.random() * letters.length)];
+    return s;
+  }
+
+  function generateSession(){
+    const regime = choice(['trend_up','trend_down','chop','fade_up','fade_down']);
+    const base = rand(28, 340);
+    const volBase = base * rand(0.0028, 0.006);
+    let price = base;
+    const out = [];
+    for (let i = 0; i < SESSION_CANDLES; i++){
+      const open = i === 0 ? price : price + rand(-volBase*0.15, volBase*0.15);
+      let vol = volBase * rand(0.6, 1.4) * (regime === 'chop' ? 0.55 : 1);
+      let drift = 0;
+      if (regime === 'trend_up') drift = volBase * rand(0.12, 0.34);
+      if (regime === 'trend_down') drift = -volBase * rand(0.12, 0.34);
+      if (regime === 'fade_up') drift = i < SESSION_CANDLES/2 ? volBase*rand(0.15,0.3) : -volBase*rand(0.05,0.2);
+      if (regime === 'fade_down') drift = i < SESSION_CANDLES/2 ? -volBase*rand(0.15,0.3) : volBase*rand(0.05,0.2);
+      if (regime === 'chop') drift = rand(-1,1) * volBase * 0.18;
+
+      const move = drift + rand(-vol, vol);
+      let close = open + move;
+      let high = Math.max(open, close) + Math.abs(rand(0, vol*0.7));
+      let low = Math.min(open, close) - Math.abs(rand(0, vol*0.7));
+      if (close < 0.5) close = 0.5;
+      if (low < 0.3) low = 0.3;
+      out.push({ i, open, high, low, close });
+      price = close;
+    }
+    return out;
+  }
+
+  function resetSession(){
+    clearInterval(timer); timer = null; playing = false;
+    setPlayLabel();
+    candles = generateSession();
+    times = buildTimes();
+    symbol = randomSymbol();
+    SESSION_CANDLES = candles.length;
+    applySession('WAITING FOR SESSION', 'neutral', 'Press Play to start the session.', false);
+  }
+
+  async function loadLiveSession(){
+    const sym = (document.getElementById('symbolInput').value.trim() || 'SPY').toUpperCase();
+    const dateVal = document.getElementById('dateInput').value;
+    clearInterval(timer); timer = null; playing = false; setPlayLabel();
+    setPhase('LOADING LIVE DATA…', 'neutral');
+    document.getElementById('loadLiveBtn').disabled = true;
+    try {
+      const qs = new URLSearchParams({ symbol: sym });
+      if (dateVal) qs.set('date', dateVal);
+      const resp = await fetch('/api/orb-bars?' + qs.toString());
+      const data = await resp.json();
+      if (!resp.ok || !data.candles || !data.candles.length){
+        throw new Error(data.error || ('No bars returned (HTTP ' + resp.status + ')'));
+      }
+      candles = data.candles.map((b, i) => ({ i, open: b.open, high: b.high, low: b.low, close: b.close }));
+      times = data.candles.map(b => b.time);
+      symbol = sym;
+      SESSION_CANDLES = candles.length;
+      applySession('LIVE SESSION LOADED', 'blue', 'Live 15m bars loaded for ' + symbol + ' (' + SESSION_CANDLES + ' candles). Press Play to run the ORB engine on real data.', true);
+    } catch (err){
+      setPhase('LIVE LOAD FAILED', 'bear');
+      fire('bear', '⚠️', 'LIVE DATA ERROR', String(err.message || err), '--:--');
+    } finally {
+      document.getElementById('loadLiveBtn').disabled = false;
+    }
+  }
+
+  function applySession(phaseLabel, phaseKind, logMessage, isLive){
+    isLiveData = !!isLive;
+    revealIdx = -1;
+    state = 'IDLE';
+    orHigh = orLow = null; orSet = false;
+    breakoutDir = breakoutIdx = null;
+    entryPrice = stopPrice = targetPrice = entryIdx = null;
+    result = null;
+    flags = {};
+    orPeriod = parseInt(document.getElementById('orSelect').value, 10);
+
+    const lows = candles.map(c => c.low), highs = candles.map(c => c.high);
+    priceMin = Math.min.apply(null, lows) * 0.997;
+    priceMax = Math.max.apply(null, highs) * 1.003;
+
+    document.getElementById('symbolVal').textContent = symbol + (isLive ? ' · LIVE' : ' · SIM');
+    document.getElementById('timeVal').textContent = times[0] || '—';
+    document.getElementById('priceVal').textContent = '—';
+    document.getElementById('orVal').textContent = '— / —';
+    document.getElementById('candleCountVal').textContent = '0 / ' + SESSION_CANDLES;
+    setPhase(phaseLabel, phaseKind);
+    clearTradePlan();
+    logList.innerHTML = '<div class="log-empty">' + logMessage + '</div>';
+    toastLayer.innerHTML = '';
+    render();
+  }
+
+  function clearTradePlan(){
+    document.getElementById('dirVal').textContent = '—';
+    document.getElementById('entryVal').textContent = '—';
+    document.getElementById('stopVal').textContent = '—';
+    document.getElementById('targetVal').textContent = '—';
+    document.getElementById('liveRVal').textContent = '—';
+  }
+
+  function setPhase(label, kind){
+    const el = document.getElementById('phasePill');
+    el.textContent = label;
+    const map = {
+      neutral: ['var(--panel-alt)', 'var(--text-dim)', 'var(--border)'],
+      blue:    ['var(--blue-dim)', 'var(--blue)', 'var(--blue)'],
+      amber:   ['var(--amber-dim)', 'var(--amber)', 'var(--amber)'],
+      bull:    ['var(--bull-dim)', 'var(--bull)', 'var(--bull)'],
+      bear:    ['var(--bear-dim)', 'var(--bear)', 'var(--bear)'],
+    };
+    const c = map[kind] || map.neutral;
+    el.style.background = c[0]; el.style.color = c[1]; el.style.borderColor = c[2];
+    el.style.border = '1px solid ' + c[2];
+  }
+
+  // ================= TOAST + LOG =================
+  function fire(kind, icon, title, body, time, tag){
+    const wrap = document.createElement('div');
+    wrap.className = 'toast ' + kind;
+    wrap.innerHTML =
+      '<div class="t-head"><span>' + icon + ' ' + title + '</span><span class="t-time">' + time + '</span></div>' +
+      '<div class="t-body">' + body + '</div>' +
+      (tag ? '<div class="t-tag">' + tag + '</div>' : '');
+    toastLayer.prepend(wrap);
+    setTimeout(() => {
+      wrap.style.animation = 'fadeOut .35s ease forwards';
+      setTimeout(() => wrap.remove(), 360);
+    }, 6200);
+    while (toastLayer.children.length > 4) toastLayer.removeChild(toastLayer.lastChild);
+
+    const item = document.createElement('div');
+    item.className = 'log-item ' + kind;
+    item.innerHTML = '<span class="lt">' + time + '</span>' + title + ' — ' + body + (tag ? ' <em style="color:var(--text-faint);font-style:normal;">(' + tag + ')</em>' : '');
+    if (logList.querySelector('.log-empty')) logList.innerHTML = '';
+    logList.prepend(item);
+  }
+
+  function expectedRange(dir, breakoutClose){
+    const orRange = orHigh - orLow;
+    const upper = dir === 'long' ? breakoutClose + orRange : breakoutClose;
+    const lower = dir === 'long' ? breakoutClose : breakoutClose - orRange;
+    return fmt(lower) + '–' + fmt(upper);
+  }
+
+  // ================= STRATEGY ENGINE =================
+  function evaluate(idx){
+    const c = candles[idx];
+    const t = times[idx];
+    document.getElementById('timeVal').textContent = t;
+    document.getElementById('priceVal').textContent = fmt(c.close);
+    document.getElementById('candleCountVal').textContent = (idx+1) + ' / ' + SESSION_CANDLES;
+
+    // --- Range forming ---
+    if (idx === 0 && orPeriod > 1){
+      setPhase('FORMING OPENING RANGE', 'blue');
+      fire('neutral', '📊', 'SESSION OPEN', symbol + ' opening range forming (' + (orPeriod*15) + 'm window). No trade yet.', t);
+    }
+    if (idx <= orPeriod - 1){
+      if (idx === orPeriod - 1){
+        const seg = candles.slice(0, orPeriod);
+        orHigh = Math.max.apply(null, seg.map(x => x.high));
+        orLow = Math.min.apply(null, seg.map(x => x.low));
+        orSet = true;
+        document.getElementById('orVal').textContent = fmt(orHigh) + ' / ' + fmt(orLow);
+        const rangeAbs = orHigh - orLow;
+        const rangePct = (rangeAbs / orLow) * 100;
+        let note = 'Range locked at ' + fmt(orLow) + '–' + fmt(orHigh) + ' (' + rangePct.toFixed(2) + '% of price).';
+        if (rangePct < 0.15){
+          note += ' Very tight — elevated false-breakout risk, size down.';
+          fire('amber', '⚠️', 'RANGE SET — TIGHT', note, t);
+        } else if (rangePct > 1.2){
+          note += ' Wide range — reward-to-risk on a breakout is weaker than usual.';
+          fire('amber', '⚠️', 'RANGE SET — WIDE', note, t);
+        } else {
+          note += ' Healthy width — watching for a confirmed break.';
+          fire('blue', '📏', 'OPENING RANGE SET', note, t);
+        }
+        state = 'WATCH_BREAKOUT';
+        setPhase('WATCHING FOR BREAKOUT', 'blue');
+      } else if (idx === 0) {
+        setPhase('FORMING OPENING RANGE', 'blue');
+      }
+      render();
+      return;
+    }
+
+    // --- Watching for breakout ---
+    if (state === 'WATCH_BREAKOUT'){
+      const bodyRatio = Math.abs(c.close - c.open) / Math.max(c.high - c.low, 0.0001);
+      const bullBody = c.close > c.open;
+      const bearBody = c.close < c.open;
+
+      if (c.close > orHigh){
+        if (bullBody && bodyRatio >= BODY_STRENGTH_MIN){
+          breakoutDir = 'long'; breakoutIdx = idx;
+          state = 'WATCH_RETEST';
+          setPhase('BREAKOUT — WATCHING RETEST', 'amber');
+          fire('bull', '🚀', 'CALL SETUP TRIGGERED', symbol + ' closed above OR high ' + fmt(orHigh) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('long', c.close) + '. Watching for a retest before entry — not a fill signal yet.', t, 'Setup — probability-based, not a guarantee');
+        } else {
+          fire('amber', '⚠️', 'WEAK BREAK — NO ENTRY', 'Price poked above ' + fmt(orHigh) + ' but the candle body is weak/indecisive. Not a valid signal — wait for confirmation.', t);
+        }
+      } else if (c.close < orLow){
+        if (bearBody && bodyRatio >= BODY_STRENGTH_MIN){
+          breakoutDir = 'short'; breakoutIdx = idx;
+          state = 'WATCH_RETEST';
+          setPhase('BREAKOUT — WATCHING RETEST', 'amber');
+          fire('bear', '🔻', 'PUT SETUP TRIGGERED', symbol + ' closed below OR low ' + fmt(orLow) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('short', c.close) + '. Watching for a retest before entry — not a fill signal yet.', t, 'Setup — probability-based, not a guarantee');
+        } else {
+          fire('amber', '⚠️', 'WEAK BREAK — NO ENTRY', 'Price poked below ' + fmt(orLow) + ' but the candle body is weak/indecisive. Not a valid signal — wait for confirmation.', t);
+        }
+      } else {
+        const sinceRange = idx - (orPeriod - 1);
+        if (sinceRange >= NO_TRADE_CUTOFF){
+          state = 'NO_TRADE';
+          setPhase('NO TRADE — RANGE HOLDING', 'neutral');
+          stats.flats++; updateStats();
+          fire('neutral', '⛔', 'DO NOT TRADE', 'Price has held inside ' + fmt(orLow) + '–' + fmt(orHigh) + ' with no breakout. No call, no put — the edge is gone for this session.', t);
+        }
+      }
+      render();
+      return;
+    }
+
+    // --- Watching for retest ---
+    if (state === 'WATCH_RETEST'){
+      const level = breakoutDir === 'long' ? orHigh : orLow;
+      const tol = level * RETEST_TOLERANCE;
+
+      if (breakoutDir === 'long'){
+        const touched = c.low <= level + tol;
+        if (touched && c.close > level){
+          fire('blue', '🔁', 'RETEST', symbol + ' pulled back and tapped ' + fmt(level) + '.', t);
+          enterTrade('long', c.close, orLow, t, idx);
+        } else if (touched && c.close < orLow){
+          fire('neutral', '❌', 'FAILED BREAKOUT', 'Price reclaimed the range and closed below ' + fmt(orLow) + '. No trade — breakout invalidated.', t);
+          state = 'WATCH_BREAKOUT'; breakoutDir = null; breakoutIdx = null;
+          setPhase('WATCHING FOR BREAKOUT', 'blue');
+        } else if (touched){
+          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before entering.', t);
+        } else {
+          checkExtension(idx, t);
+        }
+      } else {
+        const touched = c.high >= level - tol;
+        if (touched && c.close < level){
+          fire('blue', '🔁', 'RETEST', symbol + ' pulled back and tapped ' + fmt(level) + '.', t);
+          enterTrade('short', c.close, orHigh, t, idx);
+        } else if (touched && c.close > orHigh){
+          fire('neutral', '❌', 'FAILED BREAKOUT', 'Price reclaimed the range and closed above ' + fmt(orHigh) + '. No trade — breakout invalidated.', t);
+          state = 'WATCH_BREAKOUT'; breakoutDir = null; breakoutIdx = null;
+          setPhase('WATCHING FOR BREAKOUT', 'blue');
+        } else if (touched){
+          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before entering.', t);
+        } else {
+          checkExtension(idx, t);
+        }
+      }
+      render();
+      return;
+    }
+
+    // --- In trade ---
+    if (state === 'IN_TRADE'){
+      if (breakoutDir === 'long'){
+        if (c.high >= targetPrice){
+          exitTrade('WIN', targetPrice, t, '🎯', 'SELL NOW — TARGET HIT', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Close the position.');
+        } else if (c.low <= stopPrice){
+          exitTrade('LOSS', stopPrice, t, '🛑', 'SELL NOW — STOP HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Close the position — the setup failed.');
+        }
+      } else {
+        if (c.low <= targetPrice){
+          exitTrade('WIN', targetPrice, t, '🎯', 'SELL NOW — TARGET HIT', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Close the position.');
+        } else if (c.high >= stopPrice){
+          exitTrade('LOSS', stopPrice, t, '🛑', 'SELL NOW — STOP HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Close the position — the setup failed.');
+        }
+      }
+      if (state === 'IN_TRADE' && idx === SESSION_CANDLES - 1){
+        exitTrade('FLAT', c.close, t, '🔔', 'SELL NOW — SESSION END', 'Final candle of the session. Close the remaining position at ' + fmt(c.close) + ' regardless of target/stop.');
+      }
+      updateLiveR(c.close);
+      render();
+      return;
+    }
+
+    render();
+  }
+
+  function checkExtension(idx, t){
+    const sinceBreak = idx - breakoutIdx;
+    if (sinceBreak === 2 && !flags.momentum){
+      flags.momentum = true;
+      fire('amber', '⚡', 'NO RETEST YET', 'Price is extending without a pullback. Only momentum/aggressive entries apply here — retest entries are higher probability.', times[idx]);
+    }
+    if (sinceBreak >= EXTENDED_WARN_CANDLES + 2 && !flags.extended){
+      flags.extended = true;
+      fire('amber', '⚠️', 'TOO EXTENDED', 'Price has run well past the breakout with no retest. Avoid chasing — the risk/reward here is poor.', times[idx]);
+    }
+  }
+
+  function enterTrade(dir, price, stop, t, idx){
+    entryPrice = price;
+    stopPrice = stop;
+    entryIdx = idx;
+    const risk = Math.max(Math.abs(entryPrice - stopPrice), entryPrice * 0.0008);
+    targetPrice = dir === 'long' ? entryPrice + risk * 2 : entryPrice - risk * 2;
+    state = 'IN_TRADE';
+    const optType = dir === 'long' ? 'CALL' : 'PUT';
+    setPhase('IN TRADE — ' + optType + ' BIAS', dir === 'long' ? 'bull' : 'bear');
+    fire(dir === 'long' ? 'bull' : 'bear', dir === 'long' ? '🟢' : '🔴', 'BUY ' + optType + ' NOW',
+      'Retest held. ' + optType + '-biased entry at ' + fmt(entryPrice) + '. Invalidation ' + fmt(stopPrice) + ', expected target ' + fmt(targetPrice) + ' (2R).', t,
+      'Directional bias only — pick strike/expiry with your own risk rules');
+
+    document.getElementById('dirVal').textContent = optType;
+    document.getElementById('dirVal').style.color = dir === 'long' ? 'var(--bull)' : 'var(--bear)';
+    document.getElementById('entryVal').textContent = fmt(entryPrice);
+    document.getElementById('stopVal').textContent = fmt(stopPrice);
+    document.getElementById('targetVal').textContent = fmt(targetPrice);
+  }
+
+  function updateLiveR(currentPrice){
+    if (entryPrice == null) return;
+    const risk = Math.abs(entryPrice - stopPrice);
+    if (risk <= 0) return;
+    const raw = breakoutDir === 'long' ? currentPrice - entryPrice : entryPrice - currentPrice;
+    const r = raw / risk;
+    const el = document.getElementById('liveRVal');
+    el.textContent = (r >= 0 ? '+' : '') + r.toFixed(2) + 'R';
+    el.className = 'v ' + (r >= 0 ? 'pnl-pos' : 'pnl-neg');
+  }
+
+  function exitTrade(outcome, price, t, icon, title, body){
+    result = outcome;
+    state = 'DONE';
+    if (outcome === 'WIN'){ stats.wins++; setPhase('SESSION DONE — WIN', 'bull'); fire('bull', icon, title, body, t); }
+    else if (outcome === 'LOSS'){ stats.losses++; setPhase('SESSION DONE — LOSS', 'bear'); fire('bear', icon, title, body, t); }
+    else { stats.flats++; setPhase('SESSION DONE — FLAT', 'neutral'); fire('neutral', icon, title, body, t); }
+    updateStats();
+    updateLiveR(price);
+    pause();
+  }
+
+  function updateStats(){
+    document.getElementById('winsVal').textContent = stats.wins;
+    document.getElementById('lossVal').textContent = stats.losses;
+    document.getElementById('flatVal').textContent = stats.flats;
+  }
+
+  // ================= RENDER =================
+  function priceToY(p){
+    return PAD_T + (1 - (p - priceMin) / (priceMax - priceMin)) * plotH;
+  }
+  function idxToX(i){
+    const slotW = slotWidth();
+    return PAD_L + i * slotW + slotW / 2;
+  }
+
+  function render(){
+    const parts = [];
+
+    // gridlines + y-axis labels
+    const steps = 5;
+    for (let s = 0; s <= steps; s++){
+      const p = priceMin + (priceMax - priceMin) * (s / steps);
+      const y = priceToY(p);
+      parts.push('<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (CHART_W-PAD_R) + '" y2="' + y + '" stroke="#161C28" stroke-width="1"/>');
+      parts.push('<text class="axis-label" x="6" y="' + (y+3) + '">' + p.toFixed(2) + '</text>');
+    }
+
+    // OR range box
+    if (orSet){
+      const y1 = priceToY(orHigh), y2 = priceToY(orLow);
+      parts.push('<rect x="' + PAD_L + '" y="' + y1 + '" width="' + plotW + '" height="' + (y2-y1) + '" fill="var(--blue)" opacity="0.07"/>');
+      parts.push('<line x1="' + PAD_L + '" y1="' + y1 + '" x2="' + (CHART_W-PAD_R) + '" y2="' + y1 + '" stroke="var(--blue)" stroke-width="1.2" stroke-dasharray="5,4"/>');
+      parts.push('<line x1="' + PAD_L + '" y1="' + y2 + '" x2="' + (CHART_W-PAD_R) + '" y2="' + y2 + '" stroke="var(--blue)" stroke-width="1.2" stroke-dasharray="5,4"/>');
+      parts.push('<text class="axis-label" x="' + (CHART_W-PAD_R-58) + '" y="' + (y1-5) + '" style="fill:#5B8CFF">OR HIGH</text>');
+      parts.push('<text class="axis-label" x="' + (CHART_W-PAD_R-54) + '" y="' + (y2+13) + '" style="fill:#5B8CFF">OR LOW</text>');
+    }
+
+    // stop / target lines
+    if (entryPrice != null){
+      const ey = priceToY(entryPrice), sy = priceToY(stopPrice), tyv = priceToY(targetPrice);
+      const xStart = idxToX(breakoutIdx);
+      parts.push('<line x1="' + xStart + '" y1="' + ey + '" x2="' + (CHART_W-PAD_R) + '" y2="' + ey + '" stroke="#E8ECF3" stroke-width="1" stroke-dasharray="2,3" opacity="0.5"/>');
+      parts.push('<line x1="' + xStart + '" y1="' + sy + '" x2="' + (CHART_W-PAD_R) + '" y2="' + sy + '" stroke="var(--bear)" stroke-width="1.2" stroke-dasharray="5,4"/>');
+      parts.push('<line x1="' + xStart + '" y1="' + tyv + '" x2="' + (CHART_W-PAD_R) + '" y2="' + tyv + '" stroke="var(--bull)" stroke-width="1.2" stroke-dasharray="5,4"/>');
+      parts.push('<text class="axis-label" x="' + (CHART_W-PAD_R-40) + '" y="' + (sy-5) + '" style="fill:var(--bear)">STOP</text>');
+      parts.push('<text class="axis-label" x="' + (CHART_W-PAD_R-48) + '" y="' + (tyv-5) + '" style="fill:var(--bull)">TARGET</text>');
+    }
+
+    // candles
+    for (let i = 0; i <= revealIdx; i++){
+      const c = candles[i];
+      const x = idxToX(i);
+      const yO = priceToY(c.open), yC = priceToY(c.close), yH = priceToY(c.high), yL = priceToY(c.low);
+      const up = c.close >= c.open;
+      const color = up ? 'var(--bull)' : 'var(--bear)';
+      const bodyTop = Math.min(yO, yC), bodyH = Math.max(Math.abs(yC - yO), 1.4);
+      const bw = slotWidth() * 0.56;
+
+      let strokeExtra = '';
+      if (i === breakoutIdx) strokeExtra = ' stroke="var(--amber)" stroke-width="2"';
+
+      parts.push('<line x1="' + x + '" y1="' + yH + '" x2="' + x + '" y2="' + yL + '" stroke="' + color + '" stroke-width="1.3"/>');
+      parts.push('<rect x="' + (x - bw/2) + '" y="' + bodyTop + '" width="' + bw + '" height="' + bodyH + '" fill="' + color + '"' + strokeExtra + ' rx="1.5"/>');
+
+      if (i === breakoutIdx){
+        parts.push('<text class="axis-label" x="' + (x-14) + '" y="' + (yH-10) + '" style="fill:var(--amber)" font-weight="700">BRK</text>');
+      }
+      if (entryIdx != null && i === entryIdx){
+        parts.push('<circle cx="' + x + '" cy="' + priceToY(entryPrice) + '" r="4.5" fill="var(--text)" stroke="#080B11" stroke-width="1.5"/>');
+        parts.push('<text class="axis-label" style="fill:var(--text)" x="' + (x-10) + '" y="' + (priceToY(entryPrice)+18) + '">ENTRY</text>');
+      }
+
+      // x-axis time label every other candle
+      if (i % 2 === 0){
+        parts.push('<text class="axis-label" x="' + (x-14) + '" y="' + (CHART_H-8) + '">' + times[i] + '</text>');
+      }
+    }
+
+    chartEl.innerHTML = parts.join('');
+  }
+
+  // ================= PLAYBACK =================
+  function setPlayLabel(){
+    const btn = document.getElementById('playBtn');
+    btn.textContent = playing ? '⏸ Pause' : '▶ Play';
+    btn.classList.toggle('is-pause', playing);
+  }
+
+  function tick(){
+    if (revealIdx >= SESSION_CANDLES - 1){ pause(); return; }
+    revealIdx++;
+    evaluate(revealIdx);
+    if (state === 'DONE') pause();
+  }
+
+  function play(){
+    if (revealIdx >= SESSION_CANDLES - 1) return;
+    playing = true; setPlayLabel();
+    timer = setInterval(tick, speed);
+  }
+  function pause(){
+    playing = false; setPlayLabel();
+    clearInterval(timer); timer = null;
+  }
+
+  // ================= EVENTS =================
+  document.getElementById('playBtn').addEventListener('click', () => {
+    if (playing) pause(); else play();
+  });
+  document.getElementById('stepBtn').addEventListener('click', () => {
+    pause();
+    tick();
+  });
+  document.getElementById('newBtn').addEventListener('click', resetSession);
+  document.getElementById('resetStatsBtn').addEventListener('click', () => {
+    stats = { wins: 0, losses: 0, flats: 0 };
+    updateStats();
+  });
+  document.getElementById('orSelect').addEventListener('change', () => {
+    if (candles && candles.length){
+      applySession(
+        isLiveData ? 'LIVE SESSION LOADED' : 'WAITING FOR SESSION',
+        isLiveData ? 'blue' : 'neutral',
+        isLiveData ? 'OR period updated — live bars reloaded with the new range window.' : 'Press Play to start the session.',
+        isLiveData
+      );
+    } else {
+      resetSession();
+    }
+  });
+  document.getElementById('loadLiveBtn').addEventListener('click', loadLiveSession);
+  document.getElementById('speedSelect').addEventListener('change', (e) => {
+    speed = parseInt(e.target.value, 10);
+    if (playing){ pause(); play(); }
+  });
+
+  // ================= INIT =================
+  resetSession();
+})();
+</script>
+
+<script>
+function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
+function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+
+(async function(){
+  const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+  const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { data:{ session } } = await _sb.auth.getSession();
+  const plan = session ? (session.user.app_metadata?.plan || 'free') : 'anon';
+  if (plan === 'free' || plan === 'expired' || plan === 'anon') {
+    document.body.style.visibility = 'visible';
+    const wall = document.createElement('div');
+    wall.id = 'proWall';
+    const cta = plan === 'anon'
+      ? `<a href="/login?from=/orbsignalengine" style="display:block;background:#25D9A6;color:#04140F;font-weight:700;font-size:1rem;padding:13px 24px;border-radius:11px;text-decoration:none;margin-bottom:10px;">Sign Up Free to Preview</a>
+        <a href="/pricing" style="display:block;color:rgba(37,217,166,.75);font-size:.85rem;padding:8px;">See Pro plans →</a>`
+      : `<a href="/pricing" style="display:block;background:#25D9A6;color:#04140F;font-weight:700;font-size:1rem;padding:13px 24px;border-radius:11px;text-decoration:none;margin-bottom:10px;">Upgrade to Pro — Start Free Trial</a>
+        <a href="/dashboard" style="display:block;color:rgba(37,217,166,.75);font-size:.85rem;padding:8px;">← Back to Dashboard</a>`;
+    wall.innerHTML = `<div style="position:fixed;inset:0;z-index:9999;background:rgba(8,11,17,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:'Inter',system-ui,sans-serif;">
+      <div style="max-width:400px;background:rgba(15,20,29,.97);border:1px solid rgba(37,217,166,.35);border-radius:20px;padding:40px 32px;box-shadow:0 0 60px rgba(37,217,166,.12);">
+        <div style="font-size:2.4rem;margin-bottom:12px;">📐</div>
+        <div style="font-size:1.5rem;font-weight:800;color:#E8ECF3;margin-bottom:8px;">ORB Signal Engine is a Pro Feature</div>
+        <div style="color:rgba(232,236,243,.6);font-size:.9rem;line-height:1.6;margin-bottom:24px;">Opening Range Breakout entry timing, live 15-minute bars, and the no-trade filter checklist are included in your Pro plan.</div>
+        ${cta}
+      </div>
+    </div>`;
+    document.body.appendChild(wall);
+    return;
+  }
+  document.body.style.visibility = 'visible';
+})();
+</script>
+</body>
+</html>
