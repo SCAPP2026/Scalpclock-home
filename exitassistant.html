@@ -1658,6 +1658,12 @@
   "url": "https://scalpclock.com/exitassistant",
   "description": "The simplest trading exit tool in the world. ScalpClock tells you exactly when to sell, when to hold, and when to protect your gains — in plain English."
 }</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Exit Assistant", "item": "https://scalpclock.com/exitassistant"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+  {"@type": "Question", "name": "Is Exit Assistant free to use?", "acceptedAnswer": {"@type": "Answer", "text": "Exit Assistant is included in ScalpClock's Pro plan. Free accounts can preview the tool; Pro unlocks full access to every trade's live target, stop, and probability breakdown."}},
+  {"@type": "Question", "name": "Does Exit Assistant guarantee my trade will hit its target?", "acceptedAnswer": {"@type": "Answer", "text": "No. Exit Assistant calculates a probability-based target and stop from live price action — it's a timing tool, not a guarantee. Markets can gap or reverse against any setup, which is exactly why a defined stop matters."}},
+  {"@type": "Question", "name": "How does Exit Assistant decide when to trim or hold?", "acceptedAnswer": {"@type": "Answer", "text": "It reads live price momentum, volume, and RSI against your entry to recommend HOLD, TRIM, MOVE STOP UP, TAKE PROFIT, or EXIT NOW — the same signal levels shown throughout the tool, updated in real time as the trade develops."}}
+]}</script>
 </head>
 <body style="visibility:hidden">
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">AI Exit Assistant — Options Trade Exit Timing Tool</h1>
@@ -4562,6 +4568,22 @@ function toggleDrawerGroup(btn){
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
+<section style="max-width:720px;margin:40px auto 0;padding:0 20px;">
+  <h2 style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.3rem;color:var(--text);text-align:center;margin-bottom:18px;">Exit Assistant FAQ</h2>
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--surface);">
+    <summary style="cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;font-size:.92rem;color:var(--text);">Is Exit Assistant free to use?</summary>
+    <div style="padding:0 18px 16px;color:var(--muted);font-size:.88rem;line-height:1.7;">Exit Assistant is included in ScalpClock's Pro plan. Free accounts can preview the tool; Pro unlocks full access to every trade's live target, stop, and probability breakdown.</div>
+  </details>
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--surface);">
+    <summary style="cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;font-size:.92rem;color:var(--text);">Does Exit Assistant guarantee my trade will hit its target?</summary>
+    <div style="padding:0 18px 16px;color:var(--muted);font-size:.88rem;line-height:1.7;">No. Exit Assistant calculates a probability-based target and stop from live price action — it's a timing tool, not a guarantee. Markets can gap or reverse against any setup, which is exactly why a defined stop matters.</div>
+  </details>
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--surface);">
+    <summary style="cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;font-size:.92rem;color:var(--text);">How does Exit Assistant decide when to trim or hold?</summary>
+    <div style="padding:0 18px 16px;color:var(--muted);font-size:.88rem;line-height:1.7;">It reads live price momentum, volume, and RSI against your entry to recommend HOLD, TRIM, MOVE STOP UP, TAKE PROFIT, or EXIT NOW — the same signal levels shown throughout the tool, updated in real time as the trade develops.</div>
+  </details>
+</section>
+
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">
   &copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.<br>
   For informational purposes only. Not financial advice. Options trading carries substantial risk of loss.

@@ -1043,6 +1043,12 @@
     "priceCurrency": "USD"
   }
 }</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "ScalpCharts", "item": "https://scalpclock.com/scalpchart"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+  {"@type": "Question", "name": "Is ScalpCharts free to use?", "acceptedAnswer": {"@type": "Answer", "text": "Live charts with pattern detection and AI trade coaching are included in ScalpClock's Pro plan. Chart Replay's practice mode and Free-tier previews are available without upgrading."}},
+  {"@type": "Question", "name": "What does SampsonX do on the chart?", "acceptedAnswer": {"@type": "Answer", "text": "SampsonX is ScalpClock's AI trade coach — it explains what a candle or pattern means as it forms, breaks down confidence scores by category, and answers follow-up questions instead of just flashing a signal."}},
+  {"@type": "Question", "name": "Can I practice without risking real money?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — the Replay tab steps through real historical market sessions candle by candle so you can predict, reveal, and get coached with zero risk before ever placing a real trade."}}
+]}</script>
 </head>
 <body style="visibility:hidden">
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">ScalpCharts — AI Trade Coach for Day Trading &amp; Scalping: Candlestick Patterns &amp; Options Signals</h1>
@@ -1391,7 +1397,7 @@
       <button type="button" class="rp-intro-start" onclick="document.getElementById('fcFileInput').click()">📁 Choose Screenshot</button>
       <button type="button" class="rp-intro-start" style="background:transparent;border:1px solid var(--border);color:var(--text);margin-top:8px" onclick="document.getElementById('fcCameraInput').click()">📸 Take Photo of a Chart</button>
       <div id="fcPreviewWrap" style="display:none;margin-top:14px">
-        <img id="fcPreviewImg" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border)" alt="Chart preview">
+        <img id="fcPreviewImg" loading="lazy" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border)" alt="Chart preview">
         <button type="button" class="rp-intro-start" id="fcSubmitBtn" style="margin-top:14px" onclick="fcSubmit()" disabled>
           <svg class="sx-avatar-svg sx-mood-neutral" id="fcAvatarSvg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>Get SampsonX's Feedback
         </button>
@@ -3961,6 +3967,22 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
   }
 })();
 </script>
+<section style="max-width:720px;margin:40px auto 0;padding:0 20px;">
+  <h2 style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.3rem;color:var(--text);text-align:center;margin-bottom:18px;">ScalpCharts FAQ</h2>
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--surface);">
+    <summary style="cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;font-size:.92rem;color:var(--text);">Is ScalpCharts free to use?</summary>
+    <div style="padding:0 18px 16px;color:var(--muted);font-size:.88rem;line-height:1.7;">Live charts with pattern detection and AI trade coaching are included in ScalpClock's Pro plan. Chart Replay's practice mode and Free-tier previews are available without upgrading.</div>
+  </details>
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--surface);">
+    <summary style="cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;font-size:.92rem;color:var(--text);">What does SampsonX do on the chart?</summary>
+    <div style="padding:0 18px 16px;color:var(--muted);font-size:.88rem;line-height:1.7;">SampsonX is ScalpClock's AI trade coach — it explains what a candle or pattern means as it forms, breaks down confidence scores by category, and answers follow-up questions instead of just flashing a signal.</div>
+  </details>
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--surface);">
+    <summary style="cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;font-size:.92rem;color:var(--text);">Can I practice without risking real money?</summary>
+    <div style="padding:0 18px 16px;color:var(--muted);font-size:.88rem;line-height:1.7;">Yes — the Replay tab steps through real historical market sessions candle by candle so you can predict, reveal, and get coached with zero risk before ever placing a real trade.</div>
+  </details>
+</section>
+
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">
   &copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; ScalpClock is a product of VSLLC.<br>
   For informational purposes only. Not financial advice. Options trading carries substantial risk of loss.
