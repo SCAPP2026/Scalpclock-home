@@ -201,6 +201,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "What Is Options Trading? A Beginner's Guide", "description": "New to options? This beginner's guide explains what options trading is, how calls and puts work, and the key terms every new trader needs to know.", "url": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading", "datePublished": "2026-07-17", "dateModified": "2026-07-17", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is options trading good for beginners?", "acceptedAnswer": {"@type": "Answer", "text": "Options trading can be learned by beginners, but it requires more upfront education than buying stocks. Start with the basics \u2014 calls, puts, strike prices, and expiration \u2014 before using real money, and consider practicing with tools like ScalpClock's Chart Replay first."}}, {"@type": "Question", "name": "How much money do I need to start trading options?", "acceptedAnswer": {"@type": "Answer", "text": "Some options contracts can be bought for well under $100 in premium, but you should also budget for losing trades and factor in your brokerage's account minimums. See our full guide on how much money you need to start trading options for a detailed breakdown."}}, {"@type": "Question", "name": "What's the difference between a call and a put?", "acceptedAnswer": {"@type": "Answer", "text": "A call option gives you the right to buy 100 shares at a set price, and traders buy calls when they expect the price to rise. A put option gives you the right to sell 100 shares at a set price, and traders buy puts when they expect the price to fall."}}, {"@type": "Question", "name": "Can you lose more than you invested in options trading?", "acceptedAnswer": {"@type": "Answer", "text": "If you only buy calls or puts (rather than selling them), your maximum loss is limited to the premium you paid. Selling options, especially uncovered/&quot;naked&quot; positions, can carry much larger \u2014 sometimes theoretically unlimited \u2014 risk, which is why beginners should fully understand a strategy before using it."}}, {"@type": "Question", "name": "What happens when an option expires?", "acceptedAnswer": {"@type": "Answer", "text": "If an option is \"in the money\" at expiration (profitable to exercise), it's typically automatically exercised or its value is settled in cash, depending on the option type and broker. If it's \"out of the money,\" it expires worthless and the buyer loses the premium paid."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Basics", "item": "https://scalpclock.com/learn-options-trading/options-basics"}, {"@type": "ListItem", "position": 4, "name": "What Is Options Trading? A Beginner's Guide", "item": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading"}]}]}</script>
 </head>
@@ -233,9 +240,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
           <a href="/trading-pictionary">Pictionary</a>
         </div>
       </div>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/orbsignalengine">ORB Signal Engine</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -247,15 +261,36 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/orbsignalengine" onclick="closeDrawer()">ORB Signal Engine</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -331,7 +366,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <li><strong>Leverage.</strong> Options let you control 100 shares of a stock for a fraction of what it would cost to buy those shares outright. This magnifies both potential gains and potential losses — which is exactly why risk management matters so much (more on that below).</li>
 <li><strong>Defined risk (when buying).</strong> When you <em>buy</em> a call or put, the most you can ever lose is the premium you paid — no matter how far the stock moves against you. That's a very different risk profile than short-selling a stock, where losses are theoretically unlimited.</li>
 <li><strong>Hedging.</strong> Investors who already own stock sometimes buy puts as a kind of insurance policy, to protect against a price drop without having to sell their shares.</li>
-<li><strong>Income.</strong> Some strategies involve <em>selling</em> options to collect premium from other traders — we cover this in <a href="/learn-options-trading/strategies">Options Strategies</a>, starting with covered calls.</li>
+<li><strong>Income.</strong> Some strategies involve <em>selling</em> options to collect premium from other traders — we cover this in <a href="/learn-options-trading/options-strategies">Options Strategies</a>, starting with covered calls.</li>
 </ul>
 
 <h2 id="an-example">A Simple Example</h2>
@@ -359,8 +394,8 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <p>If you're serious about learning options trading, the order matters:</p>
 <ol>
 <li><strong>Learn the vocabulary first</strong> — calls, puts, strike, premium, expiration. You just did that above.</li>
-<li><strong>Study basic strategies</strong> before you study advanced ones. Start with our guide to <a href="/learn-options-trading/strategies/best-options-strategies-for-beginners">Best Options Strategies for Beginners</a>.</li>
-<li><strong>Learn to read a chart.</strong> Timing matters enormously in options because of expiration dates — our guide on <a href="/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">how to read candlestick charts</a> is a good next step.</li>
+<li><strong>Study basic strategies</strong> before you study advanced ones. Start with our guide to <a href="/learn-options-trading/options-strategies/best-options-strategies-for-beginners">Best Options Strategies for Beginners</a>.</li>
+<li><strong>Learn to read a chart.</strong> Timing matters enormously in options because of expiration dates — our guide on <a href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">how to read candlestick charts</a> is a good next step.</li>
 <li><strong>Practice without risking real money.</strong> ScalpClock's <a href="/scalpchart?tab=replay">Chart Replay</a> tool lets you practice reading real historical price action, one candle at a time, before you ever place a live trade.</li>
 <li><strong>Choose a brokerage.</strong> You'll need an options-enabled brokerage account to trade for real — see our <a href="/trading-resources">Trading Resources</a> page for a comparison of beginner-friendly brokers.</li>
 </ol>
@@ -405,11 +440,11 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/strategies/best-options-strategies-for-beginners">
+  <a class="related-card" href="/learn-options-trading/options-strategies/best-options-strategies-for-beginners">
     <span class="rc-label">Options Strategies</span>
     <span class="rc-title">Best Options Strategies for Beginners</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/technical-analysis/how-to-read-candlestick-charts">
+  <a class="related-card" href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">
     <span class="rc-label">Technical Analysis</span>
     <span class="rc-title">How To Read Candlestick Charts</span>
   </a>
@@ -466,13 +501,27 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 
 
 function toggleDrawer(){

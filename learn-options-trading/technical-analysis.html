@@ -12,19 +12,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Technical Analysis — Learn Options Trading | ScalpClock</title>
-<meta name="description" content="Learn technical analysis for options trading: candlestick charts, support and resistance, indicators, VWAP, and moving averages.">
+<meta name="description" content="Learn how traders analyze charts, trends, and price movement using support and resistance, indicators, and moving averages.">
 <link rel="canonical" href="https://scalpclock.com/learn-options-trading/technical-analysis">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
 <meta property="og:title" content="Technical Analysis — Learn Options Trading | ScalpClock">
-<meta property="og:description" content="Learn technical analysis for options trading: candlestick charts, support and resistance, indicators, VWAP, and moving averages.">
+<meta property="og:description" content="Learn how traders analyze charts, trends, and price movement using support and resistance, indicators, and moving averages.">
 <meta property="og:url" content="https://scalpclock.com/learn-options-trading/technical-analysis">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Technical Analysis — Learn Options Trading | ScalpClock">
-<meta name="twitter:description" content="Learn technical analysis for options trading: candlestick charts, support and resistance, indicators, VWAP, and moving averages.">
+<meta name="twitter:description" content="Learn how traders analyze charts, trends, and price movement using support and resistance, indicators, and moving averages.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -64,7 +64,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
   background-size:auto,48px 48px,48px 48px;}
 a{color:var(--green);text-decoration:none;}
-a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
 
 /* NAV */
 .nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
@@ -121,7 +121,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 .article-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
 .article-item{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;transition:border-color .2s,transform .2s,box-shadow .2s;}
 a.article-item{cursor:pointer;}
-a.article-item:hover{border-color:var(--gold);box-shadow:0 0 24px rgba(245,166,35,.18);transform:translateX(4px);}
+a.article-item:hover{border-color:var(--gold);box-shadow:0 0 24px var(--gold-dim);transform:translateX(4px);}
 .article-item.soon{opacity:.55;}
 .article-num{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--gold);width:28px;flex-shrink:0;text-align:center;}
 .article-item-title{flex:1;font-family:var(--disp);font-weight:700;font-size:1.02rem;color:var(--text);}
@@ -131,6 +131,14 @@ a.article-item:hover{border-color:var(--gold);box-shadow:0 0 24px rgba(245,166,3
 .article-check{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold);}
 .article-arrow{flex-shrink:0;width:16px;height:16px;color:var(--gold);transition:transform .15s;}
 a.article-item:hover .article-arrow{transform:translateX(3px);}
+
+/* FAQ */
+.faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
+.faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.faq-item[open] summary::after{transform:rotate(45deg);}
+.faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
 /* CTA */
 .cta-section{text-align:center;padding:76px 24px 92px;}
@@ -168,8 +176,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Technical Analysis \u2014 Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/technical-analysis", "description": "Learn technical analysis for options trading: candlestick charts, support and resistance, indicators, VWAP, and moving averages.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "How To Read Candlestick Charts", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/how-to-read-candlestick-charts"}, {"@type": "ListItem", "position": 2, "name": "Support and Resistance Explained", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/support-and-resistance-explained"}, {"@type": "ListItem", "position": 3, "name": "Best Indicators for Options Trading", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/best-indicators-for-options-trading"}, {"@type": "ListItem", "position": 4, "name": "VWAP Trading Strategy Explained", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained"}, {"@type": "ListItem", "position": 5, "name": "Moving Averages Explained", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/moving-averages-explained"}, {"@type": "ListItem", "position": 6, "name": "How To Identify Trend Reversals", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/how-to-identify-trend-reversals"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "Technical Analysis — Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/technical-analysis", "description": "Learn how traders analyze charts, trends, and price movement using support and resistance, indicators, and moving averages.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Support and Resistance Explained", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/support-and-resistance-explained"}, {"@type": "ListItem", "position": 2, "name": "Best Indicators for Options Trading", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/best-indicators-for-options-trading"}, {"@type": "ListItem", "position": 3, "name": "VWAP Trading Strategy Explained", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained"}, {"@type": "ListItem", "position": 4, "name": "Moving Averages Explained", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/moving-averages-explained"}, {"@type": "ListItem", "position": 5, "name": "How To Identify Trend Reversals", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/how-to-identify-trend-reversals"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What's the difference between technical analysis and candlestick patterns?", "acceptedAnswer": {"@type": "Answer", "text": "Candlestick patterns are one specific tool within technical analysis, focused on what individual candles reveal about buyer/seller behavior. Technical analysis is the broader discipline that also includes support/resistance, indicators, moving averages, and trend structure — see the Candlestick Patterns category for that specific topic."}}, {"@type": "Question", "name": "Which indicator should I learn first?", "acceptedAnswer": {"@type": "Answer", "text": "Moving averages and VWAP are commonly recommended starting points since they're visually simple and widely used — see Best Indicators for Options Trading for a full breakdown of which indicators suit which situations."}}, {"@type": "Question", "name": "Can technical analysis predict the market with certainty?", "acceptedAnswer": {"@type": "Answer", "text": "No. Technical analysis narrows down probabilities and identifies levels or setups worth paying attention to — it doesn't provide guarantees, and it works best combined with sound risk management rather than used in isolation."}}, {"@type": "Question", "name": "How does technical analysis apply specifically to options?", "acceptedAnswer": {"@type": "Answer", "text": "Technical analysis informs the directional and timing decisions behind an options trade — where to set a strike, when a setup looks ready, and where a stop or target should sit — which then gets paired with the specific strategy mechanics covered in Options Strategies."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Technical Analysis", "item": "https://scalpclock.com/learn-options-trading/technical-analysis"}]}]}</script>
 </head>
 <body>
 
@@ -201,9 +216,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
           <a href="/trading-pictionary">Pictionary</a>
         </div>
       </div>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/orbsignalengine">ORB Signal Engine</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -215,15 +237,36 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/orbsignalengine" onclick="closeDrawer()">ORB Signal Engine</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -242,9 +285,10 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <div class="cat-hero-icon" aria-hidden="true">📊</div>
     <h1>Technical Analysis</h1>
   </div>
-  <p>Learn how traders analyze charts, trends, and price movement.</p>
+  <p>Technical analysis is the practice of reading a chart's price and volume history to inform trading decisions — where a stock might find support, when a trend is genuinely reversing, and which indicators actually add useful information versus just noise.</p>
+  <p>This category covers the core tools traders use to read a chart. For candlestick-specific patterns like doji, hammer, and engulfing candles, see the dedicated Candlestick Patterns category — it pairs directly with the concepts covered here.</p>
   <div class="cat-hero-progress">
-    <div class="chp-row"><span>Progress</span><span id="chpStat">0/6 read</span></div>
+    <div class="chp-row"><span>Progress</span><span id="chpStat">0/5 read</span></div>
     <div class="chp-track"><div class="chp-fill" id="chpFill" style="width:0%"></div></div>
   </div>
 </section>
@@ -254,43 +298,59 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <div class="sec-label">Lessons</div>
   <h2 class="sec-title">Technical Analysis Articles</h2>
   <ul class="article-list" id="articleList">
-    <a class="article-item" href="/learn-options-trading/technical-analysis/how-to-read-candlestick-charts" id="art-how-to-read-candlestick-charts">
-      <span class="article-num">01</span>
-      <span class="article-item-title">How To Read Candlestick Charts</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
     <a class="article-item" href="/learn-options-trading/technical-analysis/support-and-resistance-explained" id="art-support-and-resistance-explained">
-      <span class="article-num">02</span>
+      <span class="article-num">01</span>
       <span class="article-item-title">Support and Resistance Explained</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
     <a class="article-item" href="/learn-options-trading/technical-analysis/best-indicators-for-options-trading" id="art-best-indicators-for-options-trading">
-      <span class="article-num">03</span>
+      <span class="article-num">02</span>
       <span class="article-item-title">Best Indicators for Options Trading</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
     <a class="article-item" href="/learn-options-trading/technical-analysis/vwap-trading-strategy-explained" id="art-vwap-trading-strategy-explained">
-      <span class="article-num">04</span>
+      <span class="article-num">03</span>
       <span class="article-item-title">VWAP Trading Strategy Explained</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
     <a class="article-item" href="/learn-options-trading/technical-analysis/moving-averages-explained" id="art-moving-averages-explained">
-      <span class="article-num">05</span>
+      <span class="article-num">04</span>
       <span class="article-item-title">Moving Averages Explained</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
     <a class="article-item" href="/learn-options-trading/technical-analysis/how-to-identify-trend-reversals" id="art-how-to-identify-trend-reversals">
-      <span class="article-num">06</span>
+      <span class="article-num">05</span>
       <span class="article-item-title">How To Identify Trend Reversals</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
   </ul>
+</section>
+
+<!-- FAQ -->
+<section class="section reveal" style="padding-top:0;">
+  <div class="sec-label">Frequently Asked Questions</div>
+  <h2 class="sec-title">Technical Analysis FAQ</h2>
+  <details class="faq-item">
+    <summary>What's the difference between technical analysis and candlestick patterns?</summary>
+    <div class="faq-a">Candlestick patterns are one specific tool within technical analysis, focused on what individual candles reveal about buyer/seller behavior. Technical analysis is the broader discipline that also includes support/resistance, indicators, moving averages, and trend structure — see the Candlestick Patterns category for that specific topic.</div>
+  </details>
+  <details class="faq-item">
+    <summary>Which indicator should I learn first?</summary>
+    <div class="faq-a">Moving averages and VWAP are commonly recommended starting points since they're visually simple and widely used — see Best Indicators for Options Trading for a full breakdown of which indicators suit which situations.</div>
+  </details>
+  <details class="faq-item">
+    <summary>Can technical analysis predict the market with certainty?</summary>
+    <div class="faq-a">No. Technical analysis narrows down probabilities and identifies levels or setups worth paying attention to — it doesn't provide guarantees, and it works best combined with sound risk management rather than used in isolation.</div>
+  </details>
+  <details class="faq-item">
+    <summary>How does technical analysis apply specifically to options?</summary>
+    <div class="faq-a">Technical analysis informs the directional and timing decisions behind an options trade — where to set a strike, when a setup looks ready, and where a stop or target should sit — which then gets paired with the specific strategy mechanics covered in Options Strategies.</div>
+  </details>
 </section>
 
 <!-- CTA -->
@@ -331,13 +391,27 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 
 
 function toggleDrawer(){
@@ -368,7 +442,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
   const catKey = 'technical-analysis';
-  const total = SC_LEARN.CATEGORY_TOTALS[catKey] || 6;
+  const total = SC_LEARN.CATEGORY_TOTALS[catKey] || 5;
   const read = SC_LEARN.readByCategory()[catKey] || 0;
   const pct = total ? Math.round((read/total)*100) : 0;
   const fill = document.getElementById('chpFill');

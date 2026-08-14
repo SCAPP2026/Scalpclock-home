@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bear Put Spreads Explained | ScalpClock</title>
-<meta name="description" content="Bear put spreads explained with a worked example — the bearish mirror of a bull call spread, how it lowers cost and risk, and when to use it.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/strategies/bear-put-spreads-explained">
+<title>How To Set Stop Losses and Exit Rules for Options | ScalpClock</title>
+<meta name="description" content="How to build a stop-loss and exit plan for options trades, the different ways to define a stop, and why deciding exits before entry matters most.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="Bear Put Spreads Explained | ScalpClock">
-<meta property="og:description" content="Bear put spreads explained with a worked example — the bearish mirror of a bull call spread, how it lowers cost and risk, and when to use it.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/strategies/bear-put-spreads-explained">
+<meta property="og:title" content="How To Set Stop Losses and Exit Rules for Options | ScalpClock">
+<meta property="og:description" content="How to build a stop-loss and exit plan for options trades, the different ways to define a stop, and why deciding exits before entry matters most.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bear Put Spreads Explained | ScalpClock">
-<meta name="twitter:description" content="Bear put spreads explained with a worked example — the bearish mirror of a bull call spread, how it lowers cost and risk, and when to use it.">
+<meta name="twitter:title" content="How To Set Stop Losses and Exit Rules for Options | ScalpClock">
+<meta name="twitter:description" content="How to build a stop-loss and exit plan for options trades, the different ways to define a stop, and why deciding exits before entry matters most.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -104,7 +104,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
@@ -124,8 +124,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--blue-dim);border:1px solid var(--blue);border-left:3px solid var(--blue);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+.callout{background:var(--red-dim);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
 /* MID-ARTICLE CTA */
@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--blue);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -157,8 +157,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--blue);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--red);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
 /* CTA SECTION */
@@ -201,8 +201,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Bear Put Spreads Explained", "description": "Bear put spreads explained with a worked example \u2014 the bearish mirror of a bull call spread, how it lowers cost and risk, and when to use it.", "url": "https://scalpclock.com/learn-options-trading/strategies/bear-put-spreads-explained", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/strategies/bear-put-spreads-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is a bear put spread different from just buying a put?", "acceptedAnswer": {"@type": "Answer", "text": "A bear put spread costs less than buying the higher-strike put alone, because selling the lower-strike put generates premium that offsets part of the cost \u2014 in exchange, the maximum profit is capped at the width between the two strikes rather than continuing to grow as the stock falls further."}}, {"@type": "Question", "name": "What is the maximum loss on a bear put spread?", "acceptedAnswer": {"@type": "Answer", "text": "The maximum loss is limited to the net premium paid to enter the position, calculated as the cost of the long put minus the premium collected from the short put."}}, {"@type": "Question", "name": "When would a trader use a bear put spread instead of a bull call spread?", "acceptedAnswer": {"@type": "Answer", "text": "A bear put spread is used when the trader's view is bearish (expecting the stock to fall); a bull call spread is used when the view is bullish (expecting the stock to rise). They're structural mirrors of each other applied to opposite market views."}}, {"@type": "Question", "name": "Can a bear put spread lose money if I'm right about the direction?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, if the stock doesn't fall far enough to reach the lower strike, or doesn't fall quickly enough relative to time decay, the position can still result in a loss even with the direction correct."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Strategies", "item": "https://scalpclock.com/learn-options-trading/strategies"}, {"@type": "ListItem", "position": 4, "name": "Bear Put Spreads Explained", "item": "https://scalpclock.com/learn-options-trading/strategies/bear-put-spreads-explained"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "How To Set Stop Losses and Exit Rules for Options", "description": "How to build a stop-loss and exit plan for options trades, the different ways to define a stop, and why deciding exits before entry matters most.", "url": "https://scalpclock.com/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options", "datePublished": "2026-08-14", "dateModified": "2026-08-14", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Should my stop-loss be based on the option's price or the stock's price?", "acceptedAnswer": {"@type": "Answer", "text": "Both approaches are valid. A percentage-of-premium stop is simple and consistent; a stop based on the underlying's price level ties your exit to the actual chart setup. Many traders use the underlying's level to inform where they'd set a percentage or dollar stop."}}, {"@type": "Question", "name": "What's a reasonable reward-to-risk ratio for an exit plan?", "acceptedAnswer": {"@type": "Answer", "text": "A commonly used starting point is aiming for roughly 2:1 or 3:1 — targeting two to three times what you're risking — though the right ratio depends on the specific strategy and how often it tends to win."}}, {"@type": "Question", "name": "Why do options need time-based exit rules?", "acceptedAnswer": {"@type": "Answer", "text": "Because options lose value as expiration approaches, a position can be losing money purely to time decay even if the underlying stock hasn't broken any technical level. A time-based rule catches that risk on its own."}}, {"@type": "Question", "name": "Are hard stops better than mental stops for options?", "acceptedAnswer": {"@type": "Answer", "text": "Hard stops remove the need for in-the-moment discipline, but options can be less liquid than the underlying stock, making exact stop execution trickier. Many traders use a hybrid: a mental stop level combined with active monitoring around it."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Risk Management", "item": "https://scalpclock.com/learn-options-trading/risk-management"}, {"@type": "ListItem", "position": 4, "name": "How To Set Stop Losses and Exit Rules for Options", "item": "https://scalpclock.com/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options"}]}]}</script>
 </head>
 <body>
 
@@ -233,9 +240,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
           <a href="/trading-pictionary">Pictionary</a>
         </div>
       </div>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/orbsignalengine">ORB Signal Engine</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -247,15 +261,36 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/orbsignalengine" onclick="closeDrawer()">ORB Signal Engine</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -264,16 +299,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/strategies">Options Strategies</a><span>/</span>
-  <span class="current">Bear Put Spreads Explained</span>
+  <a href="/learn-options-trading/risk-management">Risk Management</a><span>/</span>
+  <span class="current">How To Set Stop Losses and Exit Rules for Options</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/strategies">🎯 Options Strategies</a>
-  <h1>Bear Put Spreads Explained</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/risk-management">🛡️ Risk Management</a>
+  <h1>How To Set Stop Losses and Exit Rules for Options</h1>
   <div class="art-meta">
     <span>⏱ 8 min read</span>
-    <span>📅 Updated July 18, 2026</span>
+    <span>📅 Updated August 14, 2026</span>
     <span>✍️ ScalpClock Education Team</span>
   </div>
 </header>
@@ -282,48 +317,46 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#what-is-a-bear-put-spread">What Is a Bear Put Spread?</a></li>
-    <li><a href="#the-mirror-image">The Mirror Image of a Bull Call Spread</a></li>
-    <li><a href="#worked-example">A Worked Example</a></li>
-    <li><a href="#max-profit-max-loss">Maximum Profit, Maximum Loss, Breakeven</a></li>
-    <li><a href="#when-to-use">When Traders Use This Strategy</a></li>
-    <li><a href="#vs-buying-a-put">Bear Put Spread vs. Buying a Put Alone</a></li>
+    <li><a href="#why-exits-before-entry">Why Exits Should Be Set Before Entry</a></li>
+    <li><a href="#three-ways-to-stop">Three Ways to Define a Stop</a></li>
+    <li><a href="#profit-targets">Setting a Profit Target, Not Just a Stop</a></li>
+    <li><a href="#time-based-exits">Time-Based Exits Are an Options-Specific Rule</a></li>
+    <li><a href="#mental-vs-hard-stops">Mental Stops vs. Hard Stops</a></li>
+    <li><a href="#putting-it-together">Putting a Full Exit Plan Together</a></li>
   </ol>
 </nav>
 
-<p>If a bull call spread is the defined-risk way to express a moderately bullish view, a bear put spread is its direct counterpart for a moderately bearish one. The logic is identical, just flipped.</p>
 
-<h2 id="what-is-a-bear-put-spread">What Is a Bear Put Spread?</h2>
-<p>A bear put spread involves buying a put at a higher strike price and simultaneously selling a put at a lower strike price, both with the same expiration date. The premium collected from the short put lowers the overall cost of the trade compared to buying the higher-strike put alone.</p>
+<p>An entry gets most of a trader's attention, but the exit plan is what actually determines the outcome of a trade. Deciding both a stop-loss and a profit target before entering — not during the trade — is one of the simplest, highest-impact habits in options trading.</p>
 
-<h2 id="the-mirror-image">The Mirror Image of a Bull Call Spread</h2>
-<p>Everything about a bear put spread mirrors <a href="/learn-options-trading/strategies/bull-call-spreads-explained">the bull call spread</a>, just for a bearish view instead of a bullish one: you pay a net premium upfront, your maximum loss is that premium, and your maximum profit is capped at the width between the two strikes minus what you paid. If the mechanics of one make sense, the other follows directly by flipping direction.</p>
+<h2 id="why-exits-before-entry">Why Exits Should Be Set Before Entry</h2>
+<p>Deciding an exit while a position is open, in real time, means deciding it under pressure — with money already at risk and emotions already engaged. That's exactly when judgment is least reliable. Deciding the exit before entry, while thinking clearly, removes that pressure from the equation entirely; the plan already exists, and the trader's only job is to follow it.</p>
 
-<h2 id="worked-example">A Worked Example</h2>
-<p>A stock trades at $80. You believe it will decline moderately over the next month. You buy one put at the $80 strike for a $3.50 premium ($350), and sell one put at the $70 strike for a $1.00 premium ($100) — a net cost of $2.50 ($250 total).</p>
+<h2 id="three-ways-to-stop">Three Ways to Define a Stop</h2>
+<p>There's no single "correct" way to define a stop-loss — different methods suit different trading styles:</p>
 <ul>
-<li><strong>If the stock falls to $70 or lower at expiration:</strong> Your long put is worth $10 (80 − 70) at that point, giving a maximum profit of $10 − $2.50 = $7.50 per share, or $750 total.</li>
-<li><strong>If the stock stays at $80:</strong> Both options are worthless or close to it, and you lose your $250 net cost.</li>
-<li><strong>If the stock rises instead:</strong> Same result — your loss is capped at the $250 paid, regardless of how far the stock climbs.</li>
+<li><strong>Percentage of premium.</strong> Exit if the option loses a set percentage of its value (for example, 50%). Simple and consistent, but doesn't account for the underlying stock's actual price action.</li>
+<li><strong>Underlying price level.</strong> Exit if the underlying stock breaks a key technical level — like the support levels covered in <a href="/learn-options-trading/technical-analysis/support-and-resistance-explained">support and resistance explained</a> — regardless of exactly how much the option's premium has moved.</li>
+<li><strong>Dollar amount.</strong> Exit once a trade's loss reaches a fixed dollar figure, tied directly to the position sizing decided in <a href="/learn-options-trading/risk-management/position-sizing-for-options-traders">position sizing for options traders</a>.</li>
 </ul>
+<p>Many traders combine two of these — for example, a dollar-amount stop as the hard limit, informed by where the underlying's key level sits.</p>
 
-<h2 id="max-profit-max-loss">Maximum Profit, Maximum Loss, Breakeven</h2>
-<ul>
-<li><strong>Maximum profit</strong> = (difference between the two strikes) − (net premium paid). In the example: $10 − $2.50 = $7.50 per share.</li>
-<li><strong>Maximum loss</strong> = the net premium paid. In the example: $2.50 per share, or $250 total.</li>
-<li><strong>Breakeven</strong> = the higher strike − the net premium paid. In the example: $80 − $2.50 = $77.50.</li>
-</ul>
+<h2 id="profit-targets">Setting a Profit Target, Not Just a Stop</h2>
+<p>An exit plan isn't only about limiting losses — it also means deciding, in advance, when to take profits rather than letting a winning trade ride indefinitely and hoping for more. A common approach is a fixed reward-to-risk ratio (aiming to make roughly two or three times what's being risked), so the target and the stop are set together as a single, coherent plan rather than two separate decisions.</p>
 
 <div class="callout">
-<div class="callout-label">Same Logic, Opposite Direction</div>
-<p>If you understand a bull call spread, a bear put spread requires no new concepts — only flipping "buy low strike, sell high strike calls" into "buy high strike, sell low strike puts." Learning both together reinforces the underlying spread logic rather than treating them as two separate things to memorize.</p>
+<div class="callout-label">Worth Remembering</div>
+<p>A trade with a well-defined stop but no profit target often turns into a trader second-guessing a winning position in real time — exiting too early out of fear, or holding too long out of greed. Deciding both sides of the trade up front removes that in-the-moment guesswork.</p>
 </div>
 
-<h2 id="when-to-use">When Traders Use This Strategy</h2>
-<p>A bear put spread fits a moderately bearish view with a rough sense of how far the stock might fall — similar in spirit to how a bull call spread fits a moderately bullish one. It's a common choice ahead of an event a trader expects to pressure a stock lower, when the trader wants defined risk rather than the larger cost and theoretically larger loss potential of a single long put purchased outright.</p>
+<h2 id="time-based-exits">Time-Based Exits Are an Options-Specific Rule</h2>
+<p>Options add a dimension stocks don't have: time decay. A price-based stop alone can miss the risk of a position that's simply running out of time to work, even if the underlying hasn't hit a technical stop level. Many options traders add a time-based rule — for example, exiting or reassessing a position by a certain number of days before expiration, regardless of price — specifically to manage this extra risk.</p>
 
-<h2 id="vs-buying-a-put">Bear Put Spread vs. Buying a Put Alone</h2>
-<p>Buying a single put costs more but keeps a larger (though still capped, since a stock can only fall to zero) profit potential if the decline is bigger than expected. A bear put spread costs less and defines the maximum loss more tightly, at the expense of capping the profit at a lower level. As with the bull call spread, the right choice depends on the size of the move you actually expect — using a spread for a view you expect to be small and moderate, and a single option when you're positioning for a larger, less certain move.</p>
+<h2 id="mental-vs-hard-stops">Mental Stops vs. Hard Stops</h2>
+<p>A hard stop is an actual order placed with a broker that executes automatically. A mental stop is a level a trader has decided on but must manually act on when it's hit. Hard stops remove the risk of hesitation but can be trickier to set precisely on less liquid options; mental stops offer more flexibility but require real discipline to actually execute when the moment comes — which is exactly the discipline problem covered in <a href="/learn-options-trading/psychology/why-most-options-traders-fail">why most options traders fail</a>.</p>
+
+<h2 id="putting-it-together">Putting a Full Exit Plan Together</h2>
+<p>Before entering any trade, a complete exit plan answers three questions: where's the stop, where's the target, and is there a time-based rule that overrides either one? Tools like ScalpClock's <a href="/exitassistant">Exit Assistant</a> are built specifically to help define this plan mechanically, ahead of time, rather than leaving it to be decided in the moment.</p>
 
 
 <div class="mid-cta reveal">
@@ -334,20 +367,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>How is a bear put spread different from just buying a put?</summary>
-  <div class="faq-a">A bear put spread costs less than buying the higher-strike put alone, because selling the lower-strike put generates premium that offsets part of the cost — in exchange, the maximum profit is capped at the width between the two strikes rather than continuing to grow as the stock falls further.</div>
+  <summary>Should my stop-loss be based on the option's price or the stock's price?</summary>
+  <div class="faq-a">Both approaches are valid. A percentage-of-premium stop is simple and consistent; a stop based on the underlying's price level ties your exit to the actual chart setup. Many traders use the underlying's level to inform where they'd set a percentage or dollar stop.</div>
 </details>
 <details class="faq-item">
-  <summary>What is the maximum loss on a bear put spread?</summary>
-  <div class="faq-a">The maximum loss is limited to the net premium paid to enter the position, calculated as the cost of the long put minus the premium collected from the short put.</div>
+  <summary>What's a reasonable reward-to-risk ratio for an exit plan?</summary>
+  <div class="faq-a">A commonly used starting point is aiming for roughly 2:1 or 3:1 — targeting two to three times what you're risking — though the right ratio depends on the specific strategy and how often it tends to win.</div>
 </details>
 <details class="faq-item">
-  <summary>When would a trader use a bear put spread instead of a bull call spread?</summary>
-  <div class="faq-a">A bear put spread is used when the trader's view is bearish (expecting the stock to fall); a bull call spread is used when the view is bullish (expecting the stock to rise). They're structural mirrors of each other applied to opposite market views.</div>
+  <summary>Why do options need time-based exit rules?</summary>
+  <div class="faq-a">Because options lose value as expiration approaches, a position can be losing money purely to time decay even if the underlying stock hasn't broken any technical level. A time-based rule catches that risk on its own.</div>
 </details>
 <details class="faq-item">
-  <summary>Can a bear put spread lose money if I'm right about the direction?</summary>
-  <div class="faq-a">Yes, if the stock doesn't fall far enough to reach the lower strike, or doesn't fall quickly enough relative to time decay, the position can still result in a loss even with the direction correct.</div>
+  <summary>Are hard stops better than mental stops for options?</summary>
+  <div class="faq-a">Hard stops remove the need for in-the-moment discipline, but options can be less liquid than the underlying stock, making exact stop execution trickier. Many traders use a hybrid: a mental stop level combined with active monitoring around it.</div>
 </details>
 
 <div class="author-box reveal">
@@ -360,17 +393,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/strategies/bull-call-spreads-explained">
-    <span class="rc-label">Options Strategies</span>
-    <span class="rc-title">Bull Call Spreads Explained</span>
+  <a class="related-card" href="/learn-options-trading/risk-management/position-sizing-for-options-traders">
+    <span class="rc-label">Risk Management</span>
+    <span class="rc-title">Position Sizing for Options Traders</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/strategies/risk-management-in-options-trading">
-    <span class="rc-label">Options Strategies</span>
+  <a class="related-card" href="/learn-options-trading/risk-management/risk-management-in-options-trading">
+    <span class="rc-label">Risk Management</span>
     <span class="rc-title">Risk Management in Options Trading</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/options-basics/calls-vs-puts-explained">
-    <span class="rc-label">Options Basics</span>
-    <span class="rc-title">Calls vs Puts Explained</span>
+  <a class="related-card" href="/learn-options-trading/psychology/why-most-options-traders-fail">
+    <span class="rc-label">Trading Psychology</span>
+    <span class="rc-title">Why Most Options Traders Fail</span>
   </a>
 </div>
 
@@ -381,7 +414,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/strategies">Back to Options Strategies</a>
+    <a class="btn-ghost" href="/learn-options-trading/risk-management">Back to Risk Management</a>
   </div>
 </section>
 
@@ -421,13 +454,27 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 
 
 function toggleDrawer(){
@@ -455,14 +502,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   els.forEach(el=>io.observe(el));
 })();
 
-// Mark this lesson read once the reader has genuinely scrolled through the
-// body (70% of article height) or spent 25s on the page — whichever comes
-// first — then award XP via the shared SC_LEARN module and show a toast.
-// A page-load timer alone would count a bounce; scroll-depth alone would
-// miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'strategies/bear-put-spreads-explained';
+  const SLUG = 'risk-management/how-to-set-stop-losses-and-exit-rules-for-options';
   let done = false;
   function complete(){
     if (done) return;

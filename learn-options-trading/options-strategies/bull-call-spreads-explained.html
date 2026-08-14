@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Options Scalping Works | ScalpClock</title>
-<meta name="description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<title>Bull Call Spreads Explained | ScalpClock</title>
+<meta name="description" content="Bull call spreads explained with a worked example — how the strategy lowers cost and risk compared to buying a call outright, and when to use it.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/options-strategies/bull-call-spreads-explained">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="How Options Scalping Works | ScalpClock">
-<meta property="og:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<meta property="og:title" content="Bull Call Spreads Explained | ScalpClock">
+<meta property="og:description" content="Bull call spreads explained with a worked example — how the strategy lowers cost and risk compared to buying a call outright, and when to use it.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/options-strategies/bull-call-spreads-explained">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How Options Scalping Works | ScalpClock">
-<meta name="twitter:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
+<meta name="twitter:title" content="Bull Call Spreads Explained | ScalpClock">
+<meta name="twitter:description" content="Bull call spreads explained with a worked example — how the strategy lowers cost and risk compared to buying a call outright, and when to use it.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -104,7 +104,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
@@ -124,8 +124,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--red-dim);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.callout{background:var(--blue-dim);border:1px solid var(--blue);border-left:3px solid var(--blue);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
 /* MID-ARTICLE CTA */
@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--blue);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -157,8 +157,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--red);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
 /* CTA SECTION */
@@ -209,7 +209,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "How Options Scalping Works", "description": "A step-by-step look at how options scalping actually works in practice \u2014 setup selection, entry, management, and exit, with a full example.", "url": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How long does a typical scalp trade last?", "acceptedAnswer": {"@type": "Answer", "text": "Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves."}}, {"@type": "Question", "name": "Do scalpers plan their exits in advance?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade."}}, {"@type": "Question", "name": "What tools do options scalpers rely on?", "acceptedAnswer": {"@type": "Answer", "text": "Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools \u2014 ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs."}}, {"@type": "Question", "name": "Can beginners learn to scalp options?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, but it typically requires significant practice before trading with real money \u2014 using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Scalping", "item": "https://scalpclock.com/learn-options-trading/scalping"}, {"@type": "ListItem", "position": 4, "name": "How Options Scalping Works", "item": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Bull Call Spreads Explained", "description": "Bull call spreads explained with a worked example \u2014 how the strategy lowers cost and risk compared to buying a call outright, and when to use it.", "url": "https://scalpclock.com/learn-options-trading/options-strategies/bull-call-spreads-explained", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/options-strategies/bull-call-spreads-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a bull call spread cheaper than buying a call outright?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 selling the higher-strike call generates premium that offsets part of the cost of the call you bought, making the net cost lower than buying that same call alone."}}, {"@type": "Question", "name": "What is the maximum loss on a bull call spread?", "acceptedAnswer": {"@type": "Answer", "text": "The maximum loss is limited to the net premium paid to enter the spread, which is the cost of the long call minus the premium collected from the short call."}}, {"@type": "Question", "name": "What is the maximum profit on a bull call spread?", "acceptedAnswer": {"@type": "Answer", "text": "The maximum profit is the difference between the two strike prices, minus the net premium paid \u2014 reached if the stock is at or above the higher strike at expiration."}}, {"@type": "Question", "name": "When should I use a bull call spread instead of just buying a call?", "acceptedAnswer": {"@type": "Answer", "text": "A bull call spread suits a moderately bullish view with a rough price target in mind, since it lowers cost and risk in exchange for capping the maximum profit \u2014 a single long call is more appropriate when you want uncapped upside for a potentially larger move."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Strategies", "item": "https://scalpclock.com/learn-options-trading/options-strategies"}, {"@type": "ListItem", "position": 4, "name": "Bull Call Spreads Explained", "item": "https://scalpclock.com/learn-options-trading/options-strategies/bull-call-spreads-explained"}]}]}</script>
 </head>
 <body>
 
@@ -299,15 +299,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/scalping">Options Scalping</a><span>/</span>
-  <span class="current">How Options Scalping Works</span>
+  <a href="/learn-options-trading/options-strategies">Options Strategies</a><span>/</span>
+  <span class="current">Bull Call Spreads Explained</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/scalping">⚡ Options Scalping</a>
-  <h1>How Options Scalping Works</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/options-strategies">🎯 Options Strategies</a>
+  <h1>Bull Call Spreads Explained</h1>
   <div class="art-meta">
-    <span>⏱ 9 min read</span>
+    <span>⏱ 8 min read</span>
     <span>📅 Updated July 18, 2026</span>
     <span>✍️ ScalpClock Education Team</span>
   </div>
@@ -317,44 +317,50 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#the-process">The Scalping Process, Step by Step</a></li>
-    <li><a href="#finding-a-setup">Finding a Setup</a></li>
-    <li><a href="#entry">Entry</a></li>
-    <li><a href="#managing-the-trade">Managing the Trade</a></li>
-    <li><a href="#exit">Exit</a></li>
-    <li><a href="#full-example">A Full Example, Start to Finish</a></li>
-    <li><a href="#what-makes-it-hard">What Makes This Genuinely Hard</a></li>
+    <li><a href="#what-is-a-bull-call-spread">What Is a Bull Call Spread?</a></li>
+    <li><a href="#why-use-a-spread">Why Use a Spread Instead of a Single Call?</a></li>
+    <li><a href="#worked-example">A Worked Example</a></li>
+    <li><a href="#max-profit-max-loss">Maximum Profit, Maximum Loss, Breakeven</a></li>
+    <li><a href="#when-to-use">When Traders Use This Strategy</a></li>
+    <li><a href="#tradeoffs">The Trade-Offs to Understand</a></li>
   </ol>
 </nav>
 
-<p><a href="/learn-options-trading/scalping/what-is-options-scalping">What Is Options Scalping?</a> covers the definition. This guide walks through the actual mechanical process a scalper follows, from spotting a setup to closing the trade.</p>
+<p>A bull call spread is often the natural next step after learning to buy a single call — it keeps the same bullish view, but changes the cost and risk profile in a specific, useful way.</p>
 
-<h2 id="the-process">The Scalping Process, Step by Step</h2>
-<p>Every scalp trade, regardless of the specific setup, follows the same basic sequence: find a setup on a live chart, enter quickly once conditions align, manage the position actively while it's open, and exit — whether at a profit target or a stop — usually within minutes.</p>
+<h2 id="what-is-a-bull-call-spread">What Is a Bull Call Spread?</h2>
+<p>A bull call spread involves buying a call at one strike price and simultaneously selling a call at a higher strike price, both with the same expiration date. The premium collected from selling the higher-strike call partially offsets the cost of the call you bought, lowering your total cost compared to buying that call alone.</p>
 
-<h2 id="finding-a-setup">Finding a Setup</h2>
-<p>Scalpers watch for specific, repeatable conditions rather than trading randomly — a breakout above a short-term resistance level on rising volume, a bounce off VWAP in the direction of the intraday trend, or a candlestick reversal pattern at a key level. ScalpClock's <a href="/scalpchart">ScalpCharts</a> scans for many of these patterns automatically and surfaces them as live alerts, so a scalper doesn't have to watch dozens of tickers manually at once.</p>
+<h2 id="why-use-a-spread">Why Use a Spread Instead of a Single Call?</h2>
+<p>Buying a single call has unlimited theoretical upside but costs more upfront. A bull call spread reduces that upfront cost — and therefore your maximum possible loss — in exchange for capping your maximum possible profit. For a trader who expects a moderate, defined move rather than an explosive one, this trade-off is often worth making, since paying for unlimited upside you don't expect to fully use is inefficient.</p>
 
-<h2 id="entry">Entry</h2>
-<p>Once a setup appears, entry needs to happen quickly — scalping setups often only last a few minutes before the opportunity passes. This is why scalpers typically decide their entry criteria in advance, rather than deliberating in the moment: if X happens, I enter; if it doesn't, I don't. Hesitation is one of the most common reasons scalpers miss otherwise-valid setups.</p>
+<h2 id="worked-example">A Worked Example</h2>
+<p>A stock trades at $100. You believe it will rise moderately over the next month, but not dramatically. You buy one call at the $100 strike for a $4.00 premium ($400), and simultaneously sell one call at the $110 strike for a $1.50 premium ($150) — for a net cost of $2.50 ($250 total).</p>
+<ul>
+<li><strong>If the stock rises to $110 or higher at expiration:</strong> Your long call is worth $10 (110 − 100), while your short call is worth exactly what you sold it for at that strike boundary. Your maximum profit is the $10 spread width minus your $2.50 net cost — $7.50 per share, or $750 total.</li>
+<li><strong>If the stock stays at $100:</strong> Both options are worthless or close to it, and you lose your $250 net cost.</li>
+<li><strong>If the stock falls further:</strong> Same result — your loss is capped at the $250 you paid, no matter how far the stock drops.</li>
+</ul>
+<p>Compare this to buying the $100 call alone for $400: the spread costs $150 less, and while it caps profit at $750 instead of being unlimited, it also caps the maximum loss at $250 instead of $400.</p>
 
-<h2 id="managing-the-trade">Managing the Trade</h2>
-<p>Once in the trade, a scalper is watching for the position to either reach its target or show signs the setup has failed. Unlike a longer-term trade, there's little room for "waiting it out" — a scalp that isn't working within its expected timeframe is usually closed rather than held, since the entire premise was a fast move, not a slow grind.</p>
-
-<h2 id="exit">Exit</h2>
-<p>Exits happen at a predetermined profit target, a predetermined stop, or when the underlying reason for the trade no longer holds (for example, the pattern that triggered entry fails to follow through as expected). ScalpClock's <a href="/exitassistant">Exit Assistant</a> is built specifically to help define these levels before a trade goes live, which matters even more for scalping than slower trading styles, given how little time there is to think mid-trade.</p>
+<h2 id="max-profit-max-loss">Maximum Profit, Maximum Loss, Breakeven</h2>
+<ul>
+<li><strong>Maximum profit</strong> = (difference between the two strikes) − (net premium paid). In the example: $10 − $2.50 = $7.50 per share.</li>
+<li><strong>Maximum loss</strong> = the net premium paid. In the example: $2.50 per share, or $250 total.</li>
+<li><strong>Breakeven</strong> = the lower strike + the net premium paid. In the example: $100 + $2.50 = $102.50.</li>
+</ul>
+<p>Knowing these three numbers before entering the trade means there's no ambiguity about the position's risk — everything is defined upfront, which is one of the main appeals of spread strategies generally.</p>
 
 <div class="callout">
-<div class="callout-label">Speed Requires Preparation</div>
-<p>Paradoxically, the faster a trading style is, the more preparation it requires beforehand — there simply isn't time to figure out your plan while the trade is live. Every decision a scalper makes quickly was actually decided slowly, in advance.</p>
+<div class="callout-label">Why the Math Matters</div>
+<p>Because both the maximum gain and maximum loss are fixed before you enter, a bull call spread lets you size a position with complete certainty about the worst-case outcome — something a single long call doesn't offer, since its exact loss potential (while still capped at the premium) is a larger, less-offset number.</p>
 </div>
 
-<h2 id="full-example">A Full Example, Start to Finish</h2>
-<p>A stock has been consolidating just under a resistance level for the past 20 minutes on the 1-minute chart. Volume picks up, and price breaks above that level decisively. A scalper watching this exact setup buys a short-dated call immediately on the break, having already decided beforehand: target is a specific price a few points above the breakout, stop is back below the broken resistance level (now expected to act as support).</p>
-<p>Two minutes later, the stock reaches the target level. The scalper sells, capturing the gain. Total time in the trade: under three minutes. If instead the stock had fallen back below the broken resistance, the predetermined stop would have triggered a quick exit with a small, controlled loss instead.</p>
+<h2 id="when-to-use">When Traders Use This Strategy</h2>
+<p>Bull call spreads fit a specific view: moderately bullish, with a rough sense of how far the stock might realistically move by expiration. If you expect an explosive, uncapped move — around a major catalyst, for example — a single long call keeps that uncapped upside, at a higher cost. If your view is more measured, the spread is often the more capital-efficient choice.</p>
 
-<h2 id="what-makes-it-hard">What Makes This Genuinely Hard</h2>
-<p>The process described above sounds simple in writing — it's considerably harder in practice, under real time pressure, with real money involved. Setups that look obvious in hindsight are much less obvious in the moment, and the speed required leaves very little margin for hesitation or second-guessing. This is exactly why practicing extensively before trading real money — using tools like <a href="/scalpchart?tab=replay">Chart Replay</a> to rehearse this exact process on historical data — matters so much more for scalping than for slower trading styles.</p>
+<h2 id="tradeoffs">The Trade-Offs to Understand</h2>
+<p>The central trade-off is straightforward: lower cost and lower maximum loss, in exchange for a capped maximum profit. This isn't automatically "better" or "worse" than buying a call outright — it's a different tool suited to a different kind of conviction. Traders who consistently buy far-dated, single calls hoping for a huge move might find spreads reduce cost efficiency for that specific goal; traders making frequent, moderate directional bets often find spreads a better fit for how their view actually plays out most of the time. Understanding both, and choosing deliberately rather than by habit, is what separates strategy selection from guesswork.</p>
 
 
 <div class="mid-cta reveal">
@@ -365,20 +371,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>How long does a typical scalp trade last?</summary>
-  <div class="faq-a">Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves.</div>
+  <summary>Is a bull call spread cheaper than buying a call outright?</summary>
+  <div class="faq-a">Yes — selling the higher-strike call generates premium that offsets part of the cost of the call you bought, making the net cost lower than buying that same call alone.</div>
 </details>
 <details class="faq-item">
-  <summary>Do scalpers plan their exits in advance?</summary>
-  <div class="faq-a">Yes — because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade.</div>
+  <summary>What is the maximum loss on a bull call spread?</summary>
+  <div class="faq-a">The maximum loss is limited to the net premium paid to enter the spread, which is the cost of the long call minus the premium collected from the short call.</div>
 </details>
 <details class="faq-item">
-  <summary>What tools do options scalpers rely on?</summary>
-  <div class="faq-a">Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools — ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs.</div>
+  <summary>What is the maximum profit on a bull call spread?</summary>
+  <div class="faq-a">The maximum profit is the difference between the two strike prices, minus the net premium paid — reached if the stock is at or above the higher strike at expiration.</div>
 </details>
 <details class="faq-item">
-  <summary>Can beginners learn to scalp options?</summary>
-  <div class="faq-a">Yes, but it typically requires significant practice before trading with real money — using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk.</div>
+  <summary>When should I use a bull call spread instead of just buying a call?</summary>
+  <div class="faq-a">A bull call spread suits a moderately bullish view with a rough price target in mind, since it lowers cost and risk in exchange for capping the maximum profit — a single long call is more appropriate when you want uncapped upside for a potentially larger move.</div>
 </details>
 
 <div class="author-box reveal">
@@ -391,17 +397,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/scalping/day-trading-vs-options-scalping">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Day Trading vs Options Scalping</span>
+  <a class="related-card" href="/learn-options-trading/options-strategies/bear-put-spreads-explained">
+    <span class="rc-label">Options Strategies</span>
+    <span class="rc-title">Bear Put Spreads Explained</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">
-    <span class="rc-label">Technical Analysis</span>
-    <span class="rc-title">How To Read Candlestick Charts</span>
+  <a class="related-card" href="/learn-options-trading/options-strategies/best-options-strategies-for-beginners">
+    <span class="rc-label">Options Strategies</span>
+    <span class="rc-title">Best Options Strategies for Beginners</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/scalping/risk-management-for-scalpers">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Risk Management for Scalpers</span>
+  <a class="related-card" href="/learn-options-trading/options-basics/calls-vs-puts-explained">
+    <span class="rc-label">Options Basics</span>
+    <span class="rc-title">Calls vs Puts Explained</span>
   </a>
 </div>
 
@@ -412,7 +418,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/scalping">Back to Options Scalping</a>
+    <a class="btn-ghost" href="/learn-options-trading/options-strategies">Back to Options Strategies</a>
   </div>
 </section>
 
@@ -507,7 +513,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
 // miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'scalping/how-options-scalping-works';
+  const SLUG = 'strategies/bull-call-spreads-explained';
   let done = false;
   function complete(){
     if (done) return;

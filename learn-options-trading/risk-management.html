@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Options Strategies — Learn Options Trading | ScalpClock</title>
-<meta name="description" content="Understand popular options trading strategies for beginners: covered calls, bull call spreads, bear put spreads, and risk management.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/strategies">
+<title>Risk Management — Learn Options Trading | ScalpClock</title>
+<meta name="description" content="The core risk management skills every options trader needs: position sizing, defined exits, and diversification, explained with practical examples.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/risk-management">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="Options Strategies — Learn Options Trading | ScalpClock">
-<meta property="og:description" content="Understand popular options trading strategies for beginners: covered calls, bull call spreads, bear put spreads, and risk management.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/strategies">
+<meta property="og:title" content="Risk Management — Learn Options Trading | ScalpClock">
+<meta property="og:description" content="The core risk management skills every options trader needs: position sizing, defined exits, and diversification, explained with practical examples.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/risk-management">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Options Strategies — Learn Options Trading | ScalpClock">
-<meta name="twitter:description" content="Understand popular options trading strategies for beginners: covered calls, bull call spreads, bear put spreads, and risk management.">
+<meta name="twitter:title" content="Risk Management — Learn Options Trading | ScalpClock">
+<meta name="twitter:description" content="The core risk management skills every options trader needs: position sizing, defined exits, and diversification, explained with practical examples.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -64,7 +64,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   linear-gradient(90deg,rgba(120,200,160,.03) 1px,transparent 1px);
   background-size:auto,48px 48px,48px 48px;}
 a{color:var(--green);text-decoration:none;}
-a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
 
 /* NAV */
 .nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
@@ -106,13 +106,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 /* CATEGORY HERO */
 .cat-hero{max-width:900px;margin:0 auto;padding:28px 24px 44px;}
 .cat-hero-top{display:flex;align-items:center;gap:18px;margin-bottom:18px;}
-.cat-hero-icon{width:60px;height:60px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;font-size:1.7rem;background:var(--blue-dim);border:1px solid var(--blue);}
+.cat-hero-icon{width:60px;height:60px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;font-size:1.7rem;background:var(--red-dim);border:1px solid var(--red);}
 .cat-hero h1{font-family:var(--disp);font-size:clamp(1.9rem,4.8vw,2.8rem);font-weight:700;line-height:1.1;letter-spacing:.01em;}
 .cat-hero p{font-size:1.02rem;color:var(--t80);line-height:1.75;max-width:680px;margin-bottom:22px;}
 .cat-hero-progress{max-width:360px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;}
 .chp-row{display:flex;justify-content:space-between;font-size:.76rem;color:var(--t55);margin-bottom:8px;font-weight:600;}
 .chp-track{height:7px;background:rgba(120,200,160,.1);border-radius:4px;overflow:hidden;}
-.chp-fill{height:100%;background:var(--blue);border-radius:4px;transition:width .5s ease;}
+.chp-fill{height:100%;background:var(--red);border-radius:4px;transition:width .5s ease;}
 
 /* ARTICLE LIST */
 .section{padding:0 24px 76px;max-width:900px;margin:0 auto;}
@@ -121,16 +121,24 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 .article-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
 .article-item{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;transition:border-color .2s,transform .2s,box-shadow .2s;}
 a.article-item{cursor:pointer;}
-a.article-item:hover{border-color:var(--blue);box-shadow:0 0 24px rgba(59,130,246,.18);transform:translateX(4px);}
+a.article-item:hover{border-color:var(--red);box-shadow:0 0 24px var(--red-dim);transform:translateX(4px);}
 .article-item.soon{opacity:.55;}
-.article-num{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--blue);width:28px;flex-shrink:0;text-align:center;}
+.article-num{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--red);width:28px;flex-shrink:0;text-align:center;}
 .article-item-title{flex:1;font-family:var(--disp);font-weight:700;font-size:1.02rem;color:var(--text);}
 .article-status{flex-shrink:0;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:20px;white-space:nowrap;}
-.article-status.live{background:var(--blue-dim);color:var(--blue);}
+.article-status.live{background:var(--red-dim);color:var(--red);}
 .article-status.soon{background:rgba(238,243,240,.06);color:var(--t55);}
-.article-check{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue);}
-.article-arrow{flex-shrink:0;width:16px;height:16px;color:var(--blue);transition:transform .15s;}
+.article-check{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+.article-arrow{flex-shrink:0;width:16px;height:16px;color:var(--red);transition:transform .15s;}
 a.article-item:hover .article-arrow{transform:translateX(3px);}
+
+/* FAQ */
+.faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
+.faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
+.faq-item[open] summary::after{transform:rotate(45deg);}
+.faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
 /* CTA */
 .cta-section{text-align:center;padding:76px 24px 92px;}
@@ -168,8 +176,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Options Strategies \u2014 Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/strategies", "description": "Understand popular options trading strategies for beginners: covered calls, bull call spreads, bear put spreads, and risk management.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Best Options Strategies for Beginners", "url": "https://scalpclock.com/learn-options-trading/strategies/best-options-strategies-for-beginners"}, {"@type": "ListItem", "position": 2, "name": "Covered Calls Explained", "url": "https://scalpclock.com/learn-options-trading/strategies/covered-calls-explained"}, {"@type": "ListItem", "position": 3, "name": "Bull Call Spreads Explained", "url": "https://scalpclock.com/learn-options-trading/strategies/bull-call-spreads-explained"}, {"@type": "ListItem", "position": 4, "name": "Bear Put Spreads Explained", "url": "https://scalpclock.com/learn-options-trading/strategies/bear-put-spreads-explained"}, {"@type": "ListItem", "position": 5, "name": "Risk Management in Options Trading", "url": "https://scalpclock.com/learn-options-trading/strategies/risk-management-in-options-trading"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "Risk Management — Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/risk-management", "description": "The core risk management skills every options trader needs: position sizing, defined exits, and diversification, explained with practical examples.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Risk Management in Options Trading", "url": "https://scalpclock.com/learn-options-trading/risk-management/risk-management-in-options-trading"}, {"@type": "ListItem", "position": 2, "name": "Position Sizing for Options Traders", "url": "https://scalpclock.com/learn-options-trading/risk-management/position-sizing-for-options-traders"}, {"@type": "ListItem", "position": 3, "name": "How To Set Stop Losses and Exit Rules for Options", "url": "https://scalpclock.com/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options"}, {"@type": "ListItem", "position": 4, "name": "Diversification and Avoiding Overconcentration in Options Trading", "url": "https://scalpclock.com/learn-options-trading/risk-management/diversification-and-avoiding-overconcentration-in-options-trading"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What's the single most important risk-management habit for a new trader?", "acceptedAnswer": {"@type": "Answer", "text": "Position sizing — deciding, before every trade, how much of the total account can be lost if the trade goes completely wrong. See Position Sizing for Options Traders for a full framework and worked example."}}, {"@type": "Question", "name": "How is risk management different for options than for stocks?", "acceptedAnswer": {"@type": "Answer", "text": "Options add time decay and, often, the realistic possibility of losing the entire premium paid — see Risk Management in Options Trading for how that changes the specific mechanics versus a typical stock position."}}, {"@type": "Question", "name": "Should I set my stop-loss based on the option's price or the stock's price?", "acceptedAnswer": {"@type": "Answer", "text": "Both are valid approaches with different tradeoffs — How To Set Stop Losses and Exit Rules for Options walks through three common methods and how traders often combine them."}}, {"@type": "Question", "name": "Why does diversification matter if I'm only trading a few positions?", "acceptedAnswer": {"@type": "Answer", "text": "Even a small number of positions can share hidden concentration — the same catalyst, sector, or expiration window — without it being obvious from the ticker symbols alone. Diversification and Avoiding Overconcentration covers exactly how to spot that."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Risk Management", "item": "https://scalpclock.com/learn-options-trading/risk-management"}]}]}</script>
 </head>
 <body>
 
@@ -201,9 +216,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
           <a href="/trading-pictionary">Pictionary</a>
         </div>
       </div>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/orbsignalengine">ORB Signal Engine</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -215,15 +237,36 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/orbsignalengine" onclick="closeDrawer()">ORB Signal Engine</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -233,18 +276,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <span class="current">Options Strategies</span>
+  <span class="current">Risk Management</span>
 </div>
 
 <!-- CATEGORY HERO -->
 <section class="cat-hero reveal">
   <div class="cat-hero-top">
-    <div class="cat-hero-icon" aria-hidden="true">🎯</div>
-    <h1>Options Strategies</h1>
+    <div class="cat-hero-icon" aria-hidden="true">🛡️</div>
+    <h1>Risk Management</h1>
   </div>
-  <p>Understand popular options strategies and when traders use them.</p>
+  <p>Risk management is the discipline that decides whether an options trader survives long enough for a good strategy to actually pay off. It matters more than which specific strategy or setup you use — a mediocre strategy with strong risk management tends to outlast a great strategy without it.</p>
+  <p>This category covers the three pillars that make up a real risk-management plan: how much to risk on any single trade, when to exit — both winners and losers — and how to avoid hidden concentration across a portfolio of positions.</p>
   <div class="cat-hero-progress">
-    <div class="chp-row"><span>Progress</span><span id="chpStat">0/5 read</span></div>
+    <div class="chp-row"><span>Progress</span><span id="chpStat">0/4 read</span></div>
     <div class="chp-track"><div class="chp-fill" id="chpFill" style="width:0%"></div></div>
   </div>
 </section>
@@ -252,39 +296,55 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <!-- ARTICLE LIST -->
 <section class="section reveal">
   <div class="sec-label">Lessons</div>
-  <h2 class="sec-title">Options Strategies Articles</h2>
+  <h2 class="sec-title">Risk Management Articles</h2>
   <ul class="article-list" id="articleList">
-    <a class="article-item" href="/learn-options-trading/strategies/best-options-strategies-for-beginners" id="art-best-options-strategies-for-beginners">
+    <a class="article-item" href="/learn-options-trading/risk-management/risk-management-in-options-trading" id="art-risk-management-in-options-trading">
       <span class="article-num">01</span>
-      <span class="article-item-title">Best Options Strategies for Beginners</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/strategies/covered-calls-explained" id="art-covered-calls-explained">
-      <span class="article-num">02</span>
-      <span class="article-item-title">Covered Calls Explained</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/strategies/bull-call-spreads-explained" id="art-bull-call-spreads-explained">
-      <span class="article-num">03</span>
-      <span class="article-item-title">Bull Call Spreads Explained</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/strategies/bear-put-spreads-explained" id="art-bear-put-spreads-explained">
-      <span class="article-num">04</span>
-      <span class="article-item-title">Bear Put Spreads Explained</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/strategies/risk-management-in-options-trading" id="art-risk-management-in-options-trading">
-      <span class="article-num">05</span>
       <span class="article-item-title">Risk Management in Options Trading</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
+    <a class="article-item" href="/learn-options-trading/risk-management/position-sizing-for-options-traders" id="art-position-sizing-for-options-traders">
+      <span class="article-num">02</span>
+      <span class="article-item-title">Position Sizing for Options Traders</span>
+      <span class="article-status live">Start</span>
+      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+    <a class="article-item" href="/learn-options-trading/risk-management/how-to-set-stop-losses-and-exit-rules-for-options" id="art-how-to-set-stop-losses-and-exit-rules-for-options">
+      <span class="article-num">03</span>
+      <span class="article-item-title">How To Set Stop Losses and Exit Rules for Options</span>
+      <span class="article-status live">Start</span>
+      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+    <a class="article-item" href="/learn-options-trading/risk-management/diversification-and-avoiding-overconcentration-in-options-trading" id="art-diversification-and-avoiding-overconcentration-in-options-trading">
+      <span class="article-num">04</span>
+      <span class="article-item-title">Diversification and Avoiding Overconcentration in Options Trading</span>
+      <span class="article-status live">Start</span>
+      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
   </ul>
+</section>
+
+<!-- FAQ -->
+<section class="section reveal" style="padding-top:0;">
+  <div class="sec-label">Frequently Asked Questions</div>
+  <h2 class="sec-title">Risk Management FAQ</h2>
+  <details class="faq-item">
+    <summary>What's the single most important risk-management habit for a new trader?</summary>
+    <div class="faq-a">Position sizing — deciding, before every trade, how much of the total account can be lost if the trade goes completely wrong. See Position Sizing for Options Traders for a full framework and worked example.</div>
+  </details>
+  <details class="faq-item">
+    <summary>How is risk management different for options than for stocks?</summary>
+    <div class="faq-a">Options add time decay and, often, the realistic possibility of losing the entire premium paid — see Risk Management in Options Trading for how that changes the specific mechanics versus a typical stock position.</div>
+  </details>
+  <details class="faq-item">
+    <summary>Should I set my stop-loss based on the option's price or the stock's price?</summary>
+    <div class="faq-a">Both are valid approaches with different tradeoffs — How To Set Stop Losses and Exit Rules for Options walks through three common methods and how traders often combine them.</div>
+  </details>
+  <details class="faq-item">
+    <summary>Why does diversification matter if I'm only trading a few positions?</summary>
+    <div class="faq-a">Even a small number of positions can share hidden concentration — the same catalyst, sector, or expiration window — without it being obvious from the ticker symbols alone. Diversification and Avoiding Overconcentration covers exactly how to spot that.</div>
+  </details>
 </section>
 
 <!-- CTA -->
@@ -325,13 +385,27 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 
 
 function toggleDrawer(){
@@ -361,8 +435,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
 
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const catKey = 'strategies';
-  const total = SC_LEARN.CATEGORY_TOTALS[catKey] || 5;
+  const catKey = 'risk-management';
+  const total = SC_LEARN.CATEGORY_TOTALS[catKey] || 4;
   const read = SC_LEARN.readByCategory()[catKey] || 0;
   const pct = total ? Math.round((read/total)*100) : 0;
   const fill = document.getElementById('chpFill');

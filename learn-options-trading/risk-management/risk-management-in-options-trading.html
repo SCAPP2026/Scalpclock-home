@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bull Call Spreads Explained | ScalpClock</title>
-<meta name="description" content="Bull call spreads explained with a worked example — how the strategy lowers cost and risk compared to buying a call outright, and when to use it.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/strategies/bull-call-spreads-explained">
+<title>Risk Management in Options Trading | ScalpClock</title>
+<meta name="description" content="The core risk management principles every options trader needs: position sizing, defined exits, diversification, and avoiding the mistakes that end accounts.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/risk-management/risk-management-in-options-trading">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="Bull Call Spreads Explained | ScalpClock">
-<meta property="og:description" content="Bull call spreads explained with a worked example — how the strategy lowers cost and risk compared to buying a call outright, and when to use it.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/strategies/bull-call-spreads-explained">
+<meta property="og:title" content="Risk Management in Options Trading | ScalpClock">
+<meta property="og:description" content="The core risk management principles every options trader needs: position sizing, defined exits, diversification, and avoiding the mistakes that end accounts.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/risk-management/risk-management-in-options-trading">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bull Call Spreads Explained | ScalpClock">
-<meta name="twitter:description" content="Bull call spreads explained with a worked example — how the strategy lowers cost and risk compared to buying a call outright, and when to use it.">
+<meta name="twitter:title" content="Risk Management in Options Trading | ScalpClock">
+<meta name="twitter:description" content="The core risk management principles every options trader needs: position sizing, defined exits, diversification, and avoiding the mistakes that end accounts.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -104,7 +104,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
@@ -124,8 +124,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--blue-dim);border:1px solid var(--blue);border-left:3px solid var(--blue);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+.callout{background:var(--red-dim);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
 /* MID-ARTICLE CTA */
@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--blue);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -157,8 +157,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--blue);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--red);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
 /* CTA SECTION */
@@ -201,8 +201,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Bull Call Spreads Explained", "description": "Bull call spreads explained with a worked example \u2014 how the strategy lowers cost and risk compared to buying a call outright, and when to use it.", "url": "https://scalpclock.com/learn-options-trading/strategies/bull-call-spreads-explained", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/strategies/bull-call-spreads-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a bull call spread cheaper than buying a call outright?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 selling the higher-strike call generates premium that offsets part of the cost of the call you bought, making the net cost lower than buying that same call alone."}}, {"@type": "Question", "name": "What is the maximum loss on a bull call spread?", "acceptedAnswer": {"@type": "Answer", "text": "The maximum loss is limited to the net premium paid to enter the spread, which is the cost of the long call minus the premium collected from the short call."}}, {"@type": "Question", "name": "What is the maximum profit on a bull call spread?", "acceptedAnswer": {"@type": "Answer", "text": "The maximum profit is the difference between the two strike prices, minus the net premium paid \u2014 reached if the stock is at or above the higher strike at expiration."}}, {"@type": "Question", "name": "When should I use a bull call spread instead of just buying a call?", "acceptedAnswer": {"@type": "Answer", "text": "A bull call spread suits a moderately bullish view with a rough price target in mind, since it lowers cost and risk in exchange for capping the maximum profit \u2014 a single long call is more appropriate when you want uncapped upside for a potentially larger move."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Strategies", "item": "https://scalpclock.com/learn-options-trading/strategies"}, {"@type": "ListItem", "position": 4, "name": "Bull Call Spreads Explained", "item": "https://scalpclock.com/learn-options-trading/strategies/bull-call-spreads-explained"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Risk Management in Options Trading", "description": "The core risk management principles every options trader needs: position sizing, defined exits, diversification, and avoiding the mistakes that end accounts.", "url": "https://scalpclock.com/learn-options-trading/risk-management/risk-management-in-options-trading", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/risk-management/risk-management-in-options-trading"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What percentage of my account should I risk per options trade?", "acceptedAnswer": {"@type": "Answer", "text": "A commonly cited guideline is 1\u20135% of total trading capital per trade, which allows an account to absorb a normal losing streak without being seriously damaged."}}, {"@type": "Question", "name": "Is risk management more important than choosing the right strategy?", "acceptedAnswer": {"@type": "Answer", "text": "Many experienced traders and educators consider it more important \u2014 a mediocre strategy with strong risk management tends to outperform a strong strategy with poor risk management over time, since the latter eventually produces an unrecoverable loss."}}, {"@type": "Question", "name": "How do I set a stop-loss on an options position?", "acceptedAnswer": {"@type": "Answer", "text": "A stop can be based on the option's price (exit if it loses a certain percentage of its value), the underlying stock's price (exit if the stock breaks a key level), or a combination of both \u2014 the specific method matters less than having one decided before entry."}}, {"@type": "Question", "name": "What is concentration risk in options trading?", "acceptedAnswer": {"@type": "Answer", "text": "Concentration risk is having too much of your total exposure tied to a single stock, sector, or event, even across seemingly different positions \u2014 for example, several option trades all set to react to the same earnings season or economic announcement."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Risk Management", "item": "https://scalpclock.com/learn-options-trading/risk-management"}, {"@type": "ListItem", "position": 4, "name": "Risk Management in Options Trading", "item": "https://scalpclock.com/learn-options-trading/risk-management/risk-management-in-options-trading"}]}]}</script>
 </head>
 <body>
 
@@ -233,9 +240,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
           <a href="/trading-pictionary">Pictionary</a>
         </div>
       </div>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/orbsignalengine">ORB Signal Engine</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -247,15 +261,36 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/orbsignalengine" onclick="closeDrawer()">ORB Signal Engine</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -264,15 +299,15 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/strategies">Options Strategies</a><span>/</span>
-  <span class="current">Bull Call Spreads Explained</span>
+  <a href="/learn-options-trading/risk-management">Risk Management</a><span>/</span>
+  <span class="current">Risk Management in Options Trading</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/strategies">🎯 Options Strategies</a>
-  <h1>Bull Call Spreads Explained</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/risk-management">🛡️ Risk Management</a>
+  <h1>Risk Management in Options Trading</h1>
   <div class="art-meta">
-    <span>⏱ 8 min read</span>
+    <span>⏱ 10 min read</span>
     <span>📅 Updated July 18, 2026</span>
     <span>✍️ ScalpClock Education Team</span>
   </div>
@@ -282,50 +317,51 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#what-is-a-bull-call-spread">What Is a Bull Call Spread?</a></li>
-    <li><a href="#why-use-a-spread">Why Use a Spread Instead of a Single Call?</a></li>
-    <li><a href="#worked-example">A Worked Example</a></li>
-    <li><a href="#max-profit-max-loss">Maximum Profit, Maximum Loss, Breakeven</a></li>
-    <li><a href="#when-to-use">When Traders Use This Strategy</a></li>
-    <li><a href="#tradeoffs">The Trade-Offs to Understand</a></li>
+    <li><a href="#why-this-matters-most">Why This Matters More Than Strategy Selection</a></li>
+    <li><a href="#position-sizing">Position Sizing</a></li>
+    <li><a href="#defined-exits">Defined Exits, Set Before Entry</a></li>
+    <li><a href="#diversification">Diversification Across Positions and Time</a></li>
+    <li><a href="#avoiding-concentration">Avoiding Concentration in a Single Catalyst</a></li>
+    <li><a href="#managing-time-decay">Managing Time Decay Risk</a></li>
+    <li><a href="#a-simple-framework">A Simple Risk Framework You Can Use Today</a></li>
   </ol>
 </nav>
 
-<p>A bull call spread is often the natural next step after learning to buy a single call — it keeps the same bullish view, but changes the cost and risk profile in a specific, useful way.</p>
+<p>Every options strategy — long calls, spreads, covered calls, all of them — depends more on how it's risk-managed than on the strategy itself. This guide covers the core principles that apply regardless of which specific strategy you're using.</p>
 
-<h2 id="what-is-a-bull-call-spread">What Is a Bull Call Spread?</h2>
-<p>A bull call spread involves buying a call at one strike price and simultaneously selling a call at a higher strike price, both with the same expiration date. The premium collected from selling the higher-strike call partially offsets the cost of the call you bought, lowering your total cost compared to buying that call alone.</p>
+<h2 id="why-this-matters-most">Why This Matters More Than Strategy Selection</h2>
+<p>New traders often spend the most time researching which strategy to use, while spending almost no time on how much to risk or when to exit. In practice, risk management is the bigger factor in long-term outcomes — a mediocre strategy with excellent risk management tends to outperform a great strategy with poor risk management, because the second scenario eventually produces a loss large enough to be very difficult to recover from.</p>
 
-<h2 id="why-use-a-spread">Why Use a Spread Instead of a Single Call?</h2>
-<p>Buying a single call has unlimited theoretical upside but costs more upfront. A bull call spread reduces that upfront cost — and therefore your maximum possible loss — in exchange for capping your maximum possible profit. For a trader who expects a moderate, defined move rather than an explosive one, this trade-off is often worth making, since paying for unlimited upside you don't expect to fully use is inefficient.</p>
-
-<h2 id="worked-example">A Worked Example</h2>
-<p>A stock trades at $100. You believe it will rise moderately over the next month, but not dramatically. You buy one call at the $100 strike for a $4.00 premium ($400), and simultaneously sell one call at the $110 strike for a $1.50 premium ($150) — for a net cost of $2.50 ($250 total).</p>
-<ul>
-<li><strong>If the stock rises to $110 or higher at expiration:</strong> Your long call is worth $10 (110 − 100), while your short call is worth exactly what you sold it for at that strike boundary. Your maximum profit is the $10 spread width minus your $2.50 net cost — $7.50 per share, or $750 total.</li>
-<li><strong>If the stock stays at $100:</strong> Both options are worthless or close to it, and you lose your $250 net cost.</li>
-<li><strong>If the stock falls further:</strong> Same result — your loss is capped at the $250 you paid, no matter how far the stock drops.</li>
-</ul>
-<p>Compare this to buying the $100 call alone for $400: the spread costs $150 less, and while it caps profit at $750 instead of being unlimited, it also caps the maximum loss at $250 instead of $400.</p>
-
-<h2 id="max-profit-max-loss">Maximum Profit, Maximum Loss, Breakeven</h2>
-<ul>
-<li><strong>Maximum profit</strong> = (difference between the two strikes) − (net premium paid). In the example: $10 − $2.50 = $7.50 per share.</li>
-<li><strong>Maximum loss</strong> = the net premium paid. In the example: $2.50 per share, or $250 total.</li>
-<li><strong>Breakeven</strong> = the lower strike + the net premium paid. In the example: $100 + $2.50 = $102.50.</li>
-</ul>
-<p>Knowing these three numbers before entering the trade means there's no ambiguity about the position's risk — everything is defined upfront, which is one of the main appeals of spread strategies generally.</p>
+<h2 id="position-sizing">Position Sizing</h2>
+<p>Position sizing means deciding, before entry, how much of your total capital a single trade can risk. A commonly cited guideline is 1–5% of total trading capital per position — small enough that a string of losing trades (which will happen, to every trader) doesn't seriously damage the account, but large enough for winning trades to still matter.</p>
+<p>This single habit — sized correctly, applied consistently — is arguably the highest-leverage skill in options trading, more impactful than any specific entry signal or strategy choice.</p>
 
 <div class="callout">
-<div class="callout-label">Why the Math Matters</div>
-<p>Because both the maximum gain and maximum loss are fixed before you enter, a bull call spread lets you size a position with complete certainty about the worst-case outcome — something a single long call doesn't offer, since its exact loss potential (while still capped at the premium) is a larger, less-offset number.</p>
+<div class="callout-label">The Math of Survival</div>
+<p>An account risking 2% per trade can survive ten consecutive losses and still have roughly 82% of its starting capital. An account risking 20% per trade is down to about 11% after the same ten losses. Same number of losing trades, radically different outcomes — purely because of position size.</p>
 </div>
 
-<h2 id="when-to-use">When Traders Use This Strategy</h2>
-<p>Bull call spreads fit a specific view: moderately bullish, with a rough sense of how far the stock might realistically move by expiration. If you expect an explosive, uncapped move — around a major catalyst, for example — a single long call keeps that uncapped upside, at a higher cost. If your view is more measured, the spread is often the more capital-efficient choice.</p>
+<h2 id="defined-exits">Defined Exits, Set Before Entry</h2>
+<p>Every trade should have two exit points decided before you enter: a profit target (where you'll take gains) and a stop (where you'll accept a loss and move on). Deciding these in the moment, under the pressure of a live position, is when emotional decisions creep in — see our guide on <a href="/learn-options-trading/psychology/why-most-options-traders-fail">why most options traders fail</a> for how this plays out in practice. ScalpClock's <a href="/exitassistant">Exit Assistant</a> is built specifically to help define this plan ahead of time.</p>
 
-<h2 id="tradeoffs">The Trade-Offs to Understand</h2>
-<p>The central trade-off is straightforward: lower cost and lower maximum loss, in exchange for a capped maximum profit. This isn't automatically "better" or "worse" than buying a call outright — it's a different tool suited to a different kind of conviction. Traders who consistently buy far-dated, single calls hoping for a huge move might find spreads reduce cost efficiency for that specific goal; traders making frequent, moderate directional bets often find spreads a better fit for how their view actually plays out most of the time. Understanding both, and choosing deliberately rather than by habit, is what separates strategy selection from guesswork.</p>
+<h2 id="diversification">Diversification Across Positions and Time</h2>
+<p>Holding several smaller positions across different stocks, sectors, or expiration dates reduces the odds that a single unexpected event — a bad earnings report, a sector-wide selloff — wipes out a large share of an account at once. This doesn't mean avoiding concentration entirely; it means being deliberate about how much of your total risk sits in any one basket.</p>
+
+<h2 id="avoiding-concentration">Avoiding Concentration in a Single Catalyst</h2>
+<p>A related but distinct risk is having multiple positions that are all exposed to the same underlying event, even if they're technically different stocks — for example, several tech-sector option positions all set to expire around the same earnings season, or several positions all dependent on the same interest rate decision. This can create hidden concentration that isn't obvious just from looking at the list of tickers held.</p>
+
+<h2 id="managing-time-decay">Managing Time Decay Risk</h2>
+<p>Because options lose value as expiration approaches, risk management in options trading includes an extra dimension stock trading doesn't have: managing how much time decay you're exposed to at once. Holding several short-dated option positions simultaneously means time decay is working against multiple positions at once, compounding the pressure to be right quickly across all of them — worth factoring into position sizing decisions specifically for options, beyond just dollar risk.</p>
+
+<h2 id="a-simple-framework">A Simple Risk Framework You Can Use Today</h2>
+<p>Before any trade, answer four questions:</p>
+<ol>
+<li><strong>How much am I risking on this specific trade,</strong> as a percentage of my total account?</li>
+<li><strong>What is my exit if I'm right,</strong> and what is my exit if I'm wrong?</li>
+<li><strong>Does this position create hidden concentration</strong> with anything else I currently hold?</li>
+<li><strong>Am I comfortable with the maximum loss</strong> if every part of this trade goes against me at once?</li>
+</ol>
+<p>If you can't answer all four with confidence, that's a signal to reduce size, wait, or pass on the trade entirely — not a reason to skip the questions and trade anyway.</p>
 
 
 <div class="mid-cta reveal">
@@ -336,20 +372,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>Is a bull call spread cheaper than buying a call outright?</summary>
-  <div class="faq-a">Yes — selling the higher-strike call generates premium that offsets part of the cost of the call you bought, making the net cost lower than buying that same call alone.</div>
+  <summary>What percentage of my account should I risk per options trade?</summary>
+  <div class="faq-a">A commonly cited guideline is 1–5% of total trading capital per trade, which allows an account to absorb a normal losing streak without being seriously damaged.</div>
 </details>
 <details class="faq-item">
-  <summary>What is the maximum loss on a bull call spread?</summary>
-  <div class="faq-a">The maximum loss is limited to the net premium paid to enter the spread, which is the cost of the long call minus the premium collected from the short call.</div>
+  <summary>Is risk management more important than choosing the right strategy?</summary>
+  <div class="faq-a">Many experienced traders and educators consider it more important — a mediocre strategy with strong risk management tends to outperform a strong strategy with poor risk management over time, since the latter eventually produces an unrecoverable loss.</div>
 </details>
 <details class="faq-item">
-  <summary>What is the maximum profit on a bull call spread?</summary>
-  <div class="faq-a">The maximum profit is the difference between the two strike prices, minus the net premium paid — reached if the stock is at or above the higher strike at expiration.</div>
+  <summary>How do I set a stop-loss on an options position?</summary>
+  <div class="faq-a">A stop can be based on the option's price (exit if it loses a certain percentage of its value), the underlying stock's price (exit if the stock breaks a key level), or a combination of both — the specific method matters less than having one decided before entry.</div>
 </details>
 <details class="faq-item">
-  <summary>When should I use a bull call spread instead of just buying a call?</summary>
-  <div class="faq-a">A bull call spread suits a moderately bullish view with a rough price target in mind, since it lowers cost and risk in exchange for capping the maximum profit — a single long call is more appropriate when you want uncapped upside for a potentially larger move.</div>
+  <summary>What is concentration risk in options trading?</summary>
+  <div class="faq-a">Concentration risk is having too much of your total exposure tied to a single stock, sector, or event, even across seemingly different positions — for example, several option trades all set to react to the same earnings season or economic announcement.</div>
 </details>
 
 <div class="author-box reveal">
@@ -362,17 +398,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/strategies/bear-put-spreads-explained">
-    <span class="rc-label">Options Strategies</span>
-    <span class="rc-title">Bear Put Spreads Explained</span>
+  <a class="related-card" href="/learn-options-trading/psychology/why-most-options-traders-fail">
+    <span class="rc-label">Trading Psychology</span>
+    <span class="rc-title">Why Most Options Traders Fail</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/strategies/best-options-strategies-for-beginners">
-    <span class="rc-label">Options Strategies</span>
-    <span class="rc-title">Best Options Strategies for Beginners</span>
+  <a class="related-card" href="/learn-options-trading/scalping/risk-management-for-scalpers">
+    <span class="rc-label">Options Scalping</span>
+    <span class="rc-title">Risk Management for Scalpers</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/options-basics/calls-vs-puts-explained">
+  <a class="related-card" href="/learn-options-trading/options-basics/how-much-money-do-you-need-to-start-trading-options">
     <span class="rc-label">Options Basics</span>
-    <span class="rc-title">Calls vs Puts Explained</span>
+    <span class="rc-title">How Much Money Do You Need To Start Trading Options?</span>
   </a>
 </div>
 
@@ -383,7 +419,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/strategies">Back to Options Strategies</a>
+    <a class="btn-ghost" href="/learn-options-trading/risk-management">Back to Risk Management</a>
   </div>
 </section>
 
@@ -423,13 +459,27 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 
 
 function toggleDrawer(){
@@ -464,7 +514,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
 // miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'strategies/bull-call-spreads-explained';
+  const SLUG = 'risk-management/risk-management-in-options-trading';
   let done = false;
   function complete(){
     if (done) return;

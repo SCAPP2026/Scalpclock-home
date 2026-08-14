@@ -1,6 +1,19 @@
 /replay /scalpchart.html?tab=replay 301
 /replay.html /scalpchart.html?tab=replay 301
 
+# Options Strategies category renamed to match the site's canonical 6-category
+# taxonomy (Options Basics / Options Strategies / Technical Analysis /
+# Candlestick Patterns / Scalping / Risk Management); risk-management and
+# how-to-read-candlestick-charts moved into their own new dedicated
+# categories at the same time. 301s preserve any link equity on the old URLs.
+/learn-options-trading/strategies /learn-options-trading/options-strategies 301
+/learn-options-trading/strategies/bear-put-spreads-explained /learn-options-trading/options-strategies/bear-put-spreads-explained 301
+/learn-options-trading/strategies/best-options-strategies-for-beginners /learn-options-trading/options-strategies/best-options-strategies-for-beginners 301
+/learn-options-trading/strategies/bull-call-spreads-explained /learn-options-trading/options-strategies/bull-call-spreads-explained 301
+/learn-options-trading/strategies/covered-calls-explained /learn-options-trading/options-strategies/covered-calls-explained 301
+/learn-options-trading/strategies/risk-management-in-options-trading /learn-options-trading/risk-management/risk-management-in-options-trading 301
+/learn-options-trading/technical-analysis/how-to-read-candlestick-charts /learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts 301
+
 # Founding Member referral program: /join?ref=CODE is the alternate entry
 # point alongside /r/CODE (a Cloudflare Pages Function, functions/r/[code].js)
 # — both must work per the program spec. Cloudflare Pages preserves the

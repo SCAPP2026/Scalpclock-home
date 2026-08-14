@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Options Scalping Works | ScalpClock</title>
-<meta name="description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<title>Bullish and Bearish Engulfing Patterns Explained | ScalpClock</title>
+<meta name="description" content="How to spot a bullish or bearish engulfing candle, why the pattern works, and the confirmation traders look for before acting on it.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="How Options Scalping Works | ScalpClock">
-<meta property="og:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<meta property="og:title" content="Bullish and Bearish Engulfing Patterns Explained | ScalpClock">
+<meta property="og:description" content="How to spot a bullish or bearish engulfing candle, why the pattern works, and the confirmation traders look for before acting on it.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How Options Scalping Works | ScalpClock">
-<meta name="twitter:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
+<meta name="twitter:title" content="Bullish and Bearish Engulfing Patterns Explained | ScalpClock">
+<meta name="twitter:description" content="How to spot a bullish or bearish engulfing candle, why the pattern works, and the confirmation traders look for before acting on it.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -104,7 +104,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
@@ -124,8 +124,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--red-dim);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.callout{background:var(--purple-dim);border:1px solid var(--purple);border-left:3px solid var(--purple);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
 /* MID-ARTICLE CTA */
@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--purple);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -157,8 +157,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--red);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
 /* CTA SECTION */
@@ -209,7 +209,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "How Options Scalping Works", "description": "A step-by-step look at how options scalping actually works in practice \u2014 setup selection, entry, management, and exit, with a full example.", "url": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How long does a typical scalp trade last?", "acceptedAnswer": {"@type": "Answer", "text": "Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves."}}, {"@type": "Question", "name": "Do scalpers plan their exits in advance?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade."}}, {"@type": "Question", "name": "What tools do options scalpers rely on?", "acceptedAnswer": {"@type": "Answer", "text": "Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools \u2014 ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs."}}, {"@type": "Question", "name": "Can beginners learn to scalp options?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, but it typically requires significant practice before trading with real money \u2014 using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Scalping", "item": "https://scalpclock.com/learn-options-trading/scalping"}, {"@type": "ListItem", "position": 4, "name": "How Options Scalping Works", "item": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Bullish and Bearish Engulfing Patterns Explained", "description": "How to spot a bullish or bearish engulfing candle, why the pattern works, and the confirmation traders look for before acting on it.", "url": "https://scalpclock.com/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained", "datePublished": "2026-08-14", "dateModified": "2026-08-14", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What's the difference between engulfing and outside bar patterns?", "acceptedAnswer": {"@type": "Answer", "text": "They're closely related — an outside bar also has a high and low that exceed the prior candle's range, in addition to the body engulfing the prior body. All engulfing patterns are a type of outside bar, but not every outside bar is a clean engulfing pattern."}}, {"@type": "Question", "name": "Does volume matter for engulfing patterns?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. An engulfing candle that forms on above-average volume is generally considered a stronger, more reliable signal than one that forms on light volume, since it reflects broader participation in the shift."}}, {"@type": "Question", "name": "How many candles should I wait for confirmation?", "acceptedAnswer": {"@type": "Answer", "text": "There's no fixed rule, but many traders wait for at least one additional candle to close in the new direction before acting, rather than entering immediately on the engulfing candle itself."}}, {"@type": "Question", "name": "Can engulfing patterns fail?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, regularly. Like any single candlestick pattern, engulfing candles don't guarantee a reversal — they shift the odds, especially with the right context and confirmation, but they can and do fail."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Candlestick Patterns", "item": "https://scalpclock.com/learn-options-trading/candlestick-patterns"}, {"@type": "ListItem", "position": 4, "name": "Bullish and Bearish Engulfing Patterns Explained", "item": "https://scalpclock.com/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained"}]}]}</script>
 </head>
 <body>
 
@@ -299,16 +299,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/scalping">Options Scalping</a><span>/</span>
-  <span class="current">How Options Scalping Works</span>
+  <a href="/learn-options-trading/candlestick-patterns">Candlestick Patterns</a><span>/</span>
+  <span class="current">Bullish and Bearish Engulfing Patterns Explained</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/scalping">⚡ Options Scalping</a>
-  <h1>How Options Scalping Works</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/candlestick-patterns">🕯️ Candlestick Patterns</a>
+  <h1>Bullish and Bearish Engulfing Patterns Explained</h1>
   <div class="art-meta">
-    <span>⏱ 9 min read</span>
-    <span>📅 Updated July 18, 2026</span>
+    <span>⏱ 8 min read</span>
+    <span>📅 Updated August 14, 2026</span>
     <span>✍️ ScalpClock Education Team</span>
   </div>
 </header>
@@ -317,44 +317,48 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#the-process">The Scalping Process, Step by Step</a></li>
-    <li><a href="#finding-a-setup">Finding a Setup</a></li>
-    <li><a href="#entry">Entry</a></li>
-    <li><a href="#managing-the-trade">Managing the Trade</a></li>
-    <li><a href="#exit">Exit</a></li>
-    <li><a href="#full-example">A Full Example, Start to Finish</a></li>
-    <li><a href="#what-makes-it-hard">What Makes This Genuinely Hard</a></li>
+    <li><a href="#what-is-engulfing">What Is an Engulfing Pattern?</a></li>
+    <li><a href="#bullish-engulfing">Bullish Engulfing</a></li>
+    <li><a href="#bearish-engulfing">Bearish Engulfing</a></li>
+    <li><a href="#why-it-works">Why the Pattern Works</a></li>
+    <li><a href="#context-matters">Context Matters More Than the Shape</a></li>
+    <li><a href="#confirmation">Confirmation Before Acting</a></li>
+    <li><a href="#common-mistakes">Common Mistakes With Engulfing Patterns</a></li>
   </ol>
 </nav>
 
-<p><a href="/learn-options-trading/scalping/what-is-options-scalping">What Is Options Scalping?</a> covers the definition. This guide walks through the actual mechanical process a scalper follows, from spotting a setup to closing the trade.</p>
 
-<h2 id="the-process">The Scalping Process, Step by Step</h2>
-<p>Every scalp trade, regardless of the specific setup, follows the same basic sequence: find a setup on a live chart, enter quickly once conditions align, manage the position actively while it's open, and exit — whether at a profit target or a stop — usually within minutes.</p>
+<p>The engulfing pattern is a two-candle setup and one of the most widely recognized reversal signals in technical analysis. It's popular because it's visually obvious and directly represents a real shift in who's in control — buyers or sellers.</p>
 
-<h2 id="finding-a-setup">Finding a Setup</h2>
-<p>Scalpers watch for specific, repeatable conditions rather than trading randomly — a breakout above a short-term resistance level on rising volume, a bounce off VWAP in the direction of the intraday trend, or a candlestick reversal pattern at a key level. ScalpClock's <a href="/scalpchart">ScalpCharts</a> scans for many of these patterns automatically and surfaces them as live alerts, so a scalper doesn't have to watch dozens of tickers manually at once.</p>
+<h2 id="what-is-engulfing">What Is an Engulfing Pattern?</h2>
+<p>An engulfing pattern happens when one candle's real body completely "engulfs," or covers, the previous candle's real body — opening beyond where the prior candle closed and closing beyond where the prior candle opened. It comes in two directional versions, and both are read as potential reversal signals.</p>
 
-<h2 id="entry">Entry</h2>
-<p>Once a setup appears, entry needs to happen quickly — scalping setups often only last a few minutes before the opportunity passes. This is why scalpers typically decide their entry criteria in advance, rather than deliberating in the moment: if X happens, I enter; if it doesn't, I don't. Hesitation is one of the most common reasons scalpers miss otherwise-valid setups.</p>
+<h2 id="bullish-engulfing">Bullish Engulfing</h2>
+<p>A bullish engulfing pattern forms after a decline: a red (bearish) candle is followed by a larger green (bullish) candle whose body fully covers the prior red body. It shows that sellers who were in control got completely overrun by buyers within a single session — a meaningful shift in momentum, not just a quiet pause like a <a href="/learn-options-trading/candlestick-patterns/doji-candlestick-pattern-explained">doji</a>.</p>
 
-<h2 id="managing-the-trade">Managing the Trade</h2>
-<p>Once in the trade, a scalper is watching for the position to either reach its target or show signs the setup has failed. Unlike a longer-term trade, there's little room for "waiting it out" — a scalp that isn't working within its expected timeframe is usually closed rather than held, since the entire premise was a fast move, not a slow grind.</p>
+<h2 id="bearish-engulfing">Bearish Engulfing</h2>
+<p>A bearish engulfing pattern is the mirror image: after a rally, a green candle is followed by a larger red candle that fully covers it. Buyers who were pushing price up got overwhelmed by sellers in the very next session — often read as an early warning that an uptrend is losing control to sellers.</p>
 
-<h2 id="exit">Exit</h2>
-<p>Exits happen at a predetermined profit target, a predetermined stop, or when the underlying reason for the trade no longer holds (for example, the pattern that triggered entry fails to follow through as expected). ScalpClock's <a href="/exitassistant">Exit Assistant</a> is built specifically to help define these levels before a trade goes live, which matters even more for scalping than slower trading styles, given how little time there is to think mid-trade.</p>
+<h2 id="why-it-works">Why the Pattern Works</h2>
+<p>The pattern works because it captures a genuine, measurable shift in supply and demand within a short window. It's not a lagging average or a derived indicator — it's a direct read of two consecutive sessions where control of price visibly changed hands, which is why it tends to draw attention from traders watching the same chart.</p>
 
 <div class="callout">
-<div class="callout-label">Speed Requires Preparation</div>
-<p>Paradoxically, the faster a trading style is, the more preparation it requires beforehand — there simply isn't time to figure out your plan while the trade is live. Every decision a scalper makes quickly was actually decided slowly, in advance.</p>
+<div class="callout-label">Worth Remembering</div>
+<p>The size of the engulfing candle relative to the one it covers matters. A candle that barely engulfs the prior body is a much weaker signal than one that engulfs it with room to spare — the larger the "overrun," the more decisive the shift in control.</p>
 </div>
 
-<h2 id="full-example">A Full Example, Start to Finish</h2>
-<p>A stock has been consolidating just under a resistance level for the past 20 minutes on the 1-minute chart. Volume picks up, and price breaks above that level decisively. A scalper watching this exact setup buys a short-dated call immediately on the break, having already decided beforehand: target is a specific price a few points above the breakout, stop is back below the broken resistance level (now expected to act as support).</p>
-<p>Two minutes later, the stock reaches the target level. The scalper sells, capturing the gain. Total time in the trade: under three minutes. If instead the stock had fallen back below the broken resistance, the predetermined stop would have triggered a quick exit with a small, controlled loss instead.</p>
+<h2 id="context-matters">Context Matters More Than the Shape</h2>
+<p>An engulfing pattern in the middle of a sideways range is far less meaningful than the same shape appearing after a clear, extended trend or right at a key support or resistance level — see <a href="/learn-options-trading/technical-analysis/support-and-resistance-explained">support and resistance explained</a>. The pattern is a reversal signal, so it needs an established move to actually reverse. Without that context, it's just two candles that happen to overlap.</p>
 
-<h2 id="what-makes-it-hard">What Makes This Genuinely Hard</h2>
-<p>The process described above sounds simple in writing — it's considerably harder in practice, under real time pressure, with real money involved. Setups that look obvious in hindsight are much less obvious in the moment, and the speed required leaves very little margin for hesitation or second-guessing. This is exactly why practicing extensively before trading real money — using tools like <a href="/scalpchart?tab=replay">Chart Replay</a> to rehearse this exact process on historical data — matters so much more for scalping than for slower trading styles.</p>
+<h2 id="confirmation">Confirmation Before Acting</h2>
+<p>Many traders don't act on the engulfing candle itself — they wait for the following candle to confirm the new direction is holding, rather than fading immediately. This is the same discipline covered in <a href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">how to read candlestick charts</a>: a single pattern is a clue, not a guarantee, and waiting one extra candle for confirmation filters out a meaningful share of false signals.</p>
+
+<h2 id="common-mistakes">Common Mistakes With Engulfing Patterns</h2>
+<ul>
+<li><strong>Trading every engulfing candle</strong> regardless of where it occurs on the chart, instead of only the ones that appear after a real trend or at a real level.</li>
+<li><strong>Ignoring volume.</strong> An engulfing candle on unusually high volume is a stronger signal than the same shape on quiet, low-volume trading.</li>
+<li><strong>Skipping confirmation</strong> and entering immediately on the engulfing candle's close, before the next candle has a chance to confirm the shift.</li>
+</ul>
 
 
 <div class="mid-cta reveal">
@@ -365,20 +369,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>How long does a typical scalp trade last?</summary>
-  <div class="faq-a">Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves.</div>
+  <summary>What's the difference between engulfing and outside bar patterns?</summary>
+  <div class="faq-a">They're closely related — an outside bar also has a high and low that exceed the prior candle's range, in addition to the body engulfing the prior body. All engulfing patterns are a type of outside bar, but not every outside bar is a clean engulfing pattern.</div>
 </details>
 <details class="faq-item">
-  <summary>Do scalpers plan their exits in advance?</summary>
-  <div class="faq-a">Yes — because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade.</div>
+  <summary>Does volume matter for engulfing patterns?</summary>
+  <div class="faq-a">Yes. An engulfing candle that forms on above-average volume is generally considered a stronger, more reliable signal than one that forms on light volume, since it reflects broader participation in the shift.</div>
 </details>
 <details class="faq-item">
-  <summary>What tools do options scalpers rely on?</summary>
-  <div class="faq-a">Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools — ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs.</div>
+  <summary>How many candles should I wait for confirmation?</summary>
+  <div class="faq-a">There's no fixed rule, but many traders wait for at least one additional candle to close in the new direction before acting, rather than entering immediately on the engulfing candle itself.</div>
 </details>
 <details class="faq-item">
-  <summary>Can beginners learn to scalp options?</summary>
-  <div class="faq-a">Yes, but it typically requires significant practice before trading with real money — using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk.</div>
+  <summary>Can engulfing patterns fail?</summary>
+  <div class="faq-a">Yes, regularly. Like any single candlestick pattern, engulfing candles don't guarantee a reversal — they shift the odds, especially with the right context and confirmation, but they can and do fail.</div>
 </details>
 
 <div class="author-box reveal">
@@ -391,17 +395,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/scalping/day-trading-vs-options-scalping">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Day Trading vs Options Scalping</span>
-  </a>
   <a class="related-card" href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">
-    <span class="rc-label">Technical Analysis</span>
+    <span class="rc-label">Candlestick Patterns</span>
     <span class="rc-title">How To Read Candlestick Charts</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/scalping/risk-management-for-scalpers">
+  <a class="related-card" href="/learn-options-trading/candlestick-patterns/morning-star-and-evening-star-patterns-explained">
+    <span class="rc-label">Candlestick Patterns</span>
+    <span class="rc-title">Morning Star and Evening Star Patterns Explained</span>
+  </a>
+  <a class="related-card" href="/learn-options-trading/scalping/how-options-scalping-works">
     <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Risk Management for Scalpers</span>
+    <span class="rc-title">How Options Scalping Works</span>
   </a>
 </div>
 
@@ -412,7 +416,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/scalping">Back to Options Scalping</a>
+    <a class="btn-ghost" href="/learn-options-trading/candlestick-patterns">Back to Candlestick Patterns</a>
   </div>
 </section>
 
@@ -500,14 +504,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   els.forEach(el=>io.observe(el));
 })();
 
-// Mark this lesson read once the reader has genuinely scrolled through the
-// body (70% of article height) or spent 25s on the page — whichever comes
-// first — then award XP via the shared SC_LEARN module and show a toast.
-// A page-load timer alone would count a bounce; scroll-depth alone would
-// miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'scalping/how-options-scalping-works';
+  const SLUG = 'candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained';
   let done = false;
   function complete(){
     if (done) return;

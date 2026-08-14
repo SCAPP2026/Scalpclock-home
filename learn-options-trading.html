@@ -185,6 +185,21 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
+/* BREADCRUMB */
+.crumb{max-width:1180px;margin:0 auto;padding:16px 24px 0;font-size:.82rem;color:var(--t55);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.crumb a{color:var(--t55);}
+.crumb a:hover{color:var(--green);}
+.crumb span{color:var(--t30);}
+.crumb .current{color:var(--t80);}
+
+/* FAQ */
+.faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
+.faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--green);flex-shrink:0;transition:transform .2s;}
+.faq-item[open] summary::after{transform:rotate(45deg);}
+.faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
+
 /* SCROLL REVEAL */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
@@ -211,23 +226,45 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "Learn Options Trading | Beginner Options Education | ScalpClock",
-  "url": "https://scalpclock.com/learn-options-trading",
-  "description": "Learn options trading step-by-step with ScalpClock. Master calls, puts, strategies, technical analysis, trading psychology, and options scalping through interactive lessons.",
-  "isPartOf": { "@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com" },
-  "author": { "@type": "Organization", "name": "ScalpClock Education Team" },
-  "mainEntity": {
-    "@type": "ItemList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Options Basics", "url": "https://scalpclock.com/learn-options-trading/options-basics" },
-      { "@type": "ListItem", "position": 2, "name": "Options Strategies", "url": "https://scalpclock.com/learn-options-trading/strategies" },
-      { "@type": "ListItem", "position": 3, "name": "Technical Analysis", "url": "https://scalpclock.com/learn-options-trading/technical-analysis" },
-      { "@type": "ListItem", "position": 4, "name": "Options Scalping", "url": "https://scalpclock.com/learn-options-trading/scalping" },
-      { "@type": "ListItem", "position": 5, "name": "Trading Psychology", "url": "https://scalpclock.com/learn-options-trading/psychology" },
-      { "@type": "ListItem", "position": 6, "name": "Broker Guides", "url": "https://scalpclock.com/learn-options-trading/brokers" }
-    ]
-  }
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "name": "Learn Options Trading | Beginner Options Education | ScalpClock",
+      "url": "https://scalpclock.com/learn-options-trading",
+      "description": "Learn options trading step-by-step with ScalpClock. Master calls, puts, strategies, technical analysis, candlestick patterns, risk management, and options scalping through interactive lessons.",
+      "isPartOf": { "@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com" },
+      "author": { "@type": "Organization", "name": "ScalpClock Education Team" },
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Options Basics", "url": "https://scalpclock.com/learn-options-trading/options-basics" },
+          { "@type": "ListItem", "position": 2, "name": "Options Strategies", "url": "https://scalpclock.com/learn-options-trading/options-strategies" },
+          { "@type": "ListItem", "position": 3, "name": "Technical Analysis", "url": "https://scalpclock.com/learn-options-trading/technical-analysis" },
+          { "@type": "ListItem", "position": 4, "name": "Candlestick Patterns", "url": "https://scalpclock.com/learn-options-trading/candlestick-patterns" },
+          { "@type": "ListItem", "position": 5, "name": "Options Scalping", "url": "https://scalpclock.com/learn-options-trading/scalping" },
+          { "@type": "ListItem", "position": 6, "name": "Risk Management", "url": "https://scalpclock.com/learn-options-trading/risk-management" },
+          { "@type": "ListItem", "position": 7, "name": "Trading Psychology", "url": "https://scalpclock.com/learn-options-trading/psychology" },
+          { "@type": "ListItem", "position": 8, "name": "Broker Guides", "url": "https://scalpclock.com/learn-options-trading/brokers" }
+        ]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Where should I start learning options trading?", "acceptedAnswer": { "@type": "Answer", "text": "Start with Options Basics — it covers calls, puts, contracts, and expiration from scratch and doesn't assume any prior trading experience. Every other category builds on those concepts." } },
+        { "@type": "Question", "name": "Do I need to follow the categories in a specific order?", "acceptedAnswer": { "@type": "Answer", "text": "No. The suggested path (Options Basics, Options Strategies, Technical Analysis, Candlestick Patterns, Scalping, Risk Management) works well for a complete beginner, but every category is written to stand on its own if you already know the fundamentals and want to jump to a specific topic." } },
+        { "@type": "Question", "name": "Is this content free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every lesson across all categories is free to read, with no account required. Creating a free ScalpClock account adds XP, streaks, and progress tracking on top of the same content." } },
+        { "@type": "Question", "name": "How do I practice what I learn here?", "acceptedAnswer": { "@type": "Answer", "text": "ScalpClock pairs this content with real practice tools — ScalpCharts for live analysis, Chart Replay for risk-free historical practice, Exit Assistant for timing, and the ORB Signal Engine for breakout timing — so you can apply each concept right after reading about it." } }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading" }
+      ]
+    }
+  ]
 }</script>
 </head>
 <body>
@@ -316,6 +353,12 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
 </div>
 
+<!-- BREADCRUMB -->
+<div class="crumb reveal">
+  <a href="/">Home</a><span>/</span>
+  <span class="current">Learn Options Trading</span>
+</div>
+
 <!-- HERO -->
 <section class="hub-hero reveal">
   <div class="hero-eyebrow">Learn Options Trading</div>
@@ -341,8 +384,8 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <!-- CATEGORY GRID -->
 <section class="section" id="categories">
   <div class="sec-label">Browse by Topic</div>
-  <h2 class="sec-title">Six Paths to Becoming a Better Options Trader</h2>
-  <p class="sec-sub">Start anywhere, or follow the path in order — from options basics through strategies, technical analysis, scalping, psychology, and broker selection.</p>
+  <h2 class="sec-title">Every Path to Becoming a Better Options Trader</h2>
+  <p class="sec-sub">Start anywhere, or follow the path in order — from options basics through strategies, technical analysis, candlestick patterns, scalping, and risk management.</p>
 
   <div class="cat-grid">
     <a class="cat-card reveal" href="/learn-options-trading/options-basics" style="--accent:var(--green);--accent-dim:var(--g-dim);--accent-glow:rgba(22,217,126,.18)" data-cat="options-basics">
@@ -356,12 +399,12 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
     </a>
 
-    <a class="cat-card reveal" href="/learn-options-trading/strategies" style="--accent:var(--blue);--accent-dim:var(--blue-dim);--accent-glow:rgba(59,130,246,.18)" data-cat="strategies">
+    <a class="cat-card reveal" href="/learn-options-trading/options-strategies" style="--accent:var(--blue);--accent-dim:var(--blue-dim);--accent-glow:rgba(59,130,246,.18)" data-cat="options-strategies">
       <div class="cat-icon" aria-hidden="true">🎯</div>
       <h3>Options Strategies</h3>
-      <p>Understand popular options strategies and when traders use them — covered calls, spreads, and risk management.</p>
+      <p>Understand popular options strategies and when traders use them — covered calls and vertical spreads.</p>
       <div class="cat-progress-wrap">
-        <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
+        <div class="cat-progress-label"><span class="cat-progress-text">0/4 read</span></div>
         <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
       </div>
       <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
@@ -370,9 +413,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <a class="cat-card reveal" href="/learn-options-trading/technical-analysis" style="--accent:var(--gold);--accent-dim:var(--gold-dim);--accent-glow:rgba(245,166,35,.18)" data-cat="technical-analysis">
       <div class="cat-icon" aria-hidden="true">📊</div>
       <h3>Technical Analysis</h3>
-      <p>Learn how traders analyze charts, trends, and price movement — candlesticks, support/resistance, and indicators.</p>
+      <p>Learn how traders analyze charts, trends, and price movement — support/resistance, VWAP, and indicators.</p>
       <div class="cat-progress-wrap">
-        <div class="cat-progress-label"><span class="cat-progress-text">0/6 read</span></div>
+        <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/candlestick-patterns" style="--accent:var(--purple);--accent-dim:var(--purple-dim);--accent-glow:rgba(167,139,250,.18)" data-cat="candlestick-patterns">
+      <div class="cat-icon" aria-hidden="true">🕯️</div>
+      <h3>Candlestick Patterns</h3>
+      <p>Read doji, hammer, engulfing, and morning/evening star patterns and learn how traders use them to time entries.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
         <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
       </div>
       <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
@@ -384,6 +438,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <p>Learn short-term options trading concepts and how ScalpClock helps traders practice without risking real money.</p>
       <div class="cat-progress-wrap">
         <div class="cat-progress-label"><span class="cat-progress-text">0/5 read</span></div>
+        <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
+      </div>
+      <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="cat-card reveal" href="/learn-options-trading/risk-management" style="--accent:var(--red);--accent-dim:var(--red-dim);--accent-glow:rgba(255,69,102,.18)" data-cat="risk-management">
+      <div class="cat-icon" aria-hidden="true">🛡️</div>
+      <h3>Risk Management</h3>
+      <p>Position sizing, defined exits, and diversification — the discipline that decides whether a strategy actually works.</p>
+      <div class="cat-progress-wrap">
+        <div class="cat-progress-label"><span class="cat-progress-text">0/4 read</span></div>
         <div class="cat-progress-track"><div class="cat-progress-fill" style="width:0%"></div></div>
       </div>
       <span class="cat-link">Start Learning <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
@@ -420,14 +485,40 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <p class="sec-sub">New to options? Follow this path from start to finish. Already know the basics? Jump straight to any category above.</p>
     <div class="path-tracker" id="pathTracker">
       <div class="path-step" data-cat="options-basics"><div class="path-dot">📘</div><div class="path-step-label">Options Basics</div></div>
-      <div class="path-step" data-cat="strategies"><div class="path-dot">🎯</div><div class="path-step-label">Strategies</div></div>
+      <div class="path-step" data-cat="options-strategies"><div class="path-dot">🎯</div><div class="path-step-label">Strategies</div></div>
       <div class="path-step" data-cat="technical-analysis"><div class="path-dot">📊</div><div class="path-step-label">Technical Analysis</div></div>
+      <div class="path-step" data-cat="candlestick-patterns"><div class="path-dot">🕯️</div><div class="path-step-label">Candlesticks</div></div>
       <div class="path-step" data-cat="scalping"><div class="path-dot">⚡</div><div class="path-step-label">Scalping</div></div>
+      <div class="path-step" data-cat="risk-management"><div class="path-dot">🛡️</div><div class="path-step-label">Risk Management</div></div>
       <div class="path-step" data-cat="psychology"><div class="path-dot">🧠</div><div class="path-step-label">Psychology</div></div>
       <div class="path-step" data-cat="brokers"><div class="path-dot">🏦</div><div class="path-step-label">Broker Guides</div></div>
     </div>
   </section>
 </div>
+
+<!-- FAQ -->
+<section class="section reveal">
+  <div class="sec-label">Frequently Asked Questions</div>
+  <h2 class="sec-title">Learn Options Trading FAQ</h2>
+  <div style="max-width:760px;">
+    <details class="faq-item">
+      <summary>Where should I start learning options trading?</summary>
+      <div class="faq-a">Start with Options Basics — it covers calls, puts, contracts, and expiration from scratch and doesn't assume any prior trading experience. Every other category builds on those concepts.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Do I need to follow the categories in a specific order?</summary>
+      <div class="faq-a">No. The suggested path (Options Basics, Options Strategies, Technical Analysis, Candlestick Patterns, Scalping, Risk Management) works well for a complete beginner, but every category is written to stand on its own if you already know the fundamentals and want to jump to a specific topic.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Is this content free?</summary>
+      <div class="faq-a">Yes. Every lesson across all categories is free to read, with no account required. Creating a free ScalpClock account adds XP, streaks, and progress tracking on top of the same content.</div>
+    </details>
+    <details class="faq-item">
+      <summary>How do I practice what I learn here?</summary>
+      <div class="faq-a">ScalpClock pairs this content with real practice tools — ScalpCharts for live analysis, Chart Replay for risk-free historical practice, Exit Assistant for timing, and the ORB Signal Engine for breakout timing — so you can apply each concept right after reading about it.</div>
+    </details>
+  </div>
+</section>
 
 <!-- AUTHOR TRUST -->
 <section class="section-narrow reveal">

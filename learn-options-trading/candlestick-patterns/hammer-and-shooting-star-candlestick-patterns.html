@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Options Scalping Works | ScalpClock</title>
-<meta name="description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<title>Hammer and Shooting Star Candlestick Patterns | ScalpClock</title>
+<meta name="description" content="How to identify a hammer or shooting star candle, what the long wick actually represents, and how traders confirm the signal before acting.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/candlestick-patterns/hammer-and-shooting-star-candlestick-patterns">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="How Options Scalping Works | ScalpClock">
-<meta property="og:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<meta property="og:title" content="Hammer and Shooting Star Candlestick Patterns | ScalpClock">
+<meta property="og:description" content="How to identify a hammer or shooting star candle, what the long wick actually represents, and how traders confirm the signal before acting.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/candlestick-patterns/hammer-and-shooting-star-candlestick-patterns">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How Options Scalping Works | ScalpClock">
-<meta name="twitter:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
+<meta name="twitter:title" content="Hammer and Shooting Star Candlestick Patterns | ScalpClock">
+<meta name="twitter:description" content="How to identify a hammer or shooting star candle, what the long wick actually represents, and how traders confirm the signal before acting.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -104,7 +104,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
@@ -124,8 +124,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--red-dim);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.callout{background:var(--purple-dim);border:1px solid var(--purple);border-left:3px solid var(--purple);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
 /* MID-ARTICLE CTA */
@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--purple);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -157,8 +157,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--red);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
 /* CTA SECTION */
@@ -209,7 +209,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "How Options Scalping Works", "description": "A step-by-step look at how options scalping actually works in practice \u2014 setup selection, entry, management, and exit, with a full example.", "url": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How long does a typical scalp trade last?", "acceptedAnswer": {"@type": "Answer", "text": "Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves."}}, {"@type": "Question", "name": "Do scalpers plan their exits in advance?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade."}}, {"@type": "Question", "name": "What tools do options scalpers rely on?", "acceptedAnswer": {"@type": "Answer", "text": "Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools \u2014 ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs."}}, {"@type": "Question", "name": "Can beginners learn to scalp options?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, but it typically requires significant practice before trading with real money \u2014 using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Scalping", "item": "https://scalpclock.com/learn-options-trading/scalping"}, {"@type": "ListItem", "position": 4, "name": "How Options Scalping Works", "item": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Hammer and Shooting Star Candlestick Patterns", "description": "How to identify a hammer or shooting star candle, what the long wick actually represents, and how traders confirm the signal before acting.", "url": "https://scalpclock.com/learn-options-trading/candlestick-patterns/hammer-and-shooting-star-candlestick-patterns", "datePublished": "2026-08-14", "dateModified": "2026-08-14", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/candlestick-patterns/hammer-and-shooting-star-candlestick-patterns"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do hammer and shooting star patterns need to be a specific color?", "acceptedAnswer": {"@type": "Answer", "text": "No. The color of the small body matters less than its size and location relative to the long wick — a hammer works the same whether its small body is red or green, as long as the shape and context are right."}}, {"@type": "Question", "name": "What's the difference between a hammer and an inverted hammer?", "acceptedAnswer": {"@type": "Answer", "text": "A hammer has a long lower wick and forms after a decline. An inverted hammer has a long upper wick (like a shooting star) but still forms after a decline — it's a weaker, less-confirmed bullish signal than a standard hammer."}}, {"@type": "Question", "name": "How long should the wick be relative to the body?", "acceptedAnswer": {"@type": "Answer", "text": "There's no exact ratio, but a commonly used guideline is that the wick should be at least twice the length of the real body for the pattern to be considered a clean hammer or shooting star."}}, {"@type": "Question", "name": "Should I enter immediately when I see a hammer?", "acceptedAnswer": {"@type": "Answer", "text": "Most traders wait for the following candle to confirm the reversal is holding before entering, rather than acting on the hammer or shooting star the moment it closes."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Candlestick Patterns", "item": "https://scalpclock.com/learn-options-trading/candlestick-patterns"}, {"@type": "ListItem", "position": 4, "name": "Hammer and Shooting Star Candlestick Patterns", "item": "https://scalpclock.com/learn-options-trading/candlestick-patterns/hammer-and-shooting-star-candlestick-patterns"}]}]}</script>
 </head>
 <body>
 
@@ -299,16 +299,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/scalping">Options Scalping</a><span>/</span>
-  <span class="current">How Options Scalping Works</span>
+  <a href="/learn-options-trading/candlestick-patterns">Candlestick Patterns</a><span>/</span>
+  <span class="current">Hammer and Shooting Star Candlestick Patterns</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/scalping">⚡ Options Scalping</a>
-  <h1>How Options Scalping Works</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/candlestick-patterns">🕯️ Candlestick Patterns</a>
+  <h1>Hammer and Shooting Star Candlestick Patterns</h1>
   <div class="art-meta">
-    <span>⏱ 9 min read</span>
-    <span>📅 Updated July 18, 2026</span>
+    <span>⏱ 7 min read</span>
+    <span>📅 Updated August 14, 2026</span>
     <span>✍️ ScalpClock Education Team</span>
   </div>
 </header>
@@ -317,44 +317,45 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#the-process">The Scalping Process, Step by Step</a></li>
-    <li><a href="#finding-a-setup">Finding a Setup</a></li>
-    <li><a href="#entry">Entry</a></li>
-    <li><a href="#managing-the-trade">Managing the Trade</a></li>
-    <li><a href="#exit">Exit</a></li>
-    <li><a href="#full-example">A Full Example, Start to Finish</a></li>
-    <li><a href="#what-makes-it-hard">What Makes This Genuinely Hard</a></li>
+    <li><a href="#the-shape">The Shape: A Small Body, A Long Wick</a></li>
+    <li><a href="#hammer">The Hammer Pattern</a></li>
+    <li><a href="#shooting-star">The Shooting Star Pattern</a></li>
+    <li><a href="#inverted-hammer">A Note on the Inverted Hammer and Hanging Man</a></li>
+    <li><a href="#what-the-wick-means">What the Long Wick Actually Represents</a></li>
+    <li><a href="#confirmation">Confirming the Signal</a></li>
   </ol>
 </nav>
 
-<p><a href="/learn-options-trading/scalping/what-is-options-scalping">What Is Options Scalping?</a> covers the definition. This guide walks through the actual mechanical process a scalper follows, from spotting a setup to closing the trade.</p>
 
-<h2 id="the-process">The Scalping Process, Step by Step</h2>
-<p>Every scalp trade, regardless of the specific setup, follows the same basic sequence: find a setup on a live chart, enter quickly once conditions align, manage the position actively while it's open, and exit — whether at a profit target or a stop — usually within minutes.</p>
+<p>The hammer and shooting star are single-candle patterns defined by the same basic shape — a small real body with one long wick — but they carry opposite meanings depending on where they appear and which side the wick is on.</p>
 
-<h2 id="finding-a-setup">Finding a Setup</h2>
-<p>Scalpers watch for specific, repeatable conditions rather than trading randomly — a breakout above a short-term resistance level on rising volume, a bounce off VWAP in the direction of the intraday trend, or a candlestick reversal pattern at a key level. ScalpClock's <a href="/scalpchart">ScalpCharts</a> scans for many of these patterns automatically and surfaces them as live alerts, so a scalper doesn't have to watch dozens of tickers manually at once.</p>
+<h2 id="the-shape">The Shape: A Small Body, A Long Wick</h2>
+<p>Both patterns share a small body near one end of the candle's range, with a wick at least twice the length of the body extending the other way. That long wick is the entire story: it shows price traveled a significant distance in one direction during the session, only to be pushed most of the way back before the close.</p>
 
-<h2 id="entry">Entry</h2>
-<p>Once a setup appears, entry needs to happen quickly — scalping setups often only last a few minutes before the opportunity passes. This is why scalpers typically decide their entry criteria in advance, rather than deliberating in the moment: if X happens, I enter; if it doesn't, I don't. Hesitation is one of the most common reasons scalpers miss otherwise-valid setups.</p>
+<h2 id="hammer">The Hammer Pattern</h2>
+<p>A hammer forms after a decline: a small body sits near the top of the candle's range, with a long lower wick beneath it. It shows sellers pushed price sharply lower during the session, but buyers stepped in hard enough to reclaim most of that move by the close — a sign of demand reappearing after a downtrend, especially when it forms at a support level.</p>
 
-<h2 id="managing-the-trade">Managing the Trade</h2>
-<p>Once in the trade, a scalper is watching for the position to either reach its target or show signs the setup has failed. Unlike a longer-term trade, there's little room for "waiting it out" — a scalp that isn't working within its expected timeframe is usually closed rather than held, since the entire premise was a fast move, not a slow grind.</p>
-
-<h2 id="exit">Exit</h2>
-<p>Exits happen at a predetermined profit target, a predetermined stop, or when the underlying reason for the trade no longer holds (for example, the pattern that triggered entry fails to follow through as expected). ScalpClock's <a href="/exitassistant">Exit Assistant</a> is built specifically to help define these levels before a trade goes live, which matters even more for scalping than slower trading styles, given how little time there is to think mid-trade.</p>
+<h2 id="shooting-star">The Shooting Star Pattern</h2>
+<p>A shooting star is the mirror image, forming after a rally: a small body sits near the bottom of the candle's range, with a long upper wick above it. Buyers pushed price sharply higher, but sellers took most of it back by the close — a sign that upside momentum is meeting real resistance, especially near a known resistance level.</p>
 
 <div class="callout">
-<div class="callout-label">Speed Requires Preparation</div>
-<p>Paradoxically, the faster a trading style is, the more preparation it requires beforehand — there simply isn't time to figure out your plan while the trade is live. Every decision a scalper makes quickly was actually decided slowly, in advance.</p>
+<div class="callout-label">Worth Remembering</div>
+<p>The color of the small body (green or red) matters far less than its size and position relative to the wick. A hammer with a small red body still carries the same bullish read as one with a small green body — it's the rejection shown by the long wick that drives the signal, not the body's color.</p>
 </div>
 
-<h2 id="full-example">A Full Example, Start to Finish</h2>
-<p>A stock has been consolidating just under a resistance level for the past 20 minutes on the 1-minute chart. Volume picks up, and price breaks above that level decisively. A scalper watching this exact setup buys a short-dated call immediately on the break, having already decided beforehand: target is a specific price a few points above the breakout, stop is back below the broken resistance level (now expected to act as support).</p>
-<p>Two minutes later, the stock reaches the target level. The scalper sells, capturing the gain. Total time in the trade: under three minutes. If instead the stock had fallen back below the broken resistance, the predetermined stop would have triggered a quick exit with a small, controlled loss instead.</p>
+<h2 id="inverted-hammer">A Note on the Inverted Hammer and Hanging Man</h2>
+<p>Two closely related shapes share the same "small body, one long wick" structure but appear in the opposite trend context:</p>
+<ul>
+<li><strong>Inverted hammer:</strong> Looks like a shooting star (long upper wick), but forms after a <em>decline</em> rather than a rally — a tentative, less confirmed bullish signal than a standard hammer.</li>
+<li><strong>Hanging man:</strong> Looks like a hammer (long lower wick), but forms after an <em>advance</em> rather than a decline — a tentative bearish warning rather than a confirmed reversal.</li>
+</ul>
+<p>Both are weaker versions of their counterparts and generally require more confirmation before being traded.</p>
 
-<h2 id="what-makes-it-hard">What Makes This Genuinely Hard</h2>
-<p>The process described above sounds simple in writing — it's considerably harder in practice, under real time pressure, with real money involved. Setups that look obvious in hindsight are much less obvious in the moment, and the speed required leaves very little margin for hesitation or second-guessing. This is exactly why practicing extensively before trading real money — using tools like <a href="/scalpchart?tab=replay">Chart Replay</a> to rehearse this exact process on historical data — matters so much more for scalping than for slower trading styles.</p>
+<h2 id="what-the-wick-means">What the Long Wick Actually Represents</h2>
+<p>A long wick is a direct, visible record of rejection. Price tested a level, and the market decisively pushed back — whether that's sellers overwhelming an attempted rally (shooting star) or buyers overwhelming an attempted decline (hammer). That rejection is exactly the kind of behavior traders look for at meaningful <a href="/learn-options-trading/technical-analysis/support-and-resistance-explained">support and resistance</a> levels, where it carries far more weight than the same shape appearing in the middle of an unremarkable range.</p>
+
+<h2 id="confirmation">Confirming the Signal</h2>
+<p>Neither pattern is typically traded in isolation. The standard approach is to wait for the next candle to close in the direction the wick suggests — a green candle after a hammer, or a red candle after a shooting star — before treating the reversal as confirmed. This mirrors the same confirmation discipline used with a <a href="/learn-options-trading/candlestick-patterns/doji-candlestick-pattern-explained">doji</a>: the pattern flags a possible turning point, but the next candle is what actually confirms it.</p>
 
 
 <div class="mid-cta reveal">
@@ -365,20 +366,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>How long does a typical scalp trade last?</summary>
-  <div class="faq-a">Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves.</div>
+  <summary>Do hammer and shooting star patterns need to be a specific color?</summary>
+  <div class="faq-a">No. The color of the small body matters less than its size and location relative to the long wick — a hammer works the same whether its small body is red or green, as long as the shape and context are right.</div>
 </details>
 <details class="faq-item">
-  <summary>Do scalpers plan their exits in advance?</summary>
-  <div class="faq-a">Yes — because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade.</div>
+  <summary>What's the difference between a hammer and an inverted hammer?</summary>
+  <div class="faq-a">A hammer has a long lower wick and forms after a decline. An inverted hammer has a long upper wick (like a shooting star) but still forms after a decline — it's a weaker, less-confirmed bullish signal than a standard hammer.</div>
 </details>
 <details class="faq-item">
-  <summary>What tools do options scalpers rely on?</summary>
-  <div class="faq-a">Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools — ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs.</div>
+  <summary>How long should the wick be relative to the body?</summary>
+  <div class="faq-a">There's no exact ratio, but a commonly used guideline is that the wick should be at least twice the length of the real body for the pattern to be considered a clean hammer or shooting star.</div>
 </details>
 <details class="faq-item">
-  <summary>Can beginners learn to scalp options?</summary>
-  <div class="faq-a">Yes, but it typically requires significant practice before trading with real money — using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk.</div>
+  <summary>Should I enter immediately when I see a hammer?</summary>
+  <div class="faq-a">Most traders wait for the following candle to confirm the reversal is holding before entering, rather than acting on the hammer or shooting star the moment it closes.</div>
 </details>
 
 <div class="author-box reveal">
@@ -391,17 +392,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/scalping/day-trading-vs-options-scalping">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Day Trading vs Options Scalping</span>
+  <a class="related-card" href="/learn-options-trading/candlestick-patterns/doji-candlestick-pattern-explained">
+    <span class="rc-label">Candlestick Patterns</span>
+    <span class="rc-title">Doji Candlestick Pattern Explained</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">
+  <a class="related-card" href="/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained">
+    <span class="rc-label">Candlestick Patterns</span>
+    <span class="rc-title">Bullish and Bearish Engulfing Patterns Explained</span>
+  </a>
+  <a class="related-card" href="/learn-options-trading/technical-analysis/support-and-resistance-explained">
     <span class="rc-label">Technical Analysis</span>
-    <span class="rc-title">How To Read Candlestick Charts</span>
-  </a>
-  <a class="related-card" href="/learn-options-trading/scalping/risk-management-for-scalpers">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Risk Management for Scalpers</span>
+    <span class="rc-title">Support and Resistance Explained</span>
   </a>
 </div>
 
@@ -412,7 +413,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/scalping">Back to Options Scalping</a>
+    <a class="btn-ghost" href="/learn-options-trading/candlestick-patterns">Back to Candlestick Patterns</a>
   </div>
 </section>
 
@@ -500,14 +501,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   els.forEach(el=>io.observe(el));
 })();
 
-// Mark this lesson read once the reader has genuinely scrolled through the
-// body (70% of article height) or spent 25s on the page — whichever comes
-// first — then award XP via the shared SC_LEARN module and show a toast.
-// A page-load timer alone would count a bounce; scroll-depth alone would
-// miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'scalping/how-options-scalping-works';
+  const SLUG = 'candlestick-patterns/hammer-and-shooting-star-candlestick-patterns';
   let done = false;
   function complete(){
     if (done) return;

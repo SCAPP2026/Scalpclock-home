@@ -201,6 +201,13 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(238,243,240,.80);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#eef3f0;background:rgba(22,217,126,.08);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;padding:14px 16px 2px;}
+.drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:#16d97e;}
+.drawer-group-toggle .drawer-group-label{flex:1;}
+.drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+.drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+.drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+.drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Calls vs Puts Explained", "description": "Calls vs puts, explained side by side \u2014 how each works, when traders use them, and the key differences beginners always mix up.", "url": "https://scalpclock.com/learn-options-trading/options-basics/calls-vs-puts-explained", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/options-basics/calls-vs-puts-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a put the same as short selling a stock?", "acceptedAnswer": {"@type": "Answer", "text": "They're both bearish, but different in structure. A long put has a maximum loss capped at the premium paid and doesn't require a margin account for short selling; shorting stock directly can carry theoretically unlimited risk since a stock's price can keep rising."}}, {"@type": "Question", "name": "Can you lose money on a call even if the stock goes up?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 if the stock doesn't rise enough to overcome time decay and the premium you paid, or if it rises too slowly and expiration arrives first, a call can still lose value even with the direction \"right.\""}}, {"@type": "Question", "name": "Which is riskier, buying calls or buying puts?", "acceptedAnswer": {"@type": "Answer", "text": "As a buyer, both have the same type of capped risk \u2014 your maximum loss is the premium paid either way. The riskier side of the trade is selling (writing) options, especially uncovered positions."}}, {"@type": "Question", "name": "Do calls and puts expire the same way?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, both follow the same expiration mechanics \u2014 they're either exercised, closed out before expiration, or expire worthless if out-of-the-money."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Basics", "item": "https://scalpclock.com/learn-options-trading/options-basics"}, {"@type": "ListItem", "position": 4, "name": "Calls vs Puts Explained", "item": "https://scalpclock.com/learn-options-trading/options-basics/calls-vs-puts-explained"}]}]}</script>
 </head>
@@ -233,9 +240,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
           <a href="/trading-pictionary">Pictionary</a>
         </div>
       </div>
-      <a href="/scalpchart">ScalpCharts</a>
-      <a href="/scalpchart?tab=replay">Replay</a>
-      <a href="/exitassistant">Exit Assistant</a>
+      <div class="nav-dropdown" id="tradeDropdown">
+        <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/scalpchart">ScalpCharts</a>
+          <a href="/scalpchart?tab=replay">Replay</a>
+          <a href="/exitassistant">Exit Assistant</a>
+          <a href="/orbsignalengine">ORB Signal Engine</a>
+          <a href="/signals">Signals</a>
+        </div>
+      </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
       <a class="nav-cta" href="/login?tab=signup">Start Free</a>
@@ -247,15 +261,36 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 </nav>
 <div class="nav-drawer" id="navDrawer">
   <a href="/" onclick="closeDrawer()">Home</a>
-  <div class="drawer-group-label">Learn</div>
-  <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
-  <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
-  <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
-  <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
-  <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
-  <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
-  <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
-  <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Learn</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/learn" onclick="closeDrawer()" style="padding-left:28px">Daily Lessons</a>
+      <a href="/learn-options-trading" onclick="closeDrawer()" style="padding-left:28px">Guides</a>
+      <a href="/blog/" onclick="closeDrawer()" style="padding-left:28px">Blog</a>
+      <a href="/trading-resources" onclick="closeDrawer()" style="padding-left:28px">Trading Resources</a>
+      <a href="/trading-pictionary" onclick="closeDrawer()" style="padding-left:28px">Pictionary</a>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-group">
+    <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+      <span class="drawer-group-label">Trade</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="drawer-group-items">
+      <div class="drawer-group-items-inner">
+      <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
+      <a href="/scalpchart?tab=replay" onclick="closeDrawer()">Replay</a>
+      <a href="/exitassistant" onclick="closeDrawer()">Exit Assistant</a>
+      <a href="/orbsignalengine" onclick="closeDrawer()">ORB Signal Engine</a>
+      <a href="/signals" onclick="closeDrawer()">Signals</a>
+      </div>
+    </div>
+  </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
   <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
@@ -322,7 +357,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <li><strong>Buying a put</strong> = bearish, limited risk.</li>
 <li><strong>Selling a put</strong> = bullish/neutral, with risk roughly equivalent to owning the stock from the strike price down to zero.</li>
 </ul>
-<p>Notice that selling a call and buying a put are both bearish, while buying a call and selling a put are both bullish — but they have very different risk profiles. Our guide on <a href="/learn-options-trading/strategies/best-options-strategies-for-beginners">options strategies for beginners</a> covers exactly when traders choose one over the other.</p>
+<p>Notice that selling a call and buying a put are both bearish, while buying a call and selling a put are both bullish — but they have very different risk profiles. Our guide on <a href="/learn-options-trading/options-strategies/best-options-strategies-for-beginners">options strategies for beginners</a> covers exactly when traders choose one over the other.</p>
 
 <h2 id="common-confusions">Mistakes Beginners Make Mixing These Up</h2>
 <ul>
@@ -382,7 +417,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
     <span class="rc-label">Options Basics</span>
     <span class="rc-title">How Do Options Work?</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/strategies/best-options-strategies-for-beginners">
+  <a class="related-card" href="/learn-options-trading/options-strategies/best-options-strategies-for-beginners">
     <span class="rc-label">Options Strategies</span>
     <span class="rc-title">Best Options Strategies for Beginners</span>
   </a>
@@ -439,13 +474,27 @@ function toggleLearnDropdown(e){
   e.stopPropagation();
   document.getElementById('learnDropdown').classList.toggle('open');
 }
+function toggleTradeDropdown(e){
+  e.stopPropagation();
+  document.getElementById('tradeDropdown').classList.toggle('open');
+}
 document.addEventListener('click',function(e){
   const dd=document.getElementById('learnDropdown');
   if(dd&&dd.classList.contains('open')&&!dd.contains(e.target))dd.classList.remove('open');
+  const td=document.getElementById('tradeDropdown');
+  if(td&&td.classList.contains('open')&&!td.contains(e.target))td.classList.remove('open');
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');}
+  if(e.key==='Escape'){
+    const dd=document.getElementById('learnDropdown');if(dd)dd.classList.remove('open');
+    const td=document.getElementById('tradeDropdown');if(td)td.classList.remove('open');
+  }
 });
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
 
 
 function toggleDrawer(){

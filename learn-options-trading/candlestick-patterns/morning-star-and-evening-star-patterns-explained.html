@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Options Scalping Works | ScalpClock</title>
-<meta name="description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<title>Morning Star and Evening Star Patterns Explained | ScalpClock</title>
+<meta name="description" content="How the three-candle morning star and evening star reversal patterns form, why the middle candle matters most, and how to trade them with confirmation.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/candlestick-patterns/morning-star-and-evening-star-patterns-explained">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="How Options Scalping Works | ScalpClock">
-<meta property="og:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works">
+<meta property="og:title" content="Morning Star and Evening Star Patterns Explained | ScalpClock">
+<meta property="og:description" content="How the three-candle morning star and evening star reversal patterns form, why the middle candle matters most, and how to trade them with confirmation.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/candlestick-patterns/morning-star-and-evening-star-patterns-explained">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How Options Scalping Works | ScalpClock">
-<meta name="twitter:description" content="A step-by-step look at how options scalping actually works in practice — setup selection, entry, management, and exit, with a full example.">
+<meta name="twitter:title" content="Morning Star and Evening Star Patterns Explained | ScalpClock">
+<meta name="twitter:description" content="How the three-candle morning star and evening star reversal patterns form, why the middle candle matters most, and how to trade them with confirmation.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -104,7 +104,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
@@ -124,8 +124,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--red-dim);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.callout{background:var(--purple-dim);border:1px solid var(--purple);border-left:3px solid var(--purple);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
 /* MID-ARTICLE CTA */
@@ -142,7 +142,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--red);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--purple);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -157,8 +157,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--red);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
 /* CTA SECTION */
@@ -209,7 +209,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "How Options Scalping Works", "description": "A step-by-step look at how options scalping actually works in practice \u2014 setup selection, entry, management, and exit, with a full example.", "url": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How long does a typical scalp trade last?", "acceptedAnswer": {"@type": "Answer", "text": "Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves."}}, {"@type": "Question", "name": "Do scalpers plan their exits in advance?", "acceptedAnswer": {"@type": "Answer", "text": "Yes \u2014 because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade."}}, {"@type": "Question", "name": "What tools do options scalpers rely on?", "acceptedAnswer": {"@type": "Answer", "text": "Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools \u2014 ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs."}}, {"@type": "Question", "name": "Can beginners learn to scalp options?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, but it typically requires significant practice before trading with real money \u2014 using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Scalping", "item": "https://scalpclock.com/learn-options-trading/scalping"}, {"@type": "ListItem", "position": 4, "name": "How Options Scalping Works", "item": "https://scalpclock.com/learn-options-trading/scalping/how-options-scalping-works"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Morning Star and Evening Star Patterns Explained", "description": "How the three-candle morning star and evening star reversal patterns form, why the middle candle matters most, and how to trade them with confirmation.", "url": "https://scalpclock.com/learn-options-trading/candlestick-patterns/morning-star-and-evening-star-patterns-explained", "datePublished": "2026-08-14", "dateModified": "2026-08-14", "author": {"@type": "Organization", "name": "ScalpClock Education Team"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/candlestick-patterns/morning-star-and-evening-star-patterns-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the middle candle need to be a doji?", "acceptedAnswer": {"@type": "Answer", "text": "Not strictly — any small-bodied candle qualifies. When the middle candle is specifically a doji, it's sometimes called a morning doji star or evening doji star, considered a slightly stronger version of the pattern."}}, {"@type": "Question", "name": "Do the candles need to gap for a valid morning or evening star?", "acceptedAnswer": {"@type": "Answer", "text": "The strictest textbook definition calls for gaps between the candles, but on many liquid stocks and ETFs that gap rarely happens cleanly. Many traders accept the pattern without a gap as long as the three-part structure and context are otherwise clear."}}, {"@type": "Question", "name": "Is a morning star more reliable than a single hammer?", "acceptedAnswer": {"@type": "Answer", "text": "It's generally considered a stronger signal because it includes built-in confirmation (the third candle), whereas a single hammer or doji still requires waiting for a separate confirming candle afterward."}}, {"@type": "Question", "name": "How do I combine this with options trading?", "acceptedAnswer": {"@type": "Answer", "text": "Traders often use a confirmed morning or evening star as a directional signal, then choose an options strategy — like the ones covered in our strategies guides — that matches their conviction and desired risk profile around that signal."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Candlestick Patterns", "item": "https://scalpclock.com/learn-options-trading/candlestick-patterns"}, {"@type": "ListItem", "position": 4, "name": "Morning Star and Evening Star Patterns Explained", "item": "https://scalpclock.com/learn-options-trading/candlestick-patterns/morning-star-and-evening-star-patterns-explained"}]}]}</script>
 </head>
 <body>
 
@@ -299,16 +299,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/scalping">Options Scalping</a><span>/</span>
-  <span class="current">How Options Scalping Works</span>
+  <a href="/learn-options-trading/candlestick-patterns">Candlestick Patterns</a><span>/</span>
+  <span class="current">Morning Star and Evening Star Patterns Explained</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/scalping">⚡ Options Scalping</a>
-  <h1>How Options Scalping Works</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/candlestick-patterns">🕯️ Candlestick Patterns</a>
+  <h1>Morning Star and Evening Star Patterns Explained</h1>
   <div class="art-meta">
-    <span>⏱ 9 min read</span>
-    <span>📅 Updated July 18, 2026</span>
+    <span>⏱ 8 min read</span>
+    <span>📅 Updated August 14, 2026</span>
     <span>✍️ ScalpClock Education Team</span>
   </div>
 </header>
@@ -317,44 +317,51 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#the-process">The Scalping Process, Step by Step</a></li>
-    <li><a href="#finding-a-setup">Finding a Setup</a></li>
-    <li><a href="#entry">Entry</a></li>
-    <li><a href="#managing-the-trade">Managing the Trade</a></li>
-    <li><a href="#exit">Exit</a></li>
-    <li><a href="#full-example">A Full Example, Start to Finish</a></li>
-    <li><a href="#what-makes-it-hard">What Makes This Genuinely Hard</a></li>
+    <li><a href="#three-candle-patterns">Why Three Candles Instead of One</a></li>
+    <li><a href="#morning-star">The Morning Star Pattern</a></li>
+    <li><a href="#evening-star">The Evening Star Pattern</a></li>
+    <li><a href="#the-middle-candle">Why the Middle Candle Matters Most</a></li>
+    <li><a href="#where-they-work-best">Where These Patterns Work Best</a></li>
+    <li><a href="#trading-the-pattern">Trading the Pattern With Confirmation</a></li>
   </ol>
 </nav>
 
-<p><a href="/learn-options-trading/scalping/what-is-options-scalping">What Is Options Scalping?</a> covers the definition. This guide walks through the actual mechanical process a scalper follows, from spotting a setup to closing the trade.</p>
 
-<h2 id="the-process">The Scalping Process, Step by Step</h2>
-<p>Every scalp trade, regardless of the specific setup, follows the same basic sequence: find a setup on a live chart, enter quickly once conditions align, manage the position actively while it's open, and exit — whether at a profit target or a stop — usually within minutes.</p>
+<p>The morning star and evening star are three-candle reversal patterns — more elaborate than a single hammer or doji, and generally considered a stronger signal because they capture a full sequence: a trend, a pause, and a confirmed reversal, all in three consecutive sessions.</p>
 
-<h2 id="finding-a-setup">Finding a Setup</h2>
-<p>Scalpers watch for specific, repeatable conditions rather than trading randomly — a breakout above a short-term resistance level on rising volume, a bounce off VWAP in the direction of the intraday trend, or a candlestick reversal pattern at a key level. ScalpClock's <a href="/scalpchart">ScalpCharts</a> scans for many of these patterns automatically and surfaces them as live alerts, so a scalper doesn't have to watch dozens of tickers manually at once.</p>
+<h2 id="three-candle-patterns">Why Three Candles Instead of One</h2>
+<p>A single candle like a <a href="/learn-options-trading/candlestick-patterns/doji-candlestick-pattern-explained">doji</a> or <a href="/learn-options-trading/candlestick-patterns/hammer-and-shooting-star-candlestick-patterns">hammer</a> shows a moment of indecision or rejection, but it doesn't show the follow-through. A three-candle pattern like the morning or evening star builds that follow-through directly into the pattern itself, which is part of why traders often treat it as more reliable than a single-candle signal alone.</p>
 
-<h2 id="entry">Entry</h2>
-<p>Once a setup appears, entry needs to happen quickly — scalping setups often only last a few minutes before the opportunity passes. This is why scalpers typically decide their entry criteria in advance, rather than deliberating in the moment: if X happens, I enter; if it doesn't, I don't. Hesitation is one of the most common reasons scalpers miss otherwise-valid setups.</p>
+<h2 id="morning-star">The Morning Star Pattern</h2>
+<p>A morning star forms during a downtrend, in three parts:</p>
+<ol>
+<li><strong>A long red candle</strong> continuing the existing downtrend.</li>
+<li><strong>A small-bodied candle</strong> (of either color) that gaps or sits lower — representing the pause and indecision, similar in spirit to a doji.</li>
+<li><strong>A long green candle</strong> that closes well into the first candle's body — confirming buyers have taken control.</li>
+</ol>
+<p>The name reflects the idea: a "star" of indecision appears at the bottom of the decline, right before the sun (a bullish reversal) rises.</p>
 
-<h2 id="managing-the-trade">Managing the Trade</h2>
-<p>Once in the trade, a scalper is watching for the position to either reach its target or show signs the setup has failed. Unlike a longer-term trade, there's little room for "waiting it out" — a scalp that isn't working within its expected timeframe is usually closed rather than held, since the entire premise was a fast move, not a slow grind.</p>
-
-<h2 id="exit">Exit</h2>
-<p>Exits happen at a predetermined profit target, a predetermined stop, or when the underlying reason for the trade no longer holds (for example, the pattern that triggered entry fails to follow through as expected). ScalpClock's <a href="/exitassistant">Exit Assistant</a> is built specifically to help define these levels before a trade goes live, which matters even more for scalping than slower trading styles, given how little time there is to think mid-trade.</p>
+<h2 id="evening-star">The Evening Star Pattern</h2>
+<p>An evening star is the mirror image, forming during an uptrend:</p>
+<ol>
+<li><strong>A long green candle</strong> continuing the existing uptrend.</li>
+<li><strong>A small-bodied candle</strong> representing indecision at the highs.</li>
+<li><strong>A long red candle</strong> that closes well into the first candle's body — confirming sellers have taken control.</li>
+</ol>
 
 <div class="callout">
-<div class="callout-label">Speed Requires Preparation</div>
-<p>Paradoxically, the faster a trading style is, the more preparation it requires beforehand — there simply isn't time to figure out your plan while the trade is live. Every decision a scalper makes quickly was actually decided slowly, in advance.</p>
+<div class="callout-label">Worth Remembering</div>
+<p>The third candle is what actually confirms the pattern. Seeing only the first two candles (a trend candle followed by a small indecision candle) isn't a morning or evening star yet — it's just a setup that could still resolve either way until the third candle closes.</p>
 </div>
 
-<h2 id="full-example">A Full Example, Start to Finish</h2>
-<p>A stock has been consolidating just under a resistance level for the past 20 minutes on the 1-minute chart. Volume picks up, and price breaks above that level decisively. A scalper watching this exact setup buys a short-dated call immediately on the break, having already decided beforehand: target is a specific price a few points above the breakout, stop is back below the broken resistance level (now expected to act as support).</p>
-<p>Two minutes later, the stock reaches the target level. The scalper sells, capturing the gain. Total time in the trade: under three minutes. If instead the stock had fallen back below the broken resistance, the predetermined stop would have triggered a quick exit with a small, controlled loss instead.</p>
+<h2 id="the-middle-candle">Why the Middle Candle Matters Most</h2>
+<p>The middle candle is where the real information lives. Its small body shows the prior trend has genuinely stalled — buyers and sellers reached the same kind of standoff described in the <a href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">candlestick basics guide</a>. Some variations even require this middle candle to <em>gap</em> away from the first candle for a stricter, "textbook" version of the pattern, though many traders accept the pattern without a strict gap on liquid stocks.</p>
 
-<h2 id="what-makes-it-hard">What Makes This Genuinely Hard</h2>
-<p>The process described above sounds simple in writing — it's considerably harder in practice, under real time pressure, with real money involved. Setups that look obvious in hindsight are much less obvious in the moment, and the speed required leaves very little margin for hesitation or second-guessing. This is exactly why practicing extensively before trading real money — using tools like <a href="/scalpchart?tab=replay">Chart Replay</a> to rehearse this exact process on historical data — matters so much more for scalping than for slower trading styles.</p>
+<h2 id="where-they-work-best">Where These Patterns Work Best</h2>
+<p>Like every reversal pattern, context is what separates a meaningful signal from noise. A morning or evening star that forms after an extended, clearly established trend — and especially one that lines up with a key <a href="/learn-options-trading/technical-analysis/support-and-resistance-explained">support or resistance level</a> — carries far more weight than the same three-candle shape appearing in a directionless, choppy range.</p>
+
+<h2 id="trading-the-pattern">Trading the Pattern With Confirmation</h2>
+<p>Because the pattern already includes its own confirmation candle (the third candle), many traders treat a completed morning or evening star as more actionable than a single-candle pattern. Even so, it's common to want the price action immediately following the pattern to hold — a small pullback that stays above the morning star's low, for example — before sizing into a full position, rather than assuming the reversal is guaranteed the instant the third candle closes.</p>
 
 
 <div class="mid-cta reveal">
@@ -365,20 +372,20 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>How long does a typical scalp trade last?</summary>
-  <div class="faq-a">Scalp trades commonly last anywhere from under a minute to a few minutes, though the exact duration depends on the specific setup and how quickly the underlying stock moves.</div>
+  <summary>Does the middle candle need to be a doji?</summary>
+  <div class="faq-a">Not strictly — any small-bodied candle qualifies. When the middle candle is specifically a doji, it's sometimes called a morning doji star or evening doji star, considered a slightly stronger version of the pattern.</div>
 </details>
 <details class="faq-item">
-  <summary>Do scalpers plan their exits in advance?</summary>
-  <div class="faq-a">Yes — because scalping happens so quickly, there's little time to decide an exit in the moment, so experienced scalpers define both their profit target and stop-loss before entering the trade.</div>
+  <summary>Do the candles need to gap for a valid morning or evening star?</summary>
+  <div class="faq-a">The strictest textbook definition calls for gaps between the candles, but on many liquid stocks and ETFs that gap rarely happens cleanly. Many traders accept the pattern without a gap as long as the three-part structure and context are otherwise clear.</div>
 </details>
 <details class="faq-item">
-  <summary>What tools do options scalpers rely on?</summary>
-  <div class="faq-a">Real-time charting and pattern detection, a fast and reliable broker for execution, and a predefined exit plan are the core tools — ScalpClock's ScalpCharts and Exit Assistant are built specifically around these needs.</div>
+  <summary>Is a morning star more reliable than a single hammer?</summary>
+  <div class="faq-a">It's generally considered a stronger signal because it includes built-in confirmation (the third candle), whereas a single hammer or doji still requires waiting for a separate confirming candle afterward.</div>
 </details>
 <details class="faq-item">
-  <summary>Can beginners learn to scalp options?</summary>
-  <div class="faq-a">Yes, but it typically requires significant practice before trading with real money — using historical data (such as ScalpClock's Chart Replay) to rehearse the fast decision-making scalping demands, without financial risk.</div>
+  <summary>How do I combine this with options trading?</summary>
+  <div class="faq-a">Traders often use a confirmed morning or evening star as a directional signal, then choose an options strategy — like the ones covered in our strategies guides — that matches their conviction and desired risk profile around that signal.</div>
 </details>
 
 <div class="author-box reveal">
@@ -391,17 +398,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/scalping/day-trading-vs-options-scalping">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Day Trading vs Options Scalping</span>
+  <a class="related-card" href="/learn-options-trading/candlestick-patterns/bullish-and-bearish-engulfing-patterns-explained">
+    <span class="rc-label">Candlestick Patterns</span>
+    <span class="rc-title">Bullish and Bearish Engulfing Patterns Explained</span>
   </a>
   <a class="related-card" href="/learn-options-trading/candlestick-patterns/how-to-read-candlestick-charts">
-    <span class="rc-label">Technical Analysis</span>
+    <span class="rc-label">Candlestick Patterns</span>
     <span class="rc-title">How To Read Candlestick Charts</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/scalping/risk-management-for-scalpers">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">Risk Management for Scalpers</span>
+  <a class="related-card" href="/learn-options-trading/options-strategies/best-options-strategies-for-beginners">
+    <span class="rc-label">Options Strategies</span>
+    <span class="rc-title">Best Options Strategies for Beginners</span>
   </a>
 </div>
 
@@ -412,7 +419,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/scalping">Back to Options Scalping</a>
+    <a class="btn-ghost" href="/learn-options-trading/candlestick-patterns">Back to Candlestick Patterns</a>
   </div>
 </section>
 
@@ -500,14 +507,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   els.forEach(el=>io.observe(el));
 })();
 
-// Mark this lesson read once the reader has genuinely scrolled through the
-// body (70% of article height) or spent 25s on the page — whichever comes
-// first — then award XP via the shared SC_LEARN module and show a toast.
-// A page-load timer alone would count a bounce; scroll-depth alone would
-// miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'scalping/how-options-scalping-works';
+  const SLUG = 'candlestick-patterns/morning-star-and-evening-star-patterns-explained';
   let done = false;
   function complete(){
     if (done) return;
