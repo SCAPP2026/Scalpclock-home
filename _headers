@@ -69,6 +69,12 @@
   Cache-Control: public, max-age=300, s-maxage=3600
 /learn-options-trading
   Cache-Control: public, max-age=300, s-maxage=3600
+# The 8 category pages + 35 lesson articles under this directory (e.g.
+# /learn-options-trading/options-basics/how-do-options-work) had no rule at
+# all before this -- unlike /blog/*, this directory never got a wildcard, so
+# these SEO pages were missing the edge cache the hub page above already has.
+/learn-options-trading/*
+  Cache-Control: public, max-age=300, s-maxage=3600
 /learn-stock-trading
   Cache-Control: public, max-age=300, s-maxage=3600
 /trading-resources
@@ -102,6 +108,8 @@
   Cache-Control: no-store
 /signals
   Cache-Control: no-store
+/orbsignalengine
+  Cache-Control: no-store
 
 # ── Account / dashboard / session pages ─────────────────────────────────────
 # Cloudflare Pages doesn't edge-cache HTML by default today, so this is a
@@ -125,6 +133,12 @@
   Cache-Control: no-store
 /debug
   Cache-Control: no-store
+
+# ── SEO metadata files ──────────────────────────────────────────────────────
+/robots.txt
+  Cache-Control: public, max-age=3600
+/sitemap.xml
+  Cache-Control: public, max-age=3600
 
 # ── API endpoints ────────────────────────────────────────────────────────────
 # Deliberately NOT handled here. Public market-data/aggregate endpoints
