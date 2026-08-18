@@ -493,7 +493,7 @@
   </details>
 
   <div class="session-context">
-    <span><span class="sc-note">NYSE Session</span> <b>09:30–16:00 ET</b></span>
+    <span><span class="sc-note">NYSE Session</span> <b>9:30 AM–4:00 PM ET</b></span>
     <span><span class="sc-note">Opening Range</span> <b id="ctxOpeningRange">—</b></span>
     <span><span class="sc-note">Current</span> <b id="ctxCurrent">—</b></span>
     <span><span class="sc-note">Time Remaining</span> <b id="ctxRemaining">—</b></span>
@@ -532,7 +532,7 @@
     <div class="divider"></div>
     <div class="status-item">
       <span class="k">Session Time</span>
-      <span class="v" id="timeVal">09:30</span>
+      <span class="v" id="timeVal">9:30 AM</span>
     </div>
     <div class="divider"></div>
     <div class="status-item">
@@ -744,6 +744,27 @@
   function choice(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
   function fmt(n){ return n.toFixed(2); }
   function pad2(n){ return n < 10 ? '0' + n : '' + n; }
+
+  // Display-only conversion from the internal 24-hour "HH:MM" ET strings
+  // (used everywhere for time math -- addMinutes(), the trade ledger, etc.)
+  // to regular 12-hour US time. Never feed the output of this back into
+  // time math -- always convert the raw 24h string, at the point it's
+  // rendered to the user.
+  function to12h(hhmm){
+    if (!hhmm || hhmm.indexOf(':') === -1) return hhmm;
+    const [h, m] = hhmm.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ':' + pad2(m) + ' ' + period;
+  }
+  // Compact form for tight spaces (chart x-axis) — "9:30a" / "4:00p".
+  function to12hShort(hhmm){
+    if (!hhmm || hhmm.indexOf(':') === -1) return hhmm;
+    const [h, m] = hhmm.split(':').map(Number);
+    const period = h >= 12 ? 'p' : 'a';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ':' + pad2(m) + period;
+  }
 
   function buildTimes(){
     const out = [];
@@ -1151,7 +1172,7 @@
           (h.outcome10 != null ? (' · After 10 candles: <b class="' + (h.outcome10>=0?'pos':'neg') + '">' + (h.outcome10>=0?'+':'') + h.outcome10.toFixed(2) + '%</b>') : '') + '</div>';
       }
       return '<div class="hist-item" onclick="toggleHistDiff(' + i + ')">' +
-          '<span class="ht">' + h.time + '</span>' +
+          '<span class="ht">' + to12h(h.time) + '</span>' +
           '<span class="hs ' + kind + '">' + h.state + '</span>' +
           '<span class="hsc">' + scoreTxt + '</span>' +
         '</div>' +
@@ -1374,9 +1395,9 @@
     const statusEl = document.getElementById('ctxStatus');
     if (!orEl) return;
     const orEndMinutes = orPeriod * 15;
-    orEl.textContent = (times[0] || '09:30') + '–' + addMinutes(times[0] || '09:30', orEndMinutes) + ' ET';
+    orEl.textContent = to12h(times[0] || '09:30') + '–' + to12h(addMinutes(times[0] || '09:30', orEndMinutes)) + ' ET';
     const curIdx = Math.max(0, revealIdx);
-    curEl.textContent = (times[curIdx] || times[0] || '—') + ' ET';
+    curEl.textContent = (times[curIdx] ? to12h(times[curIdx]) : times[0] ? to12h(times[0]) : '—') + ' ET';
     const remainingCandles = Math.max(0, SESSION_CANDLES - 1 - curIdx);
     const remMin = remainingCandles * 15;
     remEl.textContent = remMin > 0 ? Math.floor(remMin / 60) + 'h ' + (remMin % 60) + 'm' : 'Session ending';
@@ -1424,8 +1445,8 @@
     document.getElementById('ssDirection').className = 'v ' + (ev.dir === 'long' ? 'pnl-pos' : 'pnl-neg');
     document.getElementById('ssOrHigh').textContent = fmt(orHigh);
     document.getElementById('ssOrLow').textContent = fmt(orLow);
-    document.getElementById('ssBreakoutTime').textContent = times[breakoutIdx] || '—';
-    document.getElementById('ssRetestTime').textContent = retestTime;
+    document.getElementById('ssBreakoutTime').textContent = times[breakoutIdx] ? to12h(times[breakoutIdx]) : '—';
+    document.getElementById('ssRetestTime').textContent = to12h(retestTime);
     document.getElementById('ssEntry').textContent = fmt(ev.entry);
     document.getElementById('ssStop').textContent = fmt(ev.stop);
     document.getElementById('ssTarget').textContent = fmt(ev.target);
@@ -1586,7 +1607,7 @@
     priceMax = Math.max.apply(null, highs) * 1.003;
 
     document.getElementById('symbolVal').textContent = symbol + (isLive ? ' · LIVE' : ' · SIM');
-    document.getElementById('timeVal').textContent = times[0] || '—';
+    document.getElementById('timeVal').textContent = times[0] ? to12h(times[0]) : '—';
     document.getElementById('priceVal').textContent = '—';
     document.getElementById('orVal').textContent = '— / —';
     document.getElementById('candleCountVal').textContent = '0 / ' + SESSION_CANDLES;
@@ -1638,10 +1659,11 @@
 
   // ================= TOAST + LOG =================
   function fire(kind, icon, title, body, time, tag){
+    const displayTime = to12h(time);
     const wrap = document.createElement('div');
     wrap.className = 'toast ' + kind;
     wrap.innerHTML =
-      '<div class="t-head"><span>' + icon + ' ' + title + '</span><span class="t-time">' + time + '</span></div>' +
+      '<div class="t-head"><span>' + icon + ' ' + title + '</span><span class="t-time">' + displayTime + '</span></div>' +
       '<div class="t-body">' + body + '</div>' +
       (tag ? '<div class="t-tag">' + tag + '</div>' : '');
     toastLayer.prepend(wrap);
@@ -1653,7 +1675,7 @@
 
     const item = document.createElement('div');
     item.className = 'log-item ' + kind;
-    item.innerHTML = '<span class="lt">' + time + '</span>' + title + ' — ' + body + (tag ? ' <em style="color:var(--text-faint);font-style:normal;">(' + tag + ')</em>' : '');
+    item.innerHTML = '<span class="lt">' + displayTime + '</span>' + title + ' — ' + body + (tag ? ' <em style="color:var(--text-faint);font-style:normal;">(' + tag + ')</em>' : '');
     if (logList.querySelector('.log-empty')) logList.innerHTML = '';
     logList.prepend(item);
   }
@@ -1707,7 +1729,7 @@
   function evaluate(idx){
     const c = candles[idx];
     const t = times[idx];
-    document.getElementById('timeVal').textContent = t;
+    document.getElementById('timeVal').textContent = to12h(t);
     document.getElementById('priceVal').textContent = fmt(c.close);
     document.getElementById('candleCountVal').textContent = (idx+1) + ' / ' + SESSION_CANDLES;
     document.getElementById('currentPriceVal').textContent = fmt(c.close);
@@ -1942,7 +1964,7 @@
 
       // x-axis time label every other candle
       if (i % 2 === 0){
-        parts.push('<text class="axis-label" x="' + (x-14) + '" y="' + (CHART_H-8) + '">' + times[i] + '</text>');
+        parts.push('<text class="axis-label" x="' + (x-14) + '" y="' + (CHART_H-8) + '">' + to12hShort(times[i]) + '</text>');
       }
     }
 
