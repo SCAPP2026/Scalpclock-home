@@ -129,6 +129,9 @@
   Cache-Control: no-store
 /admin-referrals
   Cache-Control: no-store
+/admin/linkhunter/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 /success
   Cache-Control: no-store
 /debug

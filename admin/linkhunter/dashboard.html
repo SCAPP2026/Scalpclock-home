@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkHunter AI — Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+.lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:28px 0 12px;color:var(--t85);}
+.lh-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;}
+.lh-stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:16px 18px;}
+.lh-stat-label{font-size:.68rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.lh-stat-val{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--text);margin-top:2px;}
+.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+</style>
+</head>
+<body>
+<div id="lhApp">
+  <div class="lh-shell">
+    <div class="lh-section-title">Overview</div>
+    <div class="lh-stat-grid">
+      <div class="lh-stat-card"><div class="lh-stat-label">Prospects</div><div class="lh-stat-val" id="statProspects">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Qualified</div><div class="lh-stat-val" id="statQualified">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Opportunities</div><div class="lh-stat-val" id="statOpportunities">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Outreach Sent</div><div class="lh-stat-val" id="statOutreach">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Backlinks Acquired</div><div class="lh-stat-val" id="statBacklinks">—</div></div>
+    </div>
+
+    <div class="lh-section-title">Opportunity Leaderboard</div>
+    <div class="lh-empty-card" id="leaderboardEmpty">No opportunities yet — the discovery and scoring pipeline lands in a later phase.</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/js/linkhunter-nav.js"></script>
+<script>
+LinkHunterAuth.init('dashboard');
+// Stat cards and leaderboard are wired to /api/linkhunter/* once those
+// endpoints and their backing tables exist (later build phases).
+</script>
+</body>
+</html>
