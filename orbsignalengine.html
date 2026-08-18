@@ -248,6 +248,38 @@
   .action-btn{flex:1;min-width:150px;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
   .action-btn:disabled,.action-btn.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none;}
 
+  /* ===== Mode banner ===== */
+  .mode-banner{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:0.4px;text-align:center;padding:7px 12px;border-radius:8px;margin-bottom:14px;text-transform:uppercase;}
+  .mode-banner.sim{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber);}
+  .mode-banner.live{background:var(--bull-dim);color:var(--bull);border:1px solid var(--bull);}
+
+  /* ===== Short signal disclaimer ===== */
+  .signal-disclaimer{font-size:12px;color:var(--text-dim);background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.5;}
+
+  /* ===== Session context strip ===== */
+  .session-context{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:11.5px;color:var(--text-dim);background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;margin-bottom:16px;}
+  .session-context b{color:var(--text);}
+  .session-context .sc-note{color:var(--text-faint);font-family:var(--sans);}
+
+  /* ===== No-Trade Filter Checklist (live PASS/FAIL) ===== */
+  .ntf-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .ntf-row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12px;}
+  .ntf-label{color:var(--text-dim);font-weight:600;}
+  .ntf-verdict{font-family:var(--mono);font-size:10px;font-weight:800;padding:1px 8px;border-radius:8px;justify-self:end;}
+  .ntf-verdict.pass{background:var(--bull-dim);color:var(--bull);}
+  .ntf-verdict.fail{background:var(--bear-dim);color:var(--bear);}
+  .ntf-verdict.pending{background:var(--panel-alt);color:var(--text-faint);}
+  .ntf-detail{grid-column:1/-1;color:var(--text-faint);font-size:10.5px;line-height:1.4;}
+
+  /* ===== Why No Trade / Setup Summary cards ===== */
+  .why-no-trade-card{display:none;background:var(--panel);border:1px solid var(--bear);border-radius:10px;padding:14px 16px;margin-bottom:16px;}
+  .why-no-trade-card h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--bear);margin:0 0 8px;font-weight:700;}
+  .setup-summary-card{display:none;background:var(--panel);border:1px solid var(--bull);border-radius:12px;padding:16px 18px;margin-bottom:16px;}
+  .setup-summary-card h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text);margin:0 0 12px;font-weight:800;}
+  .ss-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 18px;}
+  .ss-grid .k{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-faint);display:block;margin-bottom:2px;}
+  .ss-grid .v{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text);}
+
   /* ===== Factor cards ===== */
   .factor-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;}
   .factor-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 13px;}
@@ -394,6 +426,8 @@
     </div>
   </header>
 
+  <div id="modeBanner" class="mode-banner sim">SIMULATION MODE — randomly generated session, not real market data</div>
+
   <!-- ORB HEADER — the central intelligence readout -->
   <div class="orb-header">
     <div class="orb-gauge-wrap">
@@ -441,6 +475,55 @@
     <a class="action-btn btn-primary disabled" id="actExitAssistant" href="/exitassistant" target="_blank" rel="noopener">🚪 Send to Exit Assistant</a>
   </div>
 
+  <div class="signal-disclaimer">Directional signal only — based on the underlying's ORB structure. This does not recommend an options contract, strike, expiration, position size, or broker execution.</div>
+
+  <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden;background:var(--panel);">
+    <summary style="cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);">📖 How ORB Works</summary>
+    <ol style="padding:0 16px 16px 34px;color:var(--text-dim);font-size:12.5px;line-height:1.9;">
+      <li>The Opening Range is established during the selected opening period (15/30/60 minutes at the start of the session).</li>
+      <li>OR High = the highest price traded during the opening range.</li>
+      <li>OR Low = the lowest price traded during the opening range.</li>
+      <li>A bullish breakout requires a candle to <em>close</em> above OR High.</li>
+      <li>A bearish breakout requires a candle to <em>close</em> below OR Low.</li>
+      <li>A retest occurs when price returns to the broken OR level after the breakout.</li>
+      <li>A confirmed bullish retest requires price to hold/reclaim OR High on a close.</li>
+      <li>A confirmed bearish retest requires price to hold/reject OR Low on a close.</li>
+      <li>Only after that confirmation does this engine classify the setup as a valid breakout/retest signal — a wick alone through either level is never enough.</li>
+    </ol>
+  </details>
+
+  <div class="session-context">
+    <span><span class="sc-note">NYSE Session</span> <b>09:30–16:00 ET</b></span>
+    <span><span class="sc-note">Opening Range</span> <b id="ctxOpeningRange">—</b></span>
+    <span><span class="sc-note">Current</span> <b id="ctxCurrent">—</b></span>
+    <span><span class="sc-note">Time Remaining</span> <b id="ctxRemaining">—</b></span>
+    <span><span class="sc-note">Status</span> <b id="ctxStatus">—</b></span>
+    <span class="sc-note">(all times ET — not your local timezone)</span>
+  </div>
+
+  <div id="setupSummaryCard" class="setup-summary-card">
+    <h3>🎯 ORB Retest Confirmed — Setup Summary</h3>
+    <div class="ss-grid">
+      <div><span class="k">Direction</span><span class="v" id="ssDirection">—</span></div>
+      <div><span class="k">OR High</span><span class="v" id="ssOrHigh">—</span></div>
+      <div><span class="k">OR Low</span><span class="v" id="ssOrLow">—</span></div>
+      <div><span class="k">Breakout</span><span class="v" id="ssBreakoutTime">—</span></div>
+      <div><span class="k">Retest</span><span class="v" id="ssRetestTime">—</span></div>
+      <div><span class="k">Entry</span><span class="v" id="ssEntry">—</span></div>
+      <div><span class="k">Stop</span><span class="v" id="ssStop">—</span></div>
+      <div><span class="k">Target</span><span class="v" id="ssTarget">—</span></div>
+      <div><span class="k">Risk</span><span class="v" id="ssRisk">—</span></div>
+      <div><span class="k">Reward</span><span class="v" id="ssReward">—</span></div>
+      <div><span class="k">R:R</span><span class="v" id="ssRR">—</span></div>
+      <div><span class="k">Setup Quality</span><span class="v" id="ssQuality">—</span></div>
+    </div>
+  </div>
+
+  <div id="whyNoTradeCard" class="why-no-trade-card">
+    <h3>Why No Trade?</h3>
+    <div id="whyNoTradeText" style="font-size:12.5px;color:var(--text-dim);line-height:1.6;"></div>
+  </div>
+
   <div class="status-strip">
     <div class="status-item">
       <span class="k">Symbol</span>
@@ -462,7 +545,10 @@
       <span class="v" id="orVal">— / —</span>
     </div>
     <div class="divider"></div>
-    <div id="phasePill" class="phase-pill" style="background:var(--panel-alt);color:var(--text-dim);border:1px solid var(--border);">WAITING FOR SESSION</div>
+    <div class="status-item">
+      <span class="k">ORB Status</span>
+      <div id="phasePill" class="phase-pill" style="background:var(--panel-alt);color:var(--text-dim);border:1px solid var(--border);">WAITING FOR SESSION</div>
+    </div>
   </div>
 
   <div class="status-strip" style="margin-top:-6px;">
@@ -475,7 +561,7 @@
       <input id="dateInput" type="date" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;">
     </div>
     <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
-    <span style="font-size:11px;color:var(--text-faint);">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15m bars from your Pro data feed.</span>
+    <span style="font-size:11px;color:var(--text-faint);">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</span>
   </div>
 
   <div class="grid">
@@ -500,12 +586,21 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="card">
-        <div class="card-head"><h2>Setup Plan (Call/Put Bias)</h2></div>
+        <div class="card-head"><h2>Setup Plan — Underlying Bias</h2></div>
         <div class="card-body">
           <div class="trade-row"><span class="k">Direction</span><span class="v" id="dirVal">—</span></div>
-          <div class="trade-row"><span class="k">Entry</span><span class="v" id="entryVal">—</span></div>
+          <div class="trade-row"><span class="k">Options Bias</span><span class="v" id="optBiasVal">—</span></div>
+          <div class="trade-row"><span class="k">Current Price</span><span class="v" id="currentPriceVal">—</span></div>
+          <div class="trade-row"><span class="k">Potential Entry (retest zone)</span><span class="v" id="potentialEntryVal">—</span></div>
+          <div class="trade-row"><span class="k">Confirmed Entry</span><span class="v" id="confirmedEntryVal">—</span></div>
           <div class="trade-row"><span class="k">Stop</span><span class="v" id="stopVal">—</span></div>
-          <div class="trade-row"><span class="k">Target (2R)</span><span class="v" id="targetVal">—</span></div>
+          <div class="trade-row" style="grid-column:1/-1;"><span class="k">Why this stop?</span><span class="v" id="stopBasisVal" style="font-size:11px;font-weight:600;color:var(--text-dim);">—</span></div>
+          <div class="trade-row"><span class="k">Risk</span><span class="v" id="riskVal">—</span></div>
+          <div class="trade-row"><span class="k">Target</span><span class="v" id="targetVal">—</span></div>
+          <div class="trade-row"><span class="k">Reward</span><span class="v" id="rewardVal">—</span></div>
+          <div class="trade-row"><span class="k">R:R</span><span class="v" id="rrVal">—</span></div>
+          <div class="trade-row" style="grid-column:1/-1;"><span class="k">Retest Zone</span><span class="v" id="retestZoneVal" style="font-size:12px;">—</span></div>
+          <div class="trade-row"><span class="k">Breakout Quality (setup score, not a win %)</span><span class="v" id="breakoutQualityVal">—</span></div>
           <div class="trade-row"><span class="k">Live R</span><span class="v" id="liveRVal">—</span></div>
         </div>
       </div>
@@ -524,14 +619,7 @@
       <div class="card">
         <div class="card-head"><h2>No-Trade Filter Checklist</h2></div>
         <div class="card-body">
-          <ul class="rules">
-            <li>Skip if the OR range is under ~0.15% of price — too tight, high whipsaw odds.</li>
-            <li>Skip if the OR range is over ~1.2% of price — reward-to-risk degrades fast.</li>
-            <li>Only take the first clean breakout each session per direction.</li>
-            <li>Require a strong-bodied breakout candle — fade dojis and thin wicks through the level.</li>
-            <li>No new entries once price has run 3+ candles past breakout with no retest.</li>
-            <li>Flatten any open position by the final candle of the session.</li>
-          </ul>
+          <ul class="ntf-list" id="noTradeChecklist"></ul>
         </div>
       </div>
 
@@ -580,7 +668,7 @@
   <div class="disclaimer">Simulated price data by default — not connected to a live market feed and not investment advice. The Orb Score, factor cards, and "BIAS CONFIRMED" markers describe directional bias on the underlying only (derived from six weighted indicators plus the OR breakout + confirmed retest) — they do not select a strike, expiry, or account for IV, theta, or liquidity, and no signal here is a guarantee of outcome. Track the win/loss tally on the right and the Signal History outcome tracking above; those are this tool's real, honest accuracy — not a claimed number.</div>
 
   <div class="disclaimer" style="margin-top:12px;">
-    <strong style="color:var(--text-dim);">Live data:</strong> enter a symbol (and optionally a date — defaults to the most recent trading session) and click "Load Live Session" to run the ORB engine on real 15-minute bars from your Pro data feed. No setup, keys, or extra deployment needed.
+    <strong style="color:var(--text-dim);">Live data:</strong> enter a symbol (and optionally a date — defaults to the most recent trading session) and click "Load Live Session" to run the ORB engine on real 15-minute bars from Alpaca's IEX real-time feed. This is genuinely real-time (not delayed) but reflects trades on the IEX exchange only, not the full consolidated tape — thinly-traded symbols may show gaps. No login or Pro plan required.
   </div>
 
   <div style="max-width:720px;margin:32px auto 0;">
@@ -604,16 +692,19 @@
   </div>
 </div>
 
+<script src="/js/orb-engine.js"></script>
 <script>
 (function(){
   "use strict";
 
   // ================= CONFIG =================
+  // Breakout/retest/no-trade thresholds live in js/orb-engine.js (ORBEngine.CONFIG)
+  // so the exact same numbers back both this page and tests/orb-engine.test.js.
+  // They are strategy rules this engine enforces, not statistically-validated
+  // facts — see docs/orb-signal-engine-audit.md.
+  const EC = ORBEngine.CONFIG;
+  const ST = ORBEngine.STATES;
   let SESSION_CANDLES = 26; // 09:30 -> 16:00 in 15m steps (simulated); overridden by live bar count
-  const NO_TRADE_CUTOFF = 8;  // candles after OR set with no breakout -> stand aside
-  const RETEST_TOLERANCE = 0.0012;
-  const BODY_STRENGTH_MIN = 0.35;
-  const EXTENDED_WARN_CANDLES = 3;
 
   const chartEl = document.getElementById('chart');
   const toastLayer = document.getElementById('toastLayer');
@@ -633,13 +724,17 @@
   let playing = false;
   let timer = null;
 
-  let state = 'IDLE';
-  let orHigh = null, orLow = null, orSet = false;
-  let breakoutDir = null, breakoutIdx = null;
-  let entryPrice = null, stopPrice = null, targetPrice = null, entryIdx = null;
+  let state = ST.WAITING_FOR_RANGE;
+  let orHigh = null, orLow = null, orSet = false, orRangePct = null;
+  let breakoutDir = null, breakoutIdx = null, breakoutVolumeSurge = null;
+  let hasFailedBreakout = { long: false, short: false };
+  let entryPrice = null, stopPrice = null, targetPrice = null, entryIdx = null, riskPlan = null;
   let result = null;
   let flags = {};
   let priceMin = 0, priceMax = 1;
+  let engineCtx = null;
+  let currentBreakoutQuality = null;
+  let tradeLedgerLogged = false;
 
   let stats = { wins: 0, losses: 0, flats: 0 };
   let isLiveData = false;
@@ -919,15 +1014,16 @@
   let lastWeakBreakIdx = null;
 
   function deriveEntryQuality(idx){
-    if (state === 'IDLE') return { label:'NONE', note:'Opening range is still forming.' };
-    if (state === 'WATCH_BREAKOUT'){
+    if (state === 'WAITING_FOR_RANGE' || state === 'RANGE_FORMING' || state === 'RANGE_COMPLETE') return { label:'NONE', note:'Opening range is still forming.' };
+    if (state === 'BREAKOUT_PENDING'){
       if (lastWeakBreakIdx === idx) return { label:'WEAK', note:'Price poked through the range but the candle body was not convincing.' };
       return { label:'NONE', note:'No breakout yet — watching the opening range.' };
     }
-    if (state === 'WATCH_RETEST') return { label:'MODERATE', note:'Breakout confirmed — waiting for a retest to hold.' };
-    if (state === 'IN_TRADE') return { label:'STRONG', note:'Retest held — this setup is fully confirmed.' };
-    if (state === 'NO_TRADE') return { label:'NONE', note:'The range held all session — no qualifying breakout formed.' };
-    if (state === 'DONE') return { label: result === 'WIN' ? 'STRONG' : 'NONE', note:'Session complete.' };
+    if (state === 'RETEST_PENDING' || state === 'RETEST_TESTING' || state === 'RETEST_CONFIRMED') return { label:'MODERATE', note:'Breakout confirmed — waiting for a retest to hold.' };
+    if (state === 'ENTRY_TRIGGERED' || state === 'TARGET_HIT' || state === 'STOP_HIT') return { label:'STRONG', note:'Retest held — this setup is fully confirmed.' };
+    if (state === 'FAILED_BREAKOUT') return { label:'NONE', note:'That breakout attempt failed — watching the other direction, if still available.' };
+    if (state === 'NO_TRADE') return { label:'NONE', note:'No qualifying, tradeable setup formed this session.' };
+    if (state === 'SESSION_COMPLETE') return { label: result === 'WIN' ? 'STRONG' : 'NONE', note:'Session complete.' };
     return { label:'NONE', note:'' };
   }
 
@@ -1254,6 +1350,143 @@
     renderSignalHistory();
   }
 
+  // ================= MODE BANNER / SESSION CONTEXT =================
+  function renderModeBanner(){
+    const el = document.getElementById('modeBanner');
+    if (!el) return;
+    if (isLiveData){
+      el.textContent = 'LIVE MARKET DATA — Alpaca IEX real-time feed';
+      el.className = 'mode-banner live';
+    } else {
+      el.textContent = 'SIMULATION MODE — randomly generated session, not real market data';
+      el.className = 'mode-banner sim';
+    }
+  }
+
+  // All times shown here come directly from `times[]` (already ET-labeled —
+  // real sessions from /api/orb-bars are ET via Intl America/New_York;
+  // simulated sessions start at 09:30 by construction), never the visitor's
+  // local clock or Date.now().
+  function renderSessionContext(){
+    const orEl = document.getElementById('ctxOpeningRange');
+    const curEl = document.getElementById('ctxCurrent');
+    const remEl = document.getElementById('ctxRemaining');
+    const statusEl = document.getElementById('ctxStatus');
+    if (!orEl) return;
+    const orEndMinutes = orPeriod * 15;
+    orEl.textContent = (times[0] || '09:30') + '–' + addMinutes(times[0] || '09:30', orEndMinutes) + ' ET';
+    const curIdx = Math.max(0, revealIdx);
+    curEl.textContent = (times[curIdx] || times[0] || '—') + ' ET';
+    const remainingCandles = Math.max(0, SESSION_CANDLES - 1 - curIdx);
+    const remMin = remainingCandles * 15;
+    remEl.textContent = remMin > 0 ? Math.floor(remMin / 60) + 'h ' + (remMin % 60) + 'm' : 'Session ending';
+    statusEl.textContent = (STATE_LABELS[state] || {}).text || state;
+  }
+
+  function addMinutes(hhmm, mins){
+    const [h, m] = hhmm.split(':').map(Number);
+    let total = h * 60 + m + mins;
+    total = ((total % 1440) + 1440) % 1440;
+    return pad2(Math.floor(total / 60)) + ':' + pad2(total % 60);
+  }
+
+  // ================= NO-TRADE FILTER CHECKLIST (live PASS/FAIL) =================
+  function renderNoTradeChecklist(){
+    const el = document.getElementById('noTradeChecklist');
+    if (!el || !engineCtx) return;
+    const rows = ORBEngine.evaluateNoTradeChecklist(state, engineCtx, EC);
+    el.innerHTML = rows.map(r => {
+      const verdict = r.pass === null ? '<span class="ntf-verdict pending">—</span>'
+        : r.pass ? '<span class="ntf-verdict pass">PASS</span>'
+        : '<span class="ntf-verdict fail">FAIL</span>';
+      return '<li class="ntf-row"><span class="ntf-label">' + r.label + '</span>' + verdict + '<span class="ntf-detail">' + r.detail + '</span></li>';
+    }).join('');
+  }
+
+  function renderWhyNoTrade(reasonKey){
+    const card = document.getElementById('whyNoTradeCard');
+    const textEl = document.getElementById('whyNoTradeText');
+    if (!card || !textEl) return;
+    textEl.textContent = NO_TRADE_REASON_TEXT[reasonKey] || reasonKey;
+    card.style.display = 'block';
+  }
+
+  function hideWhyNoTrade(){
+    const card = document.getElementById('whyNoTradeCard');
+    if (card) card.style.display = 'none';
+  }
+
+  // ================= SETUP SUMMARY CARD (item #28) =================
+  function renderSetupSummaryCard(ev, retestTime){
+    const card = document.getElementById('setupSummaryCard');
+    if (!card) return;
+    document.getElementById('ssDirection').textContent = ev.dir === 'long' ? 'BULLISH' : 'BEARISH';
+    document.getElementById('ssDirection').className = 'v ' + (ev.dir === 'long' ? 'pnl-pos' : 'pnl-neg');
+    document.getElementById('ssOrHigh').textContent = fmt(orHigh);
+    document.getElementById('ssOrLow').textContent = fmt(orLow);
+    document.getElementById('ssBreakoutTime').textContent = times[breakoutIdx] || '—';
+    document.getElementById('ssRetestTime').textContent = retestTime;
+    document.getElementById('ssEntry').textContent = fmt(ev.entry);
+    document.getElementById('ssStop').textContent = fmt(ev.stop);
+    document.getElementById('ssTarget').textContent = fmt(ev.target);
+    document.getElementById('ssRisk').textContent = fmt(ev.risk);
+    document.getElementById('ssReward').textContent = fmt(ev.reward);
+    document.getElementById('ssRR').textContent = ev.rr.toFixed(1) + 'R';
+    document.getElementById('ssQuality').textContent = currentBreakoutQuality != null ? currentBreakoutQuality + ' / 100' : '—';
+    card.style.display = 'block';
+  }
+
+  function hideSetupSummaryCard(){
+    const card = document.getElementById('setupSummaryCard');
+    if (card) card.style.display = 'none';
+    hideWhyNoTrade();
+  }
+
+  // ================= TRADE LEDGER (item #22 — client-side only) =================
+  // Separate from sc_orb_signal_history (the continuous multi-factor Orb
+  // Score tracker) — this records one row per SESSION for the discrete,
+  // FSM-resolved outcome, with every field item #22 asked for.
+  const TRADE_LEDGER_KEY = 'sc_orb_trade_ledger';
+  const TRADE_LEDGER_CAP = 500;
+
+  function persistTradeLedgerEntry(idx, t){
+    let entry;
+    if (state === ST.NO_TRADE){
+      entry = {
+        ts: Date.now(), symbol, date: document.getElementById('dateInput').value || null,
+        strategyVersion: ORBEngine.ORB_STRATEGY_VERSION, isLive: isLiveData,
+        orHigh, orLow, orRangePct,
+        breakoutDir: null, breakoutTime: null, breakoutPrice: null,
+        retestTime: null, retestPrice: null,
+        entry: null, stop: null, target: null, exit: null,
+        result: 'NO_TRADE', rMultiple: null,
+        breakoutVolumeSurge: null, breakoutQuality: null,
+        conditions: engineCtx.lastEvaluatedIdx != null ? 'idx ' + engineCtx.lastEvaluatedIdx : null,
+      };
+    } else {
+      const rMultiple = (engineCtx.exitPrice != null && riskPlan && riskPlan.risk > 0)
+        ? ((breakoutDir === 'long' ? engineCtx.exitPrice - entryPrice : entryPrice - engineCtx.exitPrice) / riskPlan.risk)
+        : null;
+      entry = {
+        ts: Date.now(), symbol, date: document.getElementById('dateInput').value || null,
+        strategyVersion: ORBEngine.ORB_STRATEGY_VERSION, isLive: isLiveData,
+        orHigh, orLow, orRangePct,
+        breakoutDir, breakoutTime: times[breakoutIdx] || null, breakoutPrice: candles[breakoutIdx] ? candles[breakoutIdx].close : null,
+        retestTime: times[entryIdx] || null, retestPrice: entryPrice,
+        entry: entryPrice, stop: stopPrice, target: targetPrice, exit: engineCtx.exitPrice,
+        result: engineCtx.exitReason, rMultiple: rMultiple != null ? Number(rMultiple.toFixed(2)) : null,
+        breakoutVolumeSurge, breakoutQuality: currentBreakoutQuality,
+        conditions: null,
+      };
+    }
+    try {
+      const hist = JSON.parse(localStorage.getItem(TRADE_LEDGER_KEY) || '[]');
+      hist.push(entry);
+      if (hist.length > TRADE_LEDGER_CAP) hist.splice(0, hist.length - TRADE_LEDGER_CAP);
+      localStorage.setItem(TRADE_LEDGER_KEY, JSON.stringify(hist));
+    } catch (e) {}
+  }
+
   function generateSession(){
     const regime = choice(['trend_up','trend_down','chop','fade_up','fade_down']);
     const base = rand(28, 340);
@@ -1328,13 +1561,25 @@
   function applySession(phaseLabel, phaseKind, logMessage, isLive){
     isLiveData = !!isLive;
     revealIdx = -1;
-    state = 'IDLE';
-    orHigh = orLow = null; orSet = false;
-    breakoutDir = breakoutIdx = null;
-    entryPrice = stopPrice = targetPrice = entryIdx = null;
+    state = ST.WAITING_FOR_RANGE;
+    orHigh = orLow = orRangePct = null; orSet = false;
+    breakoutDir = breakoutIdx = breakoutVolumeSurge = null;
+    hasFailedBreakout = { long: false, short: false };
+    entryPrice = stopPrice = targetPrice = entryIdx = riskPlan = null;
     result = null;
     flags = {};
+    lastWeakBreakIdx = null;
+    currentBreakoutQuality = null;
+    tradeLedgerLogged = false;
     orPeriod = parseInt(document.getElementById('orSelect').value, 10);
+    engineCtx = {
+      orPeriod, allCandles: candles, sessionCandles: SESSION_CANDLES,
+      orHigh: null, orLow: null, orRangePct: null,
+      breakoutDir: null, breakoutIdx: null, breakoutVolumeSurge: null,
+      hasFailedBreakout: { long: false, short: false },
+      entryPrice: null, stopPrice: null, targetPrice: null, entryIdx: null, riskPlan: null,
+      exitPrice: null, exitReason: null, lastEvaluatedIdx: null,
+    };
 
     const lows = candles.map(c => c.low), highs = candles.map(c => c.high);
     priceMin = Math.min.apply(null, lows) * 0.997;
@@ -1350,14 +1595,29 @@
     logList.innerHTML = '<div class="log-empty">' + logMessage + '</div>';
     toastLayer.innerHTML = '';
     resetOrbUI();
+    renderModeBanner();
+    renderSessionContext();
+    renderNoTradeChecklist();
+    hideSetupSummaryCard();
     render();
   }
 
   function clearTradePlan(){
     document.getElementById('dirVal').textContent = '—';
-    document.getElementById('entryVal').textContent = '—';
+    document.getElementById('dirVal').style.color = '';
+    document.getElementById('optBiasVal').textContent = '—';
+    document.getElementById('optBiasVal').style.color = '';
+    document.getElementById('currentPriceVal').textContent = '—';
+    document.getElementById('potentialEntryVal').textContent = '—';
+    document.getElementById('confirmedEntryVal').textContent = '—';
     document.getElementById('stopVal').textContent = '—';
+    document.getElementById('stopBasisVal').textContent = '—';
+    document.getElementById('riskVal').textContent = '—';
     document.getElementById('targetVal').textContent = '—';
+    document.getElementById('rewardVal').textContent = '—';
+    document.getElementById('rrVal').textContent = '—';
+    document.getElementById('retestZoneVal').textContent = '—';
+    document.getElementById('breakoutQualityVal').textContent = '—';
     document.getElementById('liveRVal').textContent = '—';
   }
 
@@ -1405,192 +1665,190 @@
     return fmt(lower) + '–' + fmt(upper);
   }
 
+  const STATE_LABELS = {
+    WAITING_FOR_RANGE: { text: 'WAITING FOR SESSION', kind: 'neutral' },
+    RANGE_FORMING:     { text: 'FORMING OPENING RANGE', kind: 'blue' },
+    RANGE_COMPLETE:    { text: 'OPENING RANGE SET', kind: 'blue' },
+    BREAKOUT_PENDING:  { text: 'WATCHING FOR BREAKOUT', kind: 'blue' },
+    RETEST_PENDING:    { text: 'BREAKOUT CONFIRMED — WATCHING FOR RETEST', kind: 'amber' },
+    RETEST_TESTING:    { text: 'RETEST TESTING', kind: 'amber' },
+    RETEST_CONFIRMED:  { text: 'RETEST CONFIRMED', kind: 'bull' },
+    ENTRY_TRIGGERED:   { text: 'ENTRY TRIGGERED', kind: 'bull' },
+    TARGET_HIT:        { text: 'TARGET HIT', kind: 'bull' },
+    STOP_HIT:          { text: 'STOP HIT', kind: 'bear' },
+    FAILED_BREAKOUT:   { text: 'FAILED BREAKOUT', kind: 'neutral' },
+    NO_TRADE:          { text: 'NO TRADE', kind: 'neutral' },
+    SESSION_COMPLETE:  { text: 'SESSION COMPLETE', kind: 'neutral' },
+  };
+
+  function orbStatusLabel(st, dir){
+    const base = STATE_LABELS[st] || { text: st, kind: 'neutral' };
+    let text = base.text, kind = base.kind;
+    if (dir && (st === 'RETEST_CONFIRMED' || st === 'ENTRY_TRIGGERED')){
+      kind = dir === 'long' ? 'bull' : 'bear';
+      text = (dir === 'long' ? 'BULLISH' : 'BEARISH') + ' ORB — ' + base.text;
+    }
+    if (dir && st === 'STOP_HIT') kind = 'bear';
+    return { text: '🟢 ' + text, kind };
+  }
+
+  const NO_TRADE_REASON_TEXT = {
+    OR_TOO_NARROW: 'Strategy rule: the opening range was under ' + (EC.OR_RANGE_MIN_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this tight (higher whipsaw risk under this model).',
+    OR_TOO_WIDE: 'Strategy rule: the opening range was over ' + (EC.OR_RANGE_MAX_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this wide (weaker reward-to-risk under the fixed 2R model).',
+    NO_BREAKOUT: 'Price held inside the opening range for ' + EC.NO_BREAKOUT_CUTOFF_CANDLES + '+ candles with no confirmed breakout in either direction.',
+    BREAKOUT_FAILED_BOTH_DIRECTIONS: 'Breakout attempts in both directions failed this session (reclaimed, or ran too far without a retest). Strategy rule: only one attempt per direction per session.',
+    SESSION_ENDED: 'The session ended before a confirmed, tradeable setup completed.',
+  };
+
   // ================= STRATEGY ENGINE =================
+  // Decision logic (OR calc, breakout/retest classification, entry math,
+  // the 12-state machine) lives in js/orb-engine.js — this function only
+  // translates its output into DOM updates, toasts, and the event log.
   function evaluate(idx){
     const c = candles[idx];
     const t = times[idx];
     document.getElementById('timeVal').textContent = t;
     document.getElementById('priceVal').textContent = fmt(c.close);
     document.getElementById('candleCountVal').textContent = (idx+1) + ' / ' + SESSION_CANDLES;
+    document.getElementById('currentPriceVal').textContent = fmt(c.close);
 
     computeAndRenderFactors(idx);
+    c.volumeSurge = calcVolSurge(candles.slice(0, idx + 1), 20);
 
-    function finish(){
-      updateDerivedChips(idx);
-      render();
-    }
+    const { nextState, events } = ORBEngine.advanceState(state, idx, c, engineCtx);
+    state = nextState;
 
-    // --- Range forming ---
-    if (idx === 0 && orPeriod > 1){
-      setPhase('FORMING OPENING RANGE', 'blue');
-      fire('neutral', '📊', 'SESSION OPEN', symbol + ' opening range forming (' + (orPeriod*15) + 'm window). No trade yet.', t);
+    // Mirror the engine's bookkeeping onto this page's own module-level
+    // variables — render()/deriveEntryQuality()/deriveRisk()/the cross-tool
+    // action links all read these bare names directly, unchanged from
+    // before this refactor.
+    orHigh = engineCtx.orHigh; orLow = engineCtx.orLow; orRangePct = engineCtx.orRangePct;
+    orSet = orHigh != null;
+    breakoutDir = engineCtx.breakoutDir; breakoutIdx = engineCtx.breakoutIdx;
+    breakoutVolumeSurge = engineCtx.breakoutVolumeSurge;
+    hasFailedBreakout = engineCtx.hasFailedBreakout;
+    entryPrice = engineCtx.entryPrice; stopPrice = engineCtx.stopPrice; targetPrice = engineCtx.targetPrice;
+    entryIdx = engineCtx.entryIdx; riskPlan = engineCtx.riskPlan;
+
+    events.forEach(ev => handleEngineEvent(ev, idx, t));
+
+    const label = orbStatusLabel(state, breakoutDir);
+    setPhase(label.text, label.kind);
+    updatePotentialEntry();
+    renderNoTradeChecklist();
+    renderSessionContext();
+    if ((state === ST.NO_TRADE || state === ST.SESSION_COMPLETE) && !tradeLedgerLogged){
+      tradeLedgerLogged = true;
+      persistTradeLedgerEntry(idx, t);
     }
-    if (idx <= orPeriod - 1){
-      if (idx === orPeriod - 1){
-        const seg = candles.slice(0, orPeriod);
-        orHigh = Math.max.apply(null, seg.map(x => x.high));
-        orLow = Math.min.apply(null, seg.map(x => x.low));
-        orSet = true;
-        document.getElementById('orVal').textContent = fmt(orHigh) + ' / ' + fmt(orLow);
-        const rangeAbs = orHigh - orLow;
-        const rangePct = (rangeAbs / orLow) * 100;
-        let note = 'Range locked at ' + fmt(orLow) + '–' + fmt(orHigh) + ' (' + rangePct.toFixed(2) + '% of price).';
-        if (rangePct < 0.15){
-          note += ' Very tight — elevated false-breakout risk, size down.';
-          fire('amber', '⚠️', 'RANGE SET — TIGHT', note, t);
-        } else if (rangePct > 1.2){
-          note += ' Wide range — reward-to-risk on a breakout is weaker than usual.';
-          fire('amber', '⚠️', 'RANGE SET — WIDE', note, t);
-        } else {
-          note += ' Healthy width — watching for a confirmed break.';
-          fire('blue', '📏', 'OPENING RANGE SET', note, t);
-        }
-        state = 'WATCH_BREAKOUT';
-        setPhase('WATCHING FOR BREAKOUT', 'blue');
-      } else if (idx === 0) {
-        setPhase('FORMING OPENING RANGE', 'blue');
+    updateLiveR(c.close);
+    updateDerivedChips(idx);
+    render();
+  }
+
+  function handleEngineEvent(ev, idx, t){
+    if (ev.type === 'OR_SET'){
+      document.getElementById('orVal').textContent = fmt(ev.orHigh) + ' / ' + fmt(ev.orLow);
+      const pct = (ev.rangePct * 100).toFixed(2);
+      fire('blue', '📏', 'OPENING RANGE SET', 'OR High ' + fmt(ev.orHigh) + '. OR Low ' + fmt(ev.orLow) + '. Range ' + pct + '% of price.', t);
+      if (ev.quality === 'OK'){
+        fire('neutral', '📐', 'RANGE SIZE OK', pct + '% of price — within the strategy\'s accepted ' + (EC.OR_RANGE_MIN_PCT*100).toFixed(2) + '%–' + (EC.OR_RANGE_MAX_PCT*100).toFixed(2) + '% window.', t);
       }
-      finish();
-      return;
     }
-
-    // --- Watching for breakout ---
-    if (state === 'WATCH_BREAKOUT'){
-      const bodyRatio = Math.abs(c.close - c.open) / Math.max(c.high - c.low, 0.0001);
-      const bullBody = c.close > c.open;
-      const bearBody = c.close < c.open;
-
-      if (c.close > orHigh){
-        if (bullBody && bodyRatio >= BODY_STRENGTH_MIN){
-          breakoutDir = 'long'; breakoutIdx = idx;
-          state = 'WATCH_RETEST';
-          setPhase('BREAKOUT — WATCHING RETEST', 'amber');
-          fire('bull', '🚀', 'BULLISH SETUP FORMING', symbol + ' closed above OR high ' + fmt(orHigh) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('long', c.close) + '. Watching for a retest before treating this as a potential entry zone.', t, 'Conditions favor buyers — not a fill signal yet');
-        } else {
-          lastWeakBreakIdx = idx;
-          fire('amber', '⚠️', 'WEAK BREAK — WAIT FOR CONFIRMATION', 'Price poked above ' + fmt(orHigh) + ' but the candle body is weak/indecisive. Confirmation is missing — wait before treating this as a setup.', t);
-        }
-      } else if (c.close < orLow){
-        if (bearBody && bodyRatio >= BODY_STRENGTH_MIN){
-          breakoutDir = 'short'; breakoutIdx = idx;
-          state = 'WATCH_RETEST';
-          setPhase('BREAKOUT — WATCHING RETEST', 'amber');
-          fire('bear', '🔻', 'BEARISH SETUP FORMING', symbol + ' closed below OR low ' + fmt(orLow) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('short', c.close) + '. Watching for a retest before treating this as a potential entry zone.', t, 'Conditions favor sellers — not a fill signal yet');
-        } else {
-          lastWeakBreakIdx = idx;
-          fire('amber', '⚠️', 'WEAK BREAK — WAIT FOR CONFIRMATION', 'Price poked below ' + fmt(orLow) + ' but the candle body is weak/indecisive. Confirmation is missing — wait before treating this as a setup.', t);
-        }
-      } else {
-        const sinceRange = idx - (orPeriod - 1);
-        if (sinceRange >= NO_TRADE_CUTOFF){
-          state = 'NO_TRADE';
-          setPhase('NO TRADE — RANGE HOLDING', 'neutral');
-          stats.flats++; updateStats();
-          fire('neutral', '⛔', 'NO SETUP — RANGE HOLDING', 'Price has held inside ' + fmt(orLow) + '–' + fmt(orHigh) + ' with no breakout. No bullish or bearish setup — the edge is gone for this session.', t);
-        }
-      }
-      finish();
-      return;
+    else if (ev.type === 'WEAK_BREAK'){
+      lastWeakBreakIdx = idx;
+      fire('amber', '⚠️', 'WEAK BREAK — WAIT FOR CONFIRMATION', 'Price poked ' + (ev.dir === 'long' ? 'above OR High' : 'below OR Low') + ' but the candle body was under ' + (EC.BODY_STRENGTH_MIN*100).toFixed(0) + '% of its range. Strategy rule: a wick alone never confirms a breakout.', t);
     }
+    else if (ev.type === 'BREAKOUT_CONFIRMED'){
+      fire(ev.dir === 'long' ? 'bull' : 'bear', ev.dir === 'long' ? '🚀' : '🔻',
+        (ev.dir === 'long' ? 'BULLISH' : 'BEARISH') + ' ORB — BREAKOUT CONFIRMED',
+        symbol + ' closed ' + (ev.dir === 'long' ? 'above OR High ' + fmt(orHigh) : 'below OR Low ' + fmt(orLow)) + ' at ' + fmt(ev.price) +
+        ' on a strong candle (body ' + (ev.bodyRatio * 100).toFixed(0) + '% of range). Expected range extension: ' + expectedRange(ev.dir, ev.price) + '. Watching for a retest before treating this as a potential entry zone.',
+        t, 'Conditions favor ' + (ev.dir === 'long' ? 'buyers' : 'sellers') + ' — not a fill signal yet');
+      const trendFactor = (factorCache[idx] && factorCache[idx].factors) ? factorCache[idx].factors.find(f => f.key === 'trend') : null;
+      currentBreakoutQuality = ORBEngine.breakoutQuality({
+        bodyRatio: ev.bodyRatio,
+        volumeSurge: breakoutVolumeSurge,
+        distanceBeyondPct: Math.abs(ev.price - (ev.dir === 'long' ? orLow : orHigh)) / ev.price,
+        trendScore: trendFactor ? trendFactor.score : null,
+      });
+    }
+    else if (ev.type === 'RETEST_TESTING'){
+      fire('blue', '🔁', 'RETEST TESTING', 'Price is testing ' + fmt(ev.dir === 'long' ? orHigh : orLow) + ' — waiting for a hold before treating this as an entry zone.', t);
+    }
+    else if (ev.type === 'RETEST_CONFIRMED'){
+      fire('blue', '🔁', 'RETEST CONFIRMED', symbol + ' pulled back and held ' + fmt(ev.dir === 'long' ? orHigh : orLow) + '.', t);
+    }
+    else if (ev.type === 'ENTRY_TRIGGERED'){
+      enterTrade(ev.dir, ev.entry, ev.stop, ev.target, ev.risk, ev.reward, ev.rr, t);
+      renderSetupSummaryCard(ev, t);
+    }
+    else if (ev.type === 'FAILED_BREAKOUT'){
+      const causeText = ev.cause === 'RECLAIMED'
+        ? 'Price reclaimed the range and closed back beyond the invalidation level. Strategy rule: only one breakout attempt per direction per session — this direction is done.'
+        : 'Price ran ' + EC.EXTENDED_NO_RETEST_CANDLES + '+ candles past the breakout with no retest. Strategy rule: no new entries this far past an unconfirmed breakout — this direction is done.';
+      fire('neutral', '❌', (ev.dir === 'long' ? 'BULLISH' : 'BEARISH') + ' BREAKOUT FAILED', causeText, t);
+    }
+    else if (ev.type === 'NO_TRADE'){
+      stats.flats++; updateStats();
+      fire('neutral', '⛔', 'NO TRADE', NO_TRADE_REASON_TEXT[ev.reason] || ev.reason, t);
+      renderWhyNoTrade(ev.reason);
+    }
+    else if (ev.type === 'TARGET_HIT'){
+      exitTrade('WIN', ev.price, t, '🎯', 'TARGET HIT', 'Price reached the exact 2R target at ' + fmt(ev.price) + '. Consider closing — the setup has played out.');
+    }
+    else if (ev.type === 'STOP_HIT'){
+      exitTrade('LOSS', ev.price, t, '🛑', 'STOP HIT', 'Price hit the invalidation level at ' + fmt(ev.price) + '. Setup weakening — consider closing to limit risk.');
+    }
+    else if (ev.type === 'SESSION_FLATTEN'){
+      exitTrade('FLAT', ev.price, t, '🔔', 'SESSION ENDING', 'Final candle of the session — consider flattening the remaining position at ' + fmt(ev.price) + ' regardless of target/stop.');
+    }
+  }
 
-    // --- Watching for retest ---
-    if (state === 'WATCH_RETEST'){
+  function updatePotentialEntry(){
+    const el = document.getElementById('potentialEntryVal');
+    if (!el) return;
+    if (state === 'RETEST_PENDING' || state === 'RETEST_TESTING'){
       const level = breakoutDir === 'long' ? orHigh : orLow;
-      const tol = level * RETEST_TOLERANCE;
-
-      if (breakoutDir === 'long'){
-        const touched = c.low <= level + tol;
-        if (touched && c.close > level){
-          fire('blue', '🔁', 'RETEST HOLDING', symbol + ' pulled back and held ' + fmt(level) + '.', t);
-          enterTrade('long', c.close, orLow, t, idx);
-        } else if (touched && c.close < orLow){
-          fire('neutral', '❌', 'SETUP INVALIDATED', 'Price reclaimed the range and closed below ' + fmt(orLow) + '. No entry zone — breakout invalidated.', t);
-          state = 'WATCH_BREAKOUT'; breakoutDir = null; breakoutIdx = null;
-          setPhase('WATCHING FOR BREAKOUT', 'blue');
-        } else if (touched){
-          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before treating this as an entry zone.', t);
-        } else {
-          checkExtension(idx, t);
-        }
-      } else {
-        const touched = c.high >= level - tol;
-        if (touched && c.close < level){
-          fire('blue', '🔁', 'RETEST HOLDING', symbol + ' pulled back and held ' + fmt(level) + '.', t);
-          enterTrade('short', c.close, orHigh, t, idx);
-        } else if (touched && c.close > orHigh){
-          fire('neutral', '❌', 'SETUP INVALIDATED', 'Price reclaimed the range and closed above ' + fmt(orHigh) + '. No entry zone — breakout invalidated.', t);
-          state = 'WATCH_BREAKOUT'; breakoutDir = null; breakoutIdx = null;
-          setPhase('WATCHING FOR BREAKOUT', 'blue');
-        } else if (touched){
-          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before treating this as an entry zone.', t);
-        } else {
-          checkExtension(idx, t);
-        }
-      }
-      finish();
-      return;
-    }
-
-    // --- In trade ---
-    if (state === 'IN_TRADE'){
-      if (breakoutDir === 'long'){
-        if (c.high >= targetPrice){
-          exitTrade('WIN', targetPrice, t, '🎯', 'TARGET ZONE REACHED', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Consider closing — the setup has played out.');
-        } else if (c.low <= stopPrice){
-          exitTrade('LOSS', stopPrice, t, '🛑', 'INVALIDATION HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Setup weakening — consider closing to limit risk.');
-        }
-      } else {
-        if (c.low <= targetPrice){
-          exitTrade('WIN', targetPrice, t, '🎯', 'TARGET ZONE REACHED', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Consider closing — the setup has played out.');
-        } else if (c.high >= stopPrice){
-          exitTrade('LOSS', stopPrice, t, '🛑', 'INVALIDATION HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Setup weakening — consider closing to limit risk.');
-        }
-      }
-      if (state === 'IN_TRADE' && idx === SESSION_CANDLES - 1){
-        exitTrade('FLAT', c.close, t, '🔔', 'SESSION ENDING', 'Final candle of the session — consider flattening the remaining position at ' + fmt(c.close) + ' regardless of target/stop.');
-      }
-      updateLiveR(c.close);
-      finish();
-      return;
-    }
-
-    finish();
-  }
-
-  function checkExtension(idx, t){
-    const sinceBreak = idx - breakoutIdx;
-    if (sinceBreak === 2 && !flags.momentum){
-      flags.momentum = true;
-      fire('amber', '⚡', 'NO RETEST YET', 'Price is extending without a pullback. Only momentum/aggressive entries apply here — retest entries are higher probability.', times[idx]);
-    }
-    if (sinceBreak >= EXTENDED_WARN_CANDLES + 2 && !flags.extended){
-      flags.extended = true;
-      fire('amber', '⚠️', 'TOO EXTENDED', 'Price has run well past the breakout with no retest. Avoid chasing — the risk/reward here is poor.', times[idx]);
+      const tol = level * EC.RETEST_TOLERANCE_PCT;
+      el.textContent = fmt(level - tol) + '–' + fmt(level + tol);
+    } else if (state !== 'ENTRY_TRIGGERED' && state !== 'TARGET_HIT' && state !== 'STOP_HIT' && state !== 'SESSION_COMPLETE'){
+      el.textContent = '—';
     }
   }
 
-  function enterTrade(dir, price, stop, t, idx){
-    entryPrice = price;
-    stopPrice = stop;
-    entryIdx = idx;
-    const risk = Math.max(Math.abs(entryPrice - stopPrice), entryPrice * 0.0008);
-    targetPrice = dir === 'long' ? entryPrice + risk * 2 : entryPrice - risk * 2;
-    state = 'IN_TRADE';
-    const optType = dir === 'long' ? 'CALL' : 'PUT';
-    setPhase('IN TRADE — ' + optType + ' BIAS', dir === 'long' ? 'bull' : 'bear');
-    fire(dir === 'long' ? 'bull' : 'bear', dir === 'long' ? '🟢' : '🔴', optType + ' BIAS CONFIRMED',
-      'Retest held. Potential ' + optType + ' entry zone at ' + fmt(entryPrice) + '. Invalidation ' + fmt(stopPrice) + ', expected target ' + fmt(targetPrice) + ' (2R).', t,
-      'Directional bias only — pick strike/expiry with your own risk rules');
+  function enterTrade(dir, entry, stop, target, risk, reward, rr, t){
+    const optType = dir === 'long' ? 'CALLS' : 'PUTS';
+    fire(dir === 'long' ? 'bull' : 'bear', dir === 'long' ? '🟢' : '🔴',
+      (dir === 'long' ? 'BULLISH' : 'BEARISH') + ' ORB — ENTRY TRIGGERED',
+      'Retest held. Potential entry zone at ' + fmt(entry) + '. Invalidation ' + fmt(stop) + ', target ' + fmt(target) + ' (' + rr.toFixed(1) + 'R).', t,
+      'Directional bias only — this does not select a strike, expiration, or position size');
 
-    document.getElementById('dirVal').textContent = optType;
+    document.getElementById('dirVal').textContent = dir === 'long' ? 'BULLISH ORB' : 'BEARISH ORB';
     document.getElementById('dirVal').style.color = dir === 'long' ? 'var(--bull)' : 'var(--bear)';
-    document.getElementById('entryVal').textContent = fmt(entryPrice);
-    document.getElementById('stopVal').textContent = fmt(stopPrice);
-    document.getElementById('targetVal').textContent = fmt(targetPrice);
+    const optBiasEl = document.getElementById('optBiasVal');
+    if (optBiasEl){ optBiasEl.textContent = optType; optBiasEl.style.color = dir === 'long' ? 'var(--bull)' : 'var(--bear)'; }
+    document.getElementById('potentialEntryVal').textContent = '—';
+    document.getElementById('confirmedEntryVal').textContent = fmt(entry);
+    document.getElementById('stopVal').textContent = fmt(stop);
+    document.getElementById('riskVal').textContent = fmt(risk);
+    document.getElementById('targetVal').textContent = fmt(target);
+    document.getElementById('rewardVal').textContent = fmt(reward);
+    document.getElementById('rrVal').textContent = rr.toFixed(1) + 'R';
+    const stopBasisEl = document.getElementById('stopBasisVal');
+    if (stopBasisEl) stopBasisEl.textContent = 'Opposite side of the confirmed opening range (' + (dir === 'long' ? 'OR Low' : 'OR High') + ') — the level whose break invalidates this setup.';
+    const retestZoneEl = document.getElementById('retestZoneVal');
+    if (retestZoneEl){
+      const level = dir === 'long' ? orHigh : orLow;
+      const tol = level * EC.RETEST_TOLERANCE_PCT;
+      retestZoneEl.textContent = fmt(level - tol) + '–' + fmt(level + tol) + ' (level ± ' + (EC.RETEST_TOLERANCE_PCT * 100).toFixed(2) + '%)';
+    }
+    const qualEl = document.getElementById('breakoutQualityVal');
+    if (qualEl) qualEl.textContent = currentBreakoutQuality != null ? currentBreakoutQuality + ' / 100' : '—';
   }
 
   function updateLiveR(currentPrice){
-    if (entryPrice == null) return;
+    if (entryPrice == null || stopPrice == null) return;
     const risk = Math.abs(entryPrice - stopPrice);
     if (risk <= 0) return;
     const raw = breakoutDir === 'long' ? currentPrice - entryPrice : entryPrice - currentPrice;
@@ -1602,10 +1860,9 @@
 
   function exitTrade(outcome, price, t, icon, title, body){
     result = outcome;
-    state = 'DONE';
-    if (outcome === 'WIN'){ stats.wins++; setPhase('SESSION DONE — WIN', 'bull'); fire('bull', icon, title, body, t); }
-    else if (outcome === 'LOSS'){ stats.losses++; setPhase('SESSION DONE — LOSS', 'bear'); fire('bear', icon, title, body, t); }
-    else { stats.flats++; setPhase('SESSION DONE — FLAT', 'neutral'); fire('neutral', icon, title, body, t); }
+    if (outcome === 'WIN'){ stats.wins++; fire('bull', icon, title, body, t); }
+    else if (outcome === 'LOSS'){ stats.losses++; fire('bear', icon, title, body, t); }
+    else { stats.flats++; fire('neutral', icon, title, body, t); }
     updateStats();
     updateLiveR(price);
     pause();
@@ -1703,7 +1960,7 @@
     if (revealIdx >= SESSION_CANDLES - 1){ pause(); return; }
     revealIdx++;
     evaluate(revealIdx);
-    if (state === 'DONE') pause();
+    if (state === 'NO_TRADE' || state === 'SESSION_COMPLETE') pause();
   }
 
   function play(){
