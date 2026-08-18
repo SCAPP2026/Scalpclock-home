@@ -198,12 +198,108 @@
 
   ::-webkit-scrollbar{width:8px;height:8px;}
   ::-webkit-scrollbar-thumb{background:#232B3A;border-radius:4px;}
+
+  /* ===== Orb Header ===== */
+  .orb-header{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+  .orb-gauge-wrap{position:relative;width:104px;height:104px;flex-shrink:0;}
+  .orb-gauge-wrap svg{width:104px;height:104px;transform:rotate(-90deg);}
+  .orb-gauge-bg{fill:none;stroke:var(--border);stroke-width:9;}
+  .orb-gauge-fill{fill:none;stroke:var(--text-faint);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s ease;}
+  .orb-gauge-fill.bull{stroke:var(--bull);}
+  .orb-gauge-fill.bear{stroke:var(--bear);}
+  .orb-gauge-fill.amber{stroke:var(--amber);}
+  .orb-gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .orb-gauge-num{font-family:var(--mono);font-size:26px;font-weight:800;color:var(--text);transition:color .3s ease;line-height:1;}
+  .orb-gauge-num.bull{color:var(--bull);}
+  .orb-gauge-num.bear{color:var(--bear);}
+  .orb-gauge-num.amber{color:var(--amber);}
+  .orb-gauge-max{font-family:var(--mono);font-size:9px;color:var(--text-faint);margin-top:1px;}
+  .orb-header-main{flex:1;min-width:220px;}
+  .orb-state-label{font-family:var(--sans);font-size:22px;font-weight:800;letter-spacing:0.3px;margin-bottom:4px;transition:color .3s ease;}
+  .orb-state-label.bull{color:var(--bull);}
+  .orb-state-label.bear{color:var(--bear);}
+  .orb-state-label.amber{color:var(--amber);}
+  .orb-state-label.neutral{color:var(--text-dim);}
+  .orb-sub-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--text-dim);}
+  .orb-strength-badge{font-family:var(--sans);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.4px;border:1px solid var(--border);}
+  .orb-strength-badge.STRONG{background:var(--bull-dim);color:var(--bull);border-color:var(--bull);}
+  .orb-strength-badge.MODERATE{background:var(--amber-dim);color:var(--amber);border-color:var(--amber);}
+  .orb-strength-badge.WEAK{background:var(--panel-alt);color:var(--text-faint);border-color:var(--border);}
+  .orb-header-meta{display:flex;flex-direction:column;gap:6px;align-items:flex-end;font-family:var(--mono);font-size:12px;color:var(--text-dim);text-align:right;}
+  .orb-header-meta b{color:var(--text);font-size:15px;}
+
+  /* ===== WHY / Invalidation ===== */
+  .why-details{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;}
+  .why-details summary{cursor:pointer;list-style:none;padding:12px 16px;font-weight:700;font-size:13px;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .why-details summary::-webkit-details-marker{display:none;}
+  .why-details summary::after{content:'+';font-size:16px;color:var(--bull);flex-shrink:0;transition:transform .2s;}
+  .why-details[open] summary::after{transform:rotate(45deg);}
+  .why-details .why-body{padding:0 16px 16px;font-size:13px;color:var(--text-dim);line-height:1.7;}
+  .tier-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-faint);background:var(--panel-alt);border:1px solid var(--border-soft);border-radius:4px;padding:2px 6px;margin-bottom:8px;}
+
+  .invalidation-card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--bear);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+  .invalidation-card h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--bear);margin:0 0 8px;font-weight:700;}
+  .invalidation-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .invalidation-list li{font-size:12.5px;color:var(--text-dim);padding-left:16px;position:relative;line-height:1.4;}
+  .invalidation-list li::before{content:"—";position:absolute;left:0;color:var(--bear);}
+
+  /* ===== Action row ===== */
+  .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .action-btn{flex:1;min-width:150px;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+  .action-btn:disabled,.action-btn.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+
+  /* ===== Factor cards ===== */
+  .factor-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;}
+  .factor-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 13px;}
+  .factor-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .factor-card-name{font-size:10px;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-faint);font-weight:700;}
+  .factor-card-weight{font-family:var(--mono);font-size:9px;color:var(--text-faint);}
+  .factor-card-score{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px;}
+  .factor-card-score.na{font-size:12px;color:var(--text-faint);font-weight:600;}
+  .factor-chip{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:0.4px;padding:2px 7px;border-radius:10px;margin-bottom:6px;}
+  .factor-chip.CONFIRMING{background:var(--bull-dim);color:var(--bull);}
+  .factor-chip.CONTRADICTING{background:var(--bear-dim);color:var(--bear);}
+  .factor-chip.NEUTRAL{background:var(--panel-alt);color:var(--text-faint);}
+  .factor-card-note{font-size:10.5px;color:var(--text-dim);line-height:1.4;}
+  @media(max-width:900px){.factor-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:560px){.factor-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ===== Quality chips ===== */
+  .quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+  .quality-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 13px;text-align:center;}
+  .quality-card .qk{font-size:9.5px;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-faint);font-weight:700;margin-bottom:6px;}
+  .quality-card .qv{font-family:var(--sans);font-size:14px;font-weight:800;}
+  .quality-card .qv.bull{color:var(--bull);}
+  .quality-card .qv.bear{color:var(--bear);}
+  .quality-card .qv.amber{color:var(--amber);}
+  .quality-card .qv.neutral{color:var(--text-dim);}
+  @media(max-width:700px){.quality-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ===== Signal history timeline ===== */
+  .hist-timeline{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow-y:auto;}
+  .hist-item{display:flex;align-items:center;gap:10px;padding:7px 9px;background:var(--panel-alt);border-radius:6px;cursor:pointer;font-size:11.5px;transition:background .12s;}
+  .hist-item:hover{background:#182130;}
+  .hist-item .ht{font-family:var(--mono);color:var(--text-faint);width:42px;flex-shrink:0;}
+  .hist-item .hs{font-weight:700;width:80px;flex-shrink:0;}
+  .hist-item .hs.bull{color:var(--bull);}
+  .hist-item .hs.bear{color:var(--bear);}
+  .hist-item .hs.amber{color:var(--amber);}
+  .hist-item .hs.neutral{color:var(--text-dim);}
+  .hist-item .hsc{font-family:var(--mono);color:var(--text-dim);margin-left:auto;}
+  .hist-diff{font-size:10.5px;color:var(--text-dim);padding:6px 9px 10px;line-height:1.5;border-left:2px solid var(--border);margin-left:9px;}
+  .hist-empty{color:var(--text-faint);font-size:12px;padding:10px 2px;}
+
+  .outcome-row{display:flex;gap:14px;font-family:var(--mono);font-size:11.5px;color:var(--text-dim);margin-top:6px;flex-wrap:wrap;}
+  .outcome-row b.pos{color:var(--bull);}
+  .outcome-row b.neg{color:var(--bear);}
+  .similar-setups-note{font-size:10.5px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "ORB Signal Engine", "item": "https://scalpclock.com/orbsignalengine"}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
   {"@type": "Question", "name": "Is the ORB Signal Engine free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — it's free for everyone, no login or Pro plan required, including live 15-minute bars."}},
   {"@type": "Question", "name": "What is an Opening Range Breakout (ORB) strategy?", "acceptedAnswer": {"@type": "Answer", "text": "ORB is a strategy that trades a breakout above or below the high/low set in the first 15–60 minutes of the session (the \"opening range\"), typically waiting for a retest of that level before entering — the exact logic this tool runs live."}},
-  {"@type": "Question", "name": "Does a BUY CALL/PUT signal here guarantee a winning trade?", "acceptedAnswer": {"@type": "Answer", "text": "No. Signals reflect directional bias from a confirmed breakout and retest — not a guarantee. Track your own win/loss tally in Session Stats for the tool's real, honest accuracy."}}
+  {"@type": "Question", "name": "Does a bullish or bearish signal here guarantee a winning trade?", "acceptedAnswer": {"@type": "Answer", "text": "No. The Orb Score reflects conditions favoring buyers or sellers from six weighted indicators plus a confirmed breakout and retest — not a guarantee. Track your own win/loss tally and the Signal History outcome tracking for the tool's real, honest accuracy."}},
+  {"@type": "Question", "name": "What does the Orb Score actually measure?", "acceptedAnswer": {"@type": "Answer", "text": "A weighted composite of six factors — Trend, Momentum, Volume, VWAP, Support/Resistance, and Pattern — recalculated every candle. It shows how aligned conditions currently are, not a prediction of what happens next."}}
 ]}</script>
 </head>
 <body>
@@ -297,6 +393,53 @@
       <button class="btn-danger-ghost" id="resetStatsBtn">Reset Stats</button>
     </div>
   </header>
+
+  <!-- ORB HEADER — the central intelligence readout -->
+  <div class="orb-header">
+    <div class="orb-gauge-wrap">
+      <svg viewBox="0 0 104 104">
+        <circle class="orb-gauge-bg" cx="52" cy="52" r="45"/>
+        <circle class="orb-gauge-fill" id="orbGaugeFill" cx="52" cy="52" r="45" stroke-dasharray="282.7" stroke-dashoffset="282.7"/>
+      </svg>
+      <div class="orb-gauge-center">
+        <div class="orb-gauge-num" id="orbGaugeNum">—</div>
+        <div class="orb-gauge-max">/ 100</div>
+      </div>
+    </div>
+    <div class="orb-header-main">
+      <div class="orb-state-label neutral" id="orbStateLabel">WAITING FOR SESSION</div>
+      <div class="orb-sub-row">
+        <span class="orb-strength-badge WEAK" id="orbStrengthBadge">—</span>
+        <span id="orbStateNote">Press Play or load a live session to begin reading this setup.</span>
+      </div>
+    </div>
+    <div class="orb-header-meta">
+      <b><span id="orbTickerVal">—</span></b>
+      <span id="orbPriceTimeVal">— · 15m</span>
+    </div>
+  </div>
+
+  <details class="why-details" id="whyDetails">
+    <summary>❓ Why is this the signal?</summary>
+    <div class="why-body">
+      <span class="tier-badge">AI Interpretation — Template-Based, Not a Guarantee</span>
+      <div id="whyText">Not enough of the session has played out yet to explain a signal.</div>
+    </div>
+  </details>
+
+  <div class="invalidation-card">
+    <h3>What Would Change This Signal?</h3>
+    <ul class="invalidation-list" id="invalidationList">
+      <li>Waiting for enough data to identify what would invalidate this read.</li>
+    </ul>
+  </div>
+
+  <div class="action-row">
+    <a class="action-btn btn-ghost" id="actScalpChart" href="/scalpchart" target="_blank" rel="noopener">📊 View on ScalpChart</a>
+    <a class="action-btn btn-ghost" id="actCoach" href="/scalpchart" target="_blank" rel="noopener">🧠 Analyze with SampsonX</a>
+    <a class="action-btn btn-ghost" id="actReplay" href="/scalpchart?tab=replay" target="_blank" rel="noopener">🎬 Practice This Setup</a>
+    <a class="action-btn btn-primary disabled" id="actExitAssistant" href="/exitassistant" target="_blank" rel="noopener">🚪 Send to Exit Assistant</a>
+  </div>
 
   <div class="status-strip">
     <div class="status-item">
@@ -403,7 +546,38 @@
     </div>
   </div>
 
-  <div class="disclaimer">Simulated price data by default — not connected to a live market feed and not investment advice. "BUY CALL / BUY PUT" popups signal directional bias on the underlying only (derived from OR breakout + confirmed retest) — they do not select a strike, expiry, or account for IV, theta, or liquidity, and no signal here is a guarantee of outcome. Track the win/loss tally on the right; that's the tool's real, honest accuracy — not a claimed number.</div>
+  <!-- FACTOR SCORING -->
+  <div class="card-head" style="border:none;padding:0 0 10px;background:transparent;">
+    <h2>Multi-Factor Scoring <span class="tier-badge" style="margin-bottom:0;margin-left:8px;">Calculated Indicators</span></h2>
+  </div>
+  <div class="factor-grid" id="factorGrid"></div>
+
+  <!-- DIRECTION / STRENGTH / ENTRY QUALITY / RISK — kept visually separate on purpose -->
+  <div class="card-head" style="border:none;padding:0 0 10px;background:transparent;">
+    <h2>Direction vs. Trade Quality <span class="tier-badge" style="margin-bottom:0;margin-left:8px;">A Bullish Read Is Not Automatically a Good Trade</span></h2>
+  </div>
+  <div class="quality-grid">
+    <div class="quality-card"><div class="qk">Market Direction</div><div class="qv neutral" id="qvDirection">—</div></div>
+    <div class="quality-card"><div class="qk">Setup Strength</div><div class="qv neutral" id="qvStrength">—</div></div>
+    <div class="quality-card"><div class="qk">Entry Quality</div><div class="qv neutral" id="qvEntry">—</div></div>
+    <div class="quality-card"><div class="qk">Risk</div><div class="qv neutral" id="qvRisk">—</div></div>
+  </div>
+
+  <!-- SIGNAL HISTORY + OUTCOME TRACKING -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-head">
+      <h2>Signal History</h2>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">Click an entry to see what changed</span>
+    </div>
+    <div class="card-body">
+      <div class="hist-timeline" id="histTimeline">
+        <div class="hist-empty">Play or step through a session to build this session's signal timeline.</div>
+      </div>
+      <div class="similar-setups-note" id="similarSetupsNote"></div>
+    </div>
+  </div>
+
+  <div class="disclaimer">Simulated price data by default — not connected to a live market feed and not investment advice. The Orb Score, factor cards, and "BIAS CONFIRMED" markers describe directional bias on the underlying only (derived from six weighted indicators plus the OR breakout + confirmed retest) — they do not select a strike, expiry, or account for IV, theta, or liquidity, and no signal here is a guarantee of outcome. Track the win/loss tally on the right and the Signal History outcome tracking above; those are this tool's real, honest accuracy — not a claimed number.</div>
 
   <div class="disclaimer" style="margin-top:12px;">
     <strong style="color:var(--text-dim);">Live data:</strong> enter a symbol (and optionally a date — defaults to the most recent trading session) and click "Load Live Session" to run the ORB engine on real 15-minute bars from your Pro data feed. No setup, keys, or extra deployment needed.
@@ -420,8 +594,12 @@
       <div style="padding:0 16px 14px;color:var(--text-dim);font-size:12.5px;line-height:1.7;">ORB is a strategy that trades a breakout above or below the high/low set in the first 15–60 minutes of the session (the "opening range"), typically waiting for a retest of that level before entering — the exact logic this tool runs live.</div>
     </details>
     <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;background:var(--panel);">
-      <summary style="cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);">Does a BUY CALL/PUT signal here guarantee a winning trade?</summary>
-      <div style="padding:0 16px 14px;color:var(--text-dim);font-size:12.5px;line-height:1.7;">No. Signals reflect directional bias from a confirmed breakout and retest — not a guarantee. Track your own win/loss tally in Session Stats for the tool's real, honest accuracy.</div>
+      <summary style="cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);">Does a bullish or bearish signal here guarantee a winning trade?</summary>
+      <div style="padding:0 16px 14px;color:var(--text-dim);font-size:12.5px;line-height:1.7;">No. The Orb Score reflects conditions favoring buyers or sellers from six weighted indicators plus a confirmed breakout and retest — not a guarantee. Track your own win/loss tally and the Signal History outcome tracking for the tool's real, honest accuracy.</div>
+    </details>
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;background:var(--panel);">
+      <summary style="cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);">What does the Orb Score actually measure?</summary>
+      <div style="padding:0 16px 14px;color:var(--text-dim);font-size:12.5px;line-height:1.7;">A weighted composite of six factors — Trend, Momentum, Volume, VWAP, Support/Resistance, and Pattern — recalculated every candle. It shows how aligned conditions currently are, not a prediction of what happens next.</div>
     </details>
   </div>
 </div>
@@ -491,10 +669,596 @@
     return s;
   }
 
+  // ================= FACTOR WEIGHTS + INVALIDATION MAP =================
+  const FACTOR_WEIGHTS = { trend:20, momentum:20, volume:20, vwap:15, sr:15, pattern:10 };
+  const FACTOR_LABELS = { trend:'Trend', momentum:'Momentum', volume:'Volume', vwap:'VWAP', sr:'Support/Resistance', pattern:'Pattern' };
+  const INVALIDATION_MAP = {
+    trend:    { bull:'Trend structure breaks — a lower high forms', bear:'Trend structure breaks — a higher low forms' },
+    momentum: { bull:'Momentum turns negative', bear:'Momentum turns positive' },
+    volume:   { bull:'Buying volume dries up or selling volume increases', bear:'Selling volume dries up or buying volume increases' },
+    vwap:     { bull:'Price loses VWAP', bear:'Price reclaims VWAP' },
+    sr:       { bull:'Key support breaks', bear:'Key resistance breaks' },
+    pattern:  { bull:'The confirming candle pattern is negated by the next candle', bear:'The confirming candle pattern is negated by the next candle' },
+  };
+
+  // ================= INDICATORS (ported from functions/api/signals.js and scalpchart.html) =================
+  function calcRSI(closes, period){
+    period = period || 14;
+    if (closes.length < period + 1) return null;
+    let gains = 0, losses = 0;
+    for (let i = 1; i <= period; i++){
+      const d = closes[i] - closes[i-1];
+      if (d >= 0) gains += d; else losses -= d;
+    }
+    let avgGain = gains / period, avgLoss = losses / period;
+    for (let i = period + 1; i < closes.length; i++){
+      const d = closes[i] - closes[i-1];
+      avgGain = (avgGain * (period-1) + Math.max(d,0)) / period;
+      avgLoss = (avgLoss * (period-1) + Math.max(-d,0)) / period;
+    }
+    return avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  }
+
+  function calcVWAP(bars){
+    if (!bars.length) return null;
+    let tpvSum = 0, volSum = 0;
+    for (const b of bars){
+      const vol = b.volume || 0;
+      const tp = (b.high + b.low + b.close) / 3;
+      tpvSum += tp * vol;
+      volSum += vol;
+    }
+    return volSum > 0 ? tpvSum / volSum : null;
+  }
+
+  function calcVolSurge(bars, lookback){
+    lookback = lookback || 20;
+    if (bars.length < 5) return 1;
+    const recent = bars.slice(-lookback);
+    const avgVol = recent.reduce((s,b) => s + (b.volume||0), 0) / recent.length;
+    const latestVol = bars[bars.length-1].volume || 0;
+    return avgVol > 0 ? latestVol / avgVol : 1;
+  }
+
+  function calcATR(bars, period){
+    period = period || 14;
+    if (bars.length < 2) return null;
+    const trs = [];
+    for (let i = 1; i < bars.length; i++){
+      const c = bars[i], p = bars[i-1];
+      trs.push(Math.max(c.high - c.low, Math.abs(c.high - p.close), Math.abs(c.low - p.close)));
+    }
+    const n = Math.min(period, trs.length);
+    const recent = trs.slice(-n);
+    return recent.reduce((s,v) => s+v, 0) / recent.length;
+  }
+
+  function rpFindSR(bars){
+    const n = bars.length, tol = 0.008, lvls = [], start = Math.max(0, n - 80);
+    for (let i = start + 2; i < n - 2; i++){
+      const c = bars[i];
+      const isH = c.high > bars[i-1].high && c.high > bars[i-2].high && c.high > bars[i+1].high && c.high > bars[i+2].high;
+      const isL = c.low < bars[i-1].low && c.low < bars[i-2].low && c.low < bars[i+1].low && c.low < bars[i+2].low;
+      if (isH){ const ex = lvls.find(l => Math.abs(l.p - c.high)/c.high < tol); if (ex) ex.t++; else lvls.push({p:c.high, type:'res', t:1}); }
+      if (isL){ const ex = lvls.find(l => Math.abs(l.p - c.low)/c.low < tol); if (ex) ex.t++; else lvls.push({p:c.low, type:'sup', t:1}); }
+    }
+    return lvls.filter(l => l.t >= 2).sort((a,b) => b.t - a.t).slice(0,5);
+  }
+
+  // ================= CANDLESTICK PATTERN LIBRARY (ported from scalpchart.html) =================
+  const PATTERNS = {
+    'Bullish Morning Star': { type:'bull', reliability:'78%', signal:'Strong Reversal', candles:3,
+      detect: (c) => { if (c.length<3) return false; const [a,b,d]=c.slice(-3);
+        return a.close<a.open && Math.abs(b.close-b.open)<(a.open-a.close)*0.3 && d.close>d.open && d.close>(a.open+a.close)/2; } },
+    'Bearish Evening Star': { type:'bear', reliability:'75%', signal:'Strong Reversal', candles:3,
+      detect: (c) => { if (c.length<3) return false; const [a,b,d]=c.slice(-3);
+        return a.close>a.open && Math.abs(b.close-b.open)<(a.close-a.open)*0.3 && d.close<d.open && d.close<(a.open+a.close)/2; } },
+    'Bullish Engulfing': { type:'bull', reliability:'63%', signal:'Reversal', candles:2,
+      detect: (c) => { if (c.length<2) return false; const [a,b]=c.slice(-2);
+        return a.close<a.open && b.close>b.open && b.open<a.close && b.close>a.open; } },
+    'Bearish Engulfing': { type:'bear', reliability:'61%', signal:'Reversal', candles:2,
+      detect: (c) => { if (c.length<2) return false; const [a,b]=c.slice(-2);
+        return a.close>a.open && b.close<b.open && b.open>a.close && b.close<a.open; } },
+    'Doji': { type:'warn', reliability:'55%', signal:'Indecision', candles:1,
+      detect: (c) => { if (c.length<1) return false; const b=c[c.length-1];
+        const bodySize=Math.abs(b.close-b.open), range=b.high-b.low; return range>0 && bodySize/range<0.1; } },
+    'Hammer': { type:'bull', reliability:'60%', signal:'Potential Reversal', candles:1,
+      detect: (c) => { if (c.length<1) return false; const b=c[c.length-1];
+        const body=Math.abs(b.close-b.open), lowerWick=Math.min(b.close,b.open)-b.low, upperWick=b.high-Math.max(b.close,b.open);
+        return lowerWick>=body*2 && upperWick<=body*0.5 && body>0; } },
+    'Shooting Star': { type:'bear', reliability:'59%', signal:'Potential Reversal', candles:1,
+      detect: (c) => { if (c.length<1) return false; const b=c[c.length-1];
+        const body=Math.abs(b.close-b.open), upperWick=b.high-Math.max(b.close,b.open), lowerWick=Math.min(b.close,b.open)-b.low;
+        return upperWick>=body*2 && lowerWick<=body*0.5 && body>0; } },
+    'Three White Soldiers': { type:'bull', reliability:'82%', signal:'Strong Continuation', candles:3,
+      detect: (c) => { if (c.length<3) return false; const [a,b,d]=c.slice(-3);
+        return a.close>a.open && b.close>b.open && d.close>d.open && b.close>a.close && d.close>b.close && b.open>a.open && d.open>b.open; } },
+    'Three Black Crows': { type:'bear', reliability:'80%', signal:'Strong Continuation', candles:3,
+      detect: (c) => { if (c.length<3) return false; const [a,b,d]=c.slice(-3);
+        return a.close<a.open && b.close<b.open && d.close<d.open && b.close<a.close && d.close<b.close && b.open<a.open && d.open<b.open; } },
+  };
+
+  // ================= FACTOR SCORERS =================
+  // Each returns {score:0-100|null, dir:'bull'|'bear'|'flat'|null, note:string}
+  function scoreTrend(bars){
+    if (bars.length < 6) return { score:null, dir:null, note:'Not enough candles yet to read trend structure.' };
+    const closes = bars.map(b => b.close);
+    const ema = (arr, period) => { const k = 2/(period+1); let e = arr[0]; for (let i=1;i<arr.length;i++) e = arr[i]*k + e*(1-k); return e; };
+    const emaNow = ema(closes, 5);
+    const emaPrev = ema(closes.slice(0, Math.max(2, closes.length-3)), 5);
+    const slopePct = emaPrev ? ((emaNow - emaPrev) / emaPrev) * 100 : 0;
+    const win = bars.slice(-6);
+    let hh=0, hl=0, lh=0, ll=0;
+    for (let i=1;i<win.length;i++){
+      if (win[i].high > win[i-1].high) hh++; else lh++;
+      if (win[i].low > win[i-1].low) hl++; else ll++;
+    }
+    const structureScore = (hh+hl) - (lh+ll);
+    const raw = slopePct * 18 + structureScore * 6;
+    const dir = raw >= 0 ? 'bull' : 'bear';
+    const score = Math.max(0, Math.min(100, 50 + Math.abs(raw) * 4));
+    const note = dir === 'bull'
+      ? (score >= 65 ? 'Price is making higher highs and higher lows — trend structure favors buyers.' : 'A mild bullish tilt, but structure is not yet decisive.')
+      : (score >= 65 ? 'Price is making lower highs and lower lows — trend structure favors sellers.' : 'A mild bearish tilt, but structure is not yet decisive.');
+    return { score: Math.round(score), dir, note };
+  }
+
+  function scoreMomentum(bars){
+    const rsi = calcRSI(bars.map(b => b.close), 14);
+    if (rsi == null) return { score:null, dir:null, note:'RSI needs at least 15 candles — not enough data yet.' };
+    const dir = rsi >= 50 ? 'bull' : 'bear';
+    const score = Math.round(Math.min(100, Math.abs(rsi - 50) * 2));
+    const note = dir === 'bull'
+      ? (rsi >= 70 ? 'RSI ' + rsi.toFixed(0) + ' — momentum is strongly favoring buyers.' : 'RSI ' + rsi.toFixed(0) + ' — momentum is leaning toward buyers.')
+      : (rsi <= 30 ? 'RSI ' + rsi.toFixed(0) + ' — momentum is strongly favoring sellers.' : 'RSI ' + rsi.toFixed(0) + ' — momentum is leaning toward sellers.');
+    return { score, dir, note };
+  }
+
+  function scoreVolume(bars){
+    if (!bars.length || bars[bars.length-1].volume == null) return { score:null, dir:null, note:'Insufficient data — volume is not available yet.' };
+    const surge = calcVolSurge(bars, 20);
+    const last = bars[bars.length-1];
+    const dir = last.close >= last.open ? 'bull' : 'bear';
+    const score = Math.round(Math.max(0, Math.min(100, (surge - 0.5) * 55)));
+    const note = surge >= 1.4 ? 'Volume is increasing with the price move.'
+      : (surge <= 0.8 ? 'Volume has not confirmed the move yet.' : 'Volume is roughly in line with the recent average.');
+    return { score, dir, note };
+  }
+
+  function scoreVWAP(bars){
+    const vwap = calcVWAP(bars);
+    if (vwap == null) return { score:null, dir:null, note:'Insufficient data — VWAP needs volume data.' };
+    const last = bars[bars.length-1].close;
+    const distPct = ((last - vwap) / vwap) * 100;
+    const dir = distPct >= 0 ? 'bull' : 'bear';
+    const score = Math.round(Math.max(0, Math.min(100, Math.abs(distPct) * 90 + 40)));
+    const note = dir === 'bull'
+      ? 'Price is holding above VWAP (' + Math.abs(distPct).toFixed(2) + '% above).'
+      : 'Price is holding below VWAP (' + Math.abs(distPct).toFixed(2) + '% below).';
+    return { score, dir, note };
+  }
+
+  let lastSRLevels = [];
+  function scoreSR(bars){
+    if (bars.length < 7) return { score:null, dir:null, note:'Not enough candles yet to detect support/resistance.' };
+    const levels = rpFindSR(bars);
+    lastSRLevels = levels;
+    if (!levels.length) return { score:35, dir:'flat', note:'No confirmed support/resistance levels have formed yet this session.' };
+    const last = bars[bars.length-1].close;
+    let nearest = null, nearestDist = Infinity;
+    for (const l of levels){ const d = Math.abs(last - l.p) / last; if (d < nearestDist){ nearestDist = d; nearest = l; } }
+    const proximityScore = Math.max(0, 100 - nearestDist * 4000);
+    const touchBoost = Math.min(20, (nearest.t - 2) * 8);
+    const score = Math.round(Math.max(0, Math.min(100, proximityScore * 0.7 + touchBoost)));
+    const dir = nearest.type === 'sup' ? 'bull' : 'bear';
+    const note = nearest.type === 'sup'
+      ? 'Price is holding near a support level tested ' + nearest.t + '× this session.'
+      : 'Price is running into a resistance level tested ' + nearest.t + '× this session.';
+    return { score, dir, note };
+  }
+
+  function scorePattern(bars){
+    if (!bars.length) return { score:null, dir:null, note:'No candles yet.' };
+    let best = null;
+    for (const name in PATTERNS){
+      const p = PATTERNS[name];
+      if (bars.length >= p.candles && p.detect(bars)){
+        const rel = parseFloat(p.reliability);
+        if (!best || rel > best.rel) best = { name, rel, type:p.type, signal:p.signal };
+      }
+    }
+    if (!best) return { score:30, dir:'flat', note:'No confirming candlestick pattern on the current candle.' };
+    const dir = best.type === 'bull' ? 'bull' : best.type === 'bear' ? 'bear' : 'flat';
+    return { score: Math.round(best.rel), dir, note: best.name + ' detected (' + best.signal + ', ' + best.rel + '% historical reliability).' };
+  }
+
+  // ================= COMPOSITE SCORE =================
+  function computeOrbScore(rawFactors){
+    const factors = Object.keys(FACTOR_WEIGHTS).map(key => Object.assign({ key, label: FACTOR_LABELS[key], weight: FACTOR_WEIGHTS[key] }, rawFactors[key]));
+    const scorable = factors.filter(f => f.score != null);
+    if (scorable.length < 2){
+      return { score:null, state:'WAITING', direction:null, setupStrength:null, factors, scorableCount: scorable.length,
+        note:'Not enough of the session has played out yet — Insufficient data.' };
+    }
+    let bullSum = 0, bearSum = 0, weightSum = 0;
+    scorable.forEach(f => {
+      weightSum += f.weight;
+      if (f.dir === 'bull') bullSum += f.weight * f.score;
+      else if (f.dir === 'bear') bearSum += f.weight * f.score;
+    });
+    const net = weightSum > 0 ? (bullSum - bearSum) / weightSum : 0;
+    const score = Math.round(Math.max(0, Math.min(100, 50 + net / 2)));
+
+    const leadFactors = scorable.filter(f => f.key === 'trend' || f.key === 'momentum');
+    let leadNet = 0, leadWeight = 0;
+    leadFactors.forEach(f => { leadWeight += f.weight; leadNet += f.weight * f.score * (f.dir === 'bull' ? 1 : f.dir === 'bear' ? -1 : 0); });
+    const leadDir = leadWeight > 0 && Math.abs(leadNet/leadWeight) > 12 ? (leadNet >= 0 ? 'bull' : 'bear') : null;
+
+    let state, direction;
+    if (score >= 62){ state = 'BULLISH'; direction = 'bull'; }
+    else if (score <= 38){ state = 'BEARISH'; direction = 'bear'; }
+    else if (leadDir){ state = 'WAITING'; direction = leadDir; }
+    else { state = 'NEUTRAL'; direction = null; }
+
+    let setupStrength = null;
+    if (direction){
+      const confirming = scorable.filter(f => f.dir === direction && f.score >= 55).length;
+      setupStrength = confirming >= 4 ? 'STRONG' : confirming >= 2 ? 'MODERATE' : 'WEAK';
+    }
+
+    let note = '';
+    if (state === 'WAITING'){
+      const lagging = scorable.filter(f => f.key!=='trend' && f.key!=='momentum').sort((a,b)=>a.score-b.score)[0];
+      note = (direction === 'bull' ? 'Bullish' : 'Bearish') + ' setup forming. ' +
+        (lagging ? lagging.label + ' has not confirmed the move yet.' : 'Waiting for more factors to confirm.');
+    }
+    return { score, state, direction, setupStrength, factors, scorableCount: scorable.length, note };
+  }
+
+  // ================= ENTRY QUALITY / RISK (derived from the state machine below) =================
+  let lastWeakBreakIdx = null;
+
+  function deriveEntryQuality(idx){
+    if (state === 'IDLE') return { label:'NONE', note:'Opening range is still forming.' };
+    if (state === 'WATCH_BREAKOUT'){
+      if (lastWeakBreakIdx === idx) return { label:'WEAK', note:'Price poked through the range but the candle body was not convincing.' };
+      return { label:'NONE', note:'No breakout yet — watching the opening range.' };
+    }
+    if (state === 'WATCH_RETEST') return { label:'MODERATE', note:'Breakout confirmed — waiting for a retest to hold.' };
+    if (state === 'IN_TRADE') return { label:'STRONG', note:'Retest held — this setup is fully confirmed.' };
+    if (state === 'NO_TRADE') return { label:'NONE', note:'The range held all session — no qualifying breakout formed.' };
+    if (state === 'DONE') return { label: result === 'WIN' ? 'STRONG' : 'NONE', note:'Session complete.' };
+    return { label:'NONE', note:'' };
+  }
+
+  function deriveRisk(idx){
+    if (entryPrice == null || stopPrice == null) return { label:'—', note:'No position yet — risk applies once an entry exists.' };
+    const atr = calcATR(candles.slice(0, idx+1));
+    if (!atr) return { label:'Insufficient data', note:'' };
+    const dist = Math.abs(entryPrice - stopPrice);
+    const ratio = dist / atr;
+    if (ratio < 0.6) return { label:'LOW', note:'Stop is tight relative to recent volatility.' };
+    if (ratio < 1.2) return { label:'MODERATE', note:'Stop distance is in line with recent volatility.' };
+    if (ratio < 2) return { label:'ELEVATED', note:'Stop is wide relative to recent volatility — size down.' };
+    return { label:'HIGH', note:'Stop is very wide relative to recent volatility.' };
+  }
+
+  // ================= WHY / INVALIDATION TEXT (deterministic templates — not a live AI call) =================
+  function buildWhyText(composite){
+    if (composite.scorableCount < 2) return 'Not enough of the session has played out yet to explain a signal — check back after a few more candles.';
+    if (composite.state === 'WAITING'){
+      return (composite.direction === 'bull' ? 'Early conditions favor buyers, but confirmation is incomplete. ' : 'Early conditions favor sellers, but confirmation is incomplete. ') + composite.note;
+    }
+    if (composite.state === 'NEUTRAL') return 'Factors are mixed right now — no clear directional edge. Wait for confirmation before treating this as a setup.';
+    const dir = composite.direction;
+    const confirming = composite.factors
+      .filter(f => f.score != null && f.dir === dir)
+      .sort((a,b) => (b.weight*b.score) - (a.weight*a.score))
+      .slice(0, 3);
+    const sentences = confirming.map(f => f.note);
+    const summary = 'These factors are currently aligned ' + (dir === 'bull' ? 'bullish' : 'bearish') + '.';
+    return sentences.join(' ') + ' ' + summary;
+  }
+
+  function buildInvalidationList(composite){
+    if (composite.scorableCount < 2 || !composite.direction){
+      return ['Not enough data yet to identify what would invalidate this read.'];
+    }
+    const dir = composite.direction;
+    const bullets = composite.factors
+      .filter(f => f.score != null && f.dir === dir && f.score >= 45 && INVALIDATION_MAP[f.key])
+      .sort((a,b) => (b.weight*b.score) - (a.weight*a.score))
+      .map(f => INVALIDATION_MAP[f.key][dir]);
+    const uniq = Array.from(new Set(bullets));
+    return uniq.length ? uniq : ['Conditions are mixed — watch for any factor above to shift further.'];
+  }
+
+  // ================= SIGNAL HISTORY + OUTCOME TRACKING (client-side, this browser only) =================
+  const LS = {
+    get: (k,d) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  const ORB_HISTORY_KEY = 'sc_orb_signal_history';
+  const ORB_HISTORY_CAP = 300;
+
+  let sessionHistory = [];
+  let lastPushedState = null;
+
+  function getPersistedHistory(){ return LS.get(ORB_HISTORY_KEY, []); }
+  function persistHistoryEntry(entry){
+    const hist = getPersistedHistory();
+    hist.push(entry);
+    if (hist.length > ORB_HISTORY_CAP) hist.splice(0, hist.length - ORB_HISTORY_CAP);
+    LS.set(ORB_HISTORY_KEY, hist);
+  }
+  function updatePersistedOutcome(ts, field, value){
+    const hist = getPersistedHistory();
+    const e = hist.find(h => h.ts === ts);
+    if (e){ e[field] = value; LS.set(ORB_HISTORY_KEY, hist); }
+  }
+
+  function maybePushHistory(idx, composite){
+    if (composite.state === lastPushedState) return;
+    lastPushedState = composite.state;
+    const snapshot = {};
+    composite.factors.forEach(f => { snapshot[f.key] = f.score; });
+    const entry = {
+      ts: Date.now(), idx, time: times[idx], symbol,
+      state: composite.state, score: composite.score, direction: composite.direction,
+      price: candles[idx].close, factorsSnapshot: snapshot,
+      outcome5: null, outcome10: null,
+    };
+    sessionHistory.push(entry);
+    if (composite.score != null) persistHistoryEntry(entry);
+    renderSignalHistory();
+  }
+
+  function trackPendingOutcomes(idx){
+    let changed = false;
+    sessionHistory.forEach(entry => {
+      const since = idx - entry.idx;
+      if (since === 5 && entry.outcome5 == null){
+        entry.outcome5 = ((candles[idx].close - entry.price) / entry.price) * 100;
+        updatePersistedOutcome(entry.ts, 'outcome5', entry.outcome5);
+        changed = true;
+      }
+      if (since === 10 && entry.outcome10 == null){
+        entry.outcome10 = ((candles[idx].close - entry.price) / entry.price) * 100;
+        updatePersistedOutcome(entry.ts, 'outcome10', entry.outcome10);
+        changed = true;
+      }
+    });
+    if (changed) renderSignalHistory();
+  }
+
+  function stateKindClass(st){
+    if (st === 'BULLISH') return 'bull';
+    if (st === 'BEARISH') return 'bear';
+    if (st === 'WAITING') return 'amber';
+    return 'neutral';
+  }
+
+  function renderSignalHistory(){
+    const el = document.getElementById('histTimeline');
+    if (!el) return;
+    if (!sessionHistory.length){
+      el.innerHTML = '<div class="hist-empty">Play or step through a session to build this session\'s signal timeline.</div>';
+      renderSimilarSetupsNote();
+      return;
+    }
+    el.innerHTML = sessionHistory.map((h, i) => {
+      const kind = stateKindClass(h.state);
+      const scoreTxt = h.score != null ? (h.score + '/100') : '—';
+      let outcomeHtml = '';
+      if (h.outcome5 != null){
+        outcomeHtml = '<div class="outcome-row">After 5 candles: <b class="' + (h.outcome5>=0?'pos':'neg') + '">' + (h.outcome5>=0?'+':'') + h.outcome5.toFixed(2) + '%</b>' +
+          (h.outcome10 != null ? (' · After 10 candles: <b class="' + (h.outcome10>=0?'pos':'neg') + '">' + (h.outcome10>=0?'+':'') + h.outcome10.toFixed(2) + '%</b>') : '') + '</div>';
+      }
+      return '<div class="hist-item" onclick="toggleHistDiff(' + i + ')">' +
+          '<span class="ht">' + h.time + '</span>' +
+          '<span class="hs ' + kind + '">' + h.state + '</span>' +
+          '<span class="hsc">' + scoreTxt + '</span>' +
+        '</div>' +
+        '<div id="histDiff' + i + '" style="display:none;">' + outcomeHtml + '</div>';
+    }).join('');
+    renderSimilarSetupsNote();
+  }
+
+  window.toggleHistDiff = function(i){
+    const box = document.getElementById('histDiff' + i);
+    if (!box) return;
+    const willOpen = box.style.display === 'none' || !box.dataset.expanded;
+    if (willOpen && !box.dataset.expanded){
+      const cur = sessionHistory[i], prev = sessionHistory[i-1];
+      let diffHtml = '<div class="hist-diff">';
+      if (!prev){
+        diffHtml += 'First signal of this session.';
+      } else {
+        const deltas = Object.keys(FACTOR_WEIGHTS).map(key => {
+          const a = prev.factorsSnapshot[key], b = cur.factorsSnapshot[key];
+          if (a == null || b == null) return null;
+          const d = b - a;
+          if (Math.abs(d) < 3) return null;
+          return FACTOR_LABELS[key] + ' ' + (d >= 0 ? '+' : '') + Math.round(d);
+        }).filter(Boolean);
+        diffHtml += deltas.length ? ('What changed: ' + deltas.join(', ') + '.') : 'No meaningful factor changes since the prior entry.';
+      }
+      diffHtml += '</div>';
+      box.innerHTML += diffHtml;
+      box.dataset.expanded = '1';
+    }
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  };
+
+  function renderSimilarSetupsNote(){
+    const el = document.getElementById('similarSetupsNote');
+    if (!el) return;
+    if (!sessionHistory.length){ el.textContent = ''; return; }
+    const latest = sessionHistory[sessionHistory.length-1];
+    if (!latest || latest.state === 'NEUTRAL' || latest.state === 'WAITING'){ el.textContent = ''; return; }
+    const hist = getPersistedHistory().filter(h => h.state === latest.state && h.outcome5 != null);
+    if (hist.length < 5){
+      el.textContent = 'Your tracked history: not enough similar ' + latest.state.toLowerCase() + ' setups yet to show an average (' + hist.length + '/5 needed). This grows the more you use the tool.';
+      return;
+    }
+    const avg5 = hist.reduce((s,h)=>s+h.outcome5,0) / hist.length;
+    const withTen = hist.filter(h=>h.outcome10!=null);
+    const avg10 = withTen.length ? withTen.reduce((s,h)=>s+h.outcome10,0)/withTen.length : null;
+    el.textContent = 'Your tracked history: similar ' + latest.state.toLowerCase() + ' setups moved an average of ' + (avg5>=0?'+':'') + avg5.toFixed(2) + '% over 5 candles' +
+      (avg10!=null ? (' and ' + (avg10>=0?'+':'') + avg10.toFixed(2) + '% over 10 candles') : '') +
+      ' across ' + hist.length + ' tracked signals on this device. Not a prediction — your own historical sample only.';
+  }
+
+  // ================= CROSS-TOOL LINKS =================
+  function buildScalpChartLink(){ return '/scalpchart?t=' + encodeURIComponent(symbol); }
+  function buildCoachLink(){ return '/scalpchart?t=' + encodeURIComponent(symbol) + '&coach=1'; }
+  function buildReplayLink(){ return '/scalpchart?tab=replay&t=' + encodeURIComponent(symbol); }
+  function buildExitAssistantLink(composite){
+    const params = new URLSearchParams({ t: symbol || 'SPY' });
+    if (composite.direction) params.set('dir', composite.direction === 'bull' ? 'call' : 'put');
+    if (entryPrice != null) params.set('entry', fmt(entryPrice));
+    const sup = lastSRLevels.find(l => l.type === 'sup');
+    const res = lastSRLevels.find(l => l.type === 'res');
+    if (sup) params.set('sup', fmt(sup.p));
+    if (res) params.set('res', fmt(res.p));
+    return '/exitassistant?' + params.toString();
+  }
+
+  function updateActionLinks(composite, idx){
+    const a1 = document.getElementById('actScalpChart'); if (a1) a1.href = buildScalpChartLink();
+    const a2 = document.getElementById('actCoach'); if (a2) a2.href = buildCoachLink();
+    const a3 = document.getElementById('actReplay'); if (a3) a3.href = buildReplayLink();
+    const exitBtn = document.getElementById('actExitAssistant');
+    if (exitBtn){
+      exitBtn.href = buildExitAssistantLink(composite);
+      const eq = deriveEntryQuality(idx).label;
+      exitBtn.classList.toggle('disabled', !(eq === 'MODERATE' || eq === 'STRONG'));
+    }
+  }
+
+  // ================= ORB HEADER / FACTOR CARD RENDERING =================
+  const GAUGE_CIRC = 2 * Math.PI * 45;
+
+  function renderOrbHeader(composite, lastCandle){
+    const kind = composite.state === 'BULLISH' ? 'bull' : composite.state === 'BEARISH' ? 'bear' : composite.state === 'WAITING' ? 'amber' : 'neutral';
+    const gaugeFill = document.getElementById('orbGaugeFill');
+    const gaugeNum = document.getElementById('orbGaugeNum');
+    const stateLabel = document.getElementById('orbStateLabel');
+    const strengthBadge = document.getElementById('orbStrengthBadge');
+    const stateNote = document.getElementById('orbStateNote');
+    if (!gaugeFill) return;
+
+    gaugeFill.setAttribute('class', 'orb-gauge-fill' + (kind !== 'neutral' ? ' ' + kind : ''));
+    gaugeNum.className = 'orb-gauge-num' + (kind !== 'neutral' ? ' ' + kind : '');
+    if (composite.score != null){
+      gaugeFill.style.strokeDashoffset = GAUGE_CIRC * (1 - composite.score/100);
+      gaugeNum.textContent = composite.score;
+    } else {
+      gaugeFill.style.strokeDashoffset = GAUGE_CIRC;
+      gaugeNum.textContent = '—';
+    }
+
+    stateLabel.textContent = composite.state === 'WAITING' ? 'WAITING FOR CONFIRMATION' : composite.state;
+    stateLabel.className = 'orb-state-label ' + kind;
+    strengthBadge.textContent = composite.setupStrength || (composite.state === 'WAITING' ? 'FORMING' : '—');
+    strengthBadge.className = 'orb-strength-badge ' + (composite.setupStrength || 'WEAK');
+    stateNote.textContent = composite.state === 'WAITING' ? composite.note
+      : composite.scorableCount < 2 ? 'Insufficient data — waiting for more of the session to play out.'
+      : (composite.score + '/100' + (composite.setupStrength ? ' — ' + composite.setupStrength + ' SETUP' : ''));
+
+    document.getElementById('orbTickerVal').textContent = symbol || '—';
+    document.getElementById('orbPriceTimeVal').textContent = (lastCandle ? fmt(lastCandle.close) : '—') + ' · 15m';
+  }
+
+  function renderFactorCards(composite){
+    const grid = document.getElementById('factorGrid');
+    if (!grid) return;
+    grid.innerHTML = composite.factors.map(f => {
+      let chipClass = 'NEUTRAL';
+      if (f.score != null && composite.direction && f.score >= 55){
+        if (f.dir === composite.direction) chipClass = 'CONFIRMING';
+        else if (f.dir && f.dir !== 'flat') chipClass = 'CONTRADICTING';
+      }
+      return '<div class="factor-card">' +
+        '<div class="factor-card-head"><span class="factor-card-name">' + f.label + '</span><span class="factor-card-weight">' + f.weight + '%</span></div>' +
+        (f.score == null
+          ? '<div class="factor-card-score na">Insufficient data</div>'
+          : '<div class="factor-card-score">' + f.score + '</div><span class="factor-chip ' + chipClass + '">' + chipClass + '</span>') +
+        '<div class="factor-card-note">' + (f.note || '') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderWhyAndInvalidation(composite){
+    const whyEl = document.getElementById('whyText');
+    if (whyEl) whyEl.textContent = buildWhyText(composite);
+    const list = buildInvalidationList(composite);
+    const listEl = document.getElementById('invalidationList');
+    if (listEl) listEl.innerHTML = list.map(b => '<li>' + b + '</li>').join('');
+  }
+
+  // ================= ORCHESTRATION =================
+  let factorCache = {};
+
+  function computeAndRenderFactors(idx){
+    const bars = candles.slice(0, idx+1);
+    const raw = {
+      trend: scoreTrend(bars), momentum: scoreMomentum(bars), volume: scoreVolume(bars),
+      vwap: scoreVWAP(bars), sr: scoreSR(bars), pattern: scorePattern(bars),
+    };
+    const composite = computeOrbScore(raw);
+    factorCache[idx] = composite;
+    renderOrbHeader(composite, bars[bars.length-1]);
+    renderFactorCards(composite);
+    renderWhyAndInvalidation(composite);
+    maybePushHistory(idx, composite);
+    trackPendingOutcomes(idx);
+    return composite;
+  }
+
+  function updateDerivedChips(idx){
+    const composite = factorCache[idx] || computeOrbScore({});
+    const eq = deriveEntryQuality(idx);
+    const risk = deriveRisk(idx);
+    const qvDirection = document.getElementById('qvDirection');
+    const qvStrength = document.getElementById('qvStrength');
+    const qvEntry = document.getElementById('qvEntry');
+    const qvRisk = document.getElementById('qvRisk');
+    if (!qvDirection) return;
+    const dirKind = composite.direction === 'bull' ? 'bull' : composite.direction === 'bear' ? 'bear' : 'neutral';
+    qvDirection.textContent = composite.state;
+    qvDirection.className = 'qv ' + dirKind;
+    qvStrength.textContent = composite.setupStrength || '—';
+    qvStrength.className = 'qv ' + (composite.setupStrength === 'STRONG' ? 'bull' : composite.setupStrength === 'MODERATE' ? 'amber' : 'neutral');
+    qvEntry.textContent = eq.label;
+    qvEntry.className = 'qv ' + (eq.label === 'STRONG' ? 'bull' : (eq.label === 'MODERATE' || eq.label === 'WEAK') ? 'amber' : 'neutral');
+    qvRisk.textContent = risk.label;
+    qvRisk.className = 'qv ' + (risk.label === 'LOW' ? 'bull' : (risk.label === 'HIGH' || risk.label === 'ELEVATED') ? 'bear' : 'neutral');
+    updateActionLinks(composite, idx);
+  }
+
+  function resetOrbUI(){
+    factorCache = {};
+    sessionHistory = [];
+    lastPushedState = null;
+    lastSRLevels = [];
+    lastWeakBreakIdx = null;
+    const placeholderFactors = Object.keys(FACTOR_WEIGHTS).map(key => ({ key, label: FACTOR_LABELS[key], weight: FACTOR_WEIGHTS[key], score:null, dir:null, note:'No data yet.' }));
+    const composite = { score:null, state:'WAITING', direction:null, setupStrength:null, factors: placeholderFactors, scorableCount:0,
+      note:'Press Play or load a live session to begin reading this setup.' };
+    renderOrbHeader(composite, null);
+    document.getElementById('orbStateLabel').textContent = 'WAITING FOR SESSION';
+    renderFactorCards(composite);
+    renderWhyAndInvalidation(composite);
+    updateActionLinks(composite, revealIdx);
+    renderSignalHistory();
+  }
+
   function generateSession(){
     const regime = choice(['trend_up','trend_down','chop','fade_up','fade_down']);
     const base = rand(28, 340);
     const volBase = base * rand(0.0028, 0.006);
+    const baseVolume = rand(400000, 2200000);
     let price = base;
     const out = [];
     for (let i = 0; i < SESSION_CANDLES; i++){
@@ -513,7 +1277,12 @@
       let low = Math.min(open, close) - Math.abs(rand(0, vol*0.7));
       if (close < 0.5) close = 0.5;
       if (low < 0.3) low = 0.3;
-      out.push({ i, open, high, low, close });
+      // Synthetic volume: bigger candle bodies and the opening bars trade heavier,
+      // matching the shape real intraday volume tends to take (front-loaded, spikes on big moves).
+      const bodyPct = Math.abs(close - open) / Math.max(open, 0.01);
+      const openBoost = i < 3 ? rand(1.3, 1.9) : 1;
+      const volume = Math.round(baseVolume * rand(0.5, 1.1) * (1 + bodyPct * 40) * openBoost);
+      out.push({ i, open, high, low, close, volume });
       price = close;
     }
     return out;
@@ -543,7 +1312,7 @@
       if (!resp.ok || !data.candles || !data.candles.length){
         throw new Error(data.error || ('No bars returned (HTTP ' + resp.status + ')'));
       }
-      candles = data.candles.map((b, i) => ({ i, open: b.open, high: b.high, low: b.low, close: b.close }));
+      candles = data.candles.map((b, i) => ({ i, open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume || 0 }));
       times = data.candles.map(b => b.time);
       symbol = sym;
       SESSION_CANDLES = candles.length;
@@ -580,6 +1349,7 @@
     clearTradePlan();
     logList.innerHTML = '<div class="log-empty">' + logMessage + '</div>';
     toastLayer.innerHTML = '';
+    resetOrbUI();
     render();
   }
 
@@ -643,6 +1413,13 @@
     document.getElementById('priceVal').textContent = fmt(c.close);
     document.getElementById('candleCountVal').textContent = (idx+1) + ' / ' + SESSION_CANDLES;
 
+    computeAndRenderFactors(idx);
+
+    function finish(){
+      updateDerivedChips(idx);
+      render();
+    }
+
     // --- Range forming ---
     if (idx === 0 && orPeriod > 1){
       setPhase('FORMING OPENING RANGE', 'blue');
@@ -673,7 +1450,7 @@
       } else if (idx === 0) {
         setPhase('FORMING OPENING RANGE', 'blue');
       }
-      render();
+      finish();
       return;
     }
 
@@ -688,18 +1465,20 @@
           breakoutDir = 'long'; breakoutIdx = idx;
           state = 'WATCH_RETEST';
           setPhase('BREAKOUT — WATCHING RETEST', 'amber');
-          fire('bull', '🚀', 'CALL SETUP TRIGGERED', symbol + ' closed above OR high ' + fmt(orHigh) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('long', c.close) + '. Watching for a retest before entry — not a fill signal yet.', t, 'Setup — probability-based, not a guarantee');
+          fire('bull', '🚀', 'BULLISH SETUP FORMING', symbol + ' closed above OR high ' + fmt(orHigh) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('long', c.close) + '. Watching for a retest before treating this as a potential entry zone.', t, 'Conditions favor buyers — not a fill signal yet');
         } else {
-          fire('amber', '⚠️', 'WEAK BREAK — NO ENTRY', 'Price poked above ' + fmt(orHigh) + ' but the candle body is weak/indecisive. Not a valid signal — wait for confirmation.', t);
+          lastWeakBreakIdx = idx;
+          fire('amber', '⚠️', 'WEAK BREAK — WAIT FOR CONFIRMATION', 'Price poked above ' + fmt(orHigh) + ' but the candle body is weak/indecisive. Confirmation is missing — wait before treating this as a setup.', t);
         }
       } else if (c.close < orLow){
         if (bearBody && bodyRatio >= BODY_STRENGTH_MIN){
           breakoutDir = 'short'; breakoutIdx = idx;
           state = 'WATCH_RETEST';
           setPhase('BREAKOUT — WATCHING RETEST', 'amber');
-          fire('bear', '🔻', 'PUT SETUP TRIGGERED', symbol + ' closed below OR low ' + fmt(orLow) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('short', c.close) + '. Watching for a retest before entry — not a fill signal yet.', t, 'Setup — probability-based, not a guarantee');
+          fire('bear', '🔻', 'BEARISH SETUP FORMING', symbol + ' closed below OR low ' + fmt(orLow) + ' at ' + fmt(c.close) + ' on a strong candle. Expected range extension: ' + expectedRange('short', c.close) + '. Watching for a retest before treating this as a potential entry zone.', t, 'Conditions favor sellers — not a fill signal yet');
         } else {
-          fire('amber', '⚠️', 'WEAK BREAK — NO ENTRY', 'Price poked below ' + fmt(orLow) + ' but the candle body is weak/indecisive. Not a valid signal — wait for confirmation.', t);
+          lastWeakBreakIdx = idx;
+          fire('amber', '⚠️', 'WEAK BREAK — WAIT FOR CONFIRMATION', 'Price poked below ' + fmt(orLow) + ' but the candle body is weak/indecisive. Confirmation is missing — wait before treating this as a setup.', t);
         }
       } else {
         const sinceRange = idx - (orPeriod - 1);
@@ -707,10 +1486,10 @@
           state = 'NO_TRADE';
           setPhase('NO TRADE — RANGE HOLDING', 'neutral');
           stats.flats++; updateStats();
-          fire('neutral', '⛔', 'DO NOT TRADE', 'Price has held inside ' + fmt(orLow) + '–' + fmt(orHigh) + ' with no breakout. No call, no put — the edge is gone for this session.', t);
+          fire('neutral', '⛔', 'NO SETUP — RANGE HOLDING', 'Price has held inside ' + fmt(orLow) + '–' + fmt(orHigh) + ' with no breakout. No bullish or bearish setup — the edge is gone for this session.', t);
         }
       }
-      render();
+      finish();
       return;
     }
 
@@ -722,33 +1501,33 @@
       if (breakoutDir === 'long'){
         const touched = c.low <= level + tol;
         if (touched && c.close > level){
-          fire('blue', '🔁', 'RETEST', symbol + ' pulled back and tapped ' + fmt(level) + '.', t);
+          fire('blue', '🔁', 'RETEST HOLDING', symbol + ' pulled back and held ' + fmt(level) + '.', t);
           enterTrade('long', c.close, orLow, t, idx);
         } else if (touched && c.close < orLow){
-          fire('neutral', '❌', 'FAILED BREAKOUT', 'Price reclaimed the range and closed below ' + fmt(orLow) + '. No trade — breakout invalidated.', t);
+          fire('neutral', '❌', 'SETUP INVALIDATED', 'Price reclaimed the range and closed below ' + fmt(orLow) + '. No entry zone — breakout invalidated.', t);
           state = 'WATCH_BREAKOUT'; breakoutDir = null; breakoutIdx = null;
           setPhase('WATCHING FOR BREAKOUT', 'blue');
         } else if (touched){
-          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before entering.', t);
+          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before treating this as an entry zone.', t);
         } else {
           checkExtension(idx, t);
         }
       } else {
         const touched = c.high >= level - tol;
         if (touched && c.close < level){
-          fire('blue', '🔁', 'RETEST', symbol + ' pulled back and tapped ' + fmt(level) + '.', t);
+          fire('blue', '🔁', 'RETEST HOLDING', symbol + ' pulled back and held ' + fmt(level) + '.', t);
           enterTrade('short', c.close, orHigh, t, idx);
         } else if (touched && c.close > orHigh){
-          fire('neutral', '❌', 'FAILED BREAKOUT', 'Price reclaimed the range and closed above ' + fmt(orHigh) + '. No trade — breakout invalidated.', t);
+          fire('neutral', '❌', 'SETUP INVALIDATED', 'Price reclaimed the range and closed above ' + fmt(orHigh) + '. No entry zone — breakout invalidated.', t);
           state = 'WATCH_BREAKOUT'; breakoutDir = null; breakoutIdx = null;
           setPhase('WATCHING FOR BREAKOUT', 'blue');
         } else if (touched){
-          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before entering.', t);
+          fire('blue', '🔁', 'RETEST IN PROGRESS', 'Price is testing ' + fmt(level) + ' — waiting for a hold before treating this as an entry zone.', t);
         } else {
           checkExtension(idx, t);
         }
       }
-      render();
+      finish();
       return;
     }
 
@@ -756,26 +1535,26 @@
     if (state === 'IN_TRADE'){
       if (breakoutDir === 'long'){
         if (c.high >= targetPrice){
-          exitTrade('WIN', targetPrice, t, '🎯', 'SELL NOW — TARGET HIT', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Close the position.');
+          exitTrade('WIN', targetPrice, t, '🎯', 'TARGET ZONE REACHED', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Consider closing — the setup has played out.');
         } else if (c.low <= stopPrice){
-          exitTrade('LOSS', stopPrice, t, '🛑', 'SELL NOW — STOP HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Close the position — the setup failed.');
+          exitTrade('LOSS', stopPrice, t, '🛑', 'INVALIDATION HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Setup weakening — consider closing to limit risk.');
         }
       } else {
         if (c.low <= targetPrice){
-          exitTrade('WIN', targetPrice, t, '🎯', 'SELL NOW — TARGET HIT', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Close the position.');
+          exitTrade('WIN', targetPrice, t, '🎯', 'TARGET ZONE REACHED', 'Price reached the expected 2R target at ' + fmt(targetPrice) + '. Consider closing — the setup has played out.');
         } else if (c.high >= stopPrice){
-          exitTrade('LOSS', stopPrice, t, '🛑', 'SELL NOW — STOP HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Close the position — the setup failed.');
+          exitTrade('LOSS', stopPrice, t, '🛑', 'INVALIDATION HIT', 'Price hit the invalidation level at ' + fmt(stopPrice) + '. Setup weakening — consider closing to limit risk.');
         }
       }
       if (state === 'IN_TRADE' && idx === SESSION_CANDLES - 1){
-        exitTrade('FLAT', c.close, t, '🔔', 'SELL NOW — SESSION END', 'Final candle of the session. Close the remaining position at ' + fmt(c.close) + ' regardless of target/stop.');
+        exitTrade('FLAT', c.close, t, '🔔', 'SESSION ENDING', 'Final candle of the session — consider flattening the remaining position at ' + fmt(c.close) + ' regardless of target/stop.');
       }
       updateLiveR(c.close);
-      render();
+      finish();
       return;
     }
 
-    render();
+    finish();
   }
 
   function checkExtension(idx, t){
@@ -799,8 +1578,8 @@
     state = 'IN_TRADE';
     const optType = dir === 'long' ? 'CALL' : 'PUT';
     setPhase('IN TRADE — ' + optType + ' BIAS', dir === 'long' ? 'bull' : 'bear');
-    fire(dir === 'long' ? 'bull' : 'bear', dir === 'long' ? '🟢' : '🔴', 'BUY ' + optType + ' NOW',
-      'Retest held. ' + optType + '-biased entry at ' + fmt(entryPrice) + '. Invalidation ' + fmt(stopPrice) + ', expected target ' + fmt(targetPrice) + ' (2R).', t,
+    fire(dir === 'long' ? 'bull' : 'bear', dir === 'long' ? '🟢' : '🔴', optType + ' BIAS CONFIRMED',
+      'Retest held. Potential ' + optType + ' entry zone at ' + fmt(entryPrice) + '. Invalidation ' + fmt(stopPrice) + ', expected target ' + fmt(targetPrice) + ' (2R).', t,
       'Directional bias only — pick strike/expiry with your own risk rules');
 
     document.getElementById('dirVal').textContent = optType;
@@ -969,7 +1748,19 @@
   });
 
   // ================= INIT =================
-  resetSession();
+  (function initFromUrl(){
+    const params = new URLSearchParams(location.search);
+    const tParam = params.get('t');
+    const dateParam = params.get('date');
+    if (tParam) document.getElementById('symbolInput').value = tParam.toUpperCase();
+    if (dateParam) document.getElementById('dateInput').value = dateParam;
+    if (tParam){
+      resetOrbUI();
+      loadLiveSession();
+    } else {
+      resetSession();
+    }
+  })();
 })();
 </script>
 

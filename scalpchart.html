@@ -1845,6 +1845,14 @@ async function loadTicker() {
   runPatternDetection();
   startSimulation();
   startPricePoller();
+  // Deep-linked from ORB Signal Engine's "Analyze with SampsonX" action (?coach=1) —
+  // auto-open the coach panel on the latest candle, once, on this initial load only.
+  if (_coachAutoOpenPending) {
+    _coachAutoOpenPending = false;
+    const vis = candles.slice(Math.max(0, candles.length - 55), candles.length);
+    selectedVisibleIdx = vis.length - 1;
+    showCoach(vis[vis.length - 1], vis.length - 1, vis);
+  }
 }
 
 // ─── REAL DATA FETCH ─────────────────────────────────────────────
@@ -3003,8 +3011,16 @@ document.addEventListener('click', (e) => {
 });
 
 // ─── INIT ───────────────────────────────────────────────────────
+// Deep-link support: /scalpchart?t=TICKER (mirrors exitassistant.html's convention)
+// takes precedence over the locally-saved ticker; ?coach=1 additionally auto-opens
+// the SampsonX coach panel once real data loads (see loadTicker()).
+const _urlParams = new URLSearchParams(location.search);
+const _tParam = _urlParams.get('t');
+let _coachAutoOpenPending = _urlParams.get('coach') === '1';
 const _savedTicker = localStorage.getItem('sc_chart_ticker');
-if (_savedTicker) {
+if (_tParam) {
+  document.getElementById('tickerInput').value = _tParam.toUpperCase();
+} else if (_savedTicker) {
   document.getElementById('tickerInput').value = _savedTicker;
 }
 resizeCanvases();

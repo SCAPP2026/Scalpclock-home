@@ -1,5 +1,5 @@
 // Regular-session 15-minute bars for the ORB Signal Engine — one trading day
-// (09:30-16:00 ET) per request, normalized to {time:"HH:MM", open, high, low, close}.
+// (09:30-16:00 ET) per request, normalized to {time:"HH:MM", open, high, low, close, volume}.
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -54,10 +54,10 @@ export async function onRequest(context) {
     const candles = bars
       .map(b => {
         const et = etParts(b.t);
-        return { et, open: +b.o.toFixed(2), high: +b.h.toFixed(2), low: +b.l.toFixed(2), close: +b.c.toFixed(2) };
+        return { et, open: +b.o.toFixed(2), high: +b.h.toFixed(2), low: +b.l.toFixed(2), close: +b.c.toFixed(2), volume: b.v || 0 };
       })
       .filter(c => c.et.date === date && c.et.time >= RTH_START && c.et.time < RTH_END)
-      .map(c => ({ time: c.et.time, open: c.open, high: c.high, low: c.low, close: c.close }));
+      .map(c => ({ time: c.et.time, open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume }));
 
     if (!candles.length) {
       return json({ error: `No regular-session bars found for ${symbol} on ${date} — market may have been closed, or the date is too far in the past for this feed.` }, 404);

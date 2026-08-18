@@ -2911,6 +2911,23 @@ window.addEventListener('DOMContentLoaded', () => {
     const sel = document.getElementById('tickerSel');
     if ([...sel.options].some(o => o.value === ticker)) sel.value = ticker;
   }
+
+  // Handoff context from the ORB Signal Engine's "Send to Exit Assistant" action —
+  // display-only. Exit Assistant's own target/stop/RR calculator logic below is
+  // untouched; these params just show the reader what carried over.
+  const _dir = p.get('dir'), _entry = p.get('entry'), _sup = p.get('sup'), _res = p.get('res');
+  if (_dir || _entry || _sup || _res) {
+    const parts = [];
+    if (_dir) parts.push((_dir === 'call' ? 'Bullish' : 'Bearish') + ' bias');
+    if (_entry) parts.push('entry zone ~' + _entry);
+    if (_sup) parts.push('support ' + _sup);
+    if (_res) parts.push('resistance ' + _res);
+    const note = document.createElement('div');
+    note.style.cssText = 'max-width:760px;margin:0 auto 16px;padding:12px 16px;border:1px solid rgba(22,217,126,.3);border-left:3px solid #16d97e;border-radius:10px;background:rgba(22,217,126,.06);font-size:.85rem;color:#c8d4e8;';
+    note.innerHTML = '<strong style="color:#eef3f0;">Handed off from ORB Signal Engine:</strong> ' + parts.join(' · ') + '.';
+    const container = document.querySelector('.se-container');
+    if (container) container.insertAdjacentElement('beforebegin', note);
+  }
   // Default expiry to next Friday
   const nextFriday = (() => {
     const d = new Date();
