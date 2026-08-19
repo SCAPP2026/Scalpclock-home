@@ -1802,7 +1802,13 @@
     applySession('WAITING FOR SESSION', 'neutral', 'Press Play to start the session.', false);
   }
 
-  async function loadLiveSession(){
+  // `isAutoInit` distinguishes the automatic on-page-load attempt (falls
+  // back to a clearly-labeled practice simulation if live data can't be
+  // fetched — e.g. a weekend/holiday visit with no session data yet) from a
+  // user manually clicking "Load Live Session" later (never silently
+  // replaces whatever they're already looking at with fabricated data —
+  // just shows the error and leaves their current session alone).
+  async function loadLiveSession(isAutoInit){
     const sym = (document.getElementById('symbolInput').value.trim() || 'SPY').toUpperCase();
     const dateVal = document.getElementById('dateInput').value;
     clearInterval(timer); timer = null; playing = false; setPlayLabel();
@@ -1822,8 +1828,13 @@
       SESSION_CANDLES = candles.length;
       applySession('LIVE SESSION LOADED', 'blue', 'Live 15m bars loaded for ' + symbol + ' (' + SESSION_CANDLES + ' candles). Press Play to run the ORB engine on real data.', true);
     } catch (err){
-      setPhase('LIVE LOAD FAILED', 'bear');
-      fire('bear', '⚠️', 'LIVE DATA ERROR', String(err.message || err), '--:--');
+      if (isAutoInit){
+        resetSession();
+        fire('amber', '⚠️', 'LIVE DATA UNAVAILABLE — SHOWING PRACTICE SIMULATION', 'Could not load live bars for ' + sym + ' (' + String(err.message || err) + ') — the market may be closed right now. Enter a symbol and click "Load Live Session" to try again.', times[0] || '09:30');
+      } else {
+        setPhase('LIVE LOAD FAILED', 'bear');
+        fire('bear', '⚠️', 'LIVE DATA ERROR', String(err.message || err), '--:--');
+      }
     } finally {
       document.getElementById('loadLiveBtn').disabled = false;
     }
@@ -2300,7 +2311,7 @@
       resetSession();
     }
   });
-  document.getElementById('loadLiveBtn').addEventListener('click', loadLiveSession);
+  document.getElementById('loadLiveBtn').addEventListener('click', () => loadLiveSession(false));
   document.getElementById('whyDetails').addEventListener('toggle', (e) => {
     if (e.target.open) track('why_signal_expanded');
   });
@@ -2314,18 +2325,20 @@
 
   // ================= INIT =================
   track('orb_engine_loaded');
+  // Defaults to real market data (SPY, most recent session, unless a ?t=/
+  // ?date= override is given) the moment the page loads — this is a signal
+  // engine, so "what a visitor sees first" should be a real read, not a
+  // fabricated one. Falls back to a clearly-labeled practice simulation
+  // only if the live fetch itself fails (see loadLiveSession's isAutoInit
+  // handling) — e.g. a weekend/holiday visit with no session data yet.
   (function initFromUrl(){
     const params = new URLSearchParams(location.search);
     const tParam = params.get('t');
     const dateParam = params.get('date');
     if (tParam) document.getElementById('symbolInput').value = tParam.toUpperCase();
     if (dateParam) document.getElementById('dateInput').value = dateParam;
-    if (tParam){
-      resetOrbUI();
-      loadLiveSession();
-    } else {
-      resetSession();
-    }
+    resetOrbUI();
+    loadLiveSession(true);
   })();
 })();
 </script>
