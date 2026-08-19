@@ -73,7 +73,12 @@
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
-  body{min-width:1080px;overflow-x:auto;}
+  /* No hard min-width: this page previously forced a fixed 1080px-minimum
+     desktop layout (horizontal-scroll on any narrower viewport), which is
+     why nothing below it, however carefully reorganized, could ever have
+     reached mobile visitors. @media(max-width:860px) below now has room
+     to actually apply. */
+  body{overflow-x:hidden;}
   .wrap{max-width:1440px;margin:0 auto;padding:18px 22px 40px;}
 
   /* ===== Header ===== */
@@ -141,6 +146,7 @@
 
   /* ===== Layout ===== */
   .grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;}
+  .grid > *{min-width:0;}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
   .card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
   .card-head h2{font-size:12px;margin:0;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);font-weight:700;}
@@ -325,6 +331,82 @@
   .outcome-row b.pos{color:var(--bull);}
   .outcome-row b.neg{color:var(--bear);}
   .similar-setups-note{font-size:10.5px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
+
+  /* ===== 1. Session Control hero ===== */
+  .session-control-hero{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:16px;}
+  .sc-top-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+  .session-control-hero .session-context{margin:12px 0 0;background:var(--panel-alt);}
+  .live-session-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;}
+
+  /* ===== 2. Progress strip ("Where Am I?") ===== */
+  .progress-strip{display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:16px;}
+  .progress-step{padding:5px 10px;border-radius:14px;letter-spacing:0.3px;white-space:nowrap;background:var(--panel);border:1px solid var(--border);color:var(--text-faint);}
+  .progress-step.done{color:var(--bull);border-color:var(--bull);background:var(--bull-dim);}
+  .progress-step.active{color:var(--amber);border-color:var(--amber);background:var(--amber-dim);}
+  .progress-arrow{color:var(--text-faint);font-size:10px;margin:0 2px;}
+
+  /* ===== 3. Opening Range card ===== */
+  .or-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;}
+  .or-cell{display:flex;flex-direction:column;gap:3px;}
+  .or-cell .k{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+  .or-cell .v{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);}
+
+  /* ===== 4. Market State hero — the single dominant message ===== */
+  .market-state-hero{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:16px;text-align:center;}
+  .phase-pill-hero{display:inline-block;font-family:var(--mono);font-size:20px;font-weight:800;padding:12px 26px;border-radius:14px;letter-spacing:0.5px;margin-bottom:14px;}
+  .ms-meta{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:18px;font-family:var(--mono);font-size:12px;color:var(--text-dim);}
+  .ms-meta .sc-note{color:var(--text-faint);font-family:var(--sans);margin-right:4px;}
+  .ms-meta b{color:var(--text);}
+
+  /* ===== 5. ORB Timeline — quick chronological version ===== */
+  .orb-timeline{display:flex;flex-direction:column;gap:2px;max-height:260px;overflow-y:auto;}
+  .timeline-item{display:flex;gap:12px;padding:6px 4px;font-size:12px;border-left:2px solid var(--border);padding-left:12px;}
+  .timeline-item .ti-time{font-family:var(--mono);color:var(--text-faint);flex-shrink:0;width:76px;}
+  .timeline-item .ti-text{color:var(--text-dim);}
+
+  /* ===== 6. Current Signal ===== */
+  .current-signal-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:24px;}
+  .cs-row{display:flex;flex-direction:column;gap:3px;}
+  .cs-row .k{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+  .cs-row .v{font-family:var(--sans);font-size:18px;font-weight:800;color:var(--text);}
+
+  /* ===== 7. Why This Signal checklist ===== */
+  .signal-checklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+  .signal-checklist li{font-size:12.5px;line-height:1.5;}
+  .signal-checklist li.sc-done{color:var(--text-dim);}
+  .signal-checklist li.sc-pending{color:var(--text-faint);}
+
+  /* ===== 8. Retest Zone / Why This Stop ===== */
+  .retest-zone-display{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;}
+  .or-flow{font-size:11px;color:var(--text-faint);letter-spacing:0.3px;}
+
+  /* ===== 9. Setup Quality ===== */
+  .not-a-probability{font-size:11px;color:var(--text-faint);font-style:italic;margin-top:6px;}
+  .breakout-quality-inline{margin-top:2px;}
+  .breakout-quality-inline .sc-note{color:var(--text-faint);font-family:var(--sans);margin-right:4px;}
+
+  /* ===== 10. Trade Filter verdict ===== */
+  .trade-filter-verdict{font-family:var(--mono);font-size:15px;font-weight:800;letter-spacing:0.5px;padding:8px 14px;border-radius:8px;margin-bottom:12px;text-align:center;}
+  .trade-filter-verdict.valid{background:var(--bull-dim);color:var(--bull);}
+  .trade-filter-verdict.no-trade{background:var(--bear-dim);color:var(--bear);}
+  .trade-filter-verdict.pending{background:var(--panel-alt);color:var(--text-faint);}
+
+  /* ===== 14. Advanced Analysis (collapsed) ===== */
+  .advanced-analysis{border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden;background:var(--panel);}
+  .advanced-analysis summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);}
+  .advanced-analysis summary::-webkit-details-marker{display:none;}
+  .advanced-body{padding:0 16px 16px;}
+
+  /* ===== How ORB Works flow ===== */
+  .how-orb-flow{font-family:var(--mono);font-size:11px;color:var(--bull);letter-spacing:0.5px;margin-bottom:12px;padding:8px 10px;background:var(--bull-dim);border-radius:8px;text-align:center;}
+
+  /* ===== Mobile: stack the chart+trade-plan grid; everything else already stacks (single column) ===== */
+  @media(max-width:860px){
+    .grid{grid-template-columns:1fr;}
+    .sc-top-row{flex-direction:column;align-items:stretch;}
+    .market-state-hero{padding:16px;}
+    .phase-pill-hero{font-size:16px;padding:10px 18px;}
+  }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "ORB Signal Engine", "item": "https://scalpclock.com/orbsignalengine"}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
@@ -383,87 +465,131 @@
 
 <div class="wrap">
 
-  <header>
-    <div class="hdr-left">
-      <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-      <a href="/" class="logo">
-        <div class="logo-mark">
-          <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
-            <circle cx="9" cy="9" r="7"/>
-            <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
-            <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
-          </svg>
+  <!-- ============ 1. SESSION CONTROL ============ -->
+  <div class="session-control-hero">
+    <div class="sc-top-row">
+      <div class="hdr-left">
+        <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <a href="/" class="logo">
+          <div class="logo-mark">
+            <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="9" cy="9" r="7"/>
+              <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+              <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="logo-name">Scalp<em>ORB</em></span>
+            <span class="logo-motto">The Time To Profit Is Now</span>
+          </div>
+        </a>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <label for="orSelect">Range</label>
+          <select id="orSelect">
+            <option value="1">15m (1 candle)</option>
+            <option value="2">30m (2 candles)</option>
+            <option value="4">60m (4 candles)</option>
+          </select>
         </div>
-        <div class="logo-text">
-          <span class="logo-name">Scalp<em>ORB</em></span>
-          <span class="logo-motto">The Time To Profit Is Now</span>
+        <div class="ctrl-group">
+          <label for="speedSelect">Speed</label>
+          <select id="speedSelect">
+            <option value="1400">1x</option>
+            <option value="700" selected>2x</option>
+            <option value="320">4x</option>
+          </select>
         </div>
-      </a>
-    </div>
-    <div class="controls">
-      <div class="ctrl-group">
-        <label for="orSelect">Range</label>
-        <select id="orSelect">
-          <option value="1">15m (1 candle)</option>
-          <option value="2">30m (2 candles)</option>
-          <option value="4">60m (4 candles)</option>
-        </select>
+        <button class="btn-primary" id="playBtn">▶ Play</button>
+        <button class="btn-ghost" id="stepBtn">Step →</button>
+        <button class="btn-ghost" id="newBtn">⟳ New Session</button>
+        <button class="btn-danger-ghost" id="resetStatsBtn">Reset Stats</button>
       </div>
-      <div class="ctrl-group">
-        <label for="speedSelect">Speed</label>
-        <select id="speedSelect">
-          <option value="1400">1x</option>
-          <option value="700" selected>2x</option>
-          <option value="320">4x</option>
-        </select>
-      </div>
-      <button class="btn-primary" id="playBtn">▶ Play</button>
-      <button class="btn-ghost" id="stepBtn">Step →</button>
-      <button class="btn-ghost" id="newBtn">⟳ New Session</button>
-      <button class="btn-danger-ghost" id="resetStatsBtn">Reset Stats</button>
     </div>
-  </header>
 
-  <div id="modeBanner" class="mode-banner sim">SIMULATION MODE — randomly generated session, not real market data</div>
+    <div id="modeBanner" class="mode-banner sim">SIMULATION MODE — randomly generated session, not real market data</div>
 
-  <!-- ORB HEADER — the central intelligence readout -->
-  <div class="orb-header">
-    <div class="orb-gauge-wrap">
-      <svg viewBox="0 0 104 104">
-        <circle class="orb-gauge-bg" cx="52" cy="52" r="45"/>
-        <circle class="orb-gauge-fill" id="orbGaugeFill" cx="52" cy="52" r="45" stroke-dasharray="282.7" stroke-dashoffset="282.7"/>
-      </svg>
-      <div class="orb-gauge-center">
-        <div class="orb-gauge-num" id="orbGaugeNum">—</div>
-        <div class="orb-gauge-max">/ 100</div>
-      </div>
+    <div class="session-context">
+      <span><span class="sc-note">NYSE Session</span> <b>9:30 AM–4:00 PM ET</b></span>
+      <span><span class="sc-note">Opening Range</span> <b id="ctxOpeningRange">—</b></span>
+      <span><span class="sc-note">Current</span> <b id="ctxCurrent">—</b></span>
+      <span><span class="sc-note">Time Remaining</span> <b id="ctxRemaining">—</b></span>
+      <span><span class="sc-note">Status</span> <b id="ctxStatus">—</b></span>
+      <span class="sc-note">(all times ET — not your local timezone)</span>
     </div>
-    <div class="orb-header-main">
-      <div class="orb-state-label neutral" id="orbStateLabel">WAITING FOR SESSION</div>
-      <div class="orb-sub-row">
-        <span class="orb-strength-badge WEAK" id="orbStrengthBadge">—</span>
-        <span id="orbStateNote">Press Play or load a live session to begin reading this setup.</span>
+
+    <div class="live-session-row">
+      <div class="ctrl-group">
+        <label for="symbolInput">Symbol</label>
+        <input id="symbolInput" type="text" placeholder="SPY" value="SPY" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:6px 8px;width:70px;text-transform:uppercase;">
       </div>
-    </div>
-    <div class="orb-header-meta">
-      <b><span id="orbTickerVal">—</span></b>
-      <span id="orbPriceTimeVal">— · 15m</span>
+      <div class="ctrl-group">
+        <label for="dateInput">Session Date</label>
+        <input id="dateInput" type="date" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;">
+      </div>
+      <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
+      <span style="font-size:11px;color:var(--text-faint);">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</span>
     </div>
   </div>
 
-  <details class="why-details" id="whyDetails">
-    <summary>❓ Why is this the signal?</summary>
+  <!-- ============ 2. PROGRESS STRIP ("Where Am I?") ============ -->
+  <div class="progress-strip" id="progressStrip"></div>
+
+  <!-- ============ 3. OPENING RANGE ============ -->
+  <div class="card">
+    <div class="card-head"><h2>Opening Range</h2></div>
+    <div class="card-body">
+      <div class="or-grid">
+        <div class="or-cell"><span class="k">Opening Range</span><span class="v" id="orWindowVal">—</span></div>
+        <div class="or-cell"><span class="k">OR High</span><span class="v" id="orHighVal">—</span></div>
+        <div class="or-cell"><span class="k">OR Low</span><span class="v" id="orLowVal">—</span></div>
+        <div class="or-cell"><span class="k">Range</span><span class="v" id="orRangeAbsVal">—</span></div>
+        <div class="or-cell"><span class="k">Range %</span><span class="v" id="orRangePctVal">—</span></div>
+        <div class="or-cell"><span class="k">Status</span><span class="v" id="orStatusVal">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. MARKET STATE — the single dominant message ============ -->
+  <div class="market-state-hero">
+    <div id="phasePill" class="phase-pill-hero" style="background:var(--panel-alt);color:var(--text-dim);border:1px solid var(--border);">WAITING FOR SESSION</div>
+    <div class="ms-meta">
+      <span><span class="sc-note">Symbol</span> <b id="symbolVal">—</b></span>
+      <span><span class="sc-note">Session Time</span> <b id="timeVal">9:30 AM</b></span>
+      <span><span class="sc-note">Last Price</span> <b id="priceVal">—</b></span>
+      <span><span class="sc-note">OR High / Low</span> <b id="orVal">— / —</b></span>
+    </div>
+  </div>
+
+  <!-- ============ 5. ORB TIMELINE — quick chronological version ============ -->
+  <div class="card">
+    <div class="card-head"><h2>ORB Timeline</h2></div>
+    <div class="card-body">
+      <div class="orb-timeline" id="orbTimeline"><div class="hist-empty">Press Play to start the session.</div></div>
+    </div>
+  </div>
+
+  <!-- ============ 6. CURRENT SIGNAL ============ -->
+  <div class="current-signal-card">
+    <div class="cs-row"><span class="k">Directional Bias</span><span class="v" id="dirVal">—</span></div>
+    <div class="cs-row"><span class="k">Options Bias</span><span class="v" id="optBiasVal">—</span></div>
+  </div>
+  <div class="signal-disclaimer">Directional signal only — based on the underlying's ORB structure. This does not recommend an options contract, strike, expiration, position size, or broker execution.</div>
+
+  <!-- ============ 7. WHY THIS SIGNAL? / WHAT WOULD INVALIDATE? — built from this session's actual FSM events ============ -->
+  <details class="why-details" id="whyDetails" open>
+    <summary>✓ Why This Signal?</summary>
     <div class="why-body">
-      <span class="tier-badge">AI Interpretation — Template-Based, Not a Guarantee</span>
-      <div id="whyText">Not enough of the session has played out yet to explain a signal.</div>
+      <ul class="signal-checklist" id="whySignalChecklist"><li class="sc-pending">Not enough of the session has played out yet to explain a signal.</li></ul>
     </div>
   </details>
 
   <div class="invalidation-card">
-    <h3>What Would Change This Signal?</h3>
-    <ul class="invalidation-list" id="invalidationList">
+    <h3>✕ What Would Invalidate This?</h3>
+    <ul class="invalidation-list" id="invalidationChecklistFsm">
       <li>Waiting for enough data to identify what would invalidate this read.</li>
     </ul>
   </div>
@@ -475,95 +601,7 @@
     <a class="action-btn btn-primary disabled" id="actExitAssistant" href="/exitassistant" target="_blank" rel="noopener">🚪 Send to Exit Assistant</a>
   </div>
 
-  <div class="signal-disclaimer">Directional signal only — based on the underlying's ORB structure. This does not recommend an options contract, strike, expiration, position size, or broker execution.</div>
-
-  <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden;background:var(--panel);">
-    <summary style="cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);">📖 How ORB Works</summary>
-    <ol style="padding:0 16px 16px 34px;color:var(--text-dim);font-size:12.5px;line-height:1.9;">
-      <li>The Opening Range is established during the selected opening period (15/30/60 minutes at the start of the session).</li>
-      <li>OR High = the highest price traded during the opening range.</li>
-      <li>OR Low = the lowest price traded during the opening range.</li>
-      <li>A bullish breakout requires a candle to <em>close</em> above OR High.</li>
-      <li>A bearish breakout requires a candle to <em>close</em> below OR Low.</li>
-      <li>A retest occurs when price returns to the broken OR level after the breakout.</li>
-      <li>A confirmed bullish retest requires price to hold/reclaim OR High on a close.</li>
-      <li>A confirmed bearish retest requires price to hold/reject OR Low on a close.</li>
-      <li>Only after that confirmation does this engine classify the setup as a valid breakout/retest signal — a wick alone through either level is never enough.</li>
-    </ol>
-  </details>
-
-  <div class="session-context">
-    <span><span class="sc-note">NYSE Session</span> <b>9:30 AM–4:00 PM ET</b></span>
-    <span><span class="sc-note">Opening Range</span> <b id="ctxOpeningRange">—</b></span>
-    <span><span class="sc-note">Current</span> <b id="ctxCurrent">—</b></span>
-    <span><span class="sc-note">Time Remaining</span> <b id="ctxRemaining">—</b></span>
-    <span><span class="sc-note">Status</span> <b id="ctxStatus">—</b></span>
-    <span class="sc-note">(all times ET — not your local timezone)</span>
-  </div>
-
-  <div id="setupSummaryCard" class="setup-summary-card">
-    <h3>🎯 ORB Retest Confirmed — Setup Summary</h3>
-    <div class="ss-grid">
-      <div><span class="k">Direction</span><span class="v" id="ssDirection">—</span></div>
-      <div><span class="k">OR High</span><span class="v" id="ssOrHigh">—</span></div>
-      <div><span class="k">OR Low</span><span class="v" id="ssOrLow">—</span></div>
-      <div><span class="k">Breakout</span><span class="v" id="ssBreakoutTime">—</span></div>
-      <div><span class="k">Retest</span><span class="v" id="ssRetestTime">—</span></div>
-      <div><span class="k">Entry</span><span class="v" id="ssEntry">—</span></div>
-      <div><span class="k">Stop</span><span class="v" id="ssStop">—</span></div>
-      <div><span class="k">Target</span><span class="v" id="ssTarget">—</span></div>
-      <div><span class="k">Risk</span><span class="v" id="ssRisk">—</span></div>
-      <div><span class="k">Reward</span><span class="v" id="ssReward">—</span></div>
-      <div><span class="k">R:R</span><span class="v" id="ssRR">—</span></div>
-      <div><span class="k">Setup Quality</span><span class="v" id="ssQuality">—</span></div>
-    </div>
-  </div>
-
-  <div id="whyNoTradeCard" class="why-no-trade-card">
-    <h3>Why No Trade?</h3>
-    <div id="whyNoTradeText" style="font-size:12.5px;color:var(--text-dim);line-height:1.6;"></div>
-  </div>
-
-  <div class="status-strip">
-    <div class="status-item">
-      <span class="k">Symbol</span>
-      <span class="v" id="symbolVal">—</span>
-    </div>
-    <div class="divider"></div>
-    <div class="status-item">
-      <span class="k">Session Time</span>
-      <span class="v" id="timeVal">9:30 AM</span>
-    </div>
-    <div class="divider"></div>
-    <div class="status-item">
-      <span class="k">Last Price</span>
-      <span class="v" id="priceVal">—</span>
-    </div>
-    <div class="divider"></div>
-    <div class="status-item">
-      <span class="k">OR High / Low</span>
-      <span class="v" id="orVal">— / —</span>
-    </div>
-    <div class="divider"></div>
-    <div class="status-item">
-      <span class="k">ORB Status</span>
-      <div id="phasePill" class="phase-pill" style="background:var(--panel-alt);color:var(--text-dim);border:1px solid var(--border);">WAITING FOR SESSION</div>
-    </div>
-  </div>
-
-  <div class="status-strip" style="margin-top:-6px;">
-    <div class="ctrl-group">
-      <label for="symbolInput">Symbol</label>
-      <input id="symbolInput" type="text" placeholder="SPY" value="SPY" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:6px 8px;width:70px;text-transform:uppercase;">
-    </div>
-    <div class="ctrl-group">
-      <label for="dateInput">Session Date</label>
-      <input id="dateInput" type="date" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;">
-    </div>
-    <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
-    <span style="font-size:11px;color:var(--text-faint);">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</span>
-  </div>
-
+  <!-- ============ 8. TRADE PLAN + RETEST ZONE + WHY THIS STOP (paired with the chart, which draws these same levels) ============ -->
   <div class="grid">
     <!-- CHART -->
     <div class="card">
@@ -586,72 +624,119 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="card">
-        <div class="card-head"><h2>Setup Plan — Underlying Bias</h2></div>
+        <div class="card-head"><h2>Trade Plan</h2></div>
         <div class="card-body">
-          <div class="trade-row"><span class="k">Direction</span><span class="v" id="dirVal">—</span></div>
-          <div class="trade-row"><span class="k">Options Bias</span><span class="v" id="optBiasVal">—</span></div>
           <div class="trade-row"><span class="k">Current Price</span><span class="v" id="currentPriceVal">—</span></div>
           <div class="trade-row"><span class="k">Potential Entry (retest zone)</span><span class="v" id="potentialEntryVal">—</span></div>
           <div class="trade-row"><span class="k">Confirmed Entry</span><span class="v" id="confirmedEntryVal">—</span></div>
           <div class="trade-row"><span class="k">Stop</span><span class="v" id="stopVal">—</span></div>
-          <div class="trade-row" style="grid-column:1/-1;"><span class="k">Why this stop?</span><span class="v" id="stopBasisVal" style="font-size:11px;font-weight:600;color:var(--text-dim);">—</span></div>
-          <div class="trade-row"><span class="k">Risk</span><span class="v" id="riskVal">—</span></div>
           <div class="trade-row"><span class="k">Target</span><span class="v" id="targetVal">—</span></div>
+          <div class="trade-row"><span class="k">Risk</span><span class="v" id="riskVal">—</span></div>
           <div class="trade-row"><span class="k">Reward</span><span class="v" id="rewardVal">—</span></div>
           <div class="trade-row"><span class="k">R:R</span><span class="v" id="rrVal">—</span></div>
-          <div class="trade-row" style="grid-column:1/-1;"><span class="k">Retest Zone</span><span class="v" id="retestZoneVal" style="font-size:12px;">—</span></div>
-          <div class="trade-row"><span class="k">Breakout Quality (setup score, not a win %)</span><span class="v" id="breakoutQualityVal">—</span></div>
           <div class="trade-row"><span class="k">Live R</span><span class="v" id="liveRVal">—</span></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-head"><h2>Session Stats</h2></div>
+        <div class="card-head"><h2>Retest Zone</h2></div>
         <div class="card-body">
-          <div class="stats-grid">
-            <div class="stat-box"><div class="num" id="winsVal" style="color:var(--bull);">0</div><div class="lbl">Wins</div></div>
-            <div class="stat-box"><div class="num" id="lossVal" style="color:var(--bear);">0</div><div class="lbl">Losses</div></div>
-            <div class="stat-box"><div class="num" id="flatVal" style="color:var(--text-dim);">0</div><div class="lbl">No Trade</div></div>
-          </div>
+          <div class="retest-zone-display" id="retestZoneVal">—</div>
+          <div class="or-flow" id="orFlowVal">ORB High/Low → Retest Zone → Confirmation</div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-head"><h2>No-Trade Filter Checklist</h2></div>
+        <div class="card-head"><h2>Why This Stop?</h2></div>
         <div class="card-body">
-          <ul class="ntf-list" id="noTradeChecklist"></ul>
+          <div id="stopBasisVal" style="font-size:12.5px;font-weight:600;color:var(--text-dim);line-height:1.6;">No position yet — the stop basis will appear once a retest confirms.</div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-head"><h2>Event Log</h2></div>
-        <div class="card-body">
-          <div class="log" id="logList">
-            <div class="log-empty">Press Play to start the session.</div>
-          </div>
+      <div id="setupSummaryCard" class="setup-summary-card">
+        <h3>🎯 ORB Retest Confirmed — Setup Summary</h3>
+        <div class="ss-grid">
+          <div><span class="k">Direction</span><span class="v" id="ssDirection">—</span></div>
+          <div><span class="k">OR High</span><span class="v" id="ssOrHigh">—</span></div>
+          <div><span class="k">OR Low</span><span class="v" id="ssOrLow">—</span></div>
+          <div><span class="k">Breakout</span><span class="v" id="ssBreakoutTime">—</span></div>
+          <div><span class="k">Retest</span><span class="v" id="ssRetestTime">—</span></div>
+          <div><span class="k">Entry</span><span class="v" id="ssEntry">—</span></div>
+          <div><span class="k">Stop</span><span class="v" id="ssStop">—</span></div>
+          <div><span class="k">Target</span><span class="v" id="ssTarget">—</span></div>
+          <div><span class="k">Risk</span><span class="v" id="ssRisk">—</span></div>
+          <div><span class="k">Reward</span><span class="v" id="ssReward">—</span></div>
+          <div><span class="k">R:R</span><span class="v" id="ssRR">—</span></div>
+          <div><span class="k">Setup Quality</span><span class="v" id="ssQuality">—</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- FACTOR SCORING -->
-  <div class="card-head" style="border:none;padding:0 0 10px;background:transparent;">
-    <h2>Multi-Factor Scoring <span class="tier-badge" style="margin-bottom:0;margin-left:8px;">Calculated Indicators</span></h2>
+  <!-- ============ 9. SETUP QUALITY — a score, never a win probability ============ -->
+  <div class="orb-header">
+    <div class="orb-gauge-wrap">
+      <svg viewBox="0 0 104 104">
+        <circle class="orb-gauge-bg" cx="52" cy="52" r="45"/>
+        <circle class="orb-gauge-fill" id="orbGaugeFill" cx="52" cy="52" r="45" stroke-dasharray="282.7" stroke-dashoffset="282.7"/>
+      </svg>
+      <div class="orb-gauge-center">
+        <div class="orb-gauge-num" id="orbGaugeNum">—</div>
+        <div class="orb-gauge-max">/ 100</div>
+      </div>
+    </div>
+    <div class="orb-header-main">
+      <div class="orb-state-label neutral" id="orbStateLabel">WAITING FOR SESSION</div>
+      <div class="orb-sub-row">
+        <span class="orb-strength-badge WEAK" id="orbStrengthBadge">—</span>
+        <span id="orbStateNote">Press Play or load a live session to begin reading this setup.</span>
+      </div>
+      <div class="not-a-probability">Setup quality is not a probability of success.</div>
+    </div>
+    <div class="orb-header-meta">
+      <b><span id="orbTickerVal">—</span></b>
+      <span id="orbPriceTimeVal">— · 15m</span>
+      <span class="breakout-quality-inline"><span class="sc-note">This Breakout</span> <b id="breakoutQualityVal">—</b></span>
+    </div>
   </div>
   <div class="factor-grid" id="factorGrid"></div>
 
-  <!-- DIRECTION / STRENGTH / ENTRY QUALITY / RISK — kept visually separate on purpose -->
-  <div class="card-head" style="border:none;padding:0 0 10px;background:transparent;">
-    <h2>Direction vs. Trade Quality <span class="tier-badge" style="margin-bottom:0;margin-left:8px;">A Bullish Read Is Not Automatically a Good Trade</span></h2>
+  <!-- ============ 10. TRADE FILTER ============ -->
+  <div class="card">
+    <div class="card-head"><h2>Trade Filter</h2></div>
+    <div class="card-body">
+      <div id="tradeFilterVerdict" class="trade-filter-verdict pending">—</div>
+      <ul class="ntf-list" id="noTradeChecklist"></ul>
+    </div>
   </div>
-  <div class="quality-grid">
-    <div class="quality-card"><div class="qk">Market Direction</div><div class="qv neutral" id="qvDirection">—</div></div>
-    <div class="quality-card"><div class="qk">Setup Strength</div><div class="qv neutral" id="qvStrength">—</div></div>
-    <div class="quality-card"><div class="qk">Entry Quality</div><div class="qv neutral" id="qvEntry">—</div></div>
-    <div class="quality-card"><div class="qk">Risk</div><div class="qv neutral" id="qvRisk">—</div></div>
+  <div id="whyNoTradeCard" class="why-no-trade-card">
+    <h3>Why No Trade?</h3>
+    <div id="whyNoTradeText" style="font-size:12.5px;color:var(--text-dim);line-height:1.6;"></div>
   </div>
 
-  <!-- SIGNAL HISTORY + OUTCOME TRACKING -->
+  <!-- ============ 11. EVENT LOG — the detailed audit trail (Timeline above is the quick version) ============ -->
+  <div class="card">
+    <div class="card-head"><h2>Event Log</h2></div>
+    <div class="card-body">
+      <div class="log" id="logList">
+        <div class="log-empty">Press Play to start the session.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 12. SESSION RESULTS ============ -->
+  <div class="card">
+    <div class="card-head"><h2>Session Results</h2></div>
+    <div class="card-body">
+      <div class="stats-grid">
+        <div class="stat-box"><div class="num" id="winsVal" style="color:var(--bull);">0</div><div class="lbl">Wins</div></div>
+        <div class="stat-box"><div class="num" id="lossVal" style="color:var(--bear);">0</div><div class="lbl">Losses</div></div>
+        <div class="stat-box"><div class="num" id="flatVal" style="color:var(--text-dim);">0</div><div class="lbl">No Trade</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 13. SIGNAL HISTORY ============ -->
   <div class="card" style="margin-bottom:16px;">
     <div class="card-head">
       <h2>Signal History</h2>
@@ -670,6 +755,48 @@
   <div class="disclaimer" style="margin-top:12px;">
     <strong style="color:var(--text-dim);">Live data:</strong> enter a symbol (and optionally a date — defaults to the most recent trading session) and click "Load Live Session" to run the ORB engine on real 15-minute bars from Alpaca's IEX real-time feed. This is genuinely real-time (not delayed) but reflects trades on the IEX exchange only, not the full consolidated tape — thinly-traded symbols may show gaps. No login or Pro plan required.
   </div>
+
+  <!-- ============ 14. ADVANCED ANALYSIS (collapsed) ============ -->
+  <details class="advanced-analysis" id="advancedAnalysisDetails">
+    <summary>🔬 Advanced Analysis</summary>
+    <div class="advanced-body">
+      <div class="why-body" style="padding:0 0 16px;">
+        <span class="tier-badge">AI Interpretation — Template-Based, Not a Guarantee</span>
+        <div id="whyText">Not enough of the session has played out yet to explain a signal.</div>
+      </div>
+      <ul class="invalidation-list" id="invalidationList" style="margin-bottom:16px;">
+        <li>Waiting for enough data to identify what would invalidate this read.</li>
+      </ul>
+      <div class="card-head" style="border:none;padding:0 0 10px;background:transparent;">
+        <h2>Direction vs. Trade Quality <span class="tier-badge" style="margin-bottom:0;margin-left:8px;">A Bullish Read Is Not Automatically a Good Trade</span></h2>
+      </div>
+      <div class="quality-grid">
+        <div class="quality-card"><div class="qk">Market Direction</div><div class="qv neutral" id="qvDirection">—</div></div>
+        <div class="quality-card"><div class="qk">Setup Strength</div><div class="qv neutral" id="qvStrength">—</div></div>
+        <div class="quality-card"><div class="qk">Entry Quality</div><div class="qv neutral" id="qvEntry">—</div></div>
+        <div class="quality-card"><div class="qk">Risk</div><div class="qv neutral" id="qvRisk">—</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ============ 15. HOW ORB WORKS + FAQ ============ -->
+  <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden;background:var(--panel);">
+    <summary style="cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:13px;color:var(--text);">📖 How ORB Works</summary>
+    <div style="padding:0 16px 16px;">
+      <div class="how-orb-flow">OPENING RANGE → BREAKOUT → RETEST → CONFIRM → PLAN</div>
+      <ol style="padding:0 0 0 18px;color:var(--text-dim);font-size:12.5px;line-height:1.9;">
+        <li>The Opening Range is established during the selected opening period (15/30/60 minutes at the start of the session).</li>
+        <li>OR High = the highest price traded during the opening range.</li>
+        <li>OR Low = the lowest price traded during the opening range.</li>
+        <li>A bullish breakout requires a candle to <em>close</em> above OR High.</li>
+        <li>A bearish breakout requires a candle to <em>close</em> below OR Low.</li>
+        <li>A retest occurs when price returns to the broken OR level after the breakout.</li>
+        <li>A confirmed bullish retest requires price to hold/reclaim OR High on a close.</li>
+        <li>A confirmed bearish retest requires price to hold/reject OR Low on a close.</li>
+        <li>Only after that confirmation does this engine classify the setup as a valid breakout/retest signal — a wick alone through either level is never enough.</li>
+      </ol>
+    </div>
+  </details>
 
   <div style="max-width:720px;margin:32px auto 0;">
     <h2 style="font-size:16px;color:var(--text);margin-bottom:14px;">ORB Signal Engine FAQ</h2>
@@ -1411,6 +1538,129 @@
     return pad2(Math.floor(total / 60)) + ':' + pad2(total % 60);
   }
 
+  // ================= ANALYTICS (gtag already loaded site-wide) =================
+  function track(eventName, params){
+    if (typeof gtag === 'function') gtag('event', eventName, params || {});
+  }
+
+  // ================= "WHERE AM I?" PROGRESS STRIP =================
+  // Pure presentation mapping from the FSM state (owned by js/orb-engine.js)
+  // to the 7-stage checklist. No engine logic here, just a display lookup.
+  const PROGRESS_DONE_AT = {
+    RANGE: ['RANGE_COMPLETE', 'BREAKOUT_PENDING', 'RETEST_PENDING', 'RETEST_TESTING', 'RETEST_CONFIRMED', 'ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT', 'FAILED_BREAKOUT', 'SESSION_COMPLETE', 'NO_TRADE'],
+    BREAKOUT: ['RETEST_PENDING', 'RETEST_TESTING', 'RETEST_CONFIRMED', 'ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT', 'SESSION_COMPLETE'],
+    RETEST: ['RETEST_CONFIRMED', 'ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT', 'SESSION_COMPLETE'],
+    CONFIRM: ['ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT', 'SESSION_COMPLETE'],
+    PLAN: ['ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT', 'SESSION_COMPLETE'],
+    RESULT: ['TARGET_HIT', 'STOP_HIT', 'SESSION_COMPLETE'],
+  };
+  function deriveProgress(st){
+    const started = st !== 'WAITING_FOR_RANGE';
+    return [
+      { key: 'SESSION', label: 'Session', mark: started ? '✓' : '●' },
+      { key: 'RANGE', label: 'Range', mark: PROGRESS_DONE_AT.RANGE.includes(st) ? '✓' : (st === 'RANGE_FORMING' ? '●' : '○') },
+      { key: 'BREAKOUT', label: 'Breakout', mark: PROGRESS_DONE_AT.BREAKOUT.includes(st) ? '✓' : (st === 'BREAKOUT_PENDING' ? '●' : '○') },
+      { key: 'RETEST', label: 'Retest', mark: PROGRESS_DONE_AT.RETEST.includes(st) ? '✓' : (st === 'RETEST_PENDING' || st === 'RETEST_TESTING' ? '●' : '○') },
+      { key: 'CONFIRM', label: 'Confirm', mark: PROGRESS_DONE_AT.CONFIRM.includes(st) ? '✓' : (st === 'RETEST_CONFIRMED' ? '●' : '○') },
+      { key: 'PLAN', label: 'Plan', mark: PROGRESS_DONE_AT.PLAN.includes(st) ? '✓' : (st === 'ENTRY_TRIGGERED' ? '●' : '○') },
+      { key: 'RESULT', label: 'Result', mark: (st === 'SESSION_COMPLETE' || st === 'NO_TRADE') ? '✓' : (st === 'TARGET_HIT' || st === 'STOP_HIT' ? '●' : '○') },
+    ];
+  }
+  function renderProgressStrip(){
+    const el = document.getElementById('progressStrip');
+    if (!el) return;
+    const steps = deriveProgress(state);
+    el.innerHTML = steps.map(s => '<span class="progress-step ' + (s.mark === '✓' ? 'done' : s.mark === '●' ? 'active' : 'pending') + '">' + s.label + ' ' + s.mark + '</span>').join('<span class="progress-arrow">→</span>');
+  }
+
+  // ================= OPENING RANGE CARD =================
+  function renderOpeningRangeCard(){
+    const winEl = document.getElementById('orWindowVal');
+    if (!winEl) return;
+    if (orHigh == null){
+      winEl.textContent = to12h(times[0] || '09:30') + '–' + to12h(addMinutes(times[0] || '09:30', orPeriod * 15)) + ' ET';
+      document.getElementById('orHighVal').textContent = '—';
+      document.getElementById('orLowVal').textContent = '—';
+      document.getElementById('orRangeAbsVal').textContent = '—';
+      document.getElementById('orRangePctVal').textContent = '—';
+      document.getElementById('orStatusVal').textContent = 'RANGE FORMING';
+      return;
+    }
+    winEl.textContent = to12h(times[0] || '09:30') + '–' + to12h(addMinutes(times[0] || '09:30', orPeriod * 15)) + ' ET';
+    document.getElementById('orHighVal').textContent = fmt(orHigh);
+    document.getElementById('orLowVal').textContent = fmt(orLow);
+    document.getElementById('orRangeAbsVal').textContent = fmt(orHigh - orLow);
+    document.getElementById('orRangePctVal').textContent = (orRangePct * 100).toFixed(2) + '%';
+    let statusText = 'RANGE COMPLETE';
+    if (state === 'NO_TRADE' && (orRangePct < EC.OR_RANGE_MIN_PCT)) statusText = 'NO TRADE — RANGE TOO NARROW';
+    else if (state === 'NO_TRADE' && (orRangePct > EC.OR_RANGE_MAX_PCT)) statusText = 'NO TRADE — RANGE TOO WIDE';
+    document.getElementById('orStatusVal').textContent = statusText;
+  }
+
+  // ================= ORB TIMELINE (quick chronological version — Event Log is the detailed audit trail) =================
+  let timelineEntries = [];
+  function pushTimelineEntry(t, text){
+    timelineEntries.push({ t, text });
+    if (timelineEntries.length > 30) timelineEntries.shift();
+    renderOrbTimeline();
+  }
+  function renderOrbTimeline(){
+    const el = document.getElementById('orbTimeline');
+    if (!el) return;
+    if (!timelineEntries.length){ el.innerHTML = '<div class="hist-empty">Press Play to start the session.</div>'; return; }
+    el.innerHTML = timelineEntries.map(e => '<div class="timeline-item"><span class="ti-time">' + to12h(e.t) + '</span><span class="ti-text">' + e.text + '</span></div>').join('');
+  }
+
+  // ================= WHY THIS SIGNAL? / WHAT WOULD INVALIDATE? — built from this session's actual FSM facts =================
+  function renderWhySignalChecklist(){
+    const el = document.getElementById('whySignalChecklist');
+    const invEl = document.getElementById('invalidationChecklistFsm');
+    if (!el || !invEl) return;
+    if (!breakoutDir){
+      el.innerHTML = '<li class="sc-pending">Not enough of the session has played out yet to explain a signal.</li>';
+      invEl.innerHTML = '<li>Waiting for enough data to identify what would invalidate this read.</li>';
+      return;
+    }
+    const dirWord = breakoutDir === 'long' ? 'above' : 'below';
+    const level = breakoutDir === 'long' ? 'OR High' : 'OR Low';
+    const opp = breakoutDir === 'long' ? 'below' : 'above';
+    const retestTouched = ['RETEST_TESTING', 'RETEST_CONFIRMED', 'ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT'].includes(state) || (state === 'SESSION_COMPLETE' && entryPrice != null);
+    const retestHeld = ['RETEST_CONFIRMED', 'ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT'].includes(state) || (state === 'SESSION_COMPLETE' && entryPrice != null);
+    const items = [
+      { done: true, text: 'Price closed ' + dirWord + ' ' + level + ' on a strong-bodied candle' },
+      { done: retestTouched, text: 'Price returned to ' + level },
+      { done: retestHeld, text: 'Retest held — confirmation candle closed ' + dirWord + ' ' + level },
+    ];
+    el.innerHTML = items.map(i => '<li class="' + (i.done ? 'sc-done' : 'sc-pending') + '">' + (i.done ? '✓' : '○') + ' ' + i.text + '</li>').join('');
+
+    const invList = [];
+    if (!['ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT', 'SESSION_COMPLETE'].includes(state)){
+      invList.push('A decisive close back ' + opp + ' ' + level + ' would fail this breakout.');
+    }
+    if (entryPrice != null && stopPrice != null){
+      invList.push('A close through the stop at ' + fmt(stopPrice) + ' would invalidate the setup.');
+    } else {
+      invList.push('A retest that fails to hold ' + level + ' would invalidate this setup.');
+    }
+    invEl.innerHTML = invList.map(t => '<li>✕ ' + t + '</li>').join('');
+  }
+
+  // ================= TRADE FILTER VERDICT =================
+  function renderTradeFilterVerdict(){
+    const el = document.getElementById('tradeFilterVerdict');
+    if (!el) return;
+    if (state === 'NO_TRADE'){
+      el.textContent = 'NO TRADE';
+      el.className = 'trade-filter-verdict no-trade';
+    } else if (['ENTRY_TRIGGERED', 'TARGET_HIT', 'STOP_HIT'].includes(state) || (state === 'SESSION_COMPLETE' && entryPrice != null)){
+      el.textContent = 'VALID SETUP';
+      el.className = 'trade-filter-verdict valid';
+    } else {
+      el.textContent = 'PENDING';
+      el.className = 'trade-filter-verdict pending';
+    }
+  }
+
   // ================= NO-TRADE FILTER CHECKLIST (live PASS/FAIL) =================
   function renderNoTradeChecklist(){
     const el = document.getElementById('noTradeChecklist');
@@ -1593,6 +1843,9 @@
     currentBreakoutQuality = null;
     tradeLedgerLogged = false;
     orPeriod = parseInt(document.getElementById('orSelect').value, 10);
+    timelineEntries = [];
+    pushTimelineEntry(times[0] || '09:30', 'Session started');
+    track('session_started', { live: !!isLive, or_period: orPeriod });
     engineCtx = {
       orPeriod, allCandles: candles, sessionCandles: SESSION_CANDLES,
       orHigh: null, orLow: null, orRangePct: null,
@@ -1619,6 +1872,11 @@
     renderModeBanner();
     renderSessionContext();
     renderNoTradeChecklist();
+    renderProgressStrip();
+    renderOpeningRangeCard();
+    renderOrbTimeline();
+    renderWhySignalChecklist();
+    renderTradeFilterVerdict();
     hideSetupSummaryCard();
     render();
   }
@@ -1711,7 +1969,8 @@
       text = (dir === 'long' ? 'BULLISH' : 'BEARISH') + ' ORB — ' + base.text;
     }
     if (dir && st === 'STOP_HIT') kind = 'bear';
-    return { text: '🟢 ' + text, kind };
+    const icon = kind === 'bull' ? '🟢' : kind === 'bear' ? '🔴' : kind === 'amber' ? '🟡' : '⚪';
+    return { text: icon + ' ' + text, kind };
   }
 
   const NO_TRADE_REASON_TEXT = {
@@ -1759,9 +2018,14 @@
     updatePotentialEntry();
     renderNoTradeChecklist();
     renderSessionContext();
+    renderProgressStrip();
+    renderOpeningRangeCard();
+    renderWhySignalChecklist();
+    renderTradeFilterVerdict();
     if ((state === ST.NO_TRADE || state === ST.SESSION_COMPLETE) && !tradeLedgerLogged){
       tradeLedgerLogged = true;
       persistTradeLedgerEntry(idx, t);
+      track('session_completed', { state, result: engineCtx.exitReason || state });
     }
     updateLiveR(c.close);
     updateDerivedChips(idx);
@@ -1773,9 +2037,11 @@
       document.getElementById('orVal').textContent = fmt(ev.orHigh) + ' / ' + fmt(ev.orLow);
       const pct = (ev.rangePct * 100).toFixed(2);
       fire('blue', '📏', 'OPENING RANGE SET', 'OR High ' + fmt(ev.orHigh) + '. OR Low ' + fmt(ev.orLow) + '. Range ' + pct + '% of price.', t);
+      pushTimelineEntry(t, 'Opening range established (' + fmt(ev.orHigh) + ' / ' + fmt(ev.orLow) + ')');
       if (ev.quality === 'OK'){
         fire('neutral', '📐', 'RANGE SIZE OK', pct + '% of price — within the strategy\'s accepted ' + (EC.OR_RANGE_MIN_PCT*100).toFixed(2) + '%–' + (EC.OR_RANGE_MAX_PCT*100).toFixed(2) + '% window.', t);
       }
+      track('opening_range_complete', { quality: ev.quality, range_pct: ev.rangePct });
     }
     else if (ev.type === 'WEAK_BREAK'){
       lastWeakBreakIdx = idx;
@@ -1787,6 +2053,7 @@
         symbol + ' closed ' + (ev.dir === 'long' ? 'above OR High ' + fmt(orHigh) : 'below OR Low ' + fmt(orLow)) + ' at ' + fmt(ev.price) +
         ' on a strong candle (body ' + (ev.bodyRatio * 100).toFixed(0) + '% of range). Expected range extension: ' + expectedRange(ev.dir, ev.price) + '. Watching for a retest before treating this as a potential entry zone.',
         t, 'Conditions favor ' + (ev.dir === 'long' ? 'buyers' : 'sellers') + ' — not a fill signal yet');
+      pushTimelineEntry(t, (ev.dir === 'long' ? 'Bullish' : 'Bearish') + ' breakout confirmed');
       const trendFactor = (factorCache[idx] && factorCache[idx].factors) ? factorCache[idx].factors.find(f => f.key === 'trend') : null;
       currentBreakoutQuality = ORBEngine.breakoutQuality({
         bodyRatio: ev.bodyRatio,
@@ -1794,36 +2061,49 @@
         distanceBeyondPct: Math.abs(ev.price - (ev.dir === 'long' ? orLow : orHigh)) / ev.price,
         trendScore: trendFactor ? trendFactor.score : null,
       });
+      track('breakout_detected', { dir: ev.dir, body_ratio: ev.bodyRatio });
     }
     else if (ev.type === 'RETEST_TESTING'){
       fire('blue', '🔁', 'RETEST TESTING', 'Price is testing ' + fmt(ev.dir === 'long' ? orHigh : orLow) + ' — waiting for a hold before treating this as an entry zone.', t);
+      pushTimelineEntry(t, 'Price returned to ' + (ev.dir === 'long' ? 'OR High' : 'OR Low'));
+      track('retest_detected', { dir: ev.dir });
     }
     else if (ev.type === 'RETEST_CONFIRMED'){
       fire('blue', '🔁', 'RETEST CONFIRMED', symbol + ' pulled back and held ' + fmt(ev.dir === 'long' ? orHigh : orLow) + '.', t);
+      pushTimelineEntry(t, (ev.dir === 'long' ? 'Bullish' : 'Bearish') + ' retest confirmed');
+      track('retest_confirmed', { dir: ev.dir });
     }
     else if (ev.type === 'ENTRY_TRIGGERED'){
       enterTrade(ev.dir, ev.entry, ev.stop, ev.target, ev.risk, ev.reward, ev.rr, t);
       renderSetupSummaryCard(ev, t);
+      pushTimelineEntry(t, 'Entry triggered at ' + fmt(ev.entry));
+      track('signal_viewed', { dir: ev.dir, rr: ev.rr });
+      track('trade_plan_viewed', { dir: ev.dir });
     }
     else if (ev.type === 'FAILED_BREAKOUT'){
       const causeText = ev.cause === 'RECLAIMED'
         ? 'Price reclaimed the range and closed back beyond the invalidation level. Strategy rule: only one breakout attempt per direction per session — this direction is done.'
         : 'Price ran ' + EC.EXTENDED_NO_RETEST_CANDLES + '+ candles past the breakout with no retest. Strategy rule: no new entries this far past an unconfirmed breakout — this direction is done.';
       fire('neutral', '❌', (ev.dir === 'long' ? 'BULLISH' : 'BEARISH') + ' BREAKOUT FAILED', causeText, t);
+      pushTimelineEntry(t, (ev.dir === 'long' ? 'Bullish' : 'Bearish') + ' breakout failed (' + (ev.cause === 'RECLAIMED' ? 'reclaimed' : 'no retest in time') + ')');
     }
     else if (ev.type === 'NO_TRADE'){
       stats.flats++; updateStats();
       fire('neutral', '⛔', 'NO TRADE', NO_TRADE_REASON_TEXT[ev.reason] || ev.reason, t);
       renderWhyNoTrade(ev.reason);
+      pushTimelineEntry(t, 'No trade — ' + (NO_TRADE_REASON_TEXT[ev.reason] || ev.reason));
     }
     else if (ev.type === 'TARGET_HIT'){
       exitTrade('WIN', ev.price, t, '🎯', 'TARGET HIT', 'Price reached the exact 2R target at ' + fmt(ev.price) + '. Consider closing — the setup has played out.');
+      pushTimelineEntry(t, 'Target hit at ' + fmt(ev.price));
     }
     else if (ev.type === 'STOP_HIT'){
       exitTrade('LOSS', ev.price, t, '🛑', 'STOP HIT', 'Price hit the invalidation level at ' + fmt(ev.price) + '. Setup weakening — consider closing to limit risk.');
+      pushTimelineEntry(t, 'Stop hit at ' + fmt(ev.price));
     }
     else if (ev.type === 'SESSION_FLATTEN'){
       exitTrade('FLAT', ev.price, t, '🔔', 'SESSION ENDING', 'Final candle of the session — consider flattening the remaining position at ' + fmt(ev.price) + ' regardless of target/stop.');
+      pushTimelineEntry(t, 'Session ended — flattened at ' + fmt(ev.price));
     }
   }
 
@@ -2021,12 +2301,19 @@
     }
   });
   document.getElementById('loadLiveBtn').addEventListener('click', loadLiveSession);
+  document.getElementById('whyDetails').addEventListener('toggle', (e) => {
+    if (e.target.open) track('why_signal_expanded');
+  });
+  document.getElementById('advancedAnalysisDetails').addEventListener('toggle', (e) => {
+    if (e.target.open) track('advanced_analysis_expanded');
+  });
   document.getElementById('speedSelect').addEventListener('change', (e) => {
     speed = parseInt(e.target.value, 10);
     if (playing){ pause(); play(); }
   });
 
   // ================= INIT =================
+  track('orb_engine_loaded');
   (function initFromUrl(){
     const params = new URLSearchParams(location.search);
     const tParam = params.get('t');
