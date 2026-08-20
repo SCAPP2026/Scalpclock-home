@@ -53,6 +53,10 @@ input.lh-input,select.lh-input{background:var(--bg2);border:1px solid var(--line
 
     <div class="lh-section-title">ScalpClock Assets</div>
     <div id="grid" class="lh-grid"><div class="lh-msg">Loading…</div></div>
+
+    <div class="lh-section-title" style="margin-top:28px;">Content Gap Suggestions (Phase 15)</div>
+    <p class="lh-msg" style="margin-bottom:12px;">Topic clusters with 3+ opportunities where no existing asset was a good match — candidates for a genuinely new, free ScalpClock asset.</p>
+    <div id="gaps"><div class="lh-msg">Loading…</div></div>
   </div>
 </div>
 
@@ -64,8 +68,58 @@ let authedFetch;
 LinkHunterAuth.init('content-assets').then((auth) => {
   authedFetch = auth.authedFetch;
   load();
+  loadGaps();
   document.getElementById('addBtn').addEventListener('click', add);
 });
+
+async function loadGaps() {
+  const el = document.getElementById('gaps');
+  try {
+    const res = await authedFetch('/api/linkhunter/content-opportunities');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    renderGaps(data.contentGaps || []);
+  } catch (e) {
+    el.innerHTML = `<div class="lh-msg err">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderGaps(gaps) {
+  const el = document.getElementById('gaps');
+  if (!gaps.length) { el.innerHTML = '<div class="lh-msg">No content gaps large enough yet (need 3+ unmatched opportunities in one topic).</div>'; return; }
+  el.innerHTML = gaps.map(g => `
+    <div class="lh-asset-card" style="margin-bottom:10px;">
+      <h4>${escapeHtml(g.topic)}</h4>
+      <p>${g.opportunityCount} opportunities with no matching asset.</p>
+      <button class="lh-btn" style="margin-top:8px;" data-suggest="${escapeAttr(g.topic)}">Ask AI for a suggestion</button>
+      <div class="lh-msg" data-result style="margin-top:8px;"></div>
+    </div>
+  `).join('');
+  el.querySelectorAll('[data-suggest]').forEach(btn => btn.addEventListener('click', () => suggest(btn)));
+}
+
+async function suggest(btn) {
+  const topic = btn.getAttribute('data-suggest');
+  const resultEl = btn.parentElement.querySelector('[data-result]');
+  btn.disabled = true; btn.textContent = 'Thinking…';
+  try {
+    const res = await authedFetch('/api/linkhunter/content-opportunities', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Suggestion failed');
+    const s = data.suggestion;
+    resultEl.textContent = s.worth_building
+      ? `Suggested: "${s.suggested_title}" (${s.asset_type}) — ${s.reasoning}`
+      : `Not worth a new asset yet: ${s.reasoning}`;
+  } catch (e) {
+    resultEl.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Ask AI for a suggestion';
+  }
+}
 
 async function add() {
   const title = document.getElementById('aTitle').value.trim();
