@@ -1,5 +1,7 @@
 -- ScalpClock: LinkHunter AI — Phase 3 (core schema)
--- Run this ONCE in the Supabase SQL Editor (Dashboard -> SQL Editor -> New query).
+-- Already applied to production (fnuqxiflqqejjttxymbz). Kept here as the
+-- reference/handoff copy, same convention as this repo's other setup
+-- scripts -- re-running is safe (every statement is idempotent).
 -- This repo has no migration-file convention (Supabase tables are created ad hoc
 -- via the dashboard), so this file is a handoff/reference script, not something
 -- auto-applied by any deploy. See supabase/signal_history_setup.sql and
@@ -25,12 +27,15 @@
 -- lifecycle, e.g. NEW -> QUALIFIED -> CONTACTED), so one shared trigger
 -- function is defined once and reused by all six tables below.
 create or replace function linkhunter_set_updated_at()
-returns trigger as $$
+returns trigger
+language plpgsql
+set search_path = '' -- pins the search_path so this can't be hijacked by a same-named function in another schema
+as $$
 begin
   new.updated_at = now();
   return new;
 end;
-$$ language plpgsql;
+$$;
 
 -- 1. prospects ------------------------------------------------------------------
 create table if not exists prospects (
