@@ -336,7 +336,25 @@
   .session-control-hero{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:16px;}
   .sc-top-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:12px;}
   .session-control-hero .session-context{margin:12px 0 0;background:var(--panel-alt);}
-  .live-session-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  /* Secondary controls (Range/Speed/Reset) are visually quieter than the
+     primary workflow below — smaller text, no bold buttons — so the eye
+     goes to Load -> Start first, per the requested visual hierarchy. */
+  .secondary-controls{opacity:0.82;}
+  .secondary-controls select,.secondary-controls button{font-size:11px;padding:5px 9px;}
+
+  /* Primary workflow: Load Live Session + Start ORB Engine kept physically
+     together as one unit at every breakpoint (see mobile rule below), with
+     a status line that always names the current step. */
+  .primary-workflow{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+  .workflow-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .workflow-title{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-faint);}
+  .workflow-status{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:0.4px;padding:4px 10px;border-radius:8px;background:var(--panel-alt);color:var(--text-dim);border:1px solid var(--border);}
+  .workflow-status.step2{color:var(--amber);border-color:var(--amber);background:var(--amber-dim);}
+  .workflow-status.active{color:var(--bull);border-color:var(--bull);background:var(--bull-dim);}
+  .primary-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .primary-actions #loadLiveBtn,.primary-actions #playBtn{min-width:170px;text-align:center;}
+  .primary-actions #loadLiveBtn.loaded{color:var(--bull);border-color:var(--bull);}
+  .live-caption{font-size:11px;color:var(--text-faint);margin-top:8px;}
 
   /* ===== 2. Progress strip ("Where Am I?") ===== */
   .progress-strip{display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:16px;}
@@ -406,6 +424,13 @@
     .sc-top-row{flex-direction:column;align-items:stretch;}
     .market-state-hero{padding:16px;}
     .phase-pill-hero{font-size:16px;padding:10px 18px;}
+    /* Load Live Session and Start ORB Engine stay grouped in the same
+       .primary-actions block regardless of width -- this just makes each
+       control take the full row on narrow screens instead of wrapping
+       mid-group, so the two-step relationship stays visually obvious. */
+    .primary-actions{flex-direction:column;align-items:stretch;}
+    .primary-actions .ctrl-group{justify-content:space-between;}
+    .primary-actions #loadLiveBtn,.primary-actions #playBtn,.primary-actions #stepBtn{width:100%;}
   }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "ORB Signal Engine", "item": "https://scalpclock.com/orbsignalengine"}]}</script>
@@ -486,7 +511,9 @@
           </div>
         </a>
       </div>
-      <div class="controls">
+      <!-- Secondary controls — deliberately de-emphasized (smaller, muted)
+           so they don't compete with the primary Load -> Start workflow below. -->
+      <div class="controls secondary-controls">
         <div class="ctrl-group">
           <label for="orSelect">Range</label>
           <select id="orSelect">
@@ -503,9 +530,7 @@
             <option value="320">4x</option>
           </select>
         </div>
-        <button class="btn-primary" id="playBtn">▶ Play</button>
-        <button class="btn-ghost" id="stepBtn">Step →</button>
-        <button class="btn-ghost" id="newBtn">⟳ New Session</button>
+        <button class="btn-ghost" id="newBtn">↻ Reset Session</button>
         <button class="btn-danger-ghost" id="resetStatsBtn">Reset Stats</button>
       </div>
     </div>
@@ -521,17 +546,26 @@
       <span class="sc-note">(all times ET — not your local timezone)</span>
     </div>
 
-    <div class="live-session-row">
-      <div class="ctrl-group">
-        <label for="symbolInput">Symbol</label>
-        <input id="symbolInput" type="text" placeholder="SPY" value="SPY" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:6px 8px;width:70px;text-transform:uppercase;">
+    <!-- ============ PRIMARY WORKFLOW: Load -> Start, kept physically together ============ -->
+    <div class="primary-workflow">
+      <div class="workflow-head">
+        <span class="workflow-title">LIVE ORB SESSION</span>
+        <span class="workflow-status" id="workflowStatus">STEP 1 — LOAD SESSION</span>
       </div>
-      <div class="ctrl-group">
-        <label for="dateInput">Session Date</label>
-        <input id="dateInput" type="date" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;">
+      <div class="primary-actions">
+        <div class="ctrl-group">
+          <label for="symbolInput">Symbol</label>
+          <input id="symbolInput" type="text" placeholder="SPY" value="SPY" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:6px 8px;width:70px;text-transform:uppercase;">
+        </div>
+        <div class="ctrl-group">
+          <label for="dateInput">Session Date</label>
+          <input id="dateInput" type="date" style="background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:12px;padding:5px 8px;">
+        </div>
+        <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
+        <button class="btn-primary" id="playBtn" disabled>▶ Start ORB Engine</button>
+        <button class="btn-ghost" id="stepBtn">Step →</button>
       </div>
-      <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
-      <span style="font-size:11px;color:var(--text-faint);">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</span>
+      <div class="live-caption">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</div>
     </div>
   </div>
 
@@ -850,6 +884,12 @@
   let revealIdx = -1;
   let playing = false;
   let timer = null;
+  // True once any session (live or simulated fallback) has actually
+  // finished loading -- gates the Start ORB Engine button so it can't be
+  // clicked (and crash on an empty candles array) before there's anything
+  // to play. Set in applySession(), the single completion point both
+  // resetSession() and a successful loadLiveSession() funnel through.
+  let sessionReady = false;
 
   let state = ST.WAITING_FOR_RANGE;
   let orHigh = null, orLow = null, orSet = false, orRangePct = null;
@@ -1889,6 +1929,8 @@
     renderWhySignalChecklist();
     renderTradeFilterVerdict();
     hideSetupSummaryCard();
+    sessionReady = candles.length > 0;
+    updateWorkflowStatus();
     render();
   }
 
@@ -2265,8 +2307,36 @@
   // ================= PLAYBACK =================
   function setPlayLabel(){
     const btn = document.getElementById('playBtn');
-    btn.textContent = playing ? '⏸ Pause' : '▶ Play';
+    btn.textContent = playing ? '⏸ Pause Engine' : '▶ Start ORB Engine';
     btn.classList.toggle('is-pause', playing);
+    updateWorkflowStatus();
+  }
+
+  // Single place that drives every "where am I in Load -> Start" signal:
+  // the Load Live Session button's own label, whether Start ORB Engine can
+  // be clicked, and the STEP 1/STEP 2/ENGINE ACTIVE status line. Reuses the
+  // existing sessionReady/playing/isLiveData state -- no new source of truth.
+  function updateWorkflowStatus(){
+    const loadBtn = document.getElementById('loadLiveBtn');
+    const startBtn = document.getElementById('playBtn');
+    const statusEl = document.getElementById('workflowStatus');
+    if (!loadBtn || !startBtn || !statusEl) return;
+
+    loadBtn.textContent = isLiveData && sessionReady ? '✓ Session Loaded' : '⇩ Load Live Session';
+    loadBtn.classList.toggle('loaded', isLiveData && sessionReady);
+
+    startBtn.disabled = !sessionReady;
+
+    if (playing){
+      statusEl.textContent = 'ENGINE ACTIVE 🟢';
+      statusEl.className = 'workflow-status active';
+    } else if (sessionReady){
+      statusEl.textContent = 'STEP 2 — START ENGINE';
+      statusEl.className = 'workflow-status step2';
+    } else {
+      statusEl.textContent = 'STEP 1 — LOAD SESSION';
+      statusEl.className = 'workflow-status';
+    }
   }
 
   function tick(){
