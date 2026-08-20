@@ -890,6 +890,10 @@
   // to play. Set in applySession(), the single completion point both
   // resetSession() and a successful loadLiveSession() funnel through.
   let sessionReady = false;
+  // True after the first session (the automatic page-load one) has logged
+  // a visit -- keeps Reset Session / re-Load Live Session from inflating
+  // the visit count on every click within the same page load.
+  let visitLogged = false;
 
   let state = ST.WAITING_FOR_RANGE;
   let orHigh = null, orLow = null, orSet = false, orRangePct = null;
@@ -1583,6 +1587,22 @@
     if (typeof gtag === 'function') gtag('event', eventName, params || {});
   }
 
+  // Fire-and-forget server-side visit log (functions/api/orb-visit.js ->
+  // Supabase orb_engine_visits) -- separate from the GA event above so
+  // "how many visitors have used the ORB Signal Engine" is a real number
+  // queryable directly, not just something buried in an analytics
+  // dashboard. Never awaited, never surfaces an error to the user -- if
+  // this fails for any reason the tool itself is completely unaffected.
+  function logVisit(mode, sym){
+    try {
+      fetch('/api/orb-visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode, symbol: sym || null }),
+      }).catch(() => {});
+    } catch (e) {}
+  }
+
   // ================= "WHERE AM I?" PROGRESS STRIP =================
   // Pure presentation mapping from the FSM state (owned by js/orb-engine.js)
   // to the 7-stage checklist. No engine logic here, just a display lookup.
@@ -1931,6 +1951,10 @@
     hideSetupSummaryCard();
     sessionReady = candles.length > 0;
     updateWorkflowStatus();
+    if (sessionReady && !visitLogged){
+      visitLogged = true;
+      logVisit(isLiveData ? 'live' : 'sim', symbol);
+    }
     render();
   }
 
