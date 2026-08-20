@@ -14,19 +14,171 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
+.lh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+select.lh-input{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+input.lh-input,textarea.lh-input{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+textarea.lh-input{min-height:140px;font-family:var(--mono);font-size:.78rem;resize:vertical;}
+.lh-btn{font-family:var(--disp);font-weight:700;font-size:.78rem;padding:7px 14px;border-radius:var(--r-btn);cursor:pointer;border:1px solid transparent;background:var(--green);color:var(--on-green);}
+.lh-btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
+.lh-btn-ghost:hover{border-color:var(--line-strong);}
+.lh-btn-red{background:transparent;color:var(--red-ink);border-color:var(--red);}
+.lh-btn-red:hover{background:rgba(245,66,66,.08);}
+.lh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.lh-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:14px;}
+.lh-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.lh-card-head h4{font-family:var(--disp);font-weight:700;font-size:.95rem;}
+.lh-card-head .lh-domain{color:var(--t65);font-size:.78rem;}
+.lh-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-ink);}
+.lh-pill.DRAFT{background:rgba(91,156,246,.14);color:var(--info-ink);}
+.lh-pill.APPROVED{background:rgba(22,217,126,.16);color:var(--green-ink);}
+.lh-pill.SENT{background:rgba(245,166,35,.14);color:var(--amber-ink);}
+.lh-pill.CLOSED,.lh-pill.DECLINED{background:rgba(245,66,66,.1);color:var(--red-ink);}
+.lh-field-label{font-size:.68rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:8px 0 4px;}
+.lh-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
 .lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-msg{font-size:.76rem;margin-top:6px;}
+.lh-msg.err{color:var(--red-ink);}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
-    <div class="lh-section-title">Outreach</div>
-    <div class="lh-empty-card">AI-drafted outreach and the human approval workflow (Draft &rarr; User Review &rarr; Approved &rarr; Send) land in a later build phase. No email is ever sent automatically.</div>
+    <div class="lh-section-title">Outreach — Human Approval Required</div>
+    <div class="lh-row">
+      <select id="filterStatus" class="lh-input">
+        <option value="">All</option>
+        <option value="DRAFT">Drafts</option>
+        <option value="APPROVED">Approved</option>
+        <option value="SENT">Sent</option>
+        <option value="RESPONDED">Responses</option>
+        <option value="FOLLOW_UP">Follow-ups</option>
+        <option value="CLOSED">Closed / Rejected</option>
+      </select>
+      <button id="refreshBtn" class="lh-btn lh-btn-ghost">Refresh</button>
+    </div>
+
+    <div id="list"><div class="lh-empty-card">Loading…</div></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('outreach');</script>
+<script>
+let authedFetch;
+
+LinkHunterAuth.init('outreach').then((auth) => {
+  authedFetch = auth.authedFetch;
+  load();
+  document.getElementById('refreshBtn').addEventListener('click', load);
+  document.getElementById('filterStatus').addEventListener('change', load);
+});
+
+async function load() {
+  const list = document.getElementById('list');
+  list.innerHTML = '<div class="lh-empty-card">Loading…</div>';
+  const status = document.getElementById('filterStatus').value;
+  const params = new URLSearchParams({ page_size: 50 });
+  if (status) params.set('status', status);
+
+  try {
+    const res = await authedFetch('/api/linkhunter/outreach?' + params.toString());
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    render(data.outreach || []);
+  } catch (e) {
+    list.innerHTML = `<div class="lh-empty-card">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function render(rows) {
+  const list = document.getElementById('list');
+  if (!rows.length) { list.innerHTML = '<div class="lh-empty-card">No outreach yet — generate a draft from the Opportunities page.</div>'; return; }
+
+  list.innerHTML = rows.map(o => {
+    const p = o.prospects || {};
+    const opp = o.opportunities || {};
+    return `
+    <div class="lh-card" data-id="${o.id}">
+      <div class="lh-card-head">
+        <div>
+          <h4>${escapeHtml(p.domain || '—')} <span class="lh-pill ${escapeHtml(o.status)}">${escapeHtml(o.status)}</span></h4>
+          <div class="lh-domain">${escapeHtml(opp.opportunity_type || '')} · score ${opp.opportunity_score != null ? Number(opp.opportunity_score).toFixed(0) : '—'} · asset: ${escapeHtml(opp.recommended_asset || '—')}</div>
+        </div>
+      </div>
+      <div class="lh-field-label">Contact</div>
+      <input class="lh-input" data-field="contact_email" value="${escapeAttr(o.contact_email || '')}" placeholder="contact email">
+      <div class="lh-field-label">Subject</div>
+      <input class="lh-input" data-field="subject" value="${escapeAttr(o.subject || '')}">
+      <div class="lh-field-label">Body</div>
+      <textarea class="lh-input" data-field="body">${escapeHtml(o.body || '')}</textarea>
+      <div class="lh-actions">
+        <button class="lh-btn lh-btn-ghost" data-save="${o.id}">Save Edit</button>
+        ${o.status === 'DRAFT' ? `<button class="lh-btn" data-approve="${o.id}">Approve</button>` : ''}
+        ${o.status === 'APPROVED' ? `<button class="lh-btn" data-send="${o.id}">Send</button>` : ''}
+        ${o.status !== 'CLOSED' && o.status !== 'SENT' ? `<button class="lh-btn lh-btn-red" data-reject="${o.id}">Reject</button>` : ''}
+        ${o.status !== 'CLOSED' ? `<button class="lh-btn lh-btn-red" data-dnc="${o.id}">Do Not Contact</button>` : ''}
+      </div>
+      <div class="lh-msg" data-msg></div>
+    </div>
+  `; }).join('');
+
+  list.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => saveEdit(b)));
+  list.querySelectorAll('[data-approve]').forEach(b => b.addEventListener('click', () => doAction(b, b.getAttribute('data-approve'), 'approve')));
+  list.querySelectorAll('[data-send]').forEach(b => b.addEventListener('click', () => doAction(b, b.getAttribute('data-send'), 'send')));
+  list.querySelectorAll('[data-reject]').forEach(b => b.addEventListener('click', () => doPatch(b, b.getAttribute('data-reject'), { reject: true })));
+  list.querySelectorAll('[data-dnc]').forEach(b => b.addEventListener('click', () => doPatch(b, b.getAttribute('data-dnc'), { do_not_contact: true })));
+}
+
+function cardOf(btn) { return btn.closest('.lh-card'); }
+function msgOf(card) { return card.querySelector('[data-msg]'); }
+
+async function saveEdit(btn) {
+  const card = cardOf(btn);
+  const id = card.getAttribute('data-id');
+  const body = {
+    contact_email: card.querySelector('[data-field="contact_email"]').value,
+    subject: card.querySelector('[data-field="subject"]').value,
+    body: card.querySelector('[data-field="body"]').value,
+  };
+  await doPatch(btn, id, body);
+}
+
+async function doPatch(btn, id, body) {
+  const card = cardOf(btn);
+  const msg = msgOf(card);
+  btn.disabled = true;
+  try {
+    const res = await authedFetch(`/api/linkhunter/outreach/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Update failed');
+    load();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+    btn.disabled = false;
+  }
+}
+
+async function doAction(btn, id, action) {
+  const card = cardOf(btn);
+  const msg = msgOf(card);
+  btn.disabled = true;
+  try {
+    const res = await authedFetch(`/api/linkhunter/outreach/${id}/${action}`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `${action} failed`);
+    load();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+    btn.disabled = false;
+  }
+}
+
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+</script>
 </body>
 </html>

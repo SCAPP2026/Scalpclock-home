@@ -19,6 +19,15 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:1
 .lh-stat-label{font-size:.68rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
 .lh-stat-val{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--text);margin-top:2px;}
 .lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{text-align:left;padding:9px 12px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+.lh-domain a{color:var(--text);text-decoration:none;font-weight:600;}
+.lh-domain a:hover{color:var(--green-ink);}
+.lh-score{font-family:var(--mono);font-weight:700;}
+.lh-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-ink);}
 </style>
 </head>
 <body>
@@ -29,21 +38,73 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:1
       <div class="lh-stat-card"><div class="lh-stat-label">Prospects</div><div class="lh-stat-val" id="statProspects">—</div></div>
       <div class="lh-stat-card"><div class="lh-stat-label">Qualified</div><div class="lh-stat-val" id="statQualified">—</div></div>
       <div class="lh-stat-card"><div class="lh-stat-label">Opportunities</div><div class="lh-stat-val" id="statOpportunities">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Outreach Drafted</div><div class="lh-stat-val" id="statDrafted">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Outreach Approved</div><div class="lh-stat-val" id="statApproved">—</div></div>
       <div class="lh-stat-card"><div class="lh-stat-label">Outreach Sent</div><div class="lh-stat-val" id="statOutreach">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Responses</div><div class="lh-stat-val" id="statResponses">—</div></div>
       <div class="lh-stat-card"><div class="lh-stat-label">Backlinks Acquired</div><div class="lh-stat-val" id="statBacklinks">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Backlinks Lost</div><div class="lh-stat-val" id="statLost">—</div></div>
+      <div class="lh-stat-card"><div class="lh-stat-label">Conversion Rate</div><div class="lh-stat-val" id="statConversion">—</div></div>
     </div>
 
     <div class="lh-section-title">Opportunity Leaderboard</div>
-    <div class="lh-empty-card" id="leaderboardEmpty">No opportunities yet — the discovery and scoring pipeline lands in a later phase.</div>
+    <div id="leaderboardWrap"><div class="lh-empty-card">Loading…</div></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
 <script>
-LinkHunterAuth.init('dashboard');
-// Stat cards and leaderboard are wired to /api/linkhunter/* once those
-// endpoints and their backing tables exist (later build phases).
+LinkHunterAuth.init('dashboard').then(async (auth) => {
+  try {
+    const res = await auth.authedFetch('/api/linkhunter/overview');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load overview');
+
+    document.getElementById('statProspects').textContent = data.prospects;
+    document.getElementById('statQualified').textContent = data.qualified;
+    document.getElementById('statOpportunities').textContent = data.opportunities;
+    document.getElementById('statDrafted').textContent = data.outreachDrafted;
+    document.getElementById('statApproved').textContent = data.outreachApproved;
+    document.getElementById('statOutreach').textContent = data.outreachSent;
+    document.getElementById('statResponses').textContent = data.responses;
+    document.getElementById('statBacklinks').textContent = data.backlinksAcquired;
+    document.getElementById('statLost').textContent = data.backlinksLost;
+    document.getElementById('statConversion').textContent = data.conversionRate + '%';
+
+    renderLeaderboard(data.leaderboard || []);
+  } catch (e) {
+    document.getElementById('leaderboardWrap').innerHTML = `<div class="lh-empty-card">${escapeHtml(e.message)}</div>`;
+  }
+});
+
+function renderLeaderboard(rows) {
+  const wrap = document.getElementById('leaderboardWrap');
+  if (!rows.length) { wrap.innerHTML = '<div class="lh-empty-card">No opportunities yet — discover and analyze prospects on the Prospects page.</div>'; return; }
+
+  wrap.innerHTML = `
+    <div class="lh-tbl-wrap">
+      <table>
+        <thead><tr><th>Website</th><th>Opportunity</th><th>Score</th><th>Asset</th><th>Contact</th><th>Status</th></tr></thead>
+        <tbody>
+          ${rows.map(o => {
+            const p = o.prospects || {};
+            return `<tr>
+              <td class="lh-domain"><a href="/admin/linkhunter/prospects" title="${escapeAttr(p.domain || '')}">${escapeHtml(p.domain || '—')}</a></td>
+              <td>${escapeHtml(o.opportunity_type)}</td>
+              <td class="lh-score">${o.opportunity_score != null ? Number(o.opportunity_score).toFixed(0) : '—'}</td>
+              <td>${escapeHtml(o.recommended_asset || '—')}</td>
+              <td>${p.contact_email ? '✓' : '—'}</td>
+              <td><span class="lh-pill">${escapeHtml(o.status)}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
 </script>
 </body>
 </html>

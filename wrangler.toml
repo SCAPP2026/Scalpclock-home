@@ -11,12 +11,29 @@ pages_build_output_dir = "."
 binding = "CHART_FEEDBACK_KV"
 id = "34e6e1c9f8a4452b80e756848db5eb3a"
 
+# KV namespace used by functions/lib/linkhunter/rate-limit.js to enforce
+# daily caps on LinkHunter's discovery/AI/contact-discovery/verification
+# operations. Must also be bound in the Cloudflare Pages dashboard
+# (Settings → Functions → KV namespace bindings) for production — this
+# entry only covers local `wrangler pages dev`.
+[[kv_namespaces]]
+binding = "LINKHUNTER_KV"
+id = "11782ac4ba8744d9939b254e6a1cbb74"
+
 # Secrets — set in Cloudflare dashboard → Settings → Environment variables
+# Supabase (used by every functions/api/admin/*.js and functions/api/linkhunter/*.js
+# route to bypass RLS server-side after independently re-verifying the caller):
+#   SUPABASE_SERVICE_ROLE_KEY — service_role key from Supabase dashboard -> API settings
 # Alpaca (market data):
 #   ALPACA_KEY_ID, ALPACA_SECRET
-# Anthropic (chart-upload AI feedback in scalpchart.html's Chart Review tab):
+# Anthropic (chart-upload AI feedback in scalpchart.html's Chart Review tab,
+# and all of LinkHunter's AI scoring/generation in functions/lib/linkhunter/):
 #   ANTHROPIC_API_KEY — sk-ant-... from console.anthropic.com; used with
 #   model claude-sonnet-5, gated behind Pro plan + the KV caps above
+# LinkHunter outreach sending (functions/api/linkhunter/outreach/[id]/send.js —
+# optional; sending returns "not configured" until both are set):
+#   RESEND_API_KEY      — from resend.com dashboard
+#   LINKHUNTER_FROM_EMAIL — verified sender address/domain in Resend, e.g. outreach@scalpclock.com
 # Stripe (payments):
 #   STRIPE_SECRET_KEY         — sk_live_... from Stripe dashboard
 #   STRIPE_WEBHOOK_SECRET     — whsec_... from Stripe webhook endpoint settings

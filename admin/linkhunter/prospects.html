@@ -14,19 +14,227 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
-.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:20px;}
+.lh-card h3{font-family:var(--disp);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--t85);}
+.lh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+textarea.lh-input,input.lh-input,select.lh-input{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+textarea.lh-input{width:100%;min-height:70px;font-family:var(--mono);font-size:.78rem;resize:vertical;}
+.lh-btn{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:8px 16px;border-radius:var(--r-btn);cursor:pointer;border:1px solid transparent;background:var(--green);color:var(--on-green);}
+.lh-btn:hover{background:#20e88a;}
+.lh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.lh-btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
+.lh-btn-ghost:hover{border-color:var(--line-strong);}
+.lh-btn-sm{font-size:.7rem;padding:5px 10px;}
+.lh-msg{font-size:.78rem;color:var(--t65);margin-top:8px;}
+.lh-msg.err{color:var(--red-ink);}
+.lh-msg.ok{color:var(--green-ink);}
+.lh-tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{text-align:left;padding:9px 12px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+.lh-domain{font-weight:600;}
+.lh-domain a{color:var(--text);text-decoration:none;}
+.lh-domain a:hover{color:var(--green-ink);}
+.lh-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-ink);}
+.lh-score{font-family:var(--mono);}
+.lh-empty-row td{text-align:center;color:var(--t65);padding:24px;}
+.lh-pagination{display:flex;justify-content:flex-end;gap:8px;padding:12px;}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
+    <div class="lh-card">
+      <h3>Discover Prospects (Phase 4 — seed URL mode)</h3>
+      <p class="lh-msg">No search-API key is configured yet, so paste candidate URLs you've found (one per line) plus a topic/category. Each URL is checked against robots.txt, fetched, and added as a NEW prospect if it isn't a duplicate.</p>
+      <div style="margin-top:10px;">
+        <textarea id="discoverUrls" class="lh-input" placeholder="https://example.com/article-about-orb-trading&#10;https://another-site.com/day-trading-guide"></textarea>
+      </div>
+      <div class="lh-row" style="margin-top:10px;">
+        <input id="discoverTopic" class="lh-input" placeholder="Topic / category (e.g. Opening Range Breakout)" style="flex:1;min-width:220px;">
+        <button id="discoverBtn" class="lh-btn">Discover</button>
+      </div>
+      <div id="discoverMsg" class="lh-msg"></div>
+    </div>
+
+    <div class="lh-card">
+      <h3>Add a Single Prospect</h3>
+      <div class="lh-row">
+        <input id="addUrl" class="lh-input" placeholder="https://example.com/page" style="flex:2;min-width:220px;">
+        <input id="addCategory" class="lh-input" placeholder="Category" style="flex:1;min-width:140px;">
+        <button id="addBtn" class="lh-btn lh-btn-ghost">Add</button>
+      </div>
+      <div id="addMsg" class="lh-msg"></div>
+    </div>
+
     <div class="lh-section-title">Prospects</div>
-    <div class="lh-empty-card">Prospect discovery, scoring, and search land in a later build phase — this section will list every discovered domain with relevance/quality/spam scores, status, and filters.</div>
+    <div class="lh-row" style="margin-bottom:12px;">
+      <input id="searchQ" class="lh-input" placeholder="Search domain/title…" style="min-width:200px;">
+      <select id="filterStatus" class="lh-input">
+        <option value="">All statuses</option>
+        <option>NEW</option><option>REVIEW</option><option>QUALIFIED</option><option>REJECTED</option>
+        <option>CONTACTED</option><option>RESPONDED</option><option>LINK_ACQUIRED</option><option>DO_NOT_CONTACT</option>
+      </select>
+      <select id="sortBy" class="lh-input">
+        <option value="newest">Newest</option>
+        <option value="quality">Highest quality</option>
+        <option value="relevance">Highest relevance</option>
+        <option value="recently_contacted">Recently contacted</option>
+      </select>
+      <button id="refreshBtn" class="lh-btn lh-btn-ghost lh-btn-sm">Refresh</button>
+    </div>
+
+    <div class="lh-tbl-wrap">
+      <table>
+        <thead><tr><th>Domain</th><th>Category</th><th>Relevance</th><th>Quality</th><th>Spam</th><th>Status</th><th></th></tr></thead>
+        <tbody id="prospectsBody"><tr class="lh-empty-row"><td colspan="7">Loading…</td></tr></tbody>
+      </table>
+      <div class="lh-pagination">
+        <button id="prevPage" class="lh-btn lh-btn-ghost lh-btn-sm">&larr; Prev</button>
+        <span id="pageLabel" class="lh-msg" style="margin:0;align-self:center;"></span>
+        <button id="nextPage" class="lh-btn lh-btn-ghost lh-btn-sm">Next &rarr;</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('prospects');</script>
+<script>
+let authedFetch, page = 1;
+
+LinkHunterAuth.init('prospects').then((auth) => {
+  authedFetch = auth.authedFetch;
+  loadProspects();
+  document.getElementById('discoverBtn').addEventListener('click', discover);
+  document.getElementById('addBtn').addEventListener('click', addProspect);
+  document.getElementById('refreshBtn').addEventListener('click', () => { page = 1; loadProspects(); });
+  document.getElementById('searchQ').addEventListener('keydown', (e) => { if (e.key === 'Enter') { page = 1; loadProspects(); } });
+  document.getElementById('filterStatus').addEventListener('change', () => { page = 1; loadProspects(); });
+  document.getElementById('sortBy').addEventListener('change', () => { page = 1; loadProspects(); });
+  document.getElementById('prevPage').addEventListener('click', () => { if (page > 1) { page--; loadProspects(); } });
+  document.getElementById('nextPage').addEventListener('click', () => { page++; loadProspects(); });
+});
+
+async function discover() {
+  const urls = document.getElementById('discoverUrls').value.split('\n').map(s => s.trim()).filter(Boolean);
+  const topic = document.getElementById('discoverTopic').value.trim();
+  const msg = document.getElementById('discoverMsg');
+  if (!urls.length) { msg.textContent = 'Paste at least one URL.'; msg.className = 'lh-msg err'; return; }
+
+  const btn = document.getElementById('discoverBtn');
+  btn.disabled = true; msg.textContent = 'Discovering…'; msg.className = 'lh-msg';
+  try {
+    const res = await authedFetch('/api/linkhunter/prospects/discover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls, topic, source: 'admin-manual' }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Discovery failed');
+    msg.textContent = `${data.created} created, ${data.duplicates} duplicates, ${data.skipped} skipped.`;
+    msg.className = 'lh-msg ok';
+    document.getElementById('discoverUrls').value = '';
+    loadProspects();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function addProspect() {
+  const url = document.getElementById('addUrl').value.trim();
+  const category = document.getElementById('addCategory').value.trim();
+  const msg = document.getElementById('addMsg');
+  if (!url) { msg.textContent = 'Enter a URL.'; msg.className = 'lh-msg err'; return; }
+
+  try {
+    const res = await authedFetch('/api/linkhunter/prospects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, category: category || null }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Add failed');
+    msg.textContent = 'Added.'; msg.className = 'lh-msg ok';
+    document.getElementById('addUrl').value = '';
+    document.getElementById('addCategory').value = '';
+    loadProspects();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+  }
+}
+
+async function loadProspects() {
+  const body = document.getElementById('prospectsBody');
+  body.innerHTML = '<tr class="lh-empty-row"><td colspan="7">Loading…</td></tr>';
+
+  const q = document.getElementById('searchQ').value.trim();
+  const status = document.getElementById('filterStatus').value;
+  const sort = document.getElementById('sortBy').value;
+  const params = new URLSearchParams({ page, page_size: 20, sort });
+  if (q) params.set('q', q);
+  if (status) params.set('status', status);
+
+  try {
+    const res = await authedFetch('/api/linkhunter/prospects?' + params.toString());
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    renderProspects(data.prospects || []);
+    const totalPages = Math.max(1, Math.ceil((data.total || 0) / (data.pageSize || 20)));
+    document.getElementById('pageLabel').textContent = `Page ${page} of ${totalPages} (${data.total || 0} total)`;
+  } catch (e) {
+    body.innerHTML = `<tr class="lh-empty-row"><td colspan="7">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function renderProspects(rows) {
+  const body = document.getElementById('prospectsBody');
+  if (!rows.length) { body.innerHTML = '<tr class="lh-empty-row"><td colspan="7">No prospects yet — discover or add one above.</td></tr>'; return; }
+
+  body.innerHTML = rows.map(p => `
+    <tr>
+      <td class="lh-domain"><a href="${escapeAttr(p.url)}" target="_blank" rel="noopener">${escapeHtml(p.domain)}</a></td>
+      <td>${escapeHtml(p.category || '—')}</td>
+      <td class="lh-score">${fmtScore(p.relevance_score)}</td>
+      <td class="lh-score">${fmtScore(p.quality_score)}</td>
+      <td class="lh-score">${fmtScore(p.spam_score)}</td>
+      <td><span class="lh-pill">${escapeHtml(p.status)}</span></td>
+      <td><button class="lh-btn lh-btn-ghost lh-btn-sm" data-analyze="${p.id}">Analyze</button></td>
+    </tr>
+  `).join('');
+
+  body.querySelectorAll('[data-analyze]').forEach(btn => {
+    btn.addEventListener('click', () => analyzeProspect(btn));
+  });
+}
+
+async function analyzeProspect(btn) {
+  const id = btn.getAttribute('data-analyze');
+  btn.disabled = true; btn.textContent = 'Analyzing…';
+  try {
+    const res = await authedFetch('/api/linkhunter/opportunities/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prospect_id: Number(id) }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Analysis failed');
+    btn.textContent = data.analyzed ? `${data.opportunitiesCreated} opportunities` : 'Skipped';
+    loadProspects();
+  } catch (e) {
+    btn.textContent = 'Failed';
+    console.error('analyze failed:', e.message);
+  } finally {
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Analyze'; }, 3000);
+  }
+}
+
+function fmtScore(v) { return v == null ? '—' : Number(v).toFixed(0); }
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+</script>
 </body>
 </html>

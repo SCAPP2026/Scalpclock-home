@@ -14,19 +14,139 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
-.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+input.lh-input,select.lh-input{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+.lh-btn{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:8px 16px;border-radius:var(--r-btn);cursor:pointer;border:1px solid transparent;background:var(--green);color:var(--on-green);}
+.lh-btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
+.lh-btn-ghost:hover{border-color:var(--line-strong);}
+.lh-btn-sm{font-size:.7rem;padding:5px 10px;}
+.lh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.lh-tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{text-align:left;padding:9px 12px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;max-width:280px;overflow:hidden;text-overflow:ellipsis;}
+tr:last-child td{border-bottom:none;}
+.lh-domain a{color:var(--text);text-decoration:none;font-weight:600;}
+.lh-domain a:hover{color:var(--green-ink);}
+.lh-score{font-family:var(--mono);font-weight:700;}
+.lh-score.excellent{color:var(--green-ink);}
+.lh-score.high{color:var(--info-ink);}
+.lh-score.good{color:var(--amber-ink);}
+.lh-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-ink);}
+.lh-empty-row td{text-align:center;color:var(--t65);padding:24px;}
+.lh-reason{white-space:normal;font-size:.76rem;color:var(--t65);}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
-    <div class="lh-section-title">Opportunities</div>
-    <div class="lh-empty-card">The opportunity engine (why ScalpClock deserves a link, recommended asset, opportunity score) lands in a later build phase.</div>
+    <div class="lh-section-title">Opportunity Leaderboard</div>
+    <div class="lh-row">
+      <select id="filterType" class="lh-input">
+        <option value="">All types</option>
+        <option>RESOURCE_LINK</option><option>EDITORIAL_MENTION</option><option>TOOL_CITATION</option>
+        <option>GUEST_CONTRIBUTION</option><option>PODCAST</option><option>INTERVIEW</option>
+        <option>NEWSLETTER</option><option>PARTNERSHIP</option><option>BROKEN_LINK</option>
+        <option>CONTENT_GAP</option><option>OTHER</option>
+      </select>
+      <input id="minScore" class="lh-input" type="number" min="0" max="100" placeholder="Min score" style="width:110px;">
+      <button id="refreshBtn" class="lh-btn lh-btn-ghost lh-btn-sm">Refresh</button>
+    </div>
+
+    <div class="lh-tbl-wrap">
+      <table>
+        <thead><tr><th>Website</th><th>Type</th><th>Reason</th><th>Asset</th><th>Score</th><th>Contact</th><th></th></tr></thead>
+        <tbody id="oppBody"><tr class="lh-empty-row"><td colspan="7">Loading…</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('opportunities');</script>
+<script>
+let authedFetch;
+
+LinkHunterAuth.init('opportunities').then((auth) => {
+  authedFetch = auth.authedFetch;
+  load();
+  document.getElementById('refreshBtn').addEventListener('click', load);
+  document.getElementById('filterType').addEventListener('change', load);
+  document.getElementById('minScore').addEventListener('change', load);
+});
+
+function band(score) {
+  if (score == null) return '';
+  if (score >= 90) return 'excellent';
+  if (score >= 80) return 'high';
+  if (score >= 70) return 'good';
+  return '';
+}
+
+async function load() {
+  const body = document.getElementById('oppBody');
+  body.innerHTML = '<tr class="lh-empty-row"><td colspan="7">Loading…</td></tr>';
+
+  const type = document.getElementById('filterType').value;
+  const minScore = document.getElementById('minScore').value;
+  const params = new URLSearchParams({ page_size: 50 });
+  if (type) params.set('opportunity_type', type);
+  if (minScore) params.set('min_score', minScore);
+
+  try {
+    const res = await authedFetch('/api/linkhunter/opportunities?' + params.toString());
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    render(data.opportunities || []);
+  } catch (e) {
+    body.innerHTML = `<tr class="lh-empty-row"><td colspan="7">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function render(rows) {
+  const body = document.getElementById('oppBody');
+  if (!rows.length) { body.innerHTML = '<tr class="lh-empty-row"><td colspan="7">No opportunities yet — analyze a prospect from the Prospects page.</td></tr>'; return; }
+
+  body.innerHTML = rows.map(o => {
+    const p = o.prospects || {};
+    return `
+    <tr>
+      <td class="lh-domain"><a href="${escapeAttr(p.url || '#')}" target="_blank" rel="noopener">${escapeHtml(p.domain || '—')}</a></td>
+      <td><span class="lh-pill">${escapeHtml(o.opportunity_type)}</span></td>
+      <td class="lh-reason" title="${escapeAttr(o.reason || '')}">${escapeHtml(truncate(o.reason, 90))}</td>
+      <td>${escapeHtml(o.recommended_asset || '—')}</td>
+      <td class="lh-score ${band(o.opportunity_score)}">${o.opportunity_score != null ? Number(o.opportunity_score).toFixed(0) : '—'}</td>
+      <td>${p.contact_email ? '✓' : '—'}</td>
+      <td><button class="lh-btn lh-btn-ghost lh-btn-sm" data-draft="${o.id}">Draft Outreach</button></td>
+    </tr>
+  `; }).join('');
+
+  body.querySelectorAll('[data-draft]').forEach(btn => btn.addEventListener('click', () => draftOutreach(btn)));
+}
+
+async function draftOutreach(btn) {
+  const id = btn.getAttribute('data-draft');
+  btn.disabled = true; btn.textContent = 'Drafting…';
+  try {
+    const res = await authedFetch('/api/linkhunter/outreach/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ opportunity_id: Number(id) }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Draft failed');
+    btn.textContent = 'Drafted →';
+    setTimeout(() => { window.location.href = '/admin/linkhunter/outreach'; }, 600);
+  } catch (e) {
+    btn.textContent = 'Failed';
+    console.error('draft outreach failed:', e.message);
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Draft Outreach'; }, 3000);
+  }
+}
+
+function truncate(s, n) { s = s || ''; return s.length > n ? s.slice(0, n) + '…' : s; }
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+</script>
 </body>
 </html>
