@@ -51,6 +51,7 @@ tr:last-child td{border-bottom:none;}
       </select>
       <input id="minScore" class="lh-input" type="number" min="0" max="100" placeholder="Min score" style="width:110px;">
       <button id="refreshBtn" class="lh-btn lh-btn-ghost lh-btn-sm">Refresh</button>
+      <button id="exportBtn" class="lh-btn lh-btn-ghost lh-btn-sm">Export CSV</button>
     </div>
 
     <div class="lh-tbl-wrap">
@@ -73,7 +74,45 @@ LinkHunterAuth.init('opportunities').then((auth) => {
   document.getElementById('refreshBtn').addEventListener('click', load);
   document.getElementById('filterType').addEventListener('change', load);
   document.getElementById('minScore').addEventListener('change', load);
+  document.getElementById('exportBtn').addEventListener('click', exportCsv);
 });
+
+// Phase 19 — CSV export. Columns per spec: Domain, URL, Category, Quality
+// score, Relevance score, Opportunity score, Contact, Contact email,
+// Opportunity type, Recommended asset, Status, Notes.
+async function exportCsv() {
+  const btn = document.getElementById('exportBtn');
+  btn.disabled = true; btn.textContent = 'Exporting…';
+  try {
+    const res = await authedFetch('/api/linkhunter/opportunities?page_size=100');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Export failed');
+
+    const header = ['Domain', 'URL', 'Category', 'Quality Score', 'Relevance Score', 'Opportunity Score', 'Contact Email', 'Opportunity Type', 'Recommended Asset', 'Status', 'Notes'];
+    const rows = (data.opportunities || []).map(o => {
+      const p = o.prospects || {};
+      return [p.domain, p.url, p.category, p.quality_score, o.relevance_score, o.opportunity_score, p.contact_email, o.opportunity_type, o.recommended_asset, o.status, o.personalization_notes];
+    });
+    const csv = [header, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `linkhunter-opportunities-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error('export failed:', e.message);
+    alert('Export failed: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Export CSV';
+  }
+}
+
+function csvCell(v) {
+  const s = v == null ? '' : String(v);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
 
 function band(score) {
   if (score == null) return '';

@@ -14,19 +14,140 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
-.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:20px;}
+.lh-card h3{font-family:var(--disp);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--t85);}
+.lh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+input.lh-input,select.lh-input{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+.lh-btn{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:8px 16px;border-radius:var(--r-btn);cursor:pointer;border:1px solid transparent;background:var(--green);color:var(--on-green);}
+.lh-btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
+.lh-btn-ghost:hover{border-color:var(--line-strong);}
+.lh-btn-sm{font-size:.7rem;padding:5px 10px;}
+.lh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.lh-msg{font-size:.78rem;color:var(--t65);margin-top:8px;}
+.lh-msg.err{color:var(--red-ink);}
+.lh-msg.ok{color:var(--green-ink);}
+.lh-tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{text-align:left;padding:9px 12px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+.lh-pill{font-family:var(--mono);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-ink);}
+.lh-pill.LOST{background:rgba(245,66,66,.1);color:var(--red-ink);}
+.lh-pill.NOFOLLOW,.lh-pill.REDIRECT{background:rgba(245,166,35,.14);color:var(--amber-ink);}
+.lh-pill.REMOVED{background:rgba(13,26,19,.08);color:var(--t65);}
+.lh-empty-row td{text-align:center;color:var(--t65);padding:24px;}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
+    <div class="lh-card">
+      <h3>Verify a Backlink (Phase 13)</h3>
+      <p class="lh-msg">Checks the source page live and only records a backlink if it's actually there — never assumed from outreach being sent. A prospect is only marked LINK_ACQUIRED after a real link is found.</p>
+      <div class="lh-row" style="margin-top:10px;">
+        <input id="prospectId" class="lh-input" type="number" placeholder="Prospect ID" style="width:130px;">
+        <input id="sourceUrl" class="lh-input" placeholder="Source URL (the page that should link to ScalpClock)" style="flex:1;min-width:260px;">
+        <input id="targetUrl" class="lh-input" placeholder="Target URL (default: scalpclock.com)" style="flex:1;min-width:220px;">
+        <button id="verifyBtn" class="lh-btn">Verify</button>
+      </div>
+      <div id="verifyMsg" class="lh-msg"></div>
+    </div>
+
     <div class="lh-section-title">Backlinks</div>
-    <div class="lh-empty-card">Backlink verification and the lost-link monitor land in a later build phase. A link is only ever marked LINK_ACQUIRED after the source page is actually verified.</div>
+    <div class="lh-row" style="margin-bottom:12px;">
+      <select id="filterStatus" class="lh-input">
+        <option value="">All statuses</option>
+        <option>ACTIVE</option><option>LOST</option><option>NOFOLLOW</option><option>REDIRECT</option><option>REMOVED</option>
+      </select>
+      <button id="refreshBtn" class="lh-btn lh-btn-ghost lh-btn-sm">Refresh</button>
+    </div>
+
+    <div class="lh-tbl-wrap">
+      <table>
+        <thead><tr><th>Prospect</th><th>Source</th><th>Anchor</th><th>Status</th><th>First Seen</th><th>Last Verified</th></tr></thead>
+        <tbody id="body"><tr class="lh-empty-row"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('backlinks');</script>
+<script>
+let authedFetch;
+
+LinkHunterAuth.init('backlinks').then((auth) => {
+  authedFetch = auth.authedFetch;
+  load();
+  document.getElementById('verifyBtn').addEventListener('click', verify);
+  document.getElementById('refreshBtn').addEventListener('click', load);
+  document.getElementById('filterStatus').addEventListener('change', load);
+});
+
+async function verify() {
+  const prospect_id = Number(document.getElementById('prospectId').value);
+  const source_url = document.getElementById('sourceUrl').value.trim();
+  const target_url = document.getElementById('targetUrl').value.trim();
+  const msg = document.getElementById('verifyMsg');
+  if (!prospect_id || !source_url) { msg.textContent = 'Prospect ID and source URL are required.'; msg.className = 'lh-msg err'; return; }
+
+  const btn = document.getElementById('verifyBtn');
+  btn.disabled = true; msg.textContent = 'Checking the live page…'; msg.className = 'lh-msg';
+  try {
+    const res = await authedFetch('/api/linkhunter/backlinks/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prospect_id, source_url, target_url: target_url || undefined }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Verification failed');
+    msg.textContent = data.found ? 'Link found and recorded.' : (data.message || 'No link found.');
+    msg.className = data.found ? 'lh-msg ok' : 'lh-msg';
+    load();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function load() {
+  const body = document.getElementById('body');
+  body.innerHTML = '<tr class="lh-empty-row"><td colspan="6">Loading…</td></tr>';
+  const status = document.getElementById('filterStatus').value;
+  const params = new URLSearchParams();
+  if (status) params.set('status', status);
+
+  try {
+    const res = await authedFetch('/api/linkhunter/backlinks?' + params.toString());
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    render(data.backlinks || []);
+  } catch (e) {
+    body.innerHTML = `<tr class="lh-empty-row"><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function render(rows) {
+  const body = document.getElementById('body');
+  if (!rows.length) { body.innerHTML = '<tr class="lh-empty-row"><td colspan="6">No backlinks verified yet.</td></tr>'; return; }
+  body.innerHTML = rows.map(b => {
+    const p = b.prospects || {};
+    return `<tr>
+      <td>${escapeHtml(p.domain || '—')}</td>
+      <td><a href="${escapeAttr(b.source_url)}" target="_blank" rel="noopener">${escapeHtml(truncate(b.source_url, 50))}</a></td>
+      <td>${escapeHtml(b.anchor_text || '—')}</td>
+      <td><span class="lh-pill ${escapeHtml(b.status)}">${escapeHtml(b.status)}</span></td>
+      <td>${fmtDate(b.first_seen)}</td>
+      <td>${fmtDate(b.last_verified)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString() : '—'; }
+function truncate(s, n) { s = s || ''; return s.length > n ? s.slice(0, n) + '…' : s; }
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+</script>
 </body>
 </html>

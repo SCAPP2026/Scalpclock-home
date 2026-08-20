@@ -26,7 +26,7 @@ export const onRequest = withAdmin(async ({ request, env }) => {
   try {
     // PostgREST embedded-resource syntax pulls the parent prospect's
     // display fields in the same round trip.
-    const query = `select=*,prospects(domain,url,status,contact_email)&order=opportunity_score.desc.nullslast&limit=${pageSize}&offset=${from}${filters.length ? '&' + filters.join('&') : ''}`;
+    const query = `select=*,prospects(domain,url,status,category,quality_score,contact_email)&order=opportunity_score.desc.nullslast&limit=${pageSize}&offset=${from}${filters.length ? '&' + filters.join('&') : ''}`;
     const { rows, count } = await sbSelectWithCount('opportunities', query, env.SUPABASE_SERVICE_ROLE_KEY);
     return json({ opportunities: rows, total: count, page, pageSize });
   } catch (e) {

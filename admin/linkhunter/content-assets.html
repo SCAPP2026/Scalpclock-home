@@ -14,19 +14,112 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
-.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:20px;}
+.lh-card h3{font-family:var(--disp);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--t85);}
+.lh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+input.lh-input,select.lh-input{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+.lh-btn{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:8px 16px;border-radius:var(--r-btn);cursor:pointer;border:1px solid transparent;background:var(--green);color:var(--on-green);}
+.lh-msg{font-size:.78rem;color:var(--t65);margin-top:8px;}
+.lh-msg.err{color:var(--red-ink);}
+.lh-msg.ok{color:var(--green-ink);}
+.lh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.lh-asset-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:16px 18px;}
+.lh-asset-card h4{font-family:var(--disp);font-weight:700;font-size:.95rem;margin-bottom:4px;}
+.lh-asset-card .type{font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--green-ink);background:var(--green-soft);padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:8px;}
+.lh-asset-card p{font-size:.8rem;color:var(--t65);}
+.lh-asset-card a{font-size:.76rem;color:var(--green-ink);}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
-    <div class="lh-section-title">Content Assets</div>
-    <div class="lh-empty-card">ScalpClock's linkable assets (ORB Signal Engine, ScalpCharts, Replay, Exit Assistant, guides, calculators) and the content-gap opportunity engine land in a later build phase.</div>
+    <div class="lh-card">
+      <h3>Add a Content Asset</h3>
+      <div class="lh-row">
+        <input id="aTitle" class="lh-input" placeholder="Title" style="flex:1;min-width:200px;">
+        <select id="aType" class="lh-input">
+          <option>TOOL</option><option>GUIDE</option><option>CALCULATOR</option><option>DATA</option>
+          <option>STUDY</option><option>CHECKLIST</option><option>GLOSSARY</option><option>INFOGRAPHIC</option>
+          <option>VIDEO</option><option>OTHER</option>
+        </select>
+        <input id="aUrl" class="lh-input" placeholder="URL path (e.g. /tools/orb-calculator)" style="flex:1;min-width:200px;">
+      </div>
+      <div class="lh-row" style="margin-top:10px;">
+        <input id="aDescription" class="lh-input" placeholder="Description" style="flex:1;min-width:300px;">
+        <button id="addBtn" class="lh-btn">Add</button>
+      </div>
+      <div id="addMsg" class="lh-msg"></div>
+    </div>
+
+    <div class="lh-section-title">ScalpClock Assets</div>
+    <div id="grid" class="lh-grid"><div class="lh-msg">Loading…</div></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('content-assets');</script>
+<script>
+let authedFetch;
+
+LinkHunterAuth.init('content-assets').then((auth) => {
+  authedFetch = auth.authedFetch;
+  load();
+  document.getElementById('addBtn').addEventListener('click', add);
+});
+
+async function add() {
+  const title = document.getElementById('aTitle').value.trim();
+  const asset_type = document.getElementById('aType').value;
+  const url = document.getElementById('aUrl').value.trim();
+  const description = document.getElementById('aDescription').value.trim();
+  const msg = document.getElementById('addMsg');
+  if (!title) { msg.textContent = 'Title is required.'; msg.className = 'lh-msg err'; return; }
+
+  try {
+    const res = await authedFetch('/api/linkhunter/assets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, asset_type, url: url || null, description: description || null }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Add failed');
+    msg.textContent = 'Added.'; msg.className = 'lh-msg ok';
+    document.getElementById('aTitle').value = '';
+    document.getElementById('aUrl').value = '';
+    document.getElementById('aDescription').value = '';
+    load();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+  }
+}
+
+async function load() {
+  const grid = document.getElementById('grid');
+  try {
+    const res = await authedFetch('/api/linkhunter/assets');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    render(data.assets || []);
+  } catch (e) {
+    grid.innerHTML = `<div class="lh-msg err">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function render(rows) {
+  const grid = document.getElementById('grid');
+  if (!rows.length) { grid.innerHTML = '<div class="lh-msg">No assets yet.</div>'; return; }
+  grid.innerHTML = rows.map(a => `
+    <div class="lh-asset-card">
+      <span class="type">${escapeHtml(a.asset_type)}</span>
+      <h4>${escapeHtml(a.title)}</h4>
+      <p>${escapeHtml(a.description || '')}</p>
+      ${a.url ? `<a href="${escapeAttr(a.url)}" target="_blank" rel="noopener">${escapeHtml(a.url)}</a>` : ''}
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+</script>
 </body>
 </html>

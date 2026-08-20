@@ -14,19 +14,115 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
-.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:20px;}
+.lh-card h3{font-family:var(--disp);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--t85);}
+.lh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+input.lh-input,textarea.lh-input{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-input);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.85rem;outline:none;}
+.lh-btn{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:8px 16px;border-radius:var(--r-btn);cursor:pointer;border:1px solid transparent;background:var(--green);color:var(--on-green);}
+.lh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.lh-msg{font-size:.78rem;color:var(--t65);margin-top:8px;}
+.lh-msg.err{color:var(--red-ink);}
+.lh-msg.ok{color:var(--green-ink);}
+.lh-tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{text-align:left;padding:9px 12px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+.lh-empty-row td{text-align:center;color:var(--t65);padding:24px;}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
+    <div class="lh-card">
+      <h3>New Campaign</h3>
+      <div class="lh-row">
+        <input id="cName" class="lh-input" placeholder="Name (e.g. ORB Signal Engine Outreach)" style="flex:1;min-width:220px;">
+        <input id="cCategory" class="lh-input" placeholder="Target category (matches prospects.category)" style="flex:1;min-width:220px;">
+        <input id="cAsset" class="lh-input" placeholder="Target asset (e.g. /orbsignalengine)" style="flex:1;min-width:180px;">
+      </div>
+      <div class="lh-row" style="margin-top:10px;">
+        <input id="cDescription" class="lh-input" placeholder="Description" style="flex:1;min-width:300px;">
+        <button id="createBtn" class="lh-btn">Create Campaign</button>
+      </div>
+      <div id="createMsg" class="lh-msg"></div>
+    </div>
+
     <div class="lh-section-title">Campaigns</div>
-    <div class="lh-empty-card">Campaign creation and automatic prospect matching land in a later build phase.</div>
+    <div class="lh-tbl-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Target Category</th><th>Target Asset</th><th>Matching Prospects</th><th>Outreach Sent</th><th>Status</th></tr></thead>
+        <tbody id="body"><tr class="lh-empty-row"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('campaigns');</script>
+<script>
+let authedFetch;
+
+LinkHunterAuth.init('campaigns').then((auth) => {
+  authedFetch = auth.authedFetch;
+  load();
+  document.getElementById('createBtn').addEventListener('click', create);
+});
+
+async function create() {
+  const name = document.getElementById('cName').value.trim();
+  const target_category = document.getElementById('cCategory').value.trim();
+  const target_asset = document.getElementById('cAsset').value.trim();
+  const description = document.getElementById('cDescription').value.trim();
+  const msg = document.getElementById('createMsg');
+  if (!name) { msg.textContent = 'Name is required.'; msg.className = 'lh-msg err'; return; }
+
+  try {
+    const res = await authedFetch('/api/linkhunter/campaigns', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, target_category: target_category || null, target_asset: target_asset || null, description: description || null }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Create failed');
+    msg.textContent = 'Created.'; msg.className = 'lh-msg ok';
+    document.getElementById('cName').value = '';
+    document.getElementById('cCategory').value = '';
+    document.getElementById('cAsset').value = '';
+    document.getElementById('cDescription').value = '';
+    load();
+  } catch (e) {
+    msg.textContent = e.message; msg.className = 'lh-msg err';
+  }
+}
+
+async function load() {
+  const body = document.getElementById('body');
+  body.innerHTML = '<tr class="lh-empty-row"><td colspan="6">Loading…</td></tr>';
+  try {
+    const res = await authedFetch('/api/linkhunter/campaigns');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load');
+    render(data.campaigns || []);
+  } catch (e) {
+    body.innerHTML = `<tr class="lh-empty-row"><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function render(rows) {
+  const body = document.getElementById('body');
+  if (!rows.length) { body.innerHTML = '<tr class="lh-empty-row"><td colspan="6">No campaigns yet.</td></tr>'; return; }
+  body.innerHTML = rows.map(c => `<tr>
+    <td>${escapeHtml(c.name)}</td>
+    <td>${escapeHtml(c.target_category || '—')}</td>
+    <td>${escapeHtml(c.target_asset || '—')}</td>
+    <td>${c.matchingProspectCount}</td>
+    <td>${c.sentCount} / ${c.outreachCount}</td>
+    <td>${escapeHtml(c.status)}</td>
+  </tr>`).join('');
+}
+
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+</script>
 </body>
 </html>

@@ -34,6 +34,9 @@ id = "11782ac4ba8744d9939b254e6a1cbb74"
 # optional; sending returns "not configured" until both are set):
 #   RESEND_API_KEY      — from resend.com dashboard
 #   LINKHUNTER_FROM_EMAIL — verified sender address/domain in Resend, e.g. outreach@scalpclock.com
+# LinkHunter scheduled backlink re-verification (functions/api/linkhunter/backlinks/verify.js,
+# called by a Supabase pg_cron job -- see supabase/linkhunter_setup.sql):
+#   LINKHUNTER_CRON_SECRET — random secret, must match the value used in the pg_cron job's x-cron-secret header
 # Stripe (payments):
 #   STRIPE_SECRET_KEY         — sk_live_... from Stripe dashboard
 #   STRIPE_WEBHOOK_SECRET     — whsec_... from Stripe webhook endpoint settings

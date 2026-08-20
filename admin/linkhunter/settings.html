@@ -14,19 +14,87 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .lh-section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 12px;color:var(--t85);}
-.lh-empty-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:32px;text-align:center;color:var(--t65);font-size:.88rem;}
+.lh-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:18px 20px;margin-bottom:20px;}
+.lh-card h3{font-family:var(--disp);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--t85);}
+.lh-usage-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:.84rem;}
+.lh-usage-row:last-child{border-bottom:none;}
+.lh-usage-bar{background:var(--bg2);border-radius:6px;height:6px;width:140px;overflow:hidden;}
+.lh-usage-fill{background:var(--green);height:100%;}
+.lh-usage-fill.warn{background:var(--amber);}
+.lh-usage-fill.crit{background:var(--red);}
+.lh-topic-list{display:flex;flex-wrap:wrap;gap:8px;}
+.lh-topic{font-family:var(--mono);font-size:.72rem;background:var(--green-soft);color:var(--green-ink);padding:4px 10px;border-radius:6px;}
+.lh-msg{font-size:.8rem;color:var(--t65);}
 </style>
 </head>
 <body>
 <div id="lhApp">
   <div class="lh-shell">
-    <div class="lh-section-title">Settings</div>
-    <div class="lh-empty-card">Custom topics, seed searches, rate-limit usage, and external API configuration land in a later build phase.</div>
+    <div class="lh-card">
+      <h3>Today's Usage (Phase 22 rate limits)</h3>
+      <div id="usage"><div class="lh-msg">Loading…</div></div>
+    </div>
+
+    <div class="lh-card">
+      <h3>Default Seed Topics (Phase 4 / 27)</h3>
+      <p class="lh-msg" style="margin-bottom:10px;">These seed the default discovery/analysis context. Add a custom topic directly in the "Topic" field on the Prospects page's Discover form for any one-off discovery run.</p>
+      <div class="lh-topic-list" id="topics"></div>
+    </div>
+
+    <div class="lh-card">
+      <h3>Integration Status</h3>
+      <div class="lh-msg" id="integrations">Loading…</div>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/linkhunter-nav.js"></script>
-<script>LinkHunterAuth.init('settings');</script>
+<script>
+const DEFAULT_TOPICS = [
+  'options trading', 'options scalping', 'day trading', 'opening range breakout', 'ORB strategy',
+  'stock trading education', 'trading psychology', 'technical analysis', 'options education',
+  'trading tools', 'fintech', 'retail trading', 'trading calculators', 'stock market education',
+];
+
+LinkHunterAuth.init('settings').then(async (auth) => {
+  document.getElementById('topics').innerHTML = DEFAULT_TOPICS.map(t => `<span class="lh-topic">${escapeHtml(t)}</span>`).join('');
+
+  try {
+    const res = await auth.authedFetch('/api/linkhunter/usage');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load usage');
+    renderUsage(data.usage || {});
+  } catch (e) {
+    document.getElementById('usage').innerHTML = `<div class="lh-msg">${escapeHtml(e.message)}</div>`;
+  }
+
+  document.getElementById('integrations').innerHTML = `
+    Discovery source: manual seed-URL mode (no search-API key configured).<br>
+    AI scoring/generation: Anthropic (configured if the dashboard above shows usage).<br>
+    Outreach sending: requires RESEND_API_KEY + LINKHUNTER_FROM_EMAIL — check Cloudflare Pages env vars.<br>
+    Backlink re-verification: scheduled every 6h via Supabase pg_cron — requires LINKHUNTER_CRON_SECRET to match on both sides.
+  `;
+});
+
+function renderUsage(usage) {
+  const el = document.getElementById('usage');
+  const entries = Object.entries(usage);
+  if (!entries.length) { el.innerHTML = '<div class="lh-msg">No usage data.</div>'; return; }
+  el.innerHTML = entries.map(([key, v]) => {
+    const pct = v.limit ? Math.min(100, Math.round((v.used / v.limit) * 100)) : 0;
+    const cls = pct >= 90 ? 'crit' : pct >= 60 ? 'warn' : '';
+    return `<div class="lh-usage-row">
+      <span>${escapeHtml(v.label)}</span>
+      <span style="display:flex;align-items:center;gap:10px;">
+        <span class="lh-usage-bar"><span class="lh-usage-fill ${cls}" style="width:${pct}%"></span></span>
+        <span style="font-family:var(--mono);">${v.used}/${v.limit}</span>
+      </span>
+    </div>`;
+  }).join('');
+}
+
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+</script>
 </body>
 </html>
