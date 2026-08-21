@@ -563,7 +563,7 @@
         </div>
         <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
         <button class="btn-primary" id="playBtn" disabled>▶ Start ORB Engine</button>
-        <button class="btn-ghost" id="stepBtn">Step →</button>
+        <button class="btn-ghost" id="stepBtn" disabled>Step →</button>
       </div>
       <div class="live-caption">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</div>
     </div>
@@ -2343,6 +2343,7 @@
   function updateWorkflowStatus(){
     const loadBtn = document.getElementById('loadLiveBtn');
     const startBtn = document.getElementById('playBtn');
+    const stepBtn = document.getElementById('stepBtn');
     const statusEl = document.getElementById('workflowStatus');
     if (!loadBtn || !startBtn || !statusEl) return;
 
@@ -2350,6 +2351,7 @@
     loadBtn.classList.toggle('loaded', isLiveData && sessionReady);
 
     startBtn.disabled = !sessionReady;
+    if (stepBtn) stepBtn.disabled = !sessionReady;
 
     if (playing){
       statusEl.textContent = 'ENGINE ACTIVE 🟢';
@@ -2364,7 +2366,7 @@
   }
 
   function tick(){
-    if (revealIdx >= SESSION_CANDLES - 1){ pause(); return; }
+    if (!candles.length || revealIdx >= SESSION_CANDLES - 1){ pause(); return; }
     revealIdx++;
     evaluate(revealIdx);
     if (state === 'NO_TRADE' || state === 'SESSION_COMPLETE') pause();
