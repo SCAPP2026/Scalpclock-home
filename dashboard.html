@@ -956,10 +956,14 @@ async function checkSubscription(isRetry = false) {
     const foundingRow = document.getElementById('foundingRow');
     if (foundingRow) foundingRow.style.display = isFounding ? '' : 'none';
 
-    // If still free but we just came from a successful checkout, wait and retry once —
-    // the activate endpoint may not have finished yet
-    const justPaid = !!localStorage.getItem('sc_trial_start') &&
-      (Date.now() - new Date(localStorage.getItem('sc_trial_start')).getTime()) < 120000;
+    // If still free but we just came from a successful checkout, wait and retry once
+    // with a forced session refresh — the browser's current session token was almost
+    // certainly issued before this checkout and won't reflect the new app_metadata
+    // until refreshed, regardless of whether the checkout had a trial (sc_just_paid
+    // covers every purchase; sc_trial_start alone missed no-trial purchases, which is
+    // every Founding Member — see success.html's comment on sc_just_paid).
+    const justPaidAt = localStorage.getItem('sc_just_paid') || localStorage.getItem('sc_trial_start');
+    const justPaid = !!justPaidAt && (Date.now() - new Date(justPaidAt).getTime()) < 120000;
     if (plan === 'free' && justPaid && !isRetry) {
       setTimeout(() => checkSubscription(true), 3000);
       return;

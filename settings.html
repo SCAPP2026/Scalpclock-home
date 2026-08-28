@@ -388,8 +388,11 @@ async function checkAccountStatus(isRetry = false) {
       }
     }
 
-    const justPaid = !!localStorage.getItem('sc_trial_start') &&
-      (Date.now() - new Date(localStorage.getItem('sc_trial_start')).getTime()) < 120000;
+    // sc_just_paid covers every successful checkout (trial or not) — sc_trial_start
+    // alone only ever covered trial purchases, so a no-trial purchase (every Founding
+    // Member checkout) never triggered this stale-session retry. See success.html.
+    const justPaidAt = localStorage.getItem('sc_just_paid') || localStorage.getItem('sc_trial_start');
+    const justPaid = !!justPaidAt && (Date.now() - new Date(justPaidAt).getTime()) < 120000;
     if (plan === 'free' && justPaid && !isRetry) {
       setTimeout(() => checkAccountStatus(true), 3000);
       return;
