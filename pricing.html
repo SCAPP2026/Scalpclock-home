@@ -550,13 +550,13 @@ body.drawer-open{overflow:hidden}
         <ul class="founding-checks">
           <li><b>✓</b> All Pro features — signals, charts, exit assistant, journal</li>
           <li><b>✓</b> Price locked at $1.99/mo — never increases</li>
-          <li><b>✓</b> 5-day free trial, cancel anytime</li>
+          <li><b>✓</b> No free trial — charged today, full access starts immediately</li>
           <li><b>✓</b> Founding Member badge on your profile</li>
           <li><b>✓</b> Your own referral code &amp; link</li>
           <li><b>✓</b> Recurring commissions on every referral</li>
         </ul>
-        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">Claim Founding Price</button>
-        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 5 days · Cancel anytime</p>
+        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">CLAIM MY $1.99 FOUNDER SPOT</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">You're charged $1.99 today. No 5-day trial. Full Pro access begins immediately after successful payment.</p>
         <p style="text-align:center;font-size:.75rem;margin-top:4px;"><a href="/founders" style="color:var(--gold);text-decoration:underline;">See referral program details →</a></p>
         <div class="waitlist-toast toast-pro" id="foundingToast" style="margin-top:10px;"></div>
       </div>
@@ -569,7 +569,7 @@ body.drawer-open{overflow:hidden}
 <div class="trust-row">
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Cancel anytime, no lock-in</div>
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Secure checkout via Stripe</div>
-  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Card required, no charge until trial ends</div>
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Pro trial: no charge for 5 days · Founding Member: charged today</div>
 </div>
 
 <section class="pricing-faq">
@@ -750,7 +750,10 @@ async function startFoundingCheckout() {
   }
 
   try {
-    const body = { tier: 'founding_member', billing: 'monthly', trial: true };
+    // Founding Member checkout never has a trial — $1.99 is charged
+    // immediately. checkout.js also hard-enforces this server-side
+    // regardless of what's sent here (defense in depth).
+    const body = { tier: 'founding_member', billing: 'monthly', trial: false };
     if (userId) body.userId = userId;
 
     const res  = await fetch('/api/stripe/checkout', {
@@ -803,7 +806,19 @@ async function loadFoundingStatus() {
   try {
     const res  = await fetch('/api/founding-status');
     const data = await res.json();
-    if (!data.active) return;
+    if (!data.active) {
+      // Spots specifically full (as opposed to past the cutoff date or the
+      // offer being killed) still shows the card — just full, disabled, and
+      // explicit about why — rather than vanishing with no explanation.
+      if (data.remaining <= 0) {
+        document.getElementById('foundingCard').style.display = '';
+        document.getElementById('foundingLimitText').textContent = 'Founding Member spots are currently full.';
+        const btn = document.getElementById('foundingBtn');
+        btn.disabled = true;
+        btn.textContent = 'Spots Full';
+      }
+      return;
+    }
     document.getElementById('foundingCard').style.display = '';
     document.getElementById('foundingCountdown').style.display = '';
     const spotsText = `${data.remaining} of ${data.cap} spots left`;

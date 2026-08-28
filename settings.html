@@ -275,6 +275,10 @@ body.drawer-open{overflow:hidden}
       <span class="account-key">Status</span>
       <span style="display:inline-flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.05em;padding:4px 12px;border-radius:20px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.35);color:#f5a623;">🏆 FOUNDING MEMBER</span>
     </div>
+    <div class="account-row" id="founderNumRow" style="display:none">
+      <span class="account-key">Founder Rate</span>
+      <span class="account-val" id="founderNumVal">—</span>
+    </div>
     <div class="account-row">
       <span class="account-key">Email Verified</span>
       <span class="account-val" id="emailVerified">—</span>
@@ -369,6 +373,20 @@ async function checkAccountStatus(isRetry = false) {
     const isFounding = session?.user?.app_metadata?.founding_member === true;
     const foundingRow = document.getElementById('foundingRow');
     if (foundingRow) foundingRow.style.display = isFounding ? '' : 'none';
+    const founderNumRow = document.getElementById('founderNumRow');
+    if (founderNumRow) {
+      if (isFounding && session?.user?.id) {
+        sb.from('founding_members').select('founder_number').eq('user_id', session.user.id).maybeSingle()
+          .then(({ data }) => {
+            if (data?.founder_number) {
+              document.getElementById('founderNumVal').textContent = `$1.99/mo · Founder #${data.founder_number} of 500`;
+              founderNumRow.style.display = '';
+            }
+          }).catch(() => {});
+      } else {
+        founderNumRow.style.display = 'none';
+      }
+    }
 
     const justPaid = !!localStorage.getItem('sc_trial_start') &&
       (Date.now() - new Date(localStorage.getItem('sc_trial_start')).getTime()) < 120000;

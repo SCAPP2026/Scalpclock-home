@@ -75,6 +75,9 @@ h1 em{color:var(--green);font-style:normal;}
 .trial-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:30px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.35);color:var(--green);font-family:var(--disp);font-weight:700;font-size:.95rem;letter-spacing:.04em;margin-bottom:28px;}
 .trial-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.founder-badge{display:none;flex-direction:column;align-items:center;gap:4px;padding:14px 22px;border-radius:16px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.35);color:#f5a623;font-family:var(--disp);margin-bottom:28px;}
+.founder-badge .fb-num{font-weight:700;font-size:1.3rem;letter-spacing:.02em;}
+.founder-badge .fb-sub{font-weight:600;font-size:.78rem;color:var(--t55);}
 
 .checklist{text-align:left;background:rgba(22,217,126,.04);border:1px solid rgba(22,217,126,.12);border-radius:14px;padding:18px 20px;margin-bottom:28px;}
 .checklist-title{font-family:var(--disp);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);opacity:.8;margin-bottom:12px;}
@@ -139,9 +142,14 @@ h1 em{color:var(--green);font-style:normal;}
     <span id="trialBadgeText">5-Day Free Trial — Active</span>
   </div>
 
+  <div class="founder-badge" id="founderBadge">
+    <span class="fb-num" id="founderNum">Founder — of 500</span>
+    <span class="fb-sub">$1.99/month locked in</span>
+  </div>
+
   <div class="checklist">
     <div class="checklist-title">Your Pro Access</div>
-    <div class="cl-item"><span class="cl-icon">✅</span> Trial Activated — no charge for 5 days</div>
+    <div class="cl-item" id="clAccessLine"><span class="cl-icon">✅</span> Pro Access Activated</div>
     <div class="cl-item"><span class="cl-icon">✅</span> Scalp Signals — real-time RSI entry &amp; exit alerts</div>
     <div class="cl-item"><span class="cl-icon">✅</span> ScalpCharts — tap any candle for AI coaching</div>
     <div class="cl-item"><span class="cl-icon">✅</span> Exit Assistant — know exactly when to exit</div>
@@ -161,20 +169,34 @@ h1 em{color:var(--green);font-style:normal;}
 
 <p style="position:relative;z-index:1;text-align:center;padding:24px 20px 40px;font-size:11px;color:#3a4f6a;line-height:1.7">&copy; 2026 VSLLC. All rights reserved. &nbsp;·&nbsp; Not financial advice. Options trading carries risk.</p>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-const params    = new URLSearchParams(location.search);
-const isTrial   = params.get('trial') === '1';
-const sessionId = params.get('session_id') || '';
+const params     = new URLSearchParams(location.search);
+const isTrial    = params.get('trial') === '1';
+const isFounding = params.get('founding') === '1';
+const sessionId  = params.get('session_id') || '';
+const TOTAL_SECS = isFounding ? 8 : 5; // give the Founder-number poll below time to resolve and actually be seen
 
 if (isTrial) {
   document.getElementById('mainHeading').innerHTML = '🎉 Welcome to <em>Pro</em>';
   document.getElementById('mainSubtitle').textContent = 'Your 5-day free trial is active. Every Pro feature is unlocked now — no charge until day 6.';
   document.getElementById('trialBadge').style.display = 'inline-flex';
+  document.getElementById('clAccessLine').innerHTML = '<span class="cl-icon">✅</span> Trial Activated — no charge for 5 days';
 
   if (!localStorage.getItem('sc_trial_start')) {
     localStorage.setItem('sc_trial_start', new Date().toISOString());
   }
+} else if (isFounding) {
+  document.getElementById('mainHeading').innerHTML = 'Welcome to ScalpClock — <em>You’re officially a Founding Member!</em>';
+  document.getElementById('mainSubtitle').textContent = 'You were charged $1.99 today — no trial. Pro access is now active.';
+} else {
+  document.getElementById('mainSubtitle').textContent = 'Your subscription is active — no trial, you were charged today. Every Pro feature is unlocked.';
 }
+
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
 
 // Activate Pro in Supabase immediately — don't rely on webhook timing
 async function activatePlan() {
@@ -188,17 +210,45 @@ async function activatePlan() {
   } catch (_) {}
 }
 
-// Start activation and countdown in parallel — activation usually finishes
-// in ~1s, well before the 5s countdown ends
-activatePlan();
+// Founder status/number is only ever assigned by the webhook's atomic claim
+// (never by this page or by activate.js — see activate.js's comment), so it
+// can briefly lag a few seconds behind landing on this page. Poll the
+// member's own founding_members row (RLS: read-your-own-row only) a few
+// times rather than either blocking on it or never showing it at all.
+async function pollFounderNumber() {
+  if (!isFounding || !sb) return;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const uid = session?.user?.id;
+      if (uid) {
+        const { data } = await sb.from('founding_members').select('founder_number').eq('user_id', uid).maybeSingle();
+        if (data?.founder_number) {
+          document.getElementById('founderNum').textContent = `Founder #${data.founder_number} of 500`;
+          document.getElementById('founderBadge').style.display = 'flex';
+          return;
+        }
+      }
+    } catch (_) {}
+    await new Promise(r => setTimeout(r, 1200));
+  }
+  // Didn't resolve in time — don't block the page on it; the dashboard/
+  // referrals page will show it as soon as the webhook lands.
+}
 
-let secs = 5;
+// Start activation, the Founder-number poll, and the countdown all in
+// parallel — activation usually finishes in ~1s, well before the countdown
+// ends.
+activatePlan();
+pollFounderNumber();
+
+let secs = TOTAL_SECS;
 const countEl = document.getElementById('countdown');
 const fillEl  = document.getElementById('progressFill');
 const timer = setInterval(() => {
   secs--;
   if (countEl) countEl.textContent = secs;
-  if (fillEl) fillEl.style.width = (secs / 5 * 100) + '%';
+  if (fillEl) fillEl.style.width = (secs / TOTAL_SECS * 100) + '%';
   if (secs <= 0) {
     clearInterval(timer);
     window.location.href = '/dashboard';

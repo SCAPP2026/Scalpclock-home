@@ -217,6 +217,7 @@ body.drawer-open{overflow:hidden}
 
     <div class="stat-grid">
       <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-label">Founder Number</div><div class="stat-val" id="statFounderNum">—</div></div>
+      <div class="stat-card"><div class="stat-icon">💳</div><div class="stat-label">Membership</div><div class="stat-val" id="statMembership">—</div></div>
       <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Active Referrals</div><div class="stat-val" id="statActive">—<span class="badge-tier-tag" id="badgeTierTag"></span></div></div>
       <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Monthly Residual</div><div class="stat-val" id="statMonthly">—</div></div>
       <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-label">Lifetime Earnings</div><div class="stat-val" id="statLifetime">—</div></div>
@@ -291,6 +292,9 @@ async function init() {
   }
 
   document.getElementById('founderView').style.display = 'block';
+  const plan = session.user.app_metadata?.plan;
+  document.getElementById('statMembership').textContent =
+    '$1.99/mo · ' + (plan === 'pro' ? 'ACTIVE' : plan === 'expired' ? 'EXPIRED' : plan === 'trial' ? 'TRIAL' : (plan || '—').toUpperCase());
   await loadDashboard();
   await loadNotifications();
 

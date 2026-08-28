@@ -57,27 +57,49 @@ export async function onRequest(context) {
       console.log('Checkout completed:', session.customer_email, 'subscription:', session.subscription, 'founding:', isFounding);
 
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
-        // All new subscriptions start with a trial period, so mark 'trial'
-        // customer.subscription.updated will promote to 'pro' when trial ends
+        // checkout.js decides trial vs no-trial once, at session creation, and
+        // stamps it into session metadata — read that instead of assuming every
+        // checkout has a trial (Founding Member checkouts never do; a Pro promo
+        // checkout may not either). customer.subscription.updated (trialing ->
+        // active) still promotes 'trial' -> 'pro' whenever a real trial exists.
+        const hadTrial = session.metadata?.trial === '1';
         const hasPromo = Array.isArray(session.discounts) && session.discounts.length > 0;
+
+        // Founding Member claim must be recorded — and the 500-member cap
+        // enforced atomically (see claim_founding_member's advisory lock) —
+        // BEFORE app_metadata is patched, so a claim that's rejected at the cap
+        // can never leave an account reading founding_member:true with no
+        // corresponding founding_members row.
+        let founderResult = null;
+        if (isFounding) {
+          founderResult = await recordFoundingMember(userId, session.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
+          if (founderResult === 'rejected') {
+            // Extremely rare: checkout.js's pre-check passed but the atomic
+            // claim still lost the race for the last spot (two payments
+            // completing at the same instant). The customer has already been
+            // charged $1.99 by Stripe by this point, so still grant Pro access
+            // — never leave a paying customer with nothing — just don't hand
+            // out a Founder slot beyond the cap. Needs a human to reconcile
+            // (refund to normal Pro pricing, or a manual cap exception);
+            // logged loudly so it surfaces in Cloudflare's function logs.
+            console.error('FOUNDING CAP RACE: claim rejected after successful payment. user:', userId,
+              'subscription:', session.subscription, '— granted Pro access, no Founder slot assigned. Needs manual review.');
+          }
+        }
+
         const patch = {
           id:             userId,
-          plan:           'trial',
+          plan:           hadTrial ? 'trial' : 'pro',
           stripe_sub_id:  session.subscription || null,
         };
         if (hasPromo) patch.promo_redeemed = true;
-        if (isFounding) patch.founding_member = true;
+        // 'duplicate' means an earlier delivery of this same webhook already
+        // set founding_member:true — leave the patch field unset here so
+        // upsertProfile's merge (below) preserves that existing value rather
+        // than needing to re-assert it.
+        if (founderResult === 'claimed') patch.founding_member = true;
 
         await upsertProfile(userId, patch, env.SUPABASE_SERVICE_ROLE_KEY);
-      }
-
-      // Record the claim — this is what actually decrements the live
-      // "spots remaining" count (functions/api/founding-status.js counts
-      // rows in this table). checkout.js already re-verified eligibility
-      // server-side before creating this session, so no need to re-check
-      // the cap here — just record it.
-      if (isFounding && env.SUPABASE_SERVICE_ROLE_KEY) {
-        await recordFoundingMember(userId, session.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
       }
 
       // Referral attribution — checked for EVERY paying user, not just
@@ -284,37 +306,59 @@ function generateReferralCode() {
   return Array.from(bytes, b => alphabet[b % alphabet.length]).join('');
 }
 
-// Insert-only — no upsert/uniqueness needed since each checkout.session.completed
-// event fires once per new subscription. This row is purely what
-// functions/api/founding-status.js counts to compute spots remaining. Also
-// assigns the referral program's founder_number (a DB column default pulling
-// from a Postgres sequence — race-safe under concurrent webhook deliveries,
-// no count-then-increment) and a unique referral_code.
+// Founder count and cap are the same 500 used by checkout.js's pre-check and
+// founding-status.js's public count — duplicated here rather than imported
+// per this codebase's existing "keep billing-critical constants in sync
+// across files" convention (see checkout.js's comment on FOUNDING_CAP).
+const FOUNDING_CAP_FOR_CLAIM = 500;
+
+// Calls the atomic claim_founding_member() Postgres function (advisory-lock +
+// count-check + insert in one transaction — see the migration for why a plain
+// table INSERT isn't race-safe on its own) instead of inserting directly.
+//
+// Returns 'claimed' if a Founder slot was actually claimed just now, 'duplicate'
+// if this user/subscription already has a Founder row (idempotent replay of an
+// already-processed webhook — expected, not an error), or 'rejected' if the
+// claim genuinely failed (cap reached, or an unexpected error). The caller
+// must only mark the account founding_member:true on 'claimed', and must only
+// treat 'rejected' as something needing manual review — not 'duplicate'.
 async function recordFoundingMember(userId, subscriptionId, serviceKey) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const code = generateReferralCode();
     try {
-      const r = await fetch(`${SUPABASE_URL}/rest/v1/founding_members`, {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/claim_founding_member`, {
         method:  'POST',
         headers: {
           apikey:         serviceKey,
           Authorization:  `Bearer ${serviceKey}`,
           'Content-Type': 'application/json',
-          Prefer:         'return=representation',
         },
         body: JSON.stringify({
-          user_id:                userId || null,
-          stripe_subscription_id: subscriptionId || null,
-          referral_code:          code,
+          p_user_id:                userId || null,
+          p_stripe_subscription_id: subscriptionId || null,
+          p_referral_code:          code,
+          p_cap:                    FOUNDING_CAP_FOR_CLAIM,
         }),
       });
       if (r.ok) {
-        const rows = await r.json().catch(() => []);
-        const row  = Array.isArray(rows) ? rows[0] : null;
+        const row = await r.json().catch(() => null);
         console.log('Founding member recorded for:', userId, 'referral_code:', code, 'founder_number:', row?.founder_number);
-        return;
+        return 'claimed';
       }
       const text = await r.text();
+      if (text.includes('FOUNDING_CAP_REACHED')) {
+        console.error('Founding claim rejected — cap reached at insert time. user:', userId);
+        return 'rejected';
+      }
+      // user_id and stripe_subscription_id are also UNIQUE — a duplicate
+      // webhook delivery for an already-processed checkout hits one of those.
+      // That's expected, idempotent behavior (Test 3): no second Founder row,
+      // and no retry needed (a fresh referral_code can't fix a user_id/
+      // subscription_id conflict).
+      if (r.status === 409 && (text.includes('user_id') || text.includes('stripe_subscription_id'))) {
+        console.log('Founding member already recorded (duplicate webhook) for:', userId);
+        return 'duplicate';
+      }
       // referral_code is UNIQUE — a collision is vanishingly rare with a
       // 7-char/32-symbol code, but retry with a fresh code rather than fail
       // the whole checkout completion over it.
@@ -322,13 +366,14 @@ async function recordFoundingMember(userId, subscriptionId, serviceKey) {
         console.warn('referral_code collision, retrying:', text);
         continue;
       }
-      console.error('founding_members insert error:', r.status, text);
-      return;
+      console.error('founding_members claim error:', r.status, text);
+      return 'rejected';
     } catch (e) {
       console.error('Failed to record founding member:', e.message);
-      return;
+      return 'rejected';
     }
   }
+  return 'rejected';
 }
 
 // If this newly-paying user signed up via a founder's referral link/code

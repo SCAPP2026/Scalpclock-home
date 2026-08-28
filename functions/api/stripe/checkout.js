@@ -30,6 +30,9 @@ const FOUNDING_ACTIVE_OVERRIDE = true;
 const FOUNDING_CAP    = 500;
 const FOUNDING_CUTOFF = '2026-09-30T23:59:59Z';
 
+// Returns { active, reason } instead of a bare boolean so the caller can show
+// the specific "spots are full" copy the cap case needs, rather than a single
+// generic "offer has ended" message for every reason it might be inactive.
 async function isFoundingOfferActive(serviceKey) {
   let claimed = 0;
   try {
@@ -45,9 +48,12 @@ async function isFoundingOfferActive(serviceKey) {
     if (range) claimed = parseInt(range.split('/')[1], 10) || 0;
   } catch (e) {
     console.error('founding offer count failed:', e.message);
-    return false; // fail closed — never grant the discount if we can't verify eligibility
+    return { active: false, reason: 'lookup_failed' }; // fail closed — never grant the discount if we can't verify eligibility
   }
-  return FOUNDING_ACTIVE_OVERRIDE && (FOUNDING_CAP - claimed) > 0 && Date.now() < new Date(FOUNDING_CUTOFF).getTime();
+  if (!FOUNDING_ACTIVE_OVERRIDE) return { active: false, reason: 'killed' };
+  if ((FOUNDING_CAP - claimed) <= 0) return { active: false, reason: 'cap' };
+  if (Date.now() >= new Date(FOUNDING_CUTOFF).getTime()) return { active: false, reason: 'cutoff' };
+  return { active: true, reason: null };
 }
 
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
@@ -133,9 +139,12 @@ async function handleCheckout(env, request) {
     if (!env.SUPABASE_SERVICE_ROLE_KEY) {
       return json({ error: 'Founding Member offer is not available right now.' }, 400);
     }
-    const stillActive = await isFoundingOfferActive(env.SUPABASE_SERVICE_ROLE_KEY);
+    const { active: stillActive, reason } = await isFoundingOfferActive(env.SUPABASE_SERVICE_ROLE_KEY);
     if (!stillActive) {
-      return json({ error: 'The Founding Member offer has ended.' }, 400);
+      const message = reason === 'cap'
+        ? 'Founding Member spots are full. The first 500 Founders have already claimed the $1.99 lifetime Founder rate.'
+        : 'The Founding Member offer has ended.';
+      return json({ error: message }, 400);
     }
   }
 
@@ -150,11 +159,17 @@ async function handleCheckout(env, request) {
     return json({ error: `No price configured for ${tier}/${billing}` }, 400);
   }
 
-  const isTrialSession = trial === true && (tier === 'pro' || isFounding);
+  // Founding Member checkout must NEVER have a trial, regardless of what the
+  // client sends — the frontend no longer sends trial:true for it (see
+  // pricing.html's startFoundingCheckout), but this must not depend on that:
+  // a stale cached page, a direct API call, or a tampered request must not be
+  // able to talk this endpoint into creating a trialing Founding subscription.
+  const isTrialSession = trial === true && tier === 'pro' && !isFounding;
   const origin          = new URL(request.url).origin;
 
   const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}` +
-    (isTrialSession ? '&trial=1' : '');
+    (isTrialSession ? '&trial=1' : '') +
+    (isFounding ? '&founding=1' : '');
 
   const params = new URLSearchParams({
     'line_items[0][price]':    priceId,
@@ -181,6 +196,13 @@ async function handleCheckout(env, request) {
     params.set('subscription_data[trial_period_days]', '5');
     params.set('payment_method_collection', 'always');
   }
+
+  // Session-level metadata is always present on the checkout.session.completed
+  // webhook payload (unlike subscription_data metadata, which needs the
+  // subscription itself). The webhook and activate.js both read this instead
+  // of re-deriving trial status, so there is exactly one place (here) that
+  // decides whether a session has a trial.
+  params.set('metadata[trial]', isTrialSession ? '1' : '0');
 
   // Pass userId so webhook can update profile on completion
   if (userId) {

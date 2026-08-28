@@ -1021,7 +1021,7 @@ function showOnboardingBanner(isTrial) {
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       ${[
-        ['✅','Trial Activated','No charge for 5 days'],
+        isTrial ? ['✅','Trial Activated','No charge for 5 days'] : ['✅','Pro Access Activated','Every Pro feature is unlocked'],
         ['📊','ScalpCharts','Tap any candle → AI coaching'],
         ['📅','Chart Replay','Rewind any chart, spot patterns, earn XP'],
         ['🚪','Exit Assistant','Know exactly when to exit'],

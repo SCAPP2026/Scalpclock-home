@@ -47,7 +47,11 @@ export async function onRequest(context) {
 
   if (!env.SUPABASE_SERVICE_ROLE_KEY) return json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured in Cloudflare env' }, 500);
 
-  const isFounding = session.metadata?.founding_member === 'true';
+  // checkout.js stamps session metadata[trial] once, at session creation —
+  // read that instead of assuming every session has a trial (Founding Member
+  // checkouts never do). Declared here (not inside the try below) so both the
+  // write and the final response use the same value.
+  const hadTrial = session.metadata?.trial === '1';
 
   try {
     // Fetch existing app_metadata first and merge — this call can race with the
@@ -66,8 +70,12 @@ export async function onRequest(context) {
       console.error('Failed to fetch existing app_metadata:', e.message);
     }
 
-    const appMeta = { ...existing, plan: 'trial', stripe_sub_id: session.subscription || null };
-    if (isFounding) appMeta.founding_member = true;
+    const appMeta = { ...existing, plan: hadTrial ? 'trial' : 'pro', stripe_sub_id: session.subscription || null };
+    // Founder status/number is assigned exclusively by the webhook's atomic
+    // claim_founding_member() call (race-safe against the 500 cap) — this
+    // endpoint must never set founding_member itself, or a user could load
+    // /success before the webhook lands and get marked a Founder without an
+    // actual founding_members row (or one claimed past the cap).
 
     const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
       method:  'PUT',
@@ -87,7 +95,7 @@ export async function onRequest(context) {
     return json({ error: 'Supabase unreachable', detail: e.message }, 502);
   }
 
-  return json({ ok: true, plan: 'trial' });
+  return json({ ok: true, plan: hadTrial ? 'trial' : 'pro' });
 }
 
 function json(data, status = 200) {

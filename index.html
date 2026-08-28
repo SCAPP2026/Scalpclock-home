@@ -421,7 +421,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 
 <!-- FOUNDING MEMBER ANNOUNCEMENT BAR (hidden until /api/founding-status confirms the offer is active) -->
 <div class="promo-bar" id="promoBar" style="display:none">
-  <span class="promo-bar-text">🚀 Founding Member Special &bull; Lock in ScalpClock Pro for just $1.99/month for life &bull; Includes a 5-Day Free Trial</span>
+  <span class="promo-bar-text">🚀 Founding Member Special &bull; Lock in ScalpClock Pro for just $1.99/month for life &bull; No Trial — Charged Today</span>
   <button type="button" class="promo-bar-btn" onclick="document.getElementById('founding').scrollIntoView({behavior:'smooth'})">Claim Your Spot</button>
 </div>
 
@@ -894,14 +894,14 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
     <span class="founding-badge">🔥 Founding Member Special</span>
     <span class="founding-badge">💎 Lock in $1.99/month for life</span>
     <span class="founding-badge">⏰ Only for the first 500 members</span>
-    <span class="founding-badge">🎁 Includes a 5-Day Free Trial</span>
+    <span class="founding-badge">🚫 No Free Trial — Charged Today</span>
     <span class="founding-badge">💰 Earn Recurring Referral Commissions</span>
   </div>
 
   <div class="founding-price-card">
     <div class="founding-price-name">Founding Member</div>
     <div><span class="founding-price-amount">$1.99</span><span class="founding-price-per">/month</span></div>
-    <div class="founding-price-trial">🎁 5-Day Free Trial Included</div>
+    <div class="founding-price-trial">No free trial — you're charged $1.99 today</div>
     <div class="founding-price-everything">Everything in Pro</div>
     <ul class="founding-price-list">
       <li><b>✓</b> Live ScalpCharts</li>
@@ -912,8 +912,8 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <li><b>✓</b> Recurring commissions on every referral</li>
       <li><b>✓</b> Future Premium Features</li>
     </ul>
-    <button type="button" class="founding-price-cta" onclick="startFoundingCheckout()">Claim Your Founding Member Spot</button>
-    <div class="founding-price-limit">Limited to the first 500 members. <a href="/founders" style="color:inherit;text-decoration:underline;">See referral program details →</a></div>
+    <button type="button" class="founding-price-cta" onclick="startFoundingCheckout()">CLAIM MY $1.99 FOUNDER SPOT</button>
+    <div class="founding-price-limit">You're charged $1.99 today. No 5-day trial. Full Pro access begins immediately after successful payment. Limited to the first 500 members — <a href="/founders" style="color:inherit;text-decoration:underline;">see referral program details →</a></div>
   </div>
 
   <div class="founding-regular-price">
@@ -1007,7 +1007,10 @@ async function startFoundingCheckout() {
   }
 
   try {
-    const body = { tier: 'founding_member', billing: 'monthly', trial: true };
+    // Founding Member checkout never has a trial — $1.99 is charged
+    // immediately. checkout.js also hard-enforces this server-side
+    // regardless of what's sent here (defense in depth).
+    const body = { tier: 'founding_member', billing: 'monthly', trial: false };
     if (userId) body.userId = userId;
 
     const res  = await fetch('/api/stripe/checkout', {
@@ -1031,7 +1034,18 @@ async function loadFoundingStatus() {
   try {
     const res  = await fetch('/api/founding-status');
     const data = await res.json();
-    if (!data.active) return; // single source of truth — inactive means every founding element on this page stays hidden
+    if (!data.active) {
+      // Spots specifically full (as opposed to past the cutoff date or the
+      // offer being killed) gets an explicit notice rather than silently
+      // vanishing — a visitor who scrolled here expecting the offer
+      // shouldn't be left wondering where it went.
+      if (data.remaining <= 0) {
+        const bar = document.getElementById('promoBar');
+        bar.innerHTML = '<span class="promo-bar-text">Founding Member spots are currently full.</span>';
+        bar.style.display = '';
+      }
+      return;
+    }
 
     document.getElementById('promoBar').style.display = '';
     document.getElementById('founding').style.display = '';
