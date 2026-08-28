@@ -370,6 +370,7 @@ async function checkAccountStatus(isRetry = false) {
       ? await sb.auth.refreshSession()
       : await sb.auth.getSession();
     let plan = session?.user?.app_metadata?.plan || 'free';
+    const planExpiredReason = session?.user?.app_metadata?.plan_expired_reason || null;
     const isFounding = session?.user?.app_metadata?.founding_member === true;
     const foundingRow = document.getElementById('foundingRow');
     if (foundingRow) foundingRow.style.display = isFounding ? '' : 'none';
@@ -408,7 +409,15 @@ async function checkAccountStatus(isRetry = false) {
       if (upg) upg.style.display = 'none';
       if (subBadge) { subBadge.textContent = 'PRO'; subBadge.className = 'badge pro'; }
     } else if (isExpired) {
-      if (subBadge) { subBadge.textContent = 'EXPIRED'; subBadge.style.cssText = 'background:rgba(245,166,35,.14);color:var(--amber-ink);border:1px solid rgba(245,166,35,.35);'; }
+      if (subBadge) {
+        if (planExpiredReason === 'payment_failed') {
+          subBadge.textContent = 'PAYMENT FAILED';
+          subBadge.style.cssText = 'background:rgba(245,66,66,.14);color:var(--red-ink);border:1px solid rgba(245,66,66,.35);';
+        } else {
+          subBadge.textContent = 'EXPIRED';
+          subBadge.style.cssText = 'background:rgba(245,166,35,.14);color:var(--amber-ink);border:1px solid rgba(245,166,35,.35);';
+        }
+      }
     }
   } catch(_) {}
 }

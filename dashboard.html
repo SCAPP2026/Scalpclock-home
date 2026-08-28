@@ -952,6 +952,7 @@ async function checkSubscription(isRetry = false) {
       ? await sb.auth.refreshSession()
       : await sb.auth.getSession();
     let plan = session?.user?.app_metadata?.plan || 'free';
+    const planExpiredReason = session?.user?.app_metadata?.plan_expired_reason || null;
     const isFounding = session?.user?.app_metadata?.founding_member === true;
     const foundingRow = document.getElementById('foundingRow');
     if (foundingRow) foundingRow.style.display = isFounding ? '' : 'none';
@@ -1004,10 +1005,20 @@ async function checkSubscription(isRetry = false) {
         showOnboardingBanner(isTrial);
       }
     } else if (isExpired) {
-      document.getElementById('planBadge').textContent = 'Expired';
-      document.getElementById('planBadge').style.color = 'var(--amber-ink)';
+      const isPaymentFailed = planExpiredReason === 'payment_failed';
+      document.getElementById('planBadge').textContent = isPaymentFailed ? 'Payment Failed' : 'Expired';
+      document.getElementById('planBadge').style.color = isPaymentFailed ? 'var(--red-ink)' : 'var(--amber-ink)';
       const subBadge = document.getElementById('accountSubBadge');
-      if (subBadge) { subBadge.textContent = 'EXPIRED'; subBadge.style.cssText = 'background:rgba(245,166,35,.14);color:var(--amber-ink);border:1px solid rgba(245,166,35,.35);'; }
+      if (subBadge) {
+        if (isPaymentFailed) {
+          subBadge.textContent = 'PAYMENT FAILED';
+          subBadge.style.cssText = 'background:rgba(245,66,66,.14);color:var(--red-ink);border:1px solid rgba(245,66,66,.35);';
+        } else {
+          subBadge.textContent = 'EXPIRED';
+          subBadge.style.cssText = 'background:rgba(245,166,35,.14);color:var(--amber-ink);border:1px solid rgba(245,166,35,.35);';
+        }
+      }
+      if (isPaymentFailed) showPaymentFailedBanner();
     }
     // 'free' — default UI shows Free, nothing to change
   } catch(_) {}
@@ -1040,6 +1051,34 @@ function showOnboardingBanner(isTrial) {
           </div>
         </div>`
       ).join('')}
+    </div>`;
+
+  const shell = document.querySelector('.shell');
+  const welcome = shell?.querySelector('.welcome');
+  if (welcome) welcome.insertAdjacentElement('afterend', banner);
+}
+
+// Shown when app_metadata.plan_expired_reason === 'payment_failed' — a
+// declined/failed card, not a real cancellation. No self-service fix exists
+// yet (no Stripe Customer Portal in this codebase), so this points to
+// support rather than a "resubscribe" CTA — resubscribing would just hit
+// checkout.js's findBlockingSubscription 409, since Stripe still has the
+// original subscription live and retrying.
+function showPaymentFailedBanner() {
+  if (document.getElementById('paymentFailedBanner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'paymentFailedBanner';
+  banner.style.cssText = 'background:rgba(245,66,66,.08);border:1px solid rgba(245,66,66,.3);border-radius:14px;padding:18px 22px;margin-bottom:28px;position:relative;';
+  banner.innerHTML = `
+    <button onclick="document.getElementById('paymentFailedBanner').remove()"
+      style="position:absolute;top:12px;right:14px;background:none;border:none;color:var(--t45);font-size:1.1rem;cursor:pointer;line-height:1;">✕</button>
+    <div style="font-family:var(--disp);font-weight:700;font-size:1.02rem;color:var(--red-ink);margin-bottom:6px;">
+      ⚠️ Your last payment didn't go through
+    </div>
+    <div style="font-size:.85rem;color:var(--t65);line-height:1.5;">
+      Your Pro access is on hold because your card was declined. Email
+      <a href="mailto:support@scalpclock.com" style="color:var(--red-ink);text-decoration:underline;">support@scalpclock.com</a>
+      to update your payment method — please don't buy a new plan from Pricing, it won't fix this and can create a duplicate charge.
     </div>`;
 
   const shell = document.querySelector('.shell');

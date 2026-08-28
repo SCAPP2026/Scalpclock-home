@@ -88,9 +88,10 @@ export async function onRequest(context) {
         }
 
         const patch = {
-          id:             userId,
-          plan:           hadTrial ? 'trial' : 'pro',
-          stripe_sub_id:  session.subscription || null,
+          id:                  userId,
+          plan:                hadTrial ? 'trial' : 'pro',
+          stripe_sub_id:       session.subscription || null,
+          plan_expired_reason: null,
         };
         if (hasPromo) patch.promo_redeemed = true;
         // 'duplicate' means an earlier delivery of this same webhook already
@@ -134,13 +135,18 @@ export async function onRequest(context) {
 
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY && await isCurrentSubscription(userId, sub.id, env.SUPABASE_SERVICE_ROLE_KEY)) {
         let plan;
-        if (sub.status === 'trialing')   plan = 'trial';
-        else if (sub.status === 'active') plan = 'pro';
-        else if (sub.status === 'past_due' || sub.status === 'unpaid') plan = 'expired';
-        else if (sub.status === 'canceled') plan = 'free';
+        let planExpiredReason; // null clears any stale reason; undefined leaves it untouched
+        if (sub.status === 'trialing')   { plan = 'trial'; planExpiredReason = null; }
+        else if (sub.status === 'active') { plan = 'pro'; planExpiredReason = null; }
+        // Card declined but Stripe is still retrying (dunning) — the
+        // subscription itself is still live, so this must read differently
+        // on the dashboard than a real cancellation (see plan_expired_reason
+        // consumers in dashboard.html/settings.html).
+        else if (sub.status === 'past_due' || sub.status === 'unpaid') { plan = 'expired'; planExpiredReason = 'payment_failed'; }
+        else if (sub.status === 'canceled') { plan = 'free'; planExpiredReason = null; }
 
         if (plan) {
-          await upsertProfile(userId, { id: userId, plan, stripe_sub_id: sub.id }, env.SUPABASE_SERVICE_ROLE_KEY);
+          await upsertProfile(userId, { id: userId, plan, stripe_sub_id: sub.id, plan_expired_reason: planExpiredReason }, env.SUPABASE_SERVICE_ROLE_KEY);
         }
       }
       break;
@@ -159,7 +165,7 @@ export async function onRequest(context) {
       console.log('Subscription cancelled:', sub.id, sub.customer, 'user:', userId);
 
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY && await isCurrentSubscription(userId, sub.id, env.SUPABASE_SERVICE_ROLE_KEY)) {
-        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
+        await upsertProfile(userId, { id: userId, plan: 'expired', plan_expired_reason: 'canceled' }, env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
     }
@@ -180,7 +186,7 @@ export async function onRequest(context) {
       // invoice.payment_failed for the deleted duplicate, unguarded, was the
       // only handler that could do that.
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY && (!inv.subscription || await isCurrentSubscription(userId, inv.subscription, env.SUPABASE_SERVICE_ROLE_KEY))) {
-        await upsertProfile(userId, { id: userId, plan: 'expired' }, env.SUPABASE_SERVICE_ROLE_KEY);
+        await upsertProfile(userId, { id: userId, plan: 'expired', plan_expired_reason: 'payment_failed' }, env.SUPABASE_SERVICE_ROLE_KEY);
         await setReferralStatus(userId, 'inactive', env.SUPABASE_SERVICE_ROLE_KEY);
       }
       break;
@@ -205,7 +211,7 @@ export async function onRequest(context) {
         // must not flip plan early.
         if (inv.amount_paid > 0 && inv.billing_reason !== 'subscription_create'
             && (!inv.subscription || await isCurrentSubscription(userId, inv.subscription, env.SUPABASE_SERVICE_ROLE_KEY))) {
-          await upsertProfile(userId, { id: userId, plan: 'pro' }, env.SUPABASE_SERVICE_ROLE_KEY);
+          await upsertProfile(userId, { id: userId, plan: 'pro', plan_expired_reason: null }, env.SUPABASE_SERVICE_ROLE_KEY);
         }
 
         // Resumes the dashboard's "active" display after a prior failure —
@@ -279,6 +285,7 @@ async function upsertProfile(userId, patch, serviceKey) {
     if (patch.stripe_sub_id !== undefined) appMeta.stripe_sub_id = patch.stripe_sub_id;
     if (patch.promo_redeemed !== undefined) appMeta.promo_redeemed = patch.promo_redeemed;
     if (patch.founding_member !== undefined) appMeta.founding_member = patch.founding_member;
+    if (patch.plan_expired_reason !== undefined) appMeta.plan_expired_reason = patch.plan_expired_reason;
 
     const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
       method:  'PUT',

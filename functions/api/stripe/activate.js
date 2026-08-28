@@ -70,7 +70,7 @@ export async function onRequest(context) {
       console.error('Failed to fetch existing app_metadata:', e.message);
     }
 
-    const appMeta = { ...existing, plan: hadTrial ? 'trial' : 'pro', stripe_sub_id: session.subscription || null };
+    const appMeta = { ...existing, plan: hadTrial ? 'trial' : 'pro', stripe_sub_id: session.subscription || null, plan_expired_reason: null };
     // Founder status/number is assigned exclusively by the webhook's atomic
     // claim_founding_member() call (race-safe against the 500 cap) — this
     // endpoint must never set founding_member itself, or a user could load
