@@ -730,6 +730,10 @@ body.drawer-open{overflow:hidden}
     <div class="section-title" style="margin:0">📓 Trade Journal</div>
     <a href="/journal" style="font-size:.78rem;color:var(--green-ink);text-decoration:none;font-family:var(--disp);font-weight:700;">View full journal →</a>
   </div>
+  <div id="dashTraderScoreWrap" style="display:none;background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--green);border-radius:12px;padding:16px 18px;margin-bottom:14px;">
+    <div style="font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green-ink);margin-bottom:6px;">ScalpClock Trader Score</div>
+    <div id="dashTraderScoreBody"></div>
+  </div>
   <div class="trade-summary" id="tradeSummary">
     <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
     <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
@@ -794,6 +798,7 @@ body.drawer-open{overflow:hidden}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/js/trade-score.js"></script>
 <script>
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
@@ -1086,15 +1091,37 @@ function toggleAchievements() {
   btn.classList.toggle('open', !open);
 }
 
+// Same TradeScoreEngine (js/trade-score.js) the Trade Journal uses — same
+// number here and there, never a second, divergent scoring implementation.
+function renderDashTraderScore(closed) {
+  const wrap = document.getElementById('dashTraderScoreWrap');
+  const body = document.getElementById('dashTraderScoreBody');
+  if (typeof TradeScoreEngine === 'undefined') { wrap.style.display = 'none'; return; }
+  const trader = TradeScoreEngine.computeTraderScore(closed);
+  wrap.style.display = 'block';
+  if (!trader.available) {
+    body.innerHTML = `<div style="font-size:.82rem;color:var(--t65)">Keep logging trades in your <a href="/journal" style="color:var(--green-ink)">Trade Journal</a> — ScalpClock needs at least ${trader.minRequired} scored trades to calculate your Trader Score (${trader.sampleSize}/${trader.minRequired} so far).</div>`;
+    return;
+  }
+  const arrow = trader.trend === 'Improving' ? '↑' : trader.trend === 'Declining' ? '↓' : '→';
+  const color = trader.trend === 'Improving' ? 'var(--green-ink)' : trader.trend === 'Declining' ? 'var(--red-ink)' : 'var(--t65)';
+  body.innerHTML = `<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">
+    <span style="font-family:var(--disp);font-weight:700;font-size:2rem;color:var(--text);">${trader.score}<span style="font-size:1rem;color:var(--t45)">/100</span></span>
+    <span style="font-size:.9rem;color:var(--t65)">${trader.level}</span>
+    <span style="font-size:.82rem;color:${color}">${arrow} ${trader.trend}</span>
+  </div>`;
+}
+
 async function loadAllTrades() {
   try {
-    const { data: all } = await sb.from('trades').select('status,pnl,symbol').eq('user_id', _uid);
+    const { data: all } = await sb.from('trades').select('status,pnl,symbol,closed_at,trade_score').eq('user_id', _uid);
     const closed  = all?.filter(t => t.status === 'closed') || [];
     const open    = all?.filter(t => t.status === 'open')   || [];
     const wins    = closed.filter(t => (t.pnl || 0) > 0).length;
     const tickers = new Set((all || []).map(t => t.symbol)).size;
     updateXP(closed.length, open.length);
     renderAchievements(closed.length, open.length, wins, tickers);
+    renderDashTraderScore(closed);
 
     const totalPnl = closed.reduce((s, t) => s + (t.pnl || 0), 0);
     const winRate  = closed.length ? Math.round(wins / closed.length * 100) : 0;

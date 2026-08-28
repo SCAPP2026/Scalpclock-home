@@ -220,6 +220,120 @@ td:nth-child(5){display:none;}}
 .nav-dropdown-menu a{display:block;padding:9px 12px;border-radius:7px;font-size:.85rem;color:rgba(13,26,19,.65);text-decoration:none;}
 .nav-dropdown-menu a:hover{color:#0d1a13;background:rgba(22,217,126,.12);}
 .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0a7a4a;padding:14px 16px 2px;}
+
+/* ── SCALPCLOCK TRADE PERFORMANCE SYSTEM ─────────────────────────────── */
+.tps-top-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px;}
+@media(max-width:900px){.tps-top-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:520px){.tps-top-grid{grid-template-columns:repeat(2,1fr);}}
+.tps-stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0;}
+.tps-stat .stat-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--t45);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tps-stat .stat-val{font-family:var(--disp);font-weight:700;font-size:1.15rem;color:var(--text);word-break:break-word;}
+.tps-stat .stat-val.green{color:var(--green-ink);}
+.tps-stat .stat-val.red{color:var(--red-ink);}
+
+.tps-second-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:10px;margin-bottom:24px;}
+@media(max-width:900px){.tps-second-grid{grid-template-columns:repeat(2,1fr);}}
+.trader-score-card{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--green);border-radius:12px;padding:16px 18px;grid-row:span 1;}
+.trader-score-head{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green-ink);margin-bottom:8px;}
+.trader-score-num{font-family:var(--disp);font-weight:700;font-size:2.2rem;color:var(--text);line-height:1;}
+.trader-score-num span{font-size:1.1rem;color:var(--t45);}
+.trader-score-level{font-size:.85rem;color:var(--t65);margin-top:4px;}
+.trader-score-trend{font-size:.78rem;margin-top:6px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;}
+.trader-score-trend.up{color:var(--green-ink);background:var(--green-soft);}
+.trader-score-trend.down{color:var(--red-ink);background:rgba(245,66,66,.12);}
+.trader-score-trend.flat{color:var(--t65);background:var(--panel-alt);}
+.trader-score-periods{display:flex;gap:14px;margin-top:10px;font-size:.72rem;color:var(--t45);flex-wrap:wrap;}
+.trader-score-periods b{color:var(--t85);font-family:var(--mono);}
+.trader-score-empty{font-size:.82rem;color:var(--t45);line-height:1.5;}
+.mini-stat-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;justify-content:center;}
+.mini-stat-card .stat-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--t45);margin-bottom:6px;}
+.mini-stat-card .stat-val{font-family:var(--disp);font-weight:700;font-size:1.05rem;color:var(--text);}
+.mini-stat-card .stat-sub{font-size:.72rem;color:var(--t45);margin-top:3px;}
+
+.tps-insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;}
+@media(max-width:900px){.tps-insights-grid{grid-template-columns:1fr;}}
+.insight-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;}
+.insight-card h3{font-family:var(--disp);font-weight:700;font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.insight-card.right{border-top:2px solid var(--green);}
+.insight-card.improve{border-top:2px solid var(--amber-ink);}
+.insight-card.edge{border-top:2px solid var(--info-ink);}
+.insight-empty{font-size:.83rem;color:var(--t45);line-height:1.55;}
+.insight-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+.insight-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.insight-item .it-text{font-size:.86rem;color:var(--t85);line-height:1.5;margin-bottom:4px;}
+.insight-item .it-data{font-size:.74rem;color:var(--t45);font-family:var(--mono);}
+.insight-item .it-suggestion{font-size:.8rem;color:var(--t65);margin-top:6px;}
+.insight-item .it-link{display:inline-block;font-size:.76rem;color:var(--green-ink);margin-top:6px;text-decoration:underline;}
+.edge-headline{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--green-ink);margin-bottom:4px;}
+.edge-sub{font-size:.78rem;color:var(--t65);margin-bottom:2px;}
+.edge-meta{font-size:.72rem;color:var(--t45);font-family:var(--mono);margin-top:8px;}
+
+.ot-banner{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.35);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.85rem;color:var(--amber-ink);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.limit-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;font-size:.82rem;color:var(--t65);}
+.limit-bar-wrap{width:120px;height:6px;background:var(--panel-alt);border-radius:4px;overflow:hidden;}
+.limit-bar-fill{height:100%;background:var(--green);}
+.limit-bar-fill.over{background:var(--red-ink);}
+.limit-input{width:52px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:4px 6px;color:var(--text);font-family:var(--mono);font-size:.8rem;}
+
+.tag-chip{display:inline-block;font-family:var(--mono);font-size:.62rem;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--panel-alt);color:var(--t65);margin:0 4px 4px 0;white-space:nowrap;}
+.tag-chip.emo-neg{background:rgba(245,66,66,.1);color:var(--red-ink);}
+.tag-chip.emo-pos{background:var(--green-soft);color:var(--green-ink);}
+.score-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-weight:700;font-size:.72rem;padding:2px 9px;border-radius:20px;cursor:pointer;border:1px solid transparent;}
+.score-badge.s-aplus,.score-badge.s-a{background:var(--green-soft);color:var(--green-ink);border-color:rgba(22,217,126,.3);}
+.score-badge.s-b{background:rgba(91,156,246,.14);color:var(--info-ink);border-color:rgba(91,156,246,.3);}
+.score-badge.s-c{background:rgba(245,166,35,.14);color:var(--amber-ink);border-color:rgba(245,166,35,.3);}
+.score-badge.s-d{background:rgba(245,66,66,.12);color:var(--red-ink);border-color:rgba(245,66,66,.3);}
+.row-actions{display:inline-flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.btn-row-mini{font-family:var(--mono);font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:5px;border:1px solid var(--line-strong);background:transparent;color:var(--t65);cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block;}
+.btn-row-mini:hover{color:var(--text);border-color:var(--t45);}
+.score-breakdown-row{display:none;}
+.score-breakdown-row.open{display:table-row;}
+.score-breakdown-cell{padding:14px 18px !important;background:var(--panel-alt);}
+.sb-cat{margin-bottom:10px;}
+.sb-cat-head{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--t85);margin-bottom:5px;}
+.sb-item{display:flex;justify-content:space-between;gap:10px;font-size:.75rem;color:var(--t65);padding:3px 0;}
+.sb-item span:first-child{flex:1;}
+.sb-item b{font-family:var(--mono);color:var(--t85);white-space:nowrap;}
+
+.load-more-wrap{text-align:center;padding:16px;}
+.btn-load-more{font-family:var(--disp);font-weight:700;font-size:.85rem;padding:9px 20px;border-radius:9px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;}
+.btn-load-more:hover{border-color:var(--t45);color:var(--text);}
+
+.pattern-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.pattern-tab{font-family:var(--disp);font-weight:700;font-size:.8rem;padding:7px 14px;border-radius:8px;background:transparent;border:1px solid var(--line);color:var(--t65);cursor:pointer;}
+.pattern-tab.active{background:var(--green-soft);color:var(--green-ink);border-color:rgba(22,217,126,.35);}
+.pattern-table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);overflow-x:auto;margin-bottom:32px;}
+.pattern-table{width:100%;border-collapse:collapse;font-size:.83rem;min-width:480px;}
+.pattern-table th{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t45);padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+.pattern-table td{padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;}
+.pattern-table tr:last-child td{border-bottom:none;}
+.pattern-empty{padding:28px;text-align:center;color:var(--t45);font-size:.85rem;}
+
+.setup-details{border:1px solid var(--line);border-radius:10px;margin:16px 0;overflow:hidden;}
+.setup-details summary{cursor:pointer;list-style:none;padding:12px 16px;font-family:var(--disp);font-weight:700;font-size:.85rem;color:var(--t65);display:flex;align-items:center;justify-content:space-between;}
+.setup-details summary::-webkit-details-marker{display:none;}
+.setup-details summary:after{content:'+';font-size:1.1rem;}
+.setup-details[open] summary:after{content:'−';}
+.setup-details-body{padding:4px 16px 16px;}
+.emo-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.emo-chip{font-family:var(--disp);font-weight:600;font-size:.78rem;padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--t65);cursor:pointer;transition:.15s;}
+.emo-chip.active{background:var(--green-soft-strong);color:var(--green-ink);border-color:var(--green);}
+.select-row{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.modal-select{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px 13px;color:var(--text);font-family:var(--body);font-size:.9rem;outline:none;width:100%;}
+.orb-fields{background:var(--green-soft);border:1px solid rgba(22,217,126,.25);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:.78rem;color:var(--t65);}
+.orb-fields b{color:var(--green-ink);}
+.score-result{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:16px;text-align:center;}
+.score-result .sr-num{font-family:var(--disp);font-weight:700;font-size:1.8rem;}
+.score-result .sr-why{font-size:.76rem;color:var(--green-ink);text-decoration:underline;cursor:pointer;margin-top:6px;display:inline-block;}
+
+.wr-modal .modal-card{max-width:640px;}
+.wr-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.wr-stat{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;text-align:center;}
+.wr-stat .l{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t45);font-family:var(--mono);}
+.wr-stat .v{font-family:var(--disp);font-weight:700;font-size:1.05rem;color:var(--text);}
+.wr-history-item{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:.8rem;}
+.wr-history-item .wh-week{font-family:var(--mono);color:var(--t45);font-size:.68rem;}
+.wr-history-item .wh-goal{color:var(--t85);margin-top:3px;}
 </style>
 </head>
 <body>
@@ -299,6 +413,17 @@ td:nth-child(5){display:none;}}
     <p>Log every trade, track open positions, and review your P&amp;L, win rate, and daily scorecard.</p>
   </div>
 
+  <!-- ScalpClock Trade Performance Dashboard -->
+  <div id="tpsWrap" style="display:none">
+    <div class="section-title">Performance Dashboard</div>
+    <div class="tps-top-grid" id="tpsTopGrid"></div>
+    <div class="tps-second-grid" id="tpsSecondGrid"></div>
+    <div class="tps-insights-grid" id="tpsInsightsGrid"></div>
+  </div>
+
+  <div id="otBannerWrap"></div>
+  <div class="limit-row" id="limitRow" style="display:none"></div>
+
   <div class="journal-header">
     <div class="section-title" style="margin:0">Open Positions</div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -314,7 +439,10 @@ td:nth-child(5){display:none;}}
     </tr></thead><tbody id="openTradeBody"></tbody></table>
   </div>
 
-  <div class="section-title">Trade History</div>
+  <div class="journal-header">
+    <div class="section-title" style="margin:0">Trade History</div>
+    <button class="earnings-refresh" onclick="openWeeklyReviewModal()">📅 Weekly Review</button>
+  </div>
   <div class="trade-summary" id="tradeSummary" style="display:none;">
     <div class="trade-stat"><div class="stat-label">Total Trades</div><div class="stat-val" id="tTotal">0</div></div>
     <div class="trade-stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="tWinRate">—</div></div>
@@ -324,16 +452,25 @@ td:nth-child(5){display:none;}}
 
   <div class="trade-table-wrap">
     <table class="trade-table" id="tradeTable" style="display:none;"><thead><tr>
-      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th><th>Action</th>
+      <th>Symbol</th><th>Contract</th><th>P&amp;L</th><th>Entry</th><th>Exit</th><th>Qty</th><th>Date</th><th>Result</th><th>Score</th><th>Action</th>
     </tr></thead><tbody id="tradeBody"></tbody></table>
     <div class="trade-empty" id="tradeEmpty">
       <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
       <strong>No closed trades yet</strong>
       <p>Log a trade above, then close it to see your P&amp;L and win rate.</p>
     </div>
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+      <button class="btn-load-more" id="loadMoreBtn" onclick="loadMoreClosed()">Load More Trades</button>
+    </div>
   </div>
 
-  <div id="scorecardWrap" style="margin-top:32px;display:none">
+  <div id="patternWrap" style="display:none">
+    <div class="section-title">Trade Pattern Analytics</div>
+    <div class="pattern-tabs" id="patternTabs"></div>
+    <div class="pattern-table-wrap"><table class="pattern-table" id="patternTable"><thead><tr><th id="patternKeyHead">Group</th><th>Trades</th><th>Win Rate</th><th>Avg P&amp;L</th><th>Avg R</th></tr></thead><tbody id="patternBody"></tbody></table></div>
+  </div>
+
+  <div id="scorecardWrap" style="margin-top:0;display:none">
     <div class="section-title">Today's Scorecard</div>
     <div id="scorecardGrid"></div>
   </div>
@@ -416,6 +553,93 @@ td:nth-child(5){display:none;}}
         <textarea class="modal-textarea" id="lt-notes" placeholder="e.g. RSI divergence at VWAP, momentum fading..."></textarea>
       </div>
 
+      <details class="setup-details" id="lt-setup-details">
+        <summary>Setup &amp; Risk Plan <span class="optional" style="text-transform:none;letter-spacing:0;font-weight:400">— optional, improves your Trade Score</span></summary>
+        <div class="setup-details-body">
+          <div id="lt-orb-fields" class="orb-fields" style="display:none"></div>
+          <div class="select-row">
+            <label class="modal-label">Was this trade based on a ScalpClock setup?</label>
+            <select class="modal-select" id="lt-source">
+              <option value="">— Not specified —</option>
+              <option value="orb">ORB Signal Engine</option>
+              <option value="replay">ScalpClock Replay Setup</option>
+              <option value="manual">Manual Setup</option>
+              <option value="other">Other Strategy</option>
+            </select>
+          </div>
+          <div class="select-row">
+            <label class="modal-label">Strategy</label>
+            <select class="modal-select" id="lt-strategy">
+              <option value="">— Not specified —</option>
+              <option>ORB Breakout</option>
+              <option>Breakout</option>
+              <option>Pullback</option>
+              <option>Trend Continuation</option>
+              <option>Reversal</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="modal-field-row">
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">Setup Grade</label>
+              <select class="modal-select" id="lt-grade">
+                <option value="">— N/A —</option>
+                <option value="A">A — high quality</option>
+                <option value="B">B — decent</option>
+                <option value="C">C — marginal</option>
+              </select>
+            </div>
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">Market Trend</label>
+              <select class="modal-select" id="lt-trend">
+                <option value="">— N/A —</option>
+                <option value="with">With Trend</option>
+                <option value="against">Against Trend</option>
+                <option value="neutral">Neutral / Choppy</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-field-row">
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">VWAP Position</label>
+              <select class="modal-select" id="lt-vwap">
+                <option value="">— N/A —</option>
+                <option value="above">Above VWAP</option>
+                <option value="below">Below VWAP</option>
+              </select>
+            </div>
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">Entry Confirmation?</label>
+              <select class="modal-select" id="lt-confirm">
+                <option value="">— N/A —</option>
+                <option value="yes">Yes, clear confirmation</option>
+                <option value="no">No, entered without it</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-field-row">
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Entry</label>
+              <input class="modal-input" id="lt-plan-entry" type="number" min="0" step="0.01" placeholder="e.g. 2.50">
+            </div>
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Risk ($)</label>
+              <input class="modal-input" id="lt-plan-risk" type="number" min="0" step="1" placeholder="e.g. 100">
+            </div>
+          </div>
+          <div class="modal-field-row">
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Stop</label>
+              <input class="modal-input" id="lt-plan-stop" type="number" min="0" step="0.01" placeholder="e.g. 1.90">
+            </div>
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Target</label>
+              <input class="modal-input" id="lt-plan-target" type="number" min="0" step="0.01" placeholder="e.g. 4.20">
+            </div>
+          </div>
+        </div>
+      </details>
+
       <p class="modal-note">P&amp;L = (exit − entry) × contracts × 100 shares. Calculated when you close.</p>
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeLogModal()">Cancel</button>
@@ -444,6 +668,108 @@ td:nth-child(5){display:none;}}
         <label class="modal-label">Exit Reason <span class="optional">— what triggered exit</span></label>
         <textarea class="modal-textarea" id="ct-reason" placeholder="e.g. RSI hit 82, momentum fading signal, stop loss..." style="min-height:52px"></textarea>
       </div>
+
+      <div class="modal-field">
+        <label class="modal-label">Emotional State <span class="optional">— select any that applied</span></label>
+        <div class="emo-grid" id="ct-emotions">
+          <button type="button" class="emo-chip" data-emo="Calm" onclick="toggleEmotion('Calm')">Calm</button>
+          <button type="button" class="emo-chip" data-emo="Confident" onclick="toggleEmotion('Confident')">Confident</button>
+          <button type="button" class="emo-chip" data-emo="Hesitant" onclick="toggleEmotion('Hesitant')">Hesitant</button>
+          <button type="button" class="emo-chip" data-emo="FOMO" onclick="toggleEmotion('FOMO')">FOMO</button>
+          <button type="button" class="emo-chip" data-emo="Revenge Trade" onclick="toggleEmotion('Revenge Trade')">Revenge Trade</button>
+          <button type="button" class="emo-chip" data-emo="Greedy" onclick="toggleEmotion('Greedy')">Greedy</button>
+          <button type="button" class="emo-chip" data-emo="Impulsive" onclick="toggleEmotion('Impulsive')">Impulsive</button>
+        </div>
+      </div>
+
+      <details class="setup-details" id="ct-setup-details">
+        <summary>Setup &amp; Risk Plan <span class="optional" style="text-transform:none;letter-spacing:0;font-weight:400">— fill in or adjust to improve your Trade Score</span></summary>
+        <div class="setup-details-body">
+          <div class="select-row">
+            <label class="modal-label">Was this trade based on a ScalpClock setup?</label>
+            <select class="modal-select" id="ct-source">
+              <option value="">— Not specified —</option>
+              <option value="orb">ORB Signal Engine</option>
+              <option value="replay">ScalpClock Replay Setup</option>
+              <option value="manual">Manual Setup</option>
+              <option value="other">Other Strategy</option>
+            </select>
+          </div>
+          <div class="select-row">
+            <label class="modal-label">Strategy</label>
+            <select class="modal-select" id="ct-strategy">
+              <option value="">— Not specified —</option>
+              <option>ORB Breakout</option>
+              <option>Breakout</option>
+              <option>Pullback</option>
+              <option>Trend Continuation</option>
+              <option>Reversal</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="modal-field-row">
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">Setup Grade</label>
+              <select class="modal-select" id="ct-grade">
+                <option value="">— N/A —</option>
+                <option value="A">A — high quality</option>
+                <option value="B">B — decent</option>
+                <option value="C">C — marginal</option>
+              </select>
+            </div>
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">Market Trend</label>
+              <select class="modal-select" id="ct-trend">
+                <option value="">— N/A —</option>
+                <option value="with">With Trend</option>
+                <option value="against">Against Trend</option>
+                <option value="neutral">Neutral / Choppy</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-field-row">
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">VWAP Position</label>
+              <select class="modal-select" id="ct-vwap">
+                <option value="">— N/A —</option>
+                <option value="above">Above VWAP</option>
+                <option value="below">Below VWAP</option>
+              </select>
+            </div>
+            <div class="select-row" style="margin:0">
+              <label class="modal-label">Entry Confirmation?</label>
+              <select class="modal-select" id="ct-confirm">
+                <option value="">— N/A —</option>
+                <option value="yes">Yes, clear confirmation</option>
+                <option value="no">No, entered without it</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-field-row">
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Entry</label>
+              <input class="modal-input" id="ct-plan-entry" type="number" min="0" step="0.01">
+            </div>
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Risk ($)</label>
+              <input class="modal-input" id="ct-plan-risk" type="number" min="0" step="1">
+            </div>
+          </div>
+          <div class="modal-field-row">
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Stop</label>
+              <input class="modal-input" id="ct-plan-stop" type="number" min="0" step="0.01">
+            </div>
+            <div class="modal-field" style="margin:0">
+              <label class="modal-label">Planned Target</label>
+              <input class="modal-input" id="ct-plan-target" type="number" min="0" step="0.01">
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <div id="ct-score-result" class="score-result" style="display:none"></div>
+
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeCloseModal()">Cancel</button>
         <button class="btn-modal-submit" id="ct-btn" onclick="closeTrade()">Close Trade</button>
@@ -451,9 +777,33 @@ td:nth-child(5){display:none;}}
     </div>
   </div>
 
+  <!-- Weekly Review Modal -->
+  <div id="weeklyReviewModal" class="modal-overlay wr-modal" style="display:none">
+    <div class="modal-card">
+      <div class="modal-title">Weekly <span>Review</span></div>
+      <div id="wrMsg"></div>
+      <div id="wrCurrentWeek"></div>
+      <div class="modal-field">
+        <label class="modal-label">Main lesson from this week <span class="optional">— optional</span></label>
+        <textarea class="modal-textarea" id="wr-lesson" placeholder="e.g. I traded well early but chased moves after lunch"></textarea>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">One thing you will improve next week</label>
+        <textarea class="modal-textarea" id="wr-goal" placeholder="e.g. Wait for VWAP confirmation on every entry"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeWeeklyReviewModal()">Close</button>
+        <button class="btn-modal-submit" id="wr-btn" onclick="saveWeeklyReview()">Save Review</button>
+      </div>
+      <div class="modal-section" style="margin-top:22px">Previous Reviews</div>
+      <div id="wrHistory"></div>
+    </div>
+  </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/js/trade-score.js"></script>
 <script>
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
@@ -464,13 +814,117 @@ let _uid = null;
 let _tradeToClose = null;
 let _logDir = 'calls';
 
+// ── Gamification: same XP/badge storage learn.html uses (profiles.learn_progress),
+// so trade-journal activity and lesson activity share one XP economy site-wide. ──
+const LS = {
+  get: (k, d) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+const getXP     = () => LS.get('sc_learn_xp', 0);
+const addXP     = n  => LS.set('sc_learn_xp', getXP() + n);
+const getEarned = () => LS.get('sc_earned_badges', []);
+const earnBadge = id => { const b = getEarned(); if (!b.includes(id)) { b.push(id); LS.set('sc_earned_badges', b); return true; } return false; };
+
+async function syncJournalXP() {
+  try {
+    const { data } = await sb.from('profiles').select('learn_progress').eq('id', _uid).single();
+    const existing = (data && data.learn_progress) || {};
+    await sb.from('profiles').upsert({ id: _uid, learn_progress: Object.assign({}, existing, { xp: getXP(), badges: getEarned() }) });
+  } catch (_) {}
+}
+
+const JOURNAL_BADGES = {
+  first_trade_logged:  { xp: 10, name: 'First Trade Logged' },
+  trades_10_reviewed:  { xp: 20, name: '10 Trades Reviewed' },
+  trades_50_reviewed:  { xp: 50, name: '50 Trades Reviewed' },
+  risk_manager:        { xp: 25, name: 'Risk Manager' },
+  plan_follower:        { xp: 25, name: 'Plan Follower' },
+  consistent_trader:   { xp: 20, name: 'Consistent Trader' },
+  no_overtrading_week: { xp: 30, name: 'No Overtrading Week' },
+  orb_master:          { xp: 30, name: 'ORB Master' },
+};
+
+function checkAndAwardBadges(allTrades, closedScored) {
+  let anyNew = false;
+  const award = id => { if (earnBadge(id)) { addXP(JOURNAL_BADGES[id].xp); anyNew = true; } };
+
+  if (allTrades.length >= 1) award('first_trade_logged');
+  const reviewed = closedScored.filter(t => t.exit_reason);
+  if (reviewed.length >= 10) award('trades_10_reviewed');
+  if (reviewed.length >= 50) award('trades_50_reviewed');
+
+  const last20 = closedScored.slice(0, 20);
+  if (closedScored.length >= 10 && last20.length) {
+    const riskAvg = avgCategory(last20, 'risk');
+    if (riskAvg !== null && riskAvg >= 20) award('risk_manager');
+    const entryExitAvg = avgCategory(last20, 'entry') !== null && avgCategory(last20, 'exit') !== null
+      ? (avgCategory(last20, 'entry') / 15 + avgCategory(last20, 'exit') / 15) / 2 : null;
+    if (entryExitAvg !== null && entryExitAvg >= 0.85) award('plan_follower');
+  }
+
+  const days = new Set(allTrades.filter(t => t.opened_at).map(t => (t.opened_at || '').slice(0, 10)));
+  const recentDays = new Set([...days].filter(d => (Date.now() - new Date(d).getTime()) <= 14 * 86400000));
+  if (recentDays.size >= 5) award('consistent_trader');
+
+  if (_journalSettings.dailyLimit) {
+    const byDay = {};
+    allTrades.forEach(t => { if (!t.opened_at) return; const k = t.opened_at.slice(0, 10); byDay[k] = (byDay[k] || 0) + 1; });
+    const last7 = Object.keys(byDay).filter(d => (Date.now() - new Date(d).getTime()) <= 7 * 86400000);
+    if (last7.length >= 5 && last7.every(d => byDay[d] <= _journalSettings.dailyLimit)) award('no_overtrading_week');
+  }
+
+  const orbTrades = closedScored.filter(t => t.source_setup === 'orb');
+  if (orbTrades.length >= 10) {
+    const wins = orbTrades.filter(t => (t.pnl || 0) > 0).length;
+    if (wins / orbTrades.length >= 0.5) award('orb_master');
+  }
+
+  if (anyNew) syncJournalXP();
+}
+
+function avgCategory(trades, key) {
+  const vals = trades.map(t => {
+    const cats = t.trade_score_breakdown && t.trade_score_breakdown.categories;
+    const c = cats && cats.find(c => c.key === key);
+    return c ? c.earned : null;
+  }).filter(v => v !== null);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+}
+
+// ── Core state ────────────────────────────────────────────────────────────
+let _journalSettings = { dailyLimit: null };
+let _openTradesById = {};
+let _closedTradesById = {};
+let _analyticsTrades = [];       // bounded set (last 200 closed) used for stats/insights/analytics
+let _closedPageOffset = 0;
+const CLOSED_PAGE_SIZE = 20;
+let _closedPageDone = false;
+let _patternDim = 'time';
+let _selectedEmotions = [];
+let _editMode = false;
+
 async function init() {
   if (!sb) { window.location.href = '/login'; return; }
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = '/login'; return; }
   _uid = session.user.id;
   document.getElementById('userEmail').textContent = session.user.email || '';
+  await loadJournalSettings();
   loadAllTrades();
+}
+
+async function loadJournalSettings() {
+  try {
+    const { data } = await sb.from('profiles').select('journal_settings').eq('id', _uid).single();
+    _journalSettings = Object.assign({ dailyLimit: null }, (data && data.journal_settings) || {});
+  } catch (_) {}
+}
+
+async function saveDailyLimit() {
+  const val = parseInt(document.getElementById('dailyLimitInput').value) || null;
+  _journalSettings.dailyLimit = val;
+  try { await sb.from('profiles').upsert({ id: _uid, journal_settings: _journalSettings }); } catch (_) {}
+  renderOvertradingAndLimit();
 }
 
 function fmtPnl(n) {
@@ -492,29 +946,35 @@ async function deleteTrade(id) {
 }
 
 async function loadAllTrades() {
-  await Promise.all([loadOpenTrades(), loadClosedTrades()]);
+  _closedPageOffset = 0; _closedPageDone = false;
+  await Promise.all([loadOpenTrades(), loadAnalyticsSet()]);
+  await loadClosedPage(true);
+  renderAll();
 }
 
 async function loadOpenTrades() {
   try {
     const { data: trades } = await sb.from('trades').select('*')
       .eq('user_id', _uid).eq('status', 'open').order('id', { ascending: false });
+    _openTradesById = {};
+    (trades || []).forEach(t => { _openTradesById[t.id] = t; });
     const wrap = document.getElementById('openTradesWrap');
     if (!trades || trades.length === 0) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'block';
     document.getElementById('openTradeBody').innerHTML = trades.map(t => {
       const dir      = (t.direction || 'calls').toLowerCase();
-      const date     = t.created_at ? new Date(t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+      const date     = t.opened_at ? new Date(t.opened_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
       const contract = fmtContract(t);
       const qty      = t.contracts || 1;
+      const src      = t.source_setup ? `<span class="tag-chip" style="margin-left:6px">${sourceLabel(t.source_setup)}</span>` : '';
       return `<tr>
-        <td><span class="t-sym">${t.symbol || '—'}</span></td>
+        <td><span class="t-sym">${t.symbol || '—'}</span>${src}</td>
         <td><span class="t-dir ${dir}" title="${t.notes || ''}">${contract}</span></td>
         <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
         <td><span class="t-price">${qty}x</span></td>
         <td><span class="t-date">${date}</span></td>
         <td><span class="trade-actions">
-          <button class="btn-close-trade" onclick="openCloseModal('${t.id}','${t.symbol}','${dir}',${t.entry_price},${qty})">Close</button>
+          <button class="btn-close-trade" onclick="openCloseModal('${t.id}')">Close</button>
           <button class="btn-delete-trade" title="Delete entry" onclick="deleteTrade('${t.id}')">✕</button>
         </span></td>
       </tr>`;
@@ -522,49 +982,121 @@ async function loadOpenTrades() {
   } catch(e) {}
 }
 
-async function loadClosedTrades() {
+function sourceLabel(s) {
+  return { orb: '🎯 ORB', replay: '🎬 Replay', manual: '✍️ Manual', other: 'Other' }[s] || s;
+}
+
+// Bounded set (most recent 200 closed trades) that all dashboard stats, the
+// Trader Score, insights, best-edge, and pattern analytics are computed
+// from. Avoids ever pulling a member's entire trading history into the page
+// just to show aggregates — recomputed once per load, not per render.
+async function loadAnalyticsSet() {
   try {
-    const { data: trades } = await sb.from('trades').select('*')
-      .eq('user_id', _uid).eq('status', 'closed').order('closed_at', { ascending: false });
-    if (!trades || trades.length === 0) {
+    const { data } = await sb.from('trades').select('*')
+      .eq('user_id', _uid).eq('status', 'closed').order('closed_at', { ascending: false }).limit(200);
+    _analyticsTrades = data || [];
+  } catch (e) { _analyticsTrades = []; }
+}
+
+async function loadClosedPage(reset) {
+  if (reset) { _closedPageOffset = 0; _closedPageDone = false; document.getElementById('tradeBody').innerHTML = ''; }
+  try {
+    const { data } = await sb.from('trades').select('*')
+      .eq('user_id', _uid).eq('status', 'closed').order('closed_at', { ascending: false })
+      .range(_closedPageOffset, _closedPageOffset + CLOSED_PAGE_SIZE - 1);
+    const trades = data || [];
+    trades.forEach(t => { _closedTradesById[t.id] = t; });
+    if (reset && trades.length === 0) {
       document.getElementById('tradeEmpty').style.display = 'block';
       document.getElementById('tradeTable').style.display = 'none';
-      document.getElementById('tradeSummary').style.display = 'none';
+      document.getElementById('loadMoreWrap').style.display = 'none';
       return;
     }
-    const wins = trades.filter(t => (t.pnl || 0) > 0);
-    const totalPnl = trades.reduce((s, t) => s + (t.pnl || 0), 0);
-    const winRate = (wins.length / trades.length * 100).toFixed(0);
-    document.getElementById('tTotal').textContent = trades.length;
-    document.getElementById('tWinRate').textContent = winRate + '%';
-    document.getElementById('tWinRate').style.color = winRate >= 50 ? 'var(--green-ink)' : 'var(--red-ink)';
-    document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
-    document.getElementById('tAvgPnl').textContent = fmtPnl(totalPnl / trades.length);
-    document.getElementById('tradeSummary').style.display = 'grid';
-    renderScorecard(trades);
-    document.getElementById('tradeBody').innerHTML = trades.map(t => {
-      const win      = (t.pnl || 0) >= 0;
-      const dir      = (t.direction || 'calls').toLowerCase();
-      const date     = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
-      const pnlPct   = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + Number(t.pnl_pct).toFixed(1) + '%' : '';
-      const contract = fmtContract(t);
-      const qty      = t.contracts || 1;
-      const noteTitle = [t.notes, t.exit_reason].filter(Boolean).join(' | Exit: ');
-      return `<tr title="${noteTitle}">
-        <td><span class="t-sym">${t.symbol || '—'}</span></td>
-        <td><span class="t-dir ${dir}">${contract}</span></td>
-        <td><span class="t-pnl ${win ? 'win' : 'loss'}">${fmtPnl(t.pnl || 0)}${pnlPct ? ' <small style="opacity:.6">' + pnlPct + '</small>' : ''}</span></td>
-        <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
-        <td><span class="t-price">${t.exit_price != null ? '$' + Number(t.exit_price).toFixed(2) : '—'}</span></td>
-        <td><span class="t-price">${qty}x</span></td>
-        <td><span class="t-date">${date}</span></td>
-        <td><span class="t-badge ${win ? 'win' : 'loss'}">${win ? 'WIN' : 'LOSS'}</span></td>
-        <td><button class="btn-delete-trade" title="Delete entry" onclick="deleteTrade('${t.id}')">✕</button></td>
-      </tr>`;
-    }).join('');
-    document.getElementById('tradeTable').style.display = 'table';
     document.getElementById('tradeEmpty').style.display = 'none';
-  } catch(e) {}
+    document.getElementById('tradeTable').style.display = 'table';
+    document.getElementById('tradeBody').insertAdjacentHTML('beforeend', trades.map(closedRowHtml).join(''));
+    _closedPageOffset += trades.length;
+    _closedPageDone = trades.length < CLOSED_PAGE_SIZE;
+    document.getElementById('loadMoreWrap').style.display = _closedPageDone ? 'none' : 'block';
+  } catch (e) {}
+}
+function loadMoreClosed() { loadClosedPage(false); }
+
+function closedRowHtml(t) {
+  const win      = (t.pnl || 0) >= 0;
+  const dir      = (t.direction || 'calls').toLowerCase();
+  const date     = t.closed_at ? new Date(t.closed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
+  const pnlPct   = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + Number(t.pnl_pct).toFixed(1) + '%' : '';
+  const contract = fmtContract(t);
+  const qty      = t.contracts || 1;
+  const noteTitle = [t.notes, t.exit_reason].filter(Boolean).join(' | Exit: ');
+  const scoreHtml = t.trade_score != null
+    ? `<span class="score-badge ${scoreClass(t.trade_score)}" onclick="toggleScoreBreakdown('${t.id}')">${t.trade_score} ▾</span>`
+    : '<span style="color:var(--t45);font-size:.72rem">—</span>';
+  const replayHref = buildJournalReplayLink(t);
+  return `<tr title="${noteTitle}">
+      <td><span class="t-sym">${t.symbol || '—'}</span></td>
+      <td><span class="t-dir ${dir}">${contract}</span></td>
+      <td><span class="t-pnl ${win ? 'win' : 'loss'}">${fmtPnl(t.pnl || 0)}${pnlPct ? ' <small style="opacity:.6">' + pnlPct + '</small>' : ''}</span></td>
+      <td><span class="t-price">${t.entry_price != null ? '$' + Number(t.entry_price).toFixed(2) : '—'}</span></td>
+      <td><span class="t-price">${t.exit_price != null ? '$' + Number(t.exit_price).toFixed(2) : '—'}</span></td>
+      <td><span class="t-price">${qty}x</span></td>
+      <td><span class="t-date">${date}</span></td>
+      <td><span class="t-badge ${win ? 'win' : 'loss'}">${win ? 'WIN' : 'LOSS'}</span></td>
+      <td>${scoreHtml}</td>
+      <td><span class="row-actions">
+        <button class="btn-row-mini" onclick="openEditTradeModal('${t.id}')">Edit</button>
+        <a class="btn-row-mini" href="${replayHref}" target="_blank" rel="noopener" onclick="markReplayPracticed('${t.id}',${!win})">Replay</a>
+        <button class="btn-delete-trade" title="Delete entry" onclick="deleteTrade('${t.id}')">✕</button>
+      </span></td>
+    </tr>
+    <tr class="score-breakdown-row" id="sb-row-${t.id}"><td colspan="10" class="score-breakdown-cell">${scoreBreakdownHtml(t)}</td></tr>`;
+}
+
+function scoreClass(score) {
+  if (score >= 90) return 's-aplus';
+  if (score >= 80) return 's-a';
+  if (score >= 70) return 's-b';
+  if (score >= 60) return 's-c';
+  return 's-d';
+}
+
+function toggleScoreBreakdown(id) {
+  const row = document.getElementById('sb-row-' + id);
+  if (row) row.classList.toggle('open');
+}
+
+function scoreBreakdownHtml(t) {
+  if (t.trade_score == null || !t.trade_score_breakdown) return '<span style="color:var(--t45);font-size:.78rem">No score yet — this trade was closed before the Trade Score system, or is missing required data.</span>';
+  const b = t.trade_score_breakdown;
+  const grade = TradeScoreEngine.gradeFor(t.trade_score);
+  return `<div style="margin-bottom:10px;font-family:var(--disp);font-weight:700">Trade Score: ${t.trade_score}/100 — ${grade.letter} (${grade.label})</div>` +
+    b.categories.map(c => `<div class="sb-cat">
+      <div class="sb-cat-head"><span>${c.label}</span><span>${Math.round(c.earned * 10) / 10} / ${c.cap}</span></div>
+      ${c.items.map(i => `<div class="sb-item"><span>${i.reason}</span><b>${Math.round(i.earned * 10) / 10}/${i.cap}</b></div>`).join('')}
+    </div>`).join('');
+}
+
+// Deep-links a completed trade into ScalpCharts Replay so a member can
+// practice the same symbol/date (and approximate time, when known) — Step 12.
+function buildJournalReplayLink(t) {
+  const params = new URLSearchParams({ tab: 'replay', t: t.symbol || 'SPY' });
+  const iso = t.opened_at || t.closed_at;
+  if (iso) {
+    const d = new Date(iso);
+    params.set('rdate', new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(d));
+    if (t.opened_at) {
+      const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(d)
+        .reduce((a, p) => (a[p.type] = p.value, a), {});
+      params.set('rtime', `${parts.hour}:${parts.minute}`);
+    }
+  }
+  return '/scalpchart?' + params.toString();
+}
+function markReplayPracticed(id, wasLoss) {
+  if (!wasLoss) return;
+  const done = LS.get('sc_journal_replay_practiced', []);
+  if (!done.includes(id)) { done.push(id); LS.set('sc_journal_replay_practiced', done); addXP(10); syncJournalXP(); }
 }
 
 function fmtContract(t) {
@@ -601,6 +1133,10 @@ function openLogModal() {
   document.getElementById('lt-expiry').value   = '';
   document.getElementById('lt-notes').value    = '';
   document.getElementById('logMsg').innerHTML  = '';
+  ['lt-source','lt-strategy','lt-grade','lt-trend','lt-vwap','lt-confirm'].forEach(id => document.getElementById(id).value = '');
+  ['lt-plan-entry','lt-plan-risk','lt-plan-stop','lt-plan-target'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('lt-orb-fields').style.display = 'none';
+  document.getElementById('lt-setup-details').open = false;
   const af = document.getElementById('logAutofill');
   af.style.display = 'none'; af.textContent = '';
   setDir('calls');
@@ -616,7 +1152,24 @@ function openLogModal() {
       document.getElementById('lt-expiry').value   = pending.expiry || '';
       document.getElementById('lt-contracts').value = pending.contracts || '1';
       setDir(pending.direction || 'calls');
-      af.textContent = `Auto-filled from Exit Assistant: ${pending.symbol}${pending.strike ? ' $' + pending.strike : ''} ${pending.expiry || ''}`;
+      let afText = `Auto-filled from Exit Assistant: ${pending.symbol}${pending.strike ? ' $' + pending.strike : ''} ${pending.expiry || ''}`;
+      if (pending.source_setup) {
+        document.getElementById('lt-source').value = pending.source_setup;
+        document.getElementById('lt-strategy').value = pending.strategy || '';
+        document.getElementById('lt-plan-entry').value = pending.planned_entry || '';
+        document.getElementById('lt-plan-stop').value  = pending.planned_stop  || '';
+        document.getElementById('lt-plan-target').value = pending.planned_target || '';
+        document.getElementById('lt-confirm').value = pending.entry_confirmation ? 'yes' : '';
+        document.getElementById('lt-setup-details').open = true;
+        if (pending.source_setup === 'orb') {
+          const grade = pending.orb_score != null ? (pending.orb_score >= 75 ? 'A' : pending.orb_score >= 55 ? 'B' : 'C') : '—';
+          const orbBox = document.getElementById('lt-orb-fields');
+          orbBox.style.display = 'block';
+          orbBox.innerHTML = `<b>Imported from ORB Signal Engine</b> — direction: ${pending.orb_direction || '—'}, score: ${pending.orb_score != null ? pending.orb_score + '/100' : '—'} (grade ${grade}), breakout level: ${pending.breakout_level != null ? '$' + Number(pending.breakout_level).toFixed(2) : '—'}.`;
+        }
+        afText = 'Auto-filled from ' + sourceLabel(pending.source_setup) + `: ${pending.symbol}`;
+      }
+      af.textContent = afText;
       af.style.display = 'block';
       localStorage.removeItem('sc_pending_trade');
     }
@@ -633,6 +1186,23 @@ function setDir(dir) {
   document.getElementById('lt-puts').className  = 'dir-btn puts'  + (dir === 'puts'  ? ' active' : '');
 }
 
+function readSetupFields(prefix) {
+  const g = id => document.getElementById(prefix + '-' + id).value || null;
+  const confirmVal = g('confirm');
+  return {
+    source_setup:   g('source'),
+    strategy:       g('strategy'),
+    setup_grade:    g('grade'),
+    market_trend:   g('trend'),
+    vwap_position:  g('vwap'),
+    entry_confirmation: confirmVal === 'yes' ? true : confirmVal === 'no' ? false : null,
+    planned_entry:  parseFloat(document.getElementById(prefix + '-plan-entry').value) || null,
+    planned_risk:   parseFloat(document.getElementById(prefix + '-plan-risk').value) || null,
+    planned_stop:   parseFloat(document.getElementById(prefix + '-plan-stop').value) || null,
+    planned_target: parseFloat(document.getElementById(prefix + '-plan-target').value) || null,
+  };
+}
+
 async function logTrade() {
   const sym       = (document.getElementById('lt-symbol').value || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
   const entry     = parseFloat(document.getElementById('lt-entry').value);
@@ -647,6 +1217,10 @@ async function logTrade() {
   const btn = document.getElementById('lt-btn');
   btn.disabled = true; btn.textContent = 'Logging...';
 
+  const setupFields = readSetupFields('lt');
+  const draft = { symbol: sym, direction: _logDir, ...setupFields };
+  const tags = TradeScoreEngine.autoTags(draft);
+
   const { error } = await sb.from('trades').insert({
     user_id:     _uid,
     symbol:      sym,
@@ -657,6 +1231,8 @@ async function logTrade() {
     expiry,
     notes,
     status:      'open',
+    tags,
+    ...setupFields,
   });
 
   if (error) {
@@ -664,23 +1240,81 @@ async function logTrade() {
     btn.disabled = false; btn.textContent = 'Log Entry';
   } else {
     closeLogModal();
-    loadAllTrades();
+    addXP(5);
+    await loadAllTrades();
+    checkAndAwardBadges(allTradesForBadges(), _analyticsTrades);
   }
 }
 
-function openCloseModal(id, symbol, dir, entryPrice, contracts) {
-  _tradeToClose = { id, symbol, dir, entry_price: entryPrice, contracts: contracts || 1 };
-  document.getElementById('ct-title').textContent = symbol + ' ' + dir.toUpperCase();
+function allTradesForBadges() {
+  return [...Object.values(_openTradesById), ..._analyticsTrades];
+}
+
+function toggleEmotion(tag) {
+  const i = _selectedEmotions.indexOf(tag);
+  if (i === -1) _selectedEmotions.push(tag); else _selectedEmotions.splice(i, 1);
+  document.querySelectorAll('#ct-emotions .emo-chip').forEach(btn => {
+    btn.classList.toggle('active', _selectedEmotions.includes(btn.dataset.emo));
+  });
+}
+
+function fillSetupFields(prefix, t) {
+  document.getElementById(prefix + '-source').value = t.source_setup || '';
+  document.getElementById(prefix + '-strategy').value = t.strategy || '';
+  document.getElementById(prefix + '-grade').value = t.setup_grade || '';
+  document.getElementById(prefix + '-trend').value = t.market_trend || '';
+  document.getElementById(prefix + '-vwap').value = t.vwap_position || '';
+  document.getElementById(prefix + '-confirm').value = t.entry_confirmation === true ? 'yes' : t.entry_confirmation === false ? 'no' : '';
+  document.getElementById(prefix + '-plan-entry').value = t.planned_entry ?? '';
+  document.getElementById(prefix + '-plan-risk').value = t.planned_risk ?? '';
+  document.getElementById(prefix + '-plan-stop').value = t.planned_stop ?? '';
+  document.getElementById(prefix + '-plan-target').value = t.planned_target ?? '';
+}
+
+function openCloseModal(id) {
+  const src = _openTradesById[id];
+  if (!src) return;
+  _editMode = false;
+  _tradeToClose = { id, symbol: src.symbol, dir: (src.direction || 'calls').toLowerCase(), entry_price: src.entry_price, contracts: src.contracts || 1 };
+  _selectedEmotions = [];
+  document.querySelectorAll('#ct-emotions .emo-chip').forEach(b => b.classList.remove('active'));
+  document.getElementById('ct-title').textContent = src.symbol + ' ' + _tradeToClose.dir.toUpperCase();
   document.getElementById('ct-exit').value   = '';
   document.getElementById('ct-pnl').value    = '';
   document.getElementById('ct-reason').value = '';
   document.getElementById('closeMsg').innerHTML = '';
   document.getElementById('ct-preview').style.display = 'none';
+  document.getElementById('ct-score-result').style.display = 'none';
   document.getElementById('ct-btn').disabled  = false;
   document.getElementById('ct-btn').textContent = 'Close Trade';
+  fillSetupFields('ct', src);
+  document.getElementById('ct-setup-details').open = !!src.source_setup;
   document.getElementById('closeModal').style.display = 'flex';
   setTimeout(() => document.getElementById('ct-exit').focus(), 100);
 }
+
+function openEditTradeModal(id) {
+  const t = _closedTradesById[id];
+  if (!t) return;
+  _editMode = true;
+  _tradeToClose = { id, symbol: t.symbol, dir: (t.direction || 'calls').toLowerCase(), entry_price: t.entry_price, contracts: t.contracts || 1 };
+  _selectedEmotions = (t.emotions || []).slice();
+  document.querySelectorAll('#ct-emotions .emo-chip').forEach(b => b.classList.toggle('active', _selectedEmotions.includes(b.dataset.emo)));
+  document.getElementById('ct-title').textContent = 'Edit — ' + t.symbol + ' ' + _tradeToClose.dir.toUpperCase();
+  document.getElementById('ct-exit').value   = t.exit_price ?? '';
+  document.getElementById('ct-pnl').value    = t.pnl ?? '';
+  document.getElementById('ct-reason').value = t.exit_reason || '';
+  document.getElementById('closeMsg').innerHTML = '';
+  document.getElementById('ct-preview').style.display = 'none';
+  document.getElementById('ct-score-result').style.display = 'none';
+  document.getElementById('ct-btn').disabled  = false;
+  document.getElementById('ct-btn').textContent = 'Save Changes';
+  fillSetupFields('ct', t);
+  document.getElementById('ct-setup-details').open = true;
+  document.getElementById('closeModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('ct-exit').focus(), 100);
+}
+
 function closeCloseModal() { document.getElementById('closeModal').style.display = 'none'; }
 
 function previewPnl() {
@@ -708,31 +1342,221 @@ async function closeTrade() {
   const pnl     = manualPnl !== '' ? parseFloat(manualPnl)
                 : parseFloat(((exit - t.entry_price) * qty * 100).toFixed(2));
   const pnlPct  = parseFloat(((exit - t.entry_price) / t.entry_price * 100).toFixed(2));
+  const setupFields = readSetupFields('ct');
 
   const btn = document.getElementById('ct-btn');
-  btn.disabled = true; btn.textContent = 'Closing...';
+  btn.disabled = true; btn.textContent = _editMode ? 'Saving...' : 'Closing...';
 
-  const { error } = await sb.from('trades').update({
+  const scoreInput = {
+    symbol: t.symbol, direction: t.dir, entry_price: t.entry_price, exit_price: exit,
+    contracts: qty, pnl, pnl_pct: pnlPct, exit_reason: reason, emotions: _selectedEmotions,
+    ...setupFields,
+  };
+  const scored = TradeScoreEngine.scoreTrade(scoreInput);
+  const tags = TradeScoreEngine.autoTags({ ...scoreInput, tags: [] });
+
+  const payload = {
     exit_price:  exit,
     pnl,
     pnl_pct:     pnlPct,
     exit_reason: reason,
-    status:      'closed',
-    closed_at:   new Date().toISOString(),
-  }).eq('id', t.id).eq('user_id', _uid);
+    emotions:    _selectedEmotions,
+    tags,
+    trade_score: scored.total,
+    trade_score_breakdown: scored,
+    reviewed_at: new Date().toISOString(),
+    ...setupFields,
+  };
+  if (!_editMode) { payload.status = 'closed'; payload.closed_at = new Date().toISOString(); }
+
+  const { error } = await sb.from('trades').update(payload).eq('id', t.id).eq('user_id', _uid);
 
   if (error) {
     showModal('closeMsg', error.message, 'error');
-    btn.disabled = false; btn.textContent = 'Close Trade';
+    btn.disabled = false; btn.textContent = _editMode ? 'Save Changes' : 'Close Trade';
   } else {
-    closeCloseModal();
-    loadAllTrades();
+    const grade = TradeScoreEngine.gradeFor(scored.total);
+    const resEl = document.getElementById('ct-score-result');
+    resEl.style.display = 'block';
+    resEl.innerHTML = `<div class="sr-num" style="color:${scored.total>=80?'var(--green-ink)':scored.total>=60?'var(--amber-ink)':'var(--red-ink)'}">${scored.total}/100 — ${grade.letter}</div>
+      <div style="font-size:.8rem;color:var(--t65)">${grade.label}</div>
+      <span class="sr-why" onclick="alert(${JSON.stringify(scoreExplainText(scored))})">Why did I receive this score?</span>`;
+    if (!_editMode) {
+      const reviewed = LS.get('sc_journal_reviewed_trades', []);
+      if (!reviewed.includes(t.id) && reason && _selectedEmotions.length) {
+        reviewed.push(t.id); LS.set('sc_journal_reviewed_trades', reviewed); addXP(10);
+      }
+    }
+    await syncJournalXP();
+    setTimeout(() => { closeCloseModal(); loadAllTrades().then(() => checkAndAwardBadges(allTradesForBadges(), _analyticsTrades)); }, 1400);
   }
+}
+
+function scoreExplainText(scored) {
+  return scored.categories.map(c => `${c.label}: ${Math.round(c.earned*10)/10}/${c.cap}\n` + c.items.map(i => `  • ${i.reason} (${Math.round(i.earned*10)/10}/${i.cap})`).join('\n')).join('\n\n');
 }
 
 function showModal(elId, msg, type) {
   document.getElementById(elId).innerHTML = `<div class="modal-msg ${type}">${msg}</div>`;
 }
+
+// ── Dashboard rendering orchestrator ────────────────────────────────────
+function renderAll() {
+  renderTopStats();
+  renderSecondRow();
+  renderInsightsRow();
+  renderOvertradingAndLimit();
+  renderPatternAnalytics();
+  renderScorecard(_analyticsTrades);
+  document.getElementById('tpsWrap').style.display = _analyticsTrades.length ? 'block' : 'none';
+  document.getElementById('patternWrap').style.display = _analyticsTrades.length ? 'block' : 'none';
+  document.getElementById('tradeSummary').style.display = _analyticsTrades.length ? 'grid' : 'none';
+  if (_analyticsTrades.length) {
+    const wins = _analyticsTrades.filter(t => (t.pnl || 0) > 0);
+    const totalPnl = _analyticsTrades.reduce((s, t) => s + (t.pnl || 0), 0);
+    const winRate = (wins.length / _analyticsTrades.length * 100).toFixed(0);
+    document.getElementById('tTotal').textContent = _analyticsTrades.length;
+    document.getElementById('tWinRate').textContent = winRate + '%';
+    document.getElementById('tWinRate').style.color = winRate >= 50 ? 'var(--green-ink)' : 'var(--red-ink)';
+    document.getElementById('tTotalPnl').textContent = fmtPnl(totalPnl);
+    document.getElementById('tAvgPnl').textContent = fmtPnl(totalPnl / _analyticsTrades.length);
+  }
+}
+
+function renderTopStats() {
+  const t = _analyticsTrades;
+  const grid = document.getElementById('tpsTopGrid');
+  if (!t.length) { grid.innerHTML = '<div class="tps-stat" style="grid-column:1/-1"><div class="stat-label">No closed trades yet</div><div class="stat-val" style="font-size:.9rem;font-weight:500;color:var(--t65)">Log and close your first trade to see your dashboard.</div></div>'; return; }
+  const wins = t.filter(x => (x.pnl || 0) > 0), losses = t.filter(x => (x.pnl || 0) < 0);
+  const totalPnl = t.reduce((s, x) => s + (x.pnl || 0), 0);
+  const grossWin = wins.reduce((s, x) => s + x.pnl, 0);
+  const grossLoss = Math.abs(losses.reduce((s, x) => s + x.pnl, 0));
+  const profitFactor = grossLoss > 0 ? (grossWin / grossLoss) : (grossWin > 0 ? '∞' : '—');
+  const avgWin = wins.length ? grossWin / wins.length : 0;
+  const avgLoss = losses.length ? grossLoss / losses.length : 0;
+  const winRate = Math.round(wins.length / t.length * 100);
+  const stats = [
+    ['Total P&L', fmtPnl(totalPnl), totalPnl >= 0 ? 'green' : 'red'],
+    ['Win Rate', winRate + '%', winRate >= 50 ? 'green' : 'red'],
+    ['Total Trades', t.length, ''],
+    ['Profit Factor', typeof profitFactor === 'number' ? profitFactor.toFixed(2) : profitFactor, ''],
+    ['Avg Win', '$' + avgWin.toFixed(2), 'green'],
+    ['Avg Loss', '-$' + avgLoss.toFixed(2), 'red'],
+  ];
+  grid.innerHTML = stats.map(([l, v, c]) => `<div class="tps-stat"><div class="stat-label">${l}</div><div class="stat-val ${c}">${v}</div></div>`).join('');
+}
+
+function renderSecondRow() {
+  const grid = document.getElementById('tpsSecondGrid');
+  const trader = TradeScoreEngine.computeTraderScore(_analyticsTrades);
+  const edge = TradeScoreEngine.bestEdge(_analyticsTrades);
+  let traderHtml;
+  if (!trader.available) {
+    traderHtml = `<div class="trader-score-card"><div class="trader-score-head">ScalpClock Trader Score</div>
+      <div class="trader-score-empty">Keep logging and closing trades. ScalpClock needs at least ${trader.minRequired} scored trades to calculate your Trader Score (${trader.sampleSize}/${trader.minRequired} so far).</div></div>`;
+  } else {
+    const trendClass = trader.trend === 'Improving' ? 'up' : trader.trend === 'Declining' ? 'down' : 'flat';
+    const arrow = trader.trend === 'Improving' ? '↑' : trader.trend === 'Declining' ? '↓' : '→';
+    traderHtml = `<div class="trader-score-card">
+      <div class="trader-score-head">ScalpClock Trader Score</div>
+      <div class="trader-score-num">${trader.score}<span>/100</span></div>
+      <div class="trader-score-level">${trader.level}</div>
+      <div class="trader-score-trend ${trendClass}">${arrow} ${trader.trend}</div>
+      <div class="trader-score-periods">
+        <span>This week: <b>${trader.thisWeekAvg ?? '—'}</b></span>
+        <span>Last 30d: <b>${trader.last30Avg ?? '—'}</b></span>
+        <span>Prev 30d: <b>${trader.prev30Avg ?? '—'}</b></span>
+      </div>
+      <div style="font-size:.68rem;color:var(--t45);margin-top:8px">Based on your last ${trader.sampleSize} scored trades</div>
+    </div>`;
+  }
+  const bestSetup = edge.available && edge.bySetup ? `${edge.bySetup.key} (${edge.bySetup.winRate}%)` : '—';
+  const bestTime = edge.available && edge.byTime ? `${edge.byTime.key}` : '—';
+  const bestTicker = edge.available && edge.byTicker ? `${edge.byTicker.key} (${edge.byTicker.winRate}%)` : '—';
+  const rVals = _analyticsTrades.map(TradeScoreEngine.tradeR).filter(r => r !== null);
+  const avgR = rVals.length ? (rVals.reduce((a,b)=>a+b,0)/rVals.length).toFixed(2) + 'R' : '—';
+  const minis = [['Best Setup', bestSetup], ['Best Time of Day', bestTime], ['Best Ticker', bestTicker], ['Avg R Multiple', avgR]];
+  grid.innerHTML = traderHtml + minis.map(([l, v]) => `<div class="mini-stat-card"><div class="stat-label">${l}</div><div class="stat-val">${v}</div></div>`).join('');
+}
+
+function renderInsightsRow() {
+  const grid = document.getElementById('tpsInsightsGrid');
+  const ins = TradeScoreEngine.insights(_analyticsTrades);
+  const edge = TradeScoreEngine.bestEdge(_analyticsTrades);
+
+  let rightHtml, improveHtml;
+  if (!ins.available) {
+    const empty = `<div class="insight-empty">Keep logging trades. ScalpClock needs more data to identify your strongest trading patterns (${ins.sampleSize}/${ins.minRequired} closed trades so far).</div>`;
+    rightHtml = empty; improveHtml = empty;
+  } else {
+    rightHtml = ins.doingRight.length
+      ? ins.doingRight.map(i => `<div class="insight-item"><div class="it-text">${i.text}</div><div class="it-data">${i.data}</div></div>`).join('')
+      : '<div class="insight-empty">No standout strengths detected yet from your recent trades — keep logging to build a clearer pattern.</div>';
+    improveHtml = ins.improve.length
+      ? ins.improve.map(i => `<div class="insight-item"><div class="it-text">${i.issue}</div><div class="it-data">${i.data}</div><div class="it-suggestion">${i.suggestion}</div>${i.link ? `<a class="it-link" href="${i.link.href}" target="_blank">${i.link.label} →</a>` : ''}</div>`).join('')
+      : '<div class="insight-empty">Nothing stands out to flag right now — keep logging trades to keep this current.</div>';
+  }
+
+  let edgeHtml;
+  if (!edge.available) {
+    edgeHtml = `<div class="insight-empty">Keep logging trades. ScalpClock needs at least ${edge.minRequired} closed trades to identify your best edge (${edge.sampleSize}/${edge.minRequired} so far).</div>`;
+  } else if (!edge.top) {
+    edgeHtml = '<div class="insight-empty">Not enough trades in any single category yet (need at least 3 per group) to identify a clear edge.</div>';
+  } else {
+    const top = edge.top;
+    edgeHtml = `<div class="edge-headline">${top.v.key}</div>
+      <div class="edge-sub">Win Rate: ${top.v.winRate}%${top.v.avgR != null ? ' · Avg R: ' + top.v.avgR + 'R' : ''}</div>
+      <div class="edge-meta">Based on: ${top.v.count} trades (by ${top.dim})${!edge.strong ? ' — add more trades for a stronger read' : ''}</div>`;
+  }
+
+  grid.innerHTML = `
+    <div class="insight-card right"><h3>✅ What You're Doing Right</h3>${rightHtml}</div>
+    <div class="insight-card improve"><h3>🎯 What To Improve</h3>${improveHtml}</div>
+    <div class="insight-card edge"><h3>⭐ My Best Edge</h3>${edgeHtml}</div>`;
+}
+
+function renderOvertradingAndLimit() {
+  const all = allTradesForBadges();
+  const ot = TradeScoreEngine.overtrading(all, { dailyLimit: _journalSettings.dailyLimit });
+  const bannerWrap = document.getElementById('otBannerWrap');
+  if (ot.flagged) {
+    bannerWrap.innerHTML = `<div class="ot-banner">⚠️ ${ot.message} Today: <b>${ot.todayCount} trades</b>. Your recent daily average: <b>${ot.avgDaily} trades</b>.</div>`;
+  } else bannerWrap.innerHTML = '';
+
+  const limitRow = document.getElementById('limitRow');
+  limitRow.style.display = 'flex';
+  const pct = _journalSettings.dailyLimit ? Math.min(100, ot.todayCount / _journalSettings.dailyLimit * 100) : 0;
+  limitRow.innerHTML = `
+    <span>My Daily Trade Limit:</span>
+    <input type="number" min="0" class="limit-input" id="dailyLimitInput" value="${_journalSettings.dailyLimit || ''}" placeholder="e.g. 5">
+    <button class="btn-row-mini" onclick="saveDailyLimit()">Save</button>
+    ${_journalSettings.dailyLimit ? `<span>${ot.todayCount} / ${_journalSettings.dailyLimit} trades used today</span>
+      <div class="limit-bar-wrap"><div class="limit-bar-fill ${ot.limitReached ? 'over' : ''}" style="width:${pct}%"></div></div>` : '<span style="color:var(--t45)">Not set — set a limit to track it here.</span>'}`;
+}
+
+function renderPatternAnalytics() {
+  const tabsEl = document.getElementById('patternTabs');
+  const dims = [
+    { key: 'time', label: 'Time of Day', fn: t => TradeScoreEngine.timeBucket(t.opened_at || t.closed_at) },
+    { key: 'ticker', label: 'Ticker', fn: t => t.symbol || null },
+    { key: 'setup', label: 'Setup', fn: t => t.strategy || null },
+    { key: 'direction', label: 'Direction', fn: t => (t.direction || '').toLowerCase() === 'calls' ? 'Calls / Long' : (t.direction || '').toLowerCase() === 'puts' ? 'Puts / Short' : null },
+    { key: 'day', label: 'Day of Week', fn: t => TradeScoreEngine.dayOfWeek(t.opened_at || t.closed_at) },
+  ];
+  tabsEl.innerHTML = dims.map(d => `<button class="pattern-tab ${d.key===_patternDim?'active':''}" onclick="switchPatternTab('${d.key}')">${d.label}</button>`).join('');
+  const active = dims.find(d => d.key === _patternDim);
+  document.getElementById('patternKeyHead').textContent = active.label;
+  const rows = TradeScoreEngine.groupStats(_analyticsTrades, active.fn).sort((a, b) => b.count - a.count);
+  const body = document.getElementById('patternBody');
+  if (!rows.length) { body.innerHTML = `<tr><td colspan="5" class="pattern-empty">Not enough data yet.</td></tr>`; return; }
+  body.innerHTML = rows.map(r => `<tr>
+    <td>${r.key}</td><td>${r.count}</td>
+    <td style="color:${r.winRate>=50?'var(--green-ink)':'var(--red-ink)'}">${r.winRate}%</td>
+    <td style="color:${r.avgPnl>=0?'var(--green-ink)':'var(--red-ink)'}">${fmtPnl(r.avgPnl)}</td>
+    <td>${r.avgR != null ? r.avgR + 'R' : '—'}</td>
+  </tr>`).join('');
+}
+function switchPatternTab(key) { _patternDim = key; renderPatternAnalytics(); }
 
 function renderScorecard(closedTrades) {
   const today = new Date().toISOString().slice(0, 10);
@@ -799,6 +1623,119 @@ function renderScorecard(closedTrades) {
         ${totalPnl < 0 ? ' — Tomorrow is a new session. Stay disciplined.' : ' — Still a winning day. Well done.'}
       </div>` : ''}
     </div>`;
+}
+
+// ── Weekly Review — Step 14 ──────────────────────────────────────────────
+let _currentWeekStart = null;
+function isoWeekStart(d) {
+  const date = new Date(d);
+  const day = date.getDay(); // 0=Sun..6=Sat
+  const diff = (day === 0 ? -6 : 1) - day; // back up to Monday
+  date.setDate(date.getDate() + diff);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+function isoDate(d) { return new Intl.DateTimeFormat('en-CA').format(d); }
+
+async function openWeeklyReviewModal() {
+  _currentWeekStart = isoWeekStart(new Date());
+  const weekEnd = new Date(_currentWeekStart.getTime() + 7 * 86400000);
+  const weekTrades = _analyticsTrades.filter(t => t.closed_at && new Date(t.closed_at) >= _currentWeekStart && new Date(t.closed_at) < weekEnd);
+
+  document.getElementById('wrMsg').innerHTML = '';
+  document.getElementById('wr-lesson').value = '';
+  document.getElementById('wr-goal').value = '';
+
+  if (!weekTrades.length) {
+    document.getElementById('wrCurrentWeek').innerHTML = `<div class="insight-empty" style="margin-bottom:14px">No closed trades yet this week (since ${isoDate(_currentWeekStart)}). Close some trades, then come back to review your week.</div>`;
+  } else {
+    const wins = weekTrades.filter(t => (t.pnl || 0) > 0);
+    const totalPnl = weekTrades.reduce((s, t) => s + (t.pnl || 0), 0);
+    const winRate = Math.round(wins.length / weekTrades.length * 100);
+    const best = weekTrades.reduce((m, t) => (t.pnl || 0) > (m.pnl || 0) ? t : m, weekTrades[0]);
+    const worst = weekTrades.reduce((m, t) => (t.pnl || 0) < (m.pnl || 0) ? t : m, weekTrades[0]);
+    const scored = weekTrades.filter(t => t.trade_score != null);
+    const avgScore = scored.length ? Math.round(scored.reduce((s, t) => s + t.trade_score, 0) / scored.length) : null;
+    const bySetup = TradeScoreEngine.groupStats(weekTrades, t => t.strategy || null).sort((a, b) => b.count - a.count)[0];
+    const worstScoreItem = scored.length ? scored.flatMap(t => t.trade_score_breakdown.categories.flatMap(c => c.items.filter(i => i.earned < i.cap).map(i => ({ ...i, trade: t.symbol })))).sort((a, b) => (a.earned/a.cap) - (b.earned/b.cap))[0] : null;
+
+    document.getElementById('wrCurrentWeek').innerHTML = `
+      <div style="font-size:.72rem;color:var(--t45);font-family:var(--mono);margin-bottom:8px">Week of ${isoDate(_currentWeekStart)}</div>
+      <div class="wr-summary-grid">
+        <div class="wr-stat"><div class="l">Total P&amp;L</div><div class="v" style="color:${totalPnl>=0?'var(--green-ink)':'var(--red-ink)'}">${fmtPnl(totalPnl)}</div></div>
+        <div class="wr-stat"><div class="l">Win Rate</div><div class="v">${winRate}%</div></div>
+        <div class="wr-stat"><div class="l">Trades</div><div class="v">${weekTrades.length}</div></div>
+        <div class="wr-stat"><div class="l">Best Trade</div><div class="v" style="color:var(--green-ink)">${best.symbol} ${fmtPnl(best.pnl||0)}</div></div>
+        <div class="wr-stat"><div class="l">Worst Trade</div><div class="v" style="color:var(--red-ink)">${worst.symbol} ${fmtPnl(worst.pnl||0)}</div></div>
+        <div class="wr-stat"><div class="l">Avg Trade Score</div><div class="v">${avgScore ?? '—'}</div></div>
+      </div>
+      <div style="font-size:.82rem;color:var(--t65);margin-bottom:6px"><b>Best setup this week:</b> ${bySetup ? bySetup.key + ' (' + bySetup.winRate + '% win rate)' : 'Not enough data'}</div>
+      ${worstScoreItem ? `<div style="font-size:.82rem;color:var(--t65);margin-bottom:14px"><b>Biggest recurring gap:</b> ${worstScoreItem.reason}</div>` : ''}`;
+  }
+
+  // Prefill from an existing review for this week, if one was already saved.
+  try {
+    const { data } = await sb.from('trade_weekly_reviews').select('*').eq('user_id', _uid).eq('week_start', isoDate(_currentWeekStart)).maybeSingle();
+    if (data) { document.getElementById('wr-lesson').value = data.main_lesson || ''; document.getElementById('wr-goal').value = data.improvement_goal || ''; }
+  } catch (_) {}
+
+  await loadWeeklyHistory();
+  document.getElementById('weeklyReviewModal').style.display = 'flex';
+}
+function closeWeeklyReviewModal() { document.getElementById('weeklyReviewModal').style.display = 'none'; }
+
+async function saveWeeklyReview() {
+  const goal = document.getElementById('wr-goal').value.trim();
+  if (!goal) { showModal('wrMsg', 'Add one thing you will improve next week.', 'error'); return; }
+  const lesson = document.getElementById('wr-lesson').value.trim() || null;
+  const weekEnd = new Date(_currentWeekStart.getTime() + 7 * 86400000);
+  const weekTrades = _analyticsTrades.filter(t => t.closed_at && new Date(t.closed_at) >= _currentWeekStart && new Date(t.closed_at) < weekEnd);
+  const wins = weekTrades.filter(t => (t.pnl || 0) > 0);
+  const totalPnl = weekTrades.reduce((s, t) => s + (t.pnl || 0), 0);
+  const scored = weekTrades.filter(t => t.trade_score != null);
+  const avgScore = scored.length ? scored.reduce((s, t) => s + t.trade_score, 0) / scored.length : null;
+  const best = weekTrades.length ? weekTrades.reduce((m, t) => (t.pnl || 0) > (m.pnl || 0) ? t : m, weekTrades[0]) : null;
+  const worst = weekTrades.length ? weekTrades.reduce((m, t) => (t.pnl || 0) < (m.pnl || 0) ? t : m, weekTrades[0]) : null;
+  const bySetup = TradeScoreEngine.groupStats(weekTrades, t => t.strategy || null).sort((a, b) => b.count - a.count)[0];
+  const trader = TradeScoreEngine.computeTraderScore(_analyticsTrades);
+
+  const btn = document.getElementById('wr-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const { error } = await sb.from('trade_weekly_reviews').upsert({
+    user_id: _uid,
+    week_start: isoDate(_currentWeekStart),
+    total_pnl: totalPnl,
+    win_rate: weekTrades.length ? Math.round(wins.length / weekTrades.length * 100) : null,
+    num_trades: weekTrades.length,
+    best_trade_id: best ? best.id : null,
+    worst_trade_id: worst ? worst.id : null,
+    best_setup: bySetup ? bySetup.key : null,
+    avg_trade_score: avgScore,
+    trader_score: trader.available ? trader.score : null,
+    main_lesson: lesson,
+    improvement_goal: goal,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'user_id,week_start' });
+  btn.disabled = false; btn.textContent = 'Save Review';
+
+  if (error) { showModal('wrMsg', error.message, 'error'); return; }
+  showModal('wrMsg', 'Saved.', 'success');
+  const reviewed = LS.get('sc_journal_weekly_reviews', []);
+  const wk = isoDate(_currentWeekStart);
+  if (!reviewed.includes(wk)) { reviewed.push(wk); LS.set('sc_journal_weekly_reviews', reviewed); addXP(15); await syncJournalXP(); }
+  await loadWeeklyHistory();
+}
+
+async function loadWeeklyHistory() {
+  try {
+    const { data } = await sb.from('trade_weekly_reviews').select('*').eq('user_id', _uid).order('week_start', { ascending: false }).limit(12);
+    const el = document.getElementById('wrHistory');
+    if (!data || !data.length) { el.innerHTML = '<div class="insight-empty">No previous weekly reviews yet.</div>'; return; }
+    el.innerHTML = data.map(r => `<div class="wr-history-item">
+      <div class="wh-week">Week of ${r.week_start} — ${r.num_trades ?? 0} trades, ${fmtPnl(r.total_pnl || 0)}${r.trader_score != null ? `, Trader Score ${r.trader_score}` : ''}</div>
+      ${r.improvement_goal ? `<div class="wh-goal">Goal: ${r.improvement_goal}</div>` : ''}
+    </div>`).join('');
+  } catch (_) {}
 }
 
 async function signOut() {

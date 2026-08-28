@@ -3351,6 +3351,7 @@ let rpCorrect=parseInt(localStorage.getItem('sc_replay_correct')||'0');
 let rpQuizTotal=parseInt(localStorage.getItem('sc_replay_quiz_total')||'0');
 let rpStreak=parseInt(localStorage.getItem('sc_replay_streak')||'0');
 let rpProgress=JSON.parse(localStorage.getItem('sc_replay_progress')||'{}');
+let rpDeepLinkTarget=null; // {symbol,date,time} set by an incoming ?rdate= deep link (e.g. from the Trade Journal), consumed once by rpBeginSession
 
 // ─── REPLAY CHART INIT ───────────────────────────────────────
 function rpInitChart(){
@@ -3567,6 +3568,20 @@ function rpFormatCandleTime(t){
   return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
 }
 function rpUpdateScrubberLabels(){if(!rpAllCandles.length)return;document.getElementById('rpScrubStart').textContent=rpFormatCandleTime(rpAllCandles[0]?.time);document.getElementById('rpScrubEnd').textContent=rpFormatCandleTime(rpAllCandles[rpAllCandles.length-1]?.time);}
+// Jump the replay cursor to the intraday candle nearest a given "HH:MM" (24h, exchange-local)
+// time-of-day on the currently loaded date — used by deep links from the Trade Journal so a
+// trader can review a specific trade's approximate entry window, not just the whole day.
+function rpJumpToTimeOfDay(hhmm){
+  if(!rpAllCandles.length||typeof rpAllCandles[0]?.time!=='number')return;
+  const [h,m]=hhmm.split(':').map(Number);
+  if(Number.isNaN(h)||Number.isNaN(m))return;
+  const base=new Date(rpAllCandles[0].time*1000);
+  const targetSec=Math.floor(new Date(base.getFullYear(),base.getMonth(),base.getDate(),h,m).getTime()/1000);
+  let idx=rpAllCandles.findIndex(c=>c.time>=targetSec);
+  if(idx<0)idx=rpAllCandles.length-1;
+  rpStartIdx=Math.max(1,idx);rpReplayIdx=rpStartIdx;
+  rpRenderReplay();rpUpdateScrubber();
+}
 function rpAutoShowPat(){if(rpReplayIdx<1)return;const pts=detectAt(rpAllCandles,rpReplayIdx-1).filter(p=>BOOK[p.name]&&p.conf>=74);if(pts.length)rpShowEdu([pts[0]],rpAllCandles,rpReplayIdx-1);}
 
 // ─── PATTERN CHIPS ───────────────────────────────────────────
@@ -3800,7 +3815,19 @@ function rpBeginSession(){
   // always defaulting to the rpSymbol input's hardcoded SPY placeholder.
   const rpSymEl=document.getElementById('rpSymbol');
   if(rpSymEl&&typeof ticker==='string'&&ticker)rpSymEl.value=ticker;
-  rpQuickLoad('3mo',document.querySelector('.rp-quick-btn[data-range="3mo"]'));
+  if(rpDeepLinkTarget){
+    const dl=rpDeepLinkTarget;rpDeepLinkTarget=null;
+    if(dl.symbol&&rpSymEl)rpSymEl.value=dl.symbol;
+    const dateEl=document.getElementById('rpDate');
+    if(dateEl&&dl.date)dateEl.value=dl.date;
+    if(dl.time){
+      rpTimeframe='5m';
+      document.querySelectorAll('#rpTFBtns .rp-quick-btn').forEach(b=>b.classList.toggle('rp-active',b.dataset.tf==='5m'));
+    }
+    rpLoadChart().then(()=>{ if(dl.time)rpJumpToTimeOfDay(dl.time); });
+  } else {
+    rpQuickLoad('3mo',document.querySelector('.rp-quick-btn[data-range="3mo"]'));
+  }
   rpUpdateProgressUI();
   rpUpdateLearnPanel();
 }
@@ -3976,11 +4003,19 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
   }
   document.body.style.visibility = 'visible';
 })();
-// Auto-switch to Replay tab when ?tab=replay is in the URL
+// Auto-switch to Replay tab when ?tab=replay is in the URL. If ?rdate= (optionally with
+// &rtime=) is also present — set by the Trade Journal's "Practice This Trade in Replay"
+// link — auto-start the session loaded to that specific symbol/date/time instead of
+// leaving the user on the intro screen.
 (function(){
-  if(new URLSearchParams(window.location.search).get('tab')==='replay'){
-    window.addEventListener('load',function(){setTimeout(function(){switchTab('replay');},150);});
-  }
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('tab')!=='replay')return;
+  const rdate=p.get('rdate');
+  if(rdate)rpDeepLinkTarget={symbol:p.get('t')||null,date:rdate,time:p.get('rtime')||null};
+  window.addEventListener('load',function(){setTimeout(function(){
+    switchTab('replay');
+    if(rdate)rpBeginSession();
+  },150);});
 })();
 </script>
 <section style="max-width:720px;margin:40px auto 0;padding:0 20px;">

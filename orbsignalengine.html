@@ -633,6 +633,7 @@
     <a class="action-btn btn-ghost" id="actCoach" href="/scalpchart" target="_blank" rel="noopener">🧠 Analyze with SampsonX</a>
     <a class="action-btn btn-ghost" id="actReplay" href="/scalpchart?tab=replay" target="_blank" rel="noopener">🎬 Practice This Setup</a>
     <a class="action-btn btn-primary disabled" id="actExitAssistant" href="/exitassistant" target="_blank" rel="noopener">🚪 Send to Exit Assistant</a>
+    <a class="action-btn btn-ghost disabled" id="actJournal" href="/journal" target="_blank" rel="noopener" onclick="return sendOrbSetupToJournal(event)">📓 Log This Setup in Journal</a>
   </div>
 
   <!-- ============ 8. TRADE PLAN + RETEST ZONE + WHY THIS STOP (paired with the chart, which draws these same levels) ============ -->
@@ -1412,7 +1413,9 @@
     return '/exitassistant?' + params.toString();
   }
 
+  let lastOrbComposite = null, lastOrbIdx = null;
   function updateActionLinks(composite, idx){
+    lastOrbComposite = composite; lastOrbIdx = idx;
     const a1 = document.getElementById('actScalpChart'); if (a1) a1.href = buildScalpChartLink();
     const a2 = document.getElementById('actCoach'); if (a2) a2.href = buildCoachLink();
     const a3 = document.getElementById('actReplay'); if (a3) a3.href = buildReplayLink();
@@ -1422,7 +1425,39 @@
       const eq = deriveEntryQuality(idx).label;
       exitBtn.classList.toggle('disabled', !(eq === 'MODERATE' || eq === 'STRONG'));
     }
+    const journalBtn = document.getElementById('actJournal');
+    if (journalBtn) journalBtn.classList.toggle('disabled', entryPrice == null || stopPrice == null);
   }
+
+  // Hand the current ORB setup (symbol, direction, score, breakout/stop/target levels) to the
+  // Trade Journal via the same sc_pending_trade localStorage handoff Exit Assistant already
+  // uses — journal.html's Log Trade modal reads and pre-fills from it. Reuses the engine's own
+  // live state instead of re-deriving anything, per the "don't duplicate ORB logic" requirement.
+  window.sendOrbSetupToJournal = function(event){
+    if (event) event.preventDefault();
+    const btn = document.getElementById('actJournal');
+    if (btn && btn.classList.contains('disabled')) return false;
+    if (entryPrice == null || stopPrice == null) return false;
+    const composite = lastOrbComposite || {};
+    const pending = {
+      symbol: symbol || '',
+      direction: composite.direction === 'bear' ? 'puts' : 'calls',
+      entry: entryPrice,
+      contracts: 1,
+      source_setup: 'orb',
+      strategy: 'ORB Breakout',
+      orb_direction: composite.direction || null,
+      orb_score: composite.score != null ? composite.score : null,
+      breakout_level: (composite.direction === 'bear' ? orLow : orHigh) ?? null,
+      entry_confirmation: !!(entryIdx != null),
+      planned_stop: stopPrice,
+      planned_target: targetPrice != null ? targetPrice : null,
+      planned_entry: entryPrice,
+    };
+    try { localStorage.setItem('sc_pending_trade', JSON.stringify(pending)); } catch(_) {}
+    window.open('/journal', '_blank');
+    return false;
+  };
 
   // ================= ORB HEADER / FACTOR CARD RENDERING =================
   const GAUGE_CIRC = 2 * Math.PI * 45;
