@@ -1452,13 +1452,13 @@ function renderSecondRow() {
   const edge = TradeScoreEngine.bestEdge(_analyticsTrades);
   let traderHtml;
   if (!trader.available) {
-    traderHtml = `<div class="trader-score-card"><div class="trader-score-head">ScalpClock Trader Score</div>
-      <div class="trader-score-empty">Keep logging and closing trades. ScalpClock needs at least ${trader.minRequired} scored trades to calculate your Trader Score (${trader.sampleSize}/${trader.minRequired} so far).</div></div>`;
+    traderHtml = `<div class="trader-score-card"><div class="trader-score-head">ScalpClock Skill Score™</div>
+      <div class="trader-score-empty">Keep logging and closing trades. ScalpClock needs at least ${trader.minRequired} scored trades to calculate your Skill Score (${trader.sampleSize}/${trader.minRequired} so far).</div></div>`;
   } else {
     const trendClass = trader.trend === 'Improving' ? 'up' : trader.trend === 'Declining' ? 'down' : 'flat';
     const arrow = trader.trend === 'Improving' ? '↑' : trader.trend === 'Declining' ? '↓' : '→';
     traderHtml = `<div class="trader-score-card">
-      <div class="trader-score-head">ScalpClock Trader Score</div>
+      <div class="trader-score-head">ScalpClock Skill Score™</div>
       <div class="trader-score-num">${trader.score}<span>/100</span></div>
       <div class="trader-score-level">${trader.level}</div>
       <div class="trader-score-trend ${trendClass}">${arrow} ${trader.trend}</div>
@@ -1732,7 +1732,7 @@ async function loadWeeklyHistory() {
     const el = document.getElementById('wrHistory');
     if (!data || !data.length) { el.innerHTML = '<div class="insight-empty">No previous weekly reviews yet.</div>'; return; }
     el.innerHTML = data.map(r => `<div class="wr-history-item">
-      <div class="wh-week">Week of ${r.week_start} — ${r.num_trades ?? 0} trades, ${fmtPnl(r.total_pnl || 0)}${r.trader_score != null ? `, Trader Score ${r.trader_score}` : ''}</div>
+      <div class="wh-week">Week of ${r.week_start} — ${r.num_trades ?? 0} trades, ${fmtPnl(r.total_pnl || 0)}${r.trader_score != null ? `, Skill Score ${r.trader_score}` : ''}</div>
       ${r.improvement_goal ? `<div class="wh-goal">Goal: ${r.improvement_goal}</div>` : ''}
     </div>`).join('');
   } catch (_) {}

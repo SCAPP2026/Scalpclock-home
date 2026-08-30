@@ -731,7 +731,7 @@ body.drawer-open{overflow:hidden}
     <a href="/journal" style="font-size:.78rem;color:var(--green-ink);text-decoration:none;font-family:var(--disp);font-weight:700;">View full journal →</a>
   </div>
   <div id="dashTraderScoreWrap" style="display:none;background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--green);border-radius:12px;padding:16px 18px;margin-bottom:14px;">
-    <div style="font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green-ink);margin-bottom:6px;">ScalpClock Trader Score</div>
+    <div style="font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green-ink);margin-bottom:6px;">ScalpClock Skill Score™</div>
     <div id="dashTraderScoreBody"></div>
   </div>
   <div class="trade-summary" id="tradeSummary">
@@ -1143,7 +1143,7 @@ function renderDashTraderScore(closed) {
   const trader = TradeScoreEngine.computeTraderScore(closed);
   wrap.style.display = 'block';
   if (!trader.available) {
-    body.innerHTML = `<div style="font-size:.82rem;color:var(--t65)">Keep logging trades in your <a href="/journal" style="color:var(--green-ink)">Trade Journal</a> — ScalpClock needs at least ${trader.minRequired} scored trades to calculate your Trader Score (${trader.sampleSize}/${trader.minRequired} so far).</div>`;
+    body.innerHTML = `<div style="font-size:.82rem;color:var(--t65)">Keep logging trades in your <a href="/journal" style="color:var(--green-ink)">Trade Journal</a> — ScalpClock needs at least ${trader.minRequired} scored trades to calculate your Skill Score (${trader.sampleSize}/${trader.minRequired} so far).</div>`;
     return;
   }
   const arrow = trader.trend === 'Improving' ? '↑' : trader.trend === 'Declining' ? '↓' : '→';
