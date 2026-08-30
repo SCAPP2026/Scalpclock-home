@@ -66,23 +66,27 @@ descriptive.
 
 ---
 
-## 3. [NEEDS DECISION] Two divergent, unsynced streak systems
+## 3. RESOLVED (2026-08-30): Streak label inconsistency
 
 Dashboard tracks a login streak using `sc_last_login` / `sc_streak`. Learn Hub
-tracks a lesson streak using `sc_streak_date` / `sc_streak_count`. These are
-**different keys with no shared logic** — a member can see two different
-streak numbers depending on which page they're looking at, and neither
-currently syncs to the other or to the cloud (dashboard's streak isn't in
-`profiles.learn_progress` at all).
+tracks a lesson-completion streak using `sc_streak_date` / `sc_streak_count`.
+These are genuinely different metrics — one bumps on any login, the other
+only on completing a lesson — but both were generically labeled
+"Streak"/"Daily Streak", so a member could see two different numbers under
+what looked like the same name.
 
-This is a pre-existing inconsistency, not something introduced by any recent
-change. Per the golden rule ("never make an existing member start over"), I
-have **not** touched either streak system or attempted to merge them — doing
-so unilaterally risks changing a visible number for existing members, which
-the brief explicitly forbids. Flagging for a decision: should these stay
-separate (dashboard = login streak, Learn = lesson streak, clearly labeled as
-different things), or should they be unified — and if unified, which number
-wins for members who currently have two different values?
+**Decision: keep them separate, fix via labeling, not merging.** Merging into
+one number would have silently redefined what the metric means for whichever
+group's activity didn't drive the "winning" value — exactly what the
+protection policy forbids. Commit `067b333` renamed the labels only:
+dashboard's stat card now reads "Login Streak", Learn Hub's stat card and nav
+badge now read "Lesson Streak" / "day lesson streak". No calculation logic,
+storage keys, or existing values changed.
+
+Also confirmed while investigating: Replay's own "Daily Streak" display
+(scalpchart.html's `rpBumpDailyStreak()`) already reads/writes the exact same
+`sc_streak_date` / `sc_streak_count` keys as Learn Hub — it's the same real
+number, not a third divergent counter, so it needed no change.
 
 ## 4. [NEEDS DECISION] Referral tables are empty; Trade Score / Trader Score already exists
 
