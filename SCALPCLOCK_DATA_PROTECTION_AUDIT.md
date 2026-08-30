@@ -92,19 +92,18 @@ wins for members who currently have two different values?
   (feature not fully wired end-to-end yet) or a bug (something should be
   writing to these and isn't). I have not attempted to backfill or "fix" this
   — it needs a decision, not an assumption.
-- **The requested "Skill Score" already substantially exists**: `trades.trade_score`
-  (0-100, per-trade, with a `trade_score_breakdown` jsonb) and
-  `trade_weekly_reviews.trader_score` / `trader_score_prev` (a rolling,
-  previous-vs-current trader-level score) were built in a prior session
-  (commit `8bb4a41`, "Add ScalpClock Trade Performance System: Trade Score,
-  Trader Score, insights, and ORB/Replay integration"). Before implementing a
-  new, separate "ScalpClock Skill Score™," this needs to be resolved with the
-  user: is Skill Score a **rename/rebrand** of the existing Trader Score, an
-  **extension** of it (e.g. folding in Learn Hub XP/streak alongside trading
-  performance), or a genuinely **separate, third** metric? Building a new
-  parallel score without answering this risks exactly the kind of confusing,
-  redundant system the protection brief is trying to prevent — and risks
-  members seeing two different "score" numbers that mean different things.
+- **RESOLVED (2026-08-30): Skill Score is a rename of Trader Score.** User
+  decision: "ScalpClock Skill Score™" is the existing account-level
+  `trade_weekly_reviews.trader_score` / `TradeScoreEngine.computeTraderScore()`
+  system relabeled in the UI — not a new metric, not an extension. Implemented
+  in commit `3c212e7`: renamed the 6 user-facing strings in `dashboard.html`
+  and `journal.html` ("ScalpClock Trader Score" → "ScalpClock Skill Score™"
+  and its two inline mentions). The `trader_score` column, `TradeScoreEngine`,
+  and `computeTraderScore()` were left completely untouched — existing
+  members' current scores carried over immediately with zero migration.
+  Per-trade `trades.trade_score` ("Trade Score", shown in the journal per
+  individual trade) is a separate, narrower concept and was **not** renamed —
+  only the account-level weekly score was in scope.
 
 ---
 
