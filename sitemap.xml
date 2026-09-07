@@ -379,8 +379,20 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/author/tavares-vickers/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/candlestick-pattern-trainer</loc>
     <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/editorial-standards/</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
