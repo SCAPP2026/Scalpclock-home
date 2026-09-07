@@ -10,20 +10,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VWAP Trading Strategy Explained | ScalpClock</title>
-<meta name="description" content="How the VWAP trading strategy works — what VWAP measures, how intraday traders use it as a reference price, and a simple example.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained">
+<title>What Is Implied Volatility in Options? | ScalpClock</title>
+<meta name="description" content="Implied volatility is the market's forward-looking estimate of how much a stock will move. Learn how it's different from historical volatility and how it affects premium.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="VWAP Trading Strategy Explained | ScalpClock">
-<meta property="og:description" content="How the VWAP trading strategy works — what VWAP measures, how intraday traders use it as a reference price, and a simple example.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained">
+<meta property="og:title" content="What Is Implied Volatility in Options? | ScalpClock">
+<meta property="og:description" content="Implied volatility is the market's forward-looking estimate of how much a stock will move. Learn how it's different from historical volatility and how it affects premium.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VWAP Trading Strategy Explained | ScalpClock">
-<meta name="twitter:description" content="How the VWAP trading strategy works — what VWAP measures, how intraday traders use it as a reference price, and a simple example.">
+<meta name="twitter:title" content="What Is Implied Volatility in Options? | ScalpClock">
+<meta name="twitter:description" content="Implied volatility is the market's forward-looking estimate of how much a stock will move. Learn how it's different from historical volatility and how it affects premium.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -65,7 +65,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 a{color:var(--green);}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
 
-/* NAV */
 .nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1180px;margin:0 auto;padding:0 24px;}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
@@ -95,21 +94,18 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .nav-drawer{display:flex;}
 }
 
-/* BREADCRUMB */
 .crumb{max-width:760px;margin:0 auto;padding:20px 24px 0;font-size:.82rem;color:var(--t55);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .crumb a{color:var(--t55);text-decoration:none;}
 .crumb a:hover{color:var(--green);}
 .crumb span{color:var(--t30);}
 .crumb .current{color:var(--t80);}
 
-/* ARTICLE HEADER */
 .art-header{max-width:760px;margin:0 auto;padding:22px 24px 8px;}
-.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold);margin-bottom:18px;text-decoration:none;}
+.art-cat-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--g-dim);color:var(--green);border:1px solid var(--green);margin-bottom:18px;text-decoration:none;}
 .art-header h1{font-family:var(--disp);font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;line-height:1.18;letter-spacing:.005em;margin-bottom:18px;}
 .art-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--t55);padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
 .art-meta span{display:inline-flex;align-items:center;gap:6px;}
 
-/* PROSE */
 .art-body{max-width:760px;margin:0 auto;padding:0 24px;font-size:1.02rem;line-height:1.85;color:var(--t80);}
 .art-body h2{font-family:var(--disp);font-size:clamp(1.35rem,3vw,1.7rem);font-weight:700;color:var(--text);margin:44px 0 16px;letter-spacing:.005em;}
 .art-body h3{font-family:var(--disp);font-size:1.15rem;font-weight:700;color:var(--text);margin:30px 0 12px;}
@@ -119,16 +115,18 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .art-body strong{color:var(--text);font-weight:700;}
 .art-body a{text-decoration:underline;text-decoration-color:rgba(22,217,126,.35);text-underline-offset:3px;}
 .art-body a:hover{text-decoration-color:var(--green);}
+.art-body table{width:100%;border-collapse:collapse;margin:8px 0 24px;font-size:.92rem;}
+.art-body th,.art-body td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);}
+.art-body th{color:var(--green);font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;}
 .toc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:36px;}
 .toc-title{font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:12px;}
 .toc ol{margin:0 0 0 20px;}
 .toc a{color:var(--t80);font-size:.92rem;text-decoration:none;}
 .toc a:hover{color:var(--green);}
-.callout{background:var(--gold-dim);border:1px solid var(--gold);border-left:3px solid var(--gold);border-radius:10px;padding:18px 22px;margin:24px 0;}
-.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.callout{background:var(--g-dim);border:1px solid var(--green);border-left:3px solid var(--green);border-radius:10px;padding:18px 22px;margin:24px 0;}
+.callout-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
 .callout p:last-child{margin-bottom:0;}
 
-/* MID-ARTICLE CTA */
 .mid-cta{background:linear-gradient(135deg,rgba(22,217,126,.1),rgba(22,217,126,.02));border:1px solid rgba(22,217,126,.28);border-radius:16px;padding:28px 26px;margin:40px 0;text-align:center;}
 .mid-cta h2{margin-top:0!important;font-size:1.3rem!important;}
 .mid-cta p{color:var(--t80);margin-bottom:18px;}
@@ -138,36 +136,31 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:.92rem;padding:13px 22px;border-radius:10px;border:1px solid var(--line);cursor:pointer;text-decoration:none!important;display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;}
 .btn-ghost:hover{border-color:rgba(22,217,126,.4);background:var(--g-dim);}
 
-/* FAQ */
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--green);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
-/* AUTHOR BOX */
 .author-box{display:flex;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin:40px 0;}
 .author-avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 40% 35%,#1a2b22,#070a08);border:1px solid rgba(22,217,126,.5);display:grid;place-items:center;font-size:1.4rem;}
 .author-box h3{font-family:var(--disp);font-size:1.02rem;font-weight:700;margin-bottom:4px;color:var(--text);}
 .author-box p{font-size:.86rem;color:var(--t55);line-height:1.6;margin:0;}
 @media(max-width:520px){.author-box{flex-direction:column;text-align:center;}}
 
-/* RELATED */
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media(max-width:680px){.related-grid{grid-template-columns:1fr;}}
 .related-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none!important;transition:border-color .2s,transform .2s;}
-.related-card:hover{border-color:var(--gold);transform:translateY(-2px);}
-.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block;}
+.related-card:hover{border-color:var(--green);transform:translateY(-2px);}
+.related-card .rc-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:6px;display:block;}
 .related-card .rc-title{font-family:var(--disp);font-weight:700;font-size:.94rem;color:var(--text);}
 
-/* CTA SECTION */
 .cta-section{text-align:center;padding:76px 24px 92px;max-width:760px;margin:0 auto;}
 .cta-section h2{font-family:var(--disp);font-size:clamp(1.7rem,4vw,2.3rem);font-weight:700;letter-spacing:.01em;margin-bottom:16px;}
 .cta-section p{font-size:1rem;color:var(--t80);line-height:1.7;max-width:480px;margin:0 auto 30px;}
 .cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
 
-/* FOOTER */
 footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;margin-top:20px;}
 .foot-in{max-width:1180px;margin:0 auto;}
 .foot-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
@@ -179,7 +172,6 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-/* READ TOAST */
 #readToast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--panel);border:1px solid var(--green);border-radius:12px;padding:14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:200;transition:transform .35s ease;max-width:calc(100vw - 32px);}
 #readToast.show{transform:translateX(-50%) translateY(0);}
 #readToast .rt-icon{font-size:1.3rem;}
@@ -190,7 +182,6 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .reveal.in{opacity:1;transform:translateY(0);}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
 
-/* LEARN DROPDOWN */
 .nav-dropdown{position:relative;}
 .nav-dropdown-trigger{font:inherit;font-size:.875rem;color:rgba(238,243,240,.80);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .15s,background .15s;}
 .nav-dropdown-trigger:hover,.nav-dropdown.open .nav-dropdown-trigger{color:#eef3f0;background:rgba(22,217,126,.07);}
@@ -209,7 +200,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "VWAP Trading Strategy Explained", "description": "How the VWAP trading strategy works \u2014 what VWAP measures, how intraday traders use it as a reference price, and a simple example.", "url": "https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained", "datePublished": "2026-07-18", "dateModified": "2026-07-18", "author": {"@type": "Person", "name": "Tavares Vickers", "url": "https://scalpclock.com/author/tavares-vickers/"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does VWAP stand for?", "acceptedAnswer": {"@type": "Answer", "text": "VWAP stands for Volume-Weighted Average Price \u2014 the average price a stock has traded at during the current session, weighted by the volume traded at each price level."}}, {"@type": "Question", "name": "Does VWAP reset every day?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, VWAP resets at the start of each trading session and accumulates throughout that day only \u2014 it doesn't carry over from previous sessions, unlike a multi-day moving average."}}, {"@type": "Question", "name": "Why do institutional traders care about VWAP?", "acceptedAnswer": {"@type": "Answer", "text": "Institutions often use VWAP as a benchmark for execution quality \u2014 buying below VWAP or selling above it is generally considered a good execution, which is part of why large orders are frequently placed with VWAP in mind."}}, {"@type": "Question", "name": "Is VWAP useful for swing trading?", "acceptedAnswer": {"@type": "Answer", "text": "VWAP is primarily an intraday tool since it resets daily; for multi-day or swing analysis, moving averages are generally a more appropriate reference point."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Technical Analysis", "item": "https://scalpclock.com/learn-options-trading/technical-analysis"}, {"@type": "ListItem", "position": 4, "name": "VWAP Trading Strategy Explained", "item": "https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "What Is Implied Volatility in Options?", "description": "Implied volatility is the market's forward-looking estimate of how much a stock will move. Learn how it's different from historical volatility and how it affects premium.", "url": "https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained", "datePublished": "2026-09-07", "dateModified": "2026-09-07", "author": {"@type": "Person", "name": "Tavares Vickers", "url": "https://scalpclock.com/author/tavares-vickers/"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "logo": {"@type": "ImageObject", "url": "https://scalpclock.com/icon-512.png"}}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained"}, "image": "https://scalpclock.com/og-image.png"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is implied volatility?", "acceptedAnswer": {"@type": "Answer", "text": "Implied volatility (IV) is the market's forward-looking estimate of how much a stock's price will fluctuate, derived from current options prices. Higher IV means the market expects bigger price swings."}}, {"@type": "Question", "name": "How is implied volatility different from historical volatility?", "acceptedAnswer": {"@type": "Answer", "text": "Historical (realized) volatility measures how much a stock actually moved in the past. Implied volatility is forward-looking and reflects what options traders currently expect, which can be higher or lower than recent realized volatility."}}, {"@type": "Question", "name": "How does implied volatility affect options prices?", "acceptedAnswer": {"@type": "Answer", "text": "Higher implied volatility increases options premium (both calls and puts), because it implies a wider range of possible outcomes by expiration. Falling implied volatility decreases premium, all else equal."}}, {"@type": "Question", "name": "What is IV crush?", "acceptedAnswer": {"@type": "Answer", "text": "IV crush is a sharp drop in implied volatility right after a known event (like earnings) resolves, since the uncertainty the market was pricing in is now gone. This can cause an option's price to fall even if the stock moves in the direction the trader expected."}}, {"@type": "Question", "name": "Is high implied volatility good or bad for options buyers?", "acceptedAnswer": {"@type": "Answer", "text": "Neither automatically — high IV means options cost more to buy, which raises the breakeven bar, but it also means bigger expected price swings that could work in a buyer's favor. It's a real cost/benefit tradeoff, not a simple good-or-bad signal."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Basics", "item": "https://scalpclock.com/learn-options-trading/options-basics"}, {"@type": "ListItem", "position": 4, "name": "What Is Implied Volatility in Options?", "item": "https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained"}]}]}</script>
 </head>
 <body>
 
@@ -279,8 +270,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <div class="drawer-group">
     <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
       <span class="drawer-group-label">Trade</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
     <div class="drawer-group-items">
       <div class="drawer-group-items-inner">
       <a href="/scalpchart" onclick="closeDrawer()">ScalpCharts</a>
@@ -299,16 +289,16 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <a href="/learn-options-trading/technical-analysis">Technical Analysis</a><span>/</span>
-  <span class="current">VWAP Trading Strategy Explained</span>
+  <a href="/learn-options-trading/options-basics">Options Basics</a><span>/</span>
+  <span class="current">What Is Implied Volatility in Options?</span>
 </div>
 
 <header class="art-header reveal">
-  <a class="art-cat-pill" href="/learn-options-trading/technical-analysis">📊 Technical Analysis</a>
-  <h1>VWAP Trading Strategy Explained</h1>
+  <a class="art-cat-pill" href="/learn-options-trading/options-basics">📘 Options Basics</a>
+  <h1>What Is Implied Volatility?</h1>
   <div class="art-meta">
-    <span>⏱ 8 min read</span>
-    <span>📅 Updated July 18, 2026</span>
+    <span>⏱ 7 min read</span>
+    <span>📅 Updated September 7, 2026</span>
     <span>✍️ <a href="/author/tavares-vickers/" style="color:inherit">Tavares Vickers</a></span>
   </div>
 </header>
@@ -317,68 +307,64 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 <nav class="toc" aria-label="Table of contents">
   <div class="toc-title">In This Article</div>
   <ol>
-    <li><a href="#what-is-vwap">What Is VWAP?</a></li>
-    <li><a href="#how-its-calculated">How VWAP Is Calculated (Conceptually)</a></li>
-    <li><a href="#why-institutions-use-it">Why Institutions Use VWAP</a></li>
-    <li><a href="#the-basic-strategy">The Basic VWAP Strategy</a></li>
-    <li><a href="#worked-example">A Simple Example</a></li>
-    <li><a href="#limitations">Limitations to Understand</a></li>
+    <li><a href="#quick-answer">The Quick Answer</a></li>
+    <li><a href="#implied-vs-historical">Implied vs Historical Volatility</a></li>
+    <li><a href="#effect-on-premium">How IV Affects Premium</a></li>
+    <li><a href="#iv-crush">IV Crush Around Earnings</a></li>
+    <li><a href="#faq">FAQ</a></li>
   </ol>
 </nav>
 
-<p><strong>VWAP stands for Volume Weighted Average Price</strong> — an intraday benchmark showing the average price a stock has traded at during the current session, weighted by how much volume traded at each price. It's one of the most widely used intraday reference points on Wall Street, and it shows up constantly in short-term options and scalping discussions. Here's what it actually measures and how traders use it — including how scalpers specifically apply it, covered in more depth in <a href="/learn-options-trading/scalping/vwap-options-scalping">using VWAP for options scalping</a>.</p>
+<p id="quick-answer"><strong>Implied volatility (IV)</strong> is the market's forward-looking estimate of how much a stock's price is likely to move, expressed as a percentage and derived directly from current options prices — not from any prediction about direction, just magnitude of movement.</p>
 
-<h2 id="what-is-vwap">What Is VWAP?</h2>
-<p>VWAP stands for Volume-Weighted Average Price — the average price a stock has traded at during the current session, weighted by how much volume traded at each price. Unlike a simple average of the high and low, VWAP gives more weight to price levels where more shares actually changed hands, making it a more accurate picture of where the "real" action has happened.</p>
+<p>IV is one of the least intuitive concepts in options trading precisely because it isn't about whether a stock will go up or down — only about how much the market expects it to move, in either direction.</p>
 
-<h2 id="how-its-calculated">How VWAP Is Calculated (Conceptually)</h2>
-<p>Without getting into the exact formula, the intuition is: for every trade that happens during the day, multiply the price by the number of shares traded at that price, add all of those up, and divide by the total volume for the day. A price level with heavy volume pulls VWAP toward it more than a price level with light volume, even if both were touched briefly. VWAP resets at the start of each trading session and builds throughout the day.</p>
+<h2 id="implied-vs-historical">Implied vs Historical Volatility</h2>
+<table>
+<tr><th></th><th>Historical (Realized) Volatility</th><th>Implied Volatility</th></tr>
+<tr><td>Measures</td><td>How much the stock actually moved in the past</td><td>How much the market currently expects it to move</td></tr>
+<tr><td>Direction</td><td>Backward-looking</td><td>Forward-looking</td></tr>
+<tr><td>Source</td><td>Calculated from past price data</td><td>Backed out of current options prices</td></tr>
+</table>
+<p>These two numbers are related but frequently diverge — IV often runs higher than recent historical volatility because the market is pricing in uncertainty around a specific known event, not just extrapolating the recent past.</p>
 
-<h2 id="why-institutions-use-it">Why Institutions Use VWAP</h2>
-<p>Large institutional traders often use VWAP as a benchmark for execution quality — if a big fund buys shares throughout the day at an average price below VWAP, that's generally considered a good execution; buying above VWAP is considered worse. This institutional usage is exactly why VWAP tends to act as a meaningful level on the chart: large orders are frequently placed with VWAP in mind, which can create real support or resistance around it.</p>
-
-<h2 id="the-basic-strategy">The Basic VWAP Strategy</h2>
-<p>The simplest way traders use VWAP is as a dividing line between bullish and bearish intraday bias: price trading above VWAP is often read as a bullish sign for the session, while price trading below VWAP is often read as bearish. Some traders look for a stock to pull back to VWAP and hold (bounce) as a lower-risk entry in the direction of the broader intraday trend, rather than chasing a move that's already extended far from it.</p>
-
+<h2 id="effect-on-premium">How IV Affects Premium</h2>
+<p>All else equal, higher implied volatility means higher <a href="/learn-options-trading/options-basics/options-premium-explained">options premium</a> — for both calls and puts. This is because a wider expected range of outcomes makes it more likely the option finishes with meaningful value, so the market prices that possibility in. When IV falls, premium falls with it, even if the stock price hasn't moved at all.</p>
 <div class="callout">
-<div class="callout-label">A Common Pattern</div>
-<p>A stock trending above VWAP that dips back down to touch it and then bounces is one of the more frequently cited intraday setups — the logic being that VWAP is acting as dynamic support during an uptrend, similar to how a moving average can.</p>
+<div class="callout-label">Key Distinction</div>
+<p>IV tells you nothing about direction. A stock can have very high implied volatility and still be equally likely (in the market's pricing) to go up or down — IV only speaks to the expected size of the move.</p>
 </div>
 
-<h2 id="worked-example">A Simple Example</h2>
-<p>A stock opens the day and rallies steadily, trading well above its VWAP line for the first hour. Around midday, it pulls back and touches VWAP directly, then starts moving higher again on increased volume. A trader watching for this exact setup might view the VWAP touch as a signal that the broader uptrend is likely to continue, using it as a lower-risk entry point compared to chasing the stock at a new high.</p>
-
-<h2 id="limitations">Limitations to Understand</h2>
-<ul>
-<li><strong>VWAP resets daily</strong> — it has no memory of prior sessions, so it's an intraday tool specifically, not useful for multi-day or swing analysis the way a moving average is.</li>
-<li><strong>It's a lagging measure</strong> — like any average, VWAP reflects what has already happened, not a prediction of what happens next.</li>
-<li><strong>It works best combined with other context</strong> — volume, the broader trend, and support/resistance zones all add confirmation that a VWAP-based signal isn't just noise.</li>
-</ul>
-<p>VWAP is a genuinely useful reference point, especially for short-term and scalping-style trading covered in our <a href="/learn-options-trading/scalping">Options Scalping</a> category — but like every other indicator on this list, it works best as one input among several, not a standalone signal.</p>
-
+<h2 id="iv-crush">IV Crush Around Earnings</h2>
+<p>One of the most commonly discussed IV events is <strong>IV crush</strong>: implied volatility tends to rise into a known catalyst (like an earnings report) as the market prices in the uncertainty of an unknown outcome, then drops sharply right after the event, once that uncertainty resolves.</p>
+<p>This matters because it means an option can lose significant value immediately after earnings even if the stock moves in the direction a trader expected — if the move isn't large enough to offset the IV crush, the position can still lose money. This is a widely documented pattern, not a guarantee, and it's exactly the kind of mechanic worth understanding fully before trading around scheduled events.</p>
 
 <div class="mid-cta reveal">
-  <h2>Ready To Practice What You Learned?</h2>
-  <p>Turn knowledge into skill with ScalpClock interactive lessons, chart replay, and trading challenges.</p>
-  <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
+  <h2>Practice Reading Volatility in Real Charts</h2>
+  <p>ScalpClock's Chart Replay lets you study how real historical price action behaved around volatile periods, one candle at a time.</p>
+  <a class="btn-primary" href="/scalpchart?tab=replay" onclick="gtag('event','tool_click',{tool:'replay'})">Try Chart Replay</a>
 </div>
 
 <h2 id="faq">Frequently Asked Questions</h2>
 <details class="faq-item">
-  <summary>What does VWAP stand for?</summary>
-  <div class="faq-a">VWAP stands for Volume-Weighted Average Price — the average price a stock has traded at during the current session, weighted by the volume traded at each price level.</div>
+  <summary>What is implied volatility?</summary>
+  <div class="faq-a">Implied volatility (IV) is the market's forward-looking estimate of how much a stock's price will fluctuate, derived from current options prices. Higher IV means the market expects bigger price swings.</div>
 </details>
 <details class="faq-item">
-  <summary>Does VWAP reset every day?</summary>
-  <div class="faq-a">Yes, VWAP resets at the start of each trading session and accumulates throughout that day only — it doesn't carry over from previous sessions, unlike a multi-day moving average.</div>
+  <summary>How is implied volatility different from historical volatility?</summary>
+  <div class="faq-a">Historical (realized) volatility measures how much a stock actually moved in the past. Implied volatility is forward-looking and reflects what options traders currently expect, which can be higher or lower than recent realized volatility.</div>
 </details>
 <details class="faq-item">
-  <summary>Why do institutional traders care about VWAP?</summary>
-  <div class="faq-a">Institutions often use VWAP as a benchmark for execution quality — buying below VWAP or selling above it is generally considered a good execution, which is part of why large orders are frequently placed with VWAP in mind.</div>
+  <summary>How does implied volatility affect options prices?</summary>
+  <div class="faq-a">Higher implied volatility increases options premium (both calls and puts), because it implies a wider range of possible outcomes by expiration. Falling implied volatility decreases premium, all else equal.</div>
 </details>
 <details class="faq-item">
-  <summary>Is VWAP useful for swing trading?</summary>
-  <div class="faq-a">VWAP is primarily an intraday tool since it resets daily; for multi-day or swing analysis, moving averages are generally a more appropriate reference point.</div>
+  <summary>What is IV crush?</summary>
+  <div class="faq-a">IV crush is a sharp drop in implied volatility right after a known event (like earnings) resolves, since the uncertainty the market was pricing in is now gone. This can cause an option's price to fall even if the stock moves in the direction the trader expected.</div>
+</details>
+<details class="faq-item">
+  <summary>Is high implied volatility good or bad for options buyers?</summary>
+  <div class="faq-a">Neither automatically — high IV means options cost more to buy, which raises the breakeven bar, but it also means bigger expected price swings that could work in a buyer's favor. It's a real cost/benefit tradeoff, not a simple good-or-bad signal.</div>
 </details>
 
 <div class="author-box reveal">
@@ -391,17 +377,17 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
 
 <h2>Continue Learning</h2>
 <div class="related-grid reveal">
-  <a class="related-card" href="/learn-options-trading/technical-analysis/best-indicators-for-options-trading">
-    <span class="rc-label">Technical Analysis</span>
-    <span class="rc-title">Best Indicators for Options Trading</span>
+  <a class="related-card" href="/learn-options-trading/options-basics/options-premium-explained">
+    <span class="rc-label">Options Basics</span>
+    <span class="rc-title">What Is Options Premium?</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/scalping/what-is-options-scalping">
-    <span class="rc-label">Options Scalping</span>
-    <span class="rc-title">What Is Options Scalping?</span>
+  <a class="related-card" href="/learn-options-trading/options-basics/options-greeks-explained">
+    <span class="rc-label">Options Basics</span>
+    <span class="rc-title">Options Greeks Explained</span>
   </a>
-  <a class="related-card" href="/learn-options-trading/technical-analysis/support-and-resistance-explained">
-    <span class="rc-label">Technical Analysis</span>
-    <span class="rc-title">Support and Resistance Explained</span>
+  <a class="related-card" href="/learn-options-trading/options-basics/theta-decay-explained">
+    <span class="rc-label">Options Basics</span>
+    <span class="rc-title">What Is Theta Decay?</span>
   </a>
 </div>
 
@@ -412,7 +398,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;marg
   <p>ScalpClock pairs every lesson with real tools — live charts, chart replay, and an exit-timing assistant — so you can apply what you just learned.</p>
   <div class="cta-btns">
     <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading/technical-analysis">Back to Technical Analysis</a>
+    <a class="btn-ghost" href="/learn-options-trading/options-basics">Back to Options Basics</a>
   </div>
 </section>
 
@@ -500,14 +486,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
   els.forEach(el=>io.observe(el));
 })();
 
-// Mark this lesson read once the reader has genuinely scrolled through the
-// body (70% of article height) or spent 25s on the page — whichever comes
-// first — then award XP via the shared SC_LEARN module and show a toast.
-// A page-load timer alone would count a bounce; scroll-depth alone would
-// miss slow readers who stop scrolling to actually read a section.
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const SLUG = 'technical-analysis/vwap-trading-strategy-explained';
+  const SLUG = 'options-basics/implied-volatility-explained';
   let done = false;
   function complete(){
     if (done) return;

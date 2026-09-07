@@ -61,6 +61,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/how-to-learn-options-trading</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/options-basics</loc>
     <lastmod>2026-08-14</lastmod>
     <changefreq>monthly</changefreq>
@@ -69,6 +75,12 @@
   <url>
     <loc>https://scalpclock.com/learn-options-trading/options-strategies</loc>
     <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/orb</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -217,6 +229,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/delta-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/options-basics/how-do-options-work</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
@@ -229,7 +247,43 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/options-contract-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/options-greeks-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/options-premium-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/options-basics/stock-trading-vs-options-trading</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/strike-price-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/options-basics/theta-decay-explained</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -260,6 +314,36 @@
   </url>
   <url>
     <loc>https://scalpclock.com/learn-options-trading/options-strategies/covered-calls-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/orb/15-minute-orb-strategy</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/orb/how-to-trade-orb</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/orb/orb-breakout-vs-retest</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/orb/practice-orb-trading</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/orb/what-is-opening-range-breakout</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -319,6 +403,24 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/best-indicators-for-options-scalping</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/best-stocks-for-options-scalping</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/best-time-to-scalp-options</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/scalping/day-trading-vs-options-scalping</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
@@ -331,7 +433,31 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/how-to-find-options-scalping-setups</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/scalping/how-to-practice-options-scalping-without-losing-money</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/options-scalping-checklist</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/options-scalping-entry-strategies</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/options-scalping-exits</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -343,13 +469,43 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/scalping/vwap-options-scalping</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/scalping/what-is-options-scalping</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/technical-analysis/9-ema-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/technical-analysis/9-ema-vs-20-ema</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/technical-analysis/best-indicators-for-options-trading</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/technical-analysis/breakout-retest-explained</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/learn-options-trading/technical-analysis/how-to-identify-breakouts</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -373,6 +529,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/learn-options-trading/technical-analysis/volume-confirmation</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/learn-options-trading/technical-analysis/vwap-trading-strategy-explained</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
@@ -385,8 +547,20 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://scalpclock.com/best-options-trading-tools</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://scalpclock.com/candlestick-pattern-trainer</loc>
     <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/contact</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -441,6 +615,12 @@
   <url>
     <loc>https://scalpclock.com/stock-trading-simulator</loc>
     <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scalpclock.com/trading-education-disclaimer</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

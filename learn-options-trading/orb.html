@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Options Basics — Learn Options Trading | ScalpClock</title>
-<meta name="description" content="Learn options trading basics: calls, puts, contracts, expiration dates, and the terminology every beginner options trader needs to know.">
-<link rel="canonical" href="https://scalpclock.com/learn-options-trading/options-basics">
+<title>Opening Range Breakout (ORB) — Learn Options Trading | ScalpClock</title>
+<meta name="description" content="Learn how opening range breakout (ORB) trading works, how to trade it, and how it connects to ScalpClock's live ORB Signal Engine.">
+<link rel="canonical" href="https://scalpclock.com/learn-options-trading/orb">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="Options Basics — Learn Options Trading | ScalpClock">
-<meta property="og:description" content="Learn options trading basics: calls, puts, contracts, expiration dates, and the terminology every beginner options trader needs to know.">
-<meta property="og:url" content="https://scalpclock.com/learn-options-trading/options-basics">
+<meta property="og:title" content="Opening Range Breakout (ORB) — Learn Options Trading | ScalpClock">
+<meta property="og:description" content="Learn how opening range breakout (ORB) trading works, how to trade it, and how it connects to ScalpClock's live ORB Signal Engine.">
+<meta property="og:url" content="https://scalpclock.com/learn-options-trading/orb">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Options Basics — Learn Options Trading | ScalpClock">
-<meta name="twitter:description" content="Learn options trading basics: calls, puts, contracts, expiration dates, and the terminology every beginner options trader needs to know.">
+<meta name="twitter:title" content="Opening Range Breakout (ORB) — Learn Options Trading | ScalpClock">
+<meta name="twitter:description" content="Learn how opening range breakout (ORB) trading works, how to trade it, and how it connects to ScalpClock's live ORB Signal Engine.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -66,7 +66,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 a{color:var(--green);text-decoration:none;}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:4px;}
 
-/* NAV */
 .nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(7,10,8,.80);border-bottom:1px solid var(--line);}
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;max-width:1180px;margin:0 auto;padding:0 24px;}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
@@ -106,13 +105,13 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 /* CATEGORY HERO */
 .cat-hero{max-width:900px;margin:0 auto;padding:28px 24px 44px;}
 .cat-hero-top{display:flex;align-items:center;gap:18px;margin-bottom:18px;}
-.cat-hero-icon{width:60px;height:60px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;font-size:1.7rem;background:var(--green-dim);border:1px solid var(--green);}
+.cat-hero-icon{width:60px;height:60px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;font-size:1.7rem;background:var(--gold-dim);border:1px solid var(--gold);}
 .cat-hero h1{font-family:var(--disp);font-size:clamp(1.9rem,4.8vw,2.8rem);font-weight:700;line-height:1.1;letter-spacing:.01em;}
 .cat-hero p{font-size:1.02rem;color:var(--t80);line-height:1.75;max-width:680px;margin-bottom:22px;}
 .cat-hero-progress{max-width:360px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;}
 .chp-row{display:flex;justify-content:space-between;font-size:.76rem;color:var(--t55);margin-bottom:8px;font-weight:600;}
 .chp-track{height:7px;background:rgba(120,200,160,.1);border-radius:4px;overflow:hidden;}
-.chp-fill{height:100%;background:var(--green);border-radius:4px;transition:width .5s ease;}
+.chp-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .5s ease;}
 
 /* ARTICLE LIST */
 .section{padding:0 24px 76px;max-width:900px;margin:0 auto;}
@@ -121,22 +120,22 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .article-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
 .article-item{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;transition:border-color .2s,transform .2s,box-shadow .2s;}
 a.article-item{cursor:pointer;}
-a.article-item:hover{border-color:var(--green);box-shadow:0 0 24px var(--green-dim);transform:translateX(4px);}
+a.article-item:hover{border-color:var(--gold);box-shadow:0 0 24px var(--gold-dim);transform:translateX(4px);}
 .article-item.soon{opacity:.55;}
-.article-num{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--green);width:28px;flex-shrink:0;text-align:center;}
+.article-num{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--gold);width:28px;flex-shrink:0;text-align:center;}
 .article-item-title{flex:1;font-family:var(--disp);font-weight:700;font-size:1.02rem;color:var(--text);}
 .article-status{flex-shrink:0;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:20px;white-space:nowrap;}
-.article-status.live{background:var(--green-dim);color:var(--green);}
+.article-status.live{background:var(--gold-dim);color:var(--gold);}
 .article-status.soon{background:rgba(238,243,240,.06);color:var(--t55);}
-.article-check{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
-.article-arrow{flex-shrink:0;width:16px;height:16px;color:var(--green);transition:transform .15s;}
+.article-check{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold);}
+.article-arrow{flex-shrink:0;width:16px;height:16px;color:var(--gold);transition:transform .15s;}
 a.article-item:hover .article-arrow{transform:translateX(3px);}
 
 /* FAQ */
 .faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--panel);}
 .faq-item summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:700;font-size:.98rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--green);flex-shrink:0;transition:transform .2s;}
+.faq-item summary::after{content:'+';font-size:1.3rem;color:var(--gold);flex-shrink:0;transition:transform .2s;}
 .faq-item[open] summary::after{transform:rotate(45deg);}
 .faq-item .faq-a{padding:0 20px 18px;color:var(--t80);font-size:.94rem;line-height:1.75;}
 
@@ -184,7 +183,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "Options Basics — Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/options-basics", "description": "Learn options trading basics: calls, puts, contracts, expiration dates, and the terminology every beginner options trader needs to know.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "What Is Options Trading? A Beginner's Guide", "url": "https://scalpclock.com/learn-options-trading/options-basics/what-is-options-trading"}, {"@type": "ListItem", "position": 2, "name": "How Do Options Work?", "url": "https://scalpclock.com/learn-options-trading/options-basics/how-do-options-work"}, {"@type": "ListItem", "position": 3, "name": "Calls vs Puts Explained", "url": "https://scalpclock.com/learn-options-trading/options-basics/calls-vs-puts-explained"}, {"@type": "ListItem", "position": 4, "name": "Stock Trading vs Options Trading", "url": "https://scalpclock.com/learn-options-trading/options-basics/stock-trading-vs-options-trading"}, {"@type": "ListItem", "position": 5, "name": "How Much Money Do You Need To Start Trading Options?", "url": "https://scalpclock.com/learn-options-trading/options-basics/how-much-money-do-you-need-to-start-trading-options"}, {"@type": "ListItem", "position": 6, "name": "Can You Make Money Trading Options?", "url": "https://scalpclock.com/learn-options-trading/options-basics/can-you-make-money-trading-options"}, {"@type": "ListItem", "position": 7, "name": "Common Mistakes Beginner Options Traders Make", "url": "https://scalpclock.com/learn-options-trading/options-basics/common-mistakes-beginner-options-traders-make"}, {"@type": "ListItem", "position": 8, "name": "What Is an Options Contract?", "url": "https://scalpclock.com/learn-options-trading/options-basics/options-contract-explained"}, {"@type": "ListItem", "position": 9, "name": "What Is a Strike Price?", "url": "https://scalpclock.com/learn-options-trading/options-basics/strike-price-explained"}, {"@type": "ListItem", "position": 10, "name": "What Is Options Premium?", "url": "https://scalpclock.com/learn-options-trading/options-basics/options-premium-explained"}, {"@type": "ListItem", "position": 11, "name": "What Is Implied Volatility?", "url": "https://scalpclock.com/learn-options-trading/options-basics/implied-volatility-explained"}, {"@type": "ListItem", "position": 12, "name": "Options Greeks Explained for Beginners", "url": "https://scalpclock.com/learn-options-trading/options-basics/options-greeks-explained"}, {"@type": "ListItem", "position": 13, "name": "What Is Delta in Options?", "url": "https://scalpclock.com/learn-options-trading/options-basics/delta-explained"}, {"@type": "ListItem", "position": 14, "name": "What Is Theta Decay?", "url": "https://scalpclock.com/learn-options-trading/options-basics/theta-decay-explained"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need to know how to trade stocks before I learn options?", "acceptedAnswer": {"@type": "Answer", "text": "It helps but isn't required. Options Basics is written to stand on its own — the core ideas (calls, puts, strikes, expiration) are explained from the ground up rather than assuming prior stock-trading experience."}}, {"@type": "Question", "name": "How long does it take to learn options basics?", "acceptedAnswer": {"@type": "Answer", "text": "Most people can work through all seven lessons in this category in a few hours spread across a few days. Understanding the concepts is fast; getting comfortable applying them takes longer and benefits from practicing with tools like ScalpClock's Replay."}}, {"@type": "Question", "name": "What should I learn after Options Basics?", "acceptedAnswer": {"@type": "Answer", "text": "Options Strategies is the natural next step — it builds directly on the calls/puts/expiration concepts covered here to explain how traders actually structure and use different strategies."}}, {"@type": "Question", "name": "Is options trading riskier than stock trading for beginners?", "acceptedAnswer": {"@type": "Answer", "text": "Options carry a different risk profile, not automatically a larger one — see our guide on stock trading vs options trading for a full comparison. What matters most for a beginner is understanding the mechanics fully before risking real money, which is exactly what this category is for."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Options Basics", "item": "https://scalpclock.com/learn-options-trading/options-basics"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "Opening Range Breakout (ORB) — Learn Options Trading | ScalpClock", "url": "https://scalpclock.com/learn-options-trading/orb", "description": "Learn how opening range breakout (ORB) trading works, how to trade it, and how it connects to ScalpClock's live ORB Signal Engine.", "isPartOf": {"@type": "WebSite", "name": "ScalpClock", "url": "https://scalpclock.com"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "What Is an Opening Range Breakout?", "url": "https://scalpclock.com/learn-options-trading/orb/what-is-opening-range-breakout"}, {"@type": "ListItem", "position": 2, "name": "How to Trade an Opening Range Breakout", "url": "https://scalpclock.com/learn-options-trading/orb/how-to-trade-orb"}, {"@type": "ListItem", "position": 3, "name": "15-Minute ORB Strategy Explained", "url": "https://scalpclock.com/learn-options-trading/orb/15-minute-orb-strategy"}, {"@type": "ListItem", "position": 4, "name": "ORB Breakout vs ORB Breakout Retest", "url": "https://scalpclock.com/learn-options-trading/orb/orb-breakout-vs-retest"}, {"@type": "ListItem", "position": 5, "name": "How to Practice ORB Trading Without Risk", "url": "https://scalpclock.com/learn-options-trading/orb/practice-orb-trading"}]}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What time frame should I use for ORB?", "acceptedAnswer": {"@type": "Answer", "text": "5, 15, and 30 minutes are the most common opening-range lengths. Shorter ranges react faster but are noisier; longer ranges are smoother but give a later signal. 15 minutes is a common middle-ground choice."}}, {"@type": "Question", "name": "Does ORB work for options as well as stocks?", "acceptedAnswer": {"@type": "Answer", "text": "The opening range is defined on the underlying stock's price, but traders commonly use a confirmed breakout to time entries into options contracts on that stock."}}, {"@type": "Question", "name": "Is ORB only relevant right at the market open?", "acceptedAnswer": {"@type": "Answer", "text": "The classic version is specifically about the first minutes of the regular session, when volume and volatility are typically most concentrated, though the same range-then-breakout logic can be applied to other windows."}}, {"@type": "Question", "name": "How is ORB different from other breakout strategies?", "acceptedAnswer": {"@type": "Answer", "text": "General breakout trading can apply to any support or resistance level formed at any time. ORB narrows that idea specifically to the range formed in the first minutes of the session."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Learn Options Trading", "item": "https://scalpclock.com/learn-options-trading"}, {"@type": "ListItem", "position": 3, "name": "Opening Range Breakout", "item": "https://scalpclock.com/learn-options-trading/orb"}]}]}</script>
 </head>
 <body>
 
@@ -276,19 +275,19 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <div class="crumb reveal">
   <a href="/">Home</a><span>/</span>
   <a href="/learn-options-trading">Learn Options Trading</a><span>/</span>
-  <span class="current">Options Basics</span>
+  <span class="current">Opening Range Breakout</span>
 </div>
 
 <!-- CATEGORY HERO -->
 <section class="cat-hero reveal">
   <div class="cat-hero-top">
-    <div class="cat-hero-icon" aria-hidden="true">📘</div>
-    <h1>Options Basics</h1>
+    <div class="cat-hero-icon" aria-hidden="true">⏱️</div>
+    <h1>Opening Range Breakout (ORB)</h1>
   </div>
-  <p>Options trading has its own vocabulary — calls, puts, strikes, expiration, premium — and none of it is intuitive the first time you see it. This category starts from zero and builds up the core concepts every other topic on ScalpClock assumes you already know.</p>
-  <p>Work through these seven lessons in order if you're brand new, or jump straight to whichever concept you're stuck on. Each one is written to be understood without a finance background, with real examples instead of abstract definitions.</p>
+  <p>An opening range breakout uses the high and low of the first few minutes of the trading session as a reference range, then watches for price to move decisively beyond it. This category covers how to identify and structure trades around that pattern — the mechanics, the tradeoffs, and how to practice it before risking real money.</p>
+  <p>This is one of the few strategies on ScalpClock with a dedicated live tool behind it: the <a href="/orbsignalengine">ORB Signal Engine</a> tracks the opening range and flags breakouts automatically, so you can see the concept play out in real time instead of just reading about it.</p>
   <div class="cat-hero-progress">
-    <div class="chp-row"><span>Progress</span><span id="chpStat">0/14 read</span></div>
+    <div class="chp-row"><span>Progress</span><span id="chpStat">0/5 read</span></div>
     <div class="chp-track"><div class="chp-fill" id="chpFill" style="width:0%"></div></div>
   </div>
 </section>
@@ -296,89 +295,35 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <!-- ARTICLE LIST -->
 <section class="section reveal">
   <div class="sec-label">Lessons</div>
-  <h2 class="sec-title">Options Basics Articles</h2>
+  <h2 class="sec-title">Opening Range Breakout Articles</h2>
   <ul class="article-list" id="articleList">
-    <a class="article-item" href="/learn-options-trading/options-basics/what-is-options-trading" id="art-what-is-options-trading">
+    <a class="article-item" href="/learn-options-trading/orb/what-is-opening-range-breakout" id="art-what-is-opening-range-breakout">
       <span class="article-num">01</span>
-      <span class="article-item-title">What Is Options Trading? A Beginner's Guide</span>
+      <span class="article-item-title">What Is an Opening Range Breakout?</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/how-do-options-work" id="art-how-do-options-work">
+    <a class="article-item" href="/learn-options-trading/orb/how-to-trade-orb" id="art-how-to-trade-orb">
       <span class="article-num">02</span>
-      <span class="article-item-title">How Do Options Work?</span>
+      <span class="article-item-title">How to Trade an Opening Range Breakout</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/calls-vs-puts-explained" id="art-calls-vs-puts-explained">
+    <a class="article-item" href="/learn-options-trading/orb/15-minute-orb-strategy" id="art-15-minute-orb-strategy">
       <span class="article-num">03</span>
-      <span class="article-item-title">Calls vs Puts Explained</span>
+      <span class="article-item-title">15-Minute ORB Strategy Explained</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/stock-trading-vs-options-trading" id="art-stock-trading-vs-options-trading">
+    <a class="article-item" href="/learn-options-trading/orb/orb-breakout-vs-retest" id="art-orb-breakout-vs-retest">
       <span class="article-num">04</span>
-      <span class="article-item-title">Stock Trading vs Options Trading</span>
+      <span class="article-item-title">ORB Breakout vs ORB Breakout Retest</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/how-much-money-do-you-need-to-start-trading-options" id="art-how-much-money-do-you-need-to-start-trading-options">
+    <a class="article-item" href="/learn-options-trading/orb/practice-orb-trading" id="art-practice-orb-trading">
       <span class="article-num">05</span>
-      <span class="article-item-title">How Much Money Do You Need To Start Trading Options?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/can-you-make-money-trading-options" id="art-can-you-make-money-trading-options">
-      <span class="article-num">06</span>
-      <span class="article-item-title">Can You Make Money Trading Options?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/common-mistakes-beginner-options-traders-make" id="art-common-mistakes-beginner-options-traders-make">
-      <span class="article-num">07</span>
-      <span class="article-item-title">Common Mistakes Beginner Options Traders Make</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/options-contract-explained" id="art-options-contract-explained">
-      <span class="article-num">08</span>
-      <span class="article-item-title">What Is an Options Contract?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/strike-price-explained" id="art-strike-price-explained">
-      <span class="article-num">09</span>
-      <span class="article-item-title">What Is a Strike Price?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/options-premium-explained" id="art-options-premium-explained">
-      <span class="article-num">10</span>
-      <span class="article-item-title">What Is Options Premium?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/implied-volatility-explained" id="art-implied-volatility-explained">
-      <span class="article-num">11</span>
-      <span class="article-item-title">What Is Implied Volatility?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/options-greeks-explained" id="art-options-greeks-explained">
-      <span class="article-num">12</span>
-      <span class="article-item-title">Options Greeks Explained for Beginners</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/delta-explained" id="art-delta-explained">
-      <span class="article-num">13</span>
-      <span class="article-item-title">What Is Delta in Options?</span>
-      <span class="article-status live">Start</span>
-      <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a class="article-item" href="/learn-options-trading/options-basics/theta-decay-explained" id="art-theta-decay-explained">
-      <span class="article-num">14</span>
-      <span class="article-item-title">What Is Theta Decay?</span>
+      <span class="article-item-title">How to Practice ORB Trading Without Risk</span>
       <span class="article-status live">Start</span>
       <svg class="article-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
@@ -388,32 +333,32 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 <!-- FAQ -->
 <section class="section reveal" style="padding-top:0;">
   <div class="sec-label">Frequently Asked Questions</div>
-  <h2 class="sec-title">Options Basics FAQ</h2>
+  <h2 class="sec-title">Opening Range Breakout FAQ</h2>
   <details class="faq-item">
-    <summary>Do I need to know how to trade stocks before I learn options?</summary>
-    <div class="faq-a">It helps but isn't required. Options Basics is written to stand on its own — the core ideas (calls, puts, strikes, expiration) are explained from the ground up rather than assuming prior stock-trading experience.</div>
+    <summary>What time frame should I use for ORB?</summary>
+    <div class="faq-a">5, 15, and 30 minutes are the most common opening-range lengths. Shorter ranges react faster but are noisier; longer ranges are smoother but give a later signal. 15 minutes is a common middle-ground choice.</div>
   </details>
   <details class="faq-item">
-    <summary>How long does it take to learn options basics?</summary>
-    <div class="faq-a">Most people can work through all seven lessons in this category in a few hours spread across a few days. Understanding the concepts is fast; getting comfortable applying them takes longer and benefits from practicing with tools like ScalpClock's Replay.</div>
+    <summary>Does ORB work for options as well as stocks?</summary>
+    <div class="faq-a">The opening range is defined on the underlying stock's price, but traders commonly use a confirmed breakout to time entries into options contracts on that stock.</div>
   </details>
   <details class="faq-item">
-    <summary>What should I learn after Options Basics?</summary>
-    <div class="faq-a">Options Strategies is the natural next step — it builds directly on the calls/puts/expiration concepts covered here to explain how traders actually structure and use different strategies.</div>
+    <summary>Is ORB only relevant right at the market open?</summary>
+    <div class="faq-a">The classic version is specifically about the first minutes of the regular session, when volume and volatility are typically most concentrated, though the same range-then-breakout logic can be applied to other windows.</div>
   </details>
   <details class="faq-item">
-    <summary>Is options trading riskier than stock trading for beginners?</summary>
-    <div class="faq-a">Options carry a different risk profile, not automatically a larger one — see our guide on stock trading vs options trading for a full comparison. What matters most for a beginner is understanding the mechanics fully before risking real money, which is exactly what this category is for.</div>
+    <summary>How is ORB different from other breakout strategies?</summary>
+    <div class="faq-a">General breakout trading can apply to any support or resistance level formed at any time. ORB narrows that idea specifically to the range formed in the first minutes of the session.</div>
   </details>
 </section>
 
 <!-- CTA -->
 <section class="cta-section reveal">
-  <h2>Ready To Practice What You Learned?</h2>
-  <p>Turn knowledge into skill with ScalpClock interactive lessons, chart replay, and trading challenges.</p>
+  <h2>See ORB on a Live Chart</h2>
+  <p>ScalpClock's ORB Signal Engine tracks the opening range and flags breakouts in real time.</p>
   <div class="cta-btns">
-    <a class="btn-primary" href="/login?tab=signup">Start Learning Free</a>
-    <a class="btn-ghost" href="/learn-options-trading">Browse All Categories</a>
+    <a class="btn-primary" href="/orbsignalengine" onclick="gtag('event','tool_click',{tool:'orb_engine'})">Open ORB Signal Engine</a>
+    <a class="btn-ghost" href="/scalpchart?tab=replay" onclick="gtag('event','tool_click',{tool:'replay'})">Practice in Chart Replay</a>
   </div>
 </section>
 
@@ -495,8 +440,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
 
 (function(){
   if (typeof SC_LEARN === 'undefined') return;
-  const catKey = 'options-basics';
-  const total = SC_LEARN.CATEGORY_TOTALS[catKey] || 7;
+  const catKey = 'orb';
+  const total = SC_LEARN.CATEGORY_TOTALS[catKey] || 5;
   const read = SC_LEARN.readByCategory()[catKey] || 0;
   const pct = total ? Math.round((read/total)*100) : 0;
   const fill = document.getElementById('chpFill');
