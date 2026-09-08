@@ -536,6 +536,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         </ul>
         <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 5-Day Free Trial</button>
         <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 5 days · Cancel anytime</p>
+        <p style="text-align:center;font-size:.72rem;color:var(--t55);margin-top:6px;" id="proNotFounderNote">Not the $1.99 Founding Member offer — <a href="#foundingCard" style="color:var(--gold);text-decoration:underline;" onclick="document.getElementById('foundingCard').scrollIntoView({behavior:'smooth',block:'center'});">that's available while Founder spots remain →</a></p>
         <!-- PROMO CODE -->
         <div style="margin-top:12px;text-align:center;">
           <button onclick="togglePromo()" style="background:none;border:none;color:var(--t55);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
@@ -809,6 +810,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 <p class="footer-note">Pro trial requires a card · no charge for 5 days · cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a> &nbsp;·&nbsp; <a href="mailto:admin@scalpclock.com">admin@scalpclock.com</a></p>
 <p class="footer-note" style="margin-top:10px;padding-bottom:60px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
+<script src="/js/founder-guard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 let _sb = null;
@@ -820,6 +822,20 @@ try {
 } catch (e) { console.warn('Supabase init failed:', e.message); }
 
 if (typeof gtag === 'function') gtag('event', 'pricing_view');
+
+// Landed back here from a cancelled Stripe checkout (see checkout.js's
+// cancel_url) — fire the matching cancellation event once, then clean the
+// param off the URL so a refresh/back-button doesn't refire it.
+(function trackCheckoutCancelled() {
+  const cancelledTier = new URLSearchParams(location.search).get('checkout_cancelled');
+  if (!cancelledTier) return;
+  if (typeof gtag === 'function') {
+    gtag('event', cancelledTier === 'founding_member' ? 'founder_checkout_cancelled' : 'pro_checkout_cancelled');
+  }
+  const url = new URL(location.href);
+  url.searchParams.delete('checkout_cancelled');
+  history.replaceState({}, '', url.pathname + url.search + url.hash);
+})();
 
 let annual  = false;
 let _promoId = null;
@@ -897,9 +913,8 @@ async function startCheckout(isTrial) {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
   const originalText = btn.textContent;
-  btn.disabled    = true;
-  btn.textContent = 'Redirecting…';
   toast.style.display = 'none';
+  if (typeof gtag === 'function') gtag('event', 'pro_cta_click');
 
   let userId = null;
   try {
@@ -912,11 +927,27 @@ async function startCheckout(isTrial) {
     return;
   }
 
+  // Founder Protection Intercept — never sent to Stripe checkout for the
+  // $9.99 Pro plan without a chance to switch to $1.99 Founding Member
+  // first, whenever that offer is genuinely still active. Resolves
+  // immediately with no modal shown at all if Founding isn't active
+  // (sold out / ended) — see js/founder-guard.js.
+  const gate = await FounderGuard.interceptProClick();
+  if (gate.action === 'cancelled') return;
+  if (gate.action === 'go_founding') { return startFoundingCheckout(); }
+
+  const confirmed = await FounderGuard.confirmPro({ price: annual ? '$7.99' : '$9.99', billing: annual ? 'annual' : 'monthly' });
+  if (!confirmed) return;
+
+  btn.disabled    = true;
+  btn.textContent = 'Redirecting…';
+
   try {
     const body = {
       tier:    'pro',
       billing: annual ? 'annual' : 'monthly',
       trial:   isTrial === true && !_promoId,
+      source:  'pricing_page',
     };
     if (_promoId) body.promoId = _promoId;
     if (userId)   body.userId  = userId;
@@ -924,6 +955,7 @@ async function startCheckout(isTrial) {
     if (gaClientId) body.gaClientId = gaClientId;
     if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
     if (typeof gtag === 'function') gtag('event', 'pro_trial_click');
+    if (typeof gtag === 'function') gtag('event', 'pro_checkout_started');
 
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',
@@ -952,9 +984,7 @@ async function startFoundingCheckout() {
   const btn   = document.getElementById('foundingBtn');
   const toast = document.getElementById('foundingToast');
   const originalText = btn.textContent;
-  if (typeof gtag === 'function') gtag('event', 'founding_member_click');
-  btn.disabled    = true;
-  btn.textContent = 'Redirecting…';
+  if (typeof gtag === 'function') gtag('event', 'founder_cta_click');
   toast.style.display = 'none';
 
   let userId = null;
@@ -968,11 +998,19 @@ async function startFoundingCheckout() {
     return;
   }
 
+  const confirmed = await FounderGuard.confirmFounding();
+  if (!confirmed) return;
+
+  btn.disabled    = true;
+  btn.textContent = 'Redirecting…';
+
   try {
+    if (typeof gtag === 'function') gtag('event', 'founding_member_click');
+    if (typeof gtag === 'function') gtag('event', 'founder_checkout_started');
     // Founding Member checkout never has a trial — $1.99 is charged
     // immediately. checkout.js also hard-enforces this server-side
     // regardless of what's sent here (defense in depth).
-    const body = { tier: 'founding_member', billing: 'monthly', trial: false };
+    const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'pricing_page' };
     if (userId) body.userId = userId;
 
     const res  = await fetch('/api/stripe/checkout', {
@@ -1025,7 +1063,12 @@ async function loadFoundingStatus() {
   try {
     const res  = await fetch('/api/founding-status');
     const data = await res.json();
+    // Phase 10 (sold-out behavior): the Pro card's "not the $1.99 offer"
+    // note only makes sense while Founding is genuinely active — hide it
+    // rather than pointing users at an offer that no longer exists.
+    const noFounderNote = document.getElementById('proNotFounderNote');
     if (!data.active) {
+      if (noFounderNote) noFounderNote.style.display = 'none';
       // Spots specifically full (as opposed to past the cutoff date or the
       // offer being killed) still shows the card — just full, disabled, and
       // explicit about why — rather than vanishing with no explanation.
@@ -1038,6 +1081,7 @@ async function loadFoundingStatus() {
       }
       return;
     }
+    if (noFounderNote) noFounderNote.style.display = '';
     document.getElementById('foundingCard').style.display = '';
     document.getElementById('foundingCountdown').style.display = '';
     const spotsText = `${data.remaining} of ${data.cap} spots left`;

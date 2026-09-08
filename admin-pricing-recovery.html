@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Recovery Report — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{ --max:1200px; }
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(247,249,247,.9);border-bottom:1px solid var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-title{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--text);}
+.nav-title span{color:var(--green-ink);}
+.nav-back{font-size:.82rem;color:var(--t65);text-decoration:none;}
+
+.shell{max-width:var(--max);margin:0 auto;padding:32px 24px;}
+
+.deny-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:40px 32px;text-align:center;max-width:480px;margin:60px auto;}
+.deny-card h2{font-family:var(--disp);font-weight:700;font-size:1.3rem;margin-bottom:10px;}
+.deny-card p{color:var(--t65);font-size:.9rem;}
+
+.note-card{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-card);padding:14px 18px;margin-bottom:20px;font-size:.85rem;color:var(--t85);line-height:1.6;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:16px 18px;}
+.stat-label{font-size:.7rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.stat-val{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--text);margin-top:2px;}
+
+.section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:28px 0 12px;color:var(--t85);display:flex;align-items:center;gap:10px;}
+.filter-toggle{font-family:var(--disp);font-weight:700;font-size:.72rem;padding:5px 11px;border-radius:6px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;}
+.filter-toggle.on{background:var(--green-soft);color:var(--green-ink);border-color:transparent;}
+.tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{text-align:left;padding:10px 14px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;font-family:var(--mono);}
+tr:last-child td{border-bottom:none;}
+.pill{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:5px;}
+.pill.flag{background:rgba(245,166,35,.15);color:#c98a1a;}
+.pill.ok{background:var(--green-soft);color:var(--green-ink);}
+.empty-row td{text-align:center;color:var(--t65);font-family:var(--body);padding:24px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <span class="nav-title">Scalp<span>Clock</span> — Pricing Recovery</span>
+    <a class="nav-back" href="/dashboard">&larr; Dashboard</a>
+  </div>
+</nav>
+
+<div class="shell">
+  <div id="denyView" style="display:none;">
+    <div class="deny-card">
+      <h2>Access Denied</h2>
+      <p>This page is restricted to ScalpClock admins.</p>
+    </div>
+  </div>
+
+  <div id="adminView" style="display:none;">
+    <div class="note-card">
+      This report identifies Pro ($9.99) subscribers who signed up while the $1.99 Founding Member offer
+      was genuinely available, so you can review and decide whether to reach out — it never
+      automatically changes anyone's plan or billing. "Checkout source" is only known for
+      purchases made after the founder-guard-v1 checkout update; older subscriptions show "unknown"
+      rather than a guess.
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Total Pro Subscriptions</div><div class="stat-val" id="statTotal">—</div></div>
+      <div class="stat-card"><div class="stat-label">Flagged (Founder Was Available)</div><div class="stat-val" id="statFlagged">—</div></div>
+      <div class="stat-card"><div class="stat-label">Report Generated</div><div class="stat-val" id="statGenerated" style="font-size:.85rem;">—</div></div>
+    </div>
+
+    <div class="section-title">
+      Pro Subscriptions
+      <button class="filter-toggle on" id="filterBtn" onclick="toggleFilter()">Flagged Only</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Email</th><th>Signup Date</th><th>Actual Stripe Price</th>
+          <th>Founder Available?</th><th>Spots Remaining</th><th>Checkout Source</th><th>Status</th>
+        </tr></thead>
+        <tbody id="rowsBody"><tr class="empty-row"><td colspan="7">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
+
+let _token = null;
+let _allRows = [];
+let _showFlaggedOnly = true;
+
+async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login'; return; }
+
+  if (session.user.app_metadata?.is_admin !== true) {
+    document.getElementById('denyView').style.display = 'block';
+    return;
+  }
+
+  _token = session.access_token;
+  document.getElementById('adminView').style.display = 'block';
+  await loadReport();
+}
+
+async function loadReport() {
+  try {
+    const res = await fetch('/api/admin/pricing-recovery', { headers: { Authorization: `Bearer ${_token}` } });
+    if (!res.ok) throw new Error('report fetch failed: ' + res.status);
+    const data = await res.json();
+
+    document.getElementById('statTotal').textContent = data.totalProSubscriptions;
+    document.getElementById('statFlagged').textContent = data.flaggedCount;
+    document.getElementById('statGenerated').textContent = new Date(data.generatedAt).toLocaleString();
+
+    _allRows = data.all || [];
+    render();
+  } catch (e) {
+    console.error('loadReport failed:', e.message);
+    document.getElementById('rowsBody').innerHTML = '<tr class="empty-row"><td colspan="7">Could not load report.</td></tr>';
+  }
+}
+
+function toggleFilter() {
+  _showFlaggedOnly = !_showFlaggedOnly;
+  document.getElementById('filterBtn').classList.toggle('on', _showFlaggedOnly);
+  render();
+}
+
+function render() {
+  const rows = _showFlaggedOnly ? _allRows.filter(r => r.founderAvailableAtSignup) : _allRows;
+  const body = document.getElementById('rowsBody');
+  if (!rows.length) {
+    body.innerHTML = `<tr class="empty-row"><td colspan="7">${_showFlaggedOnly ? 'No flagged subscriptions — nobody purchased Pro while Founding was available.' : 'No Pro subscriptions found.'}</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.email || '—'}</td>
+      <td>${new Date(r.signupDate).toLocaleDateString()}</td>
+      <td>${r.actualStripePriceAmount != null ? '$' + r.actualStripePriceAmount : '—'}</td>
+      <td><span class="pill ${r.founderAvailableAtSignup ? 'flag' : 'ok'}">${r.founderAvailableAtSignup ? 'YES — FLAGGED' : 'No'}</span></td>
+      <td>${r.founderSpotsRemainingAtSignup != null ? r.founderSpotsRemainingAtSignup : '—'}</td>
+      <td>${r.checkoutSource}</td>
+      <td>${r.subscriptionStatus}</td>
+    </tr>
+  `).join('');
+}
+
+init();
+</script>
+</body>
+</html>

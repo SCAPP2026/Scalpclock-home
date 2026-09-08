@@ -954,6 +954,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </footer>
 
+<script src="/js/founder-guard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // Page reveal (removed stale Supabase auth check — wrong project)
@@ -996,6 +997,7 @@ try {
 } catch (e) { console.warn('Supabase init failed:', e.message); }
 
 async function startFoundingCheckout() {
+  if (typeof gtag === 'function') gtag('event', 'founder_cta_click');
   let userId = null;
   try {
     const { data: { session } } = await _sb.auth.getSession();
@@ -1007,11 +1009,17 @@ async function startFoundingCheckout() {
     return;
   }
 
+  if (typeof FounderGuard !== 'undefined') {
+    const confirmed = await FounderGuard.confirmFounding();
+    if (!confirmed) return;
+  }
+
   try {
     // Founding Member checkout never has a trial — $1.99 is charged
     // immediately. checkout.js also hard-enforces this server-side
     // regardless of what's sent here (defense in depth).
-    const body = { tier: 'founding_member', billing: 'monthly', trial: false };
+    if (typeof gtag === 'function') gtag('event', 'founder_checkout_started');
+    const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'homepage' };
     if (userId) body.userId = userId;
 
     const res  = await fetch('/api/stripe/checkout', {

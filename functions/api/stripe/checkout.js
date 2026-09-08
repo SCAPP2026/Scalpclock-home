@@ -98,9 +98,9 @@ async function findBlockingSubscription(userId, stripeSecretKey) {
 }
 
 async function handleCheckout(env, request) {
-  let tier, billing, trial, promoId, userId, gaClientId;
+  let tier, billing, trial, promoId, userId, gaClientId, source;
   try {
-    ({ tier, billing, trial, promoId, userId, gaClientId } = await request.json());
+    ({ tier, billing, trial, promoId, userId, gaClientId, source } = await request.json());
   } catch {
     return json({ error: 'Invalid JSON body' }, 400);
   }
@@ -171,12 +171,18 @@ async function handleCheckout(env, request) {
     (isTrialSession ? '&trial=1' : '') +
     (isFounding ? '&founding=1' : '');
 
+  // Tags the cancel redirect with which tier was abandoned so pricing.html
+  // can fire the matching founder_checkout_cancelled / pro_checkout_cancelled
+  // analytics event (Phase 14) — purely a query param for client-side
+  // tracking, never trusted for anything security- or billing-relevant.
+  const cancelUrl = `${origin}/pricing?checkout_cancelled=${isFounding ? 'founding_member' : 'pro'}`;
+
   const params = new URLSearchParams({
     'line_items[0][price]':    priceId,
     'line_items[0][quantity]': '1',
     mode:                      'subscription',
     success_url:               successUrl,
-    cancel_url:                `${origin}/pricing`,
+    cancel_url:                cancelUrl,
   });
 
   // Stripe rejects a session that sets both `discounts` and
@@ -226,6 +232,18 @@ async function handleCheckout(env, request) {
     params.set('metadata[founding_member]', 'true');
     params.set('subscription_data[metadata][founding_member]', 'true');
   }
+
+  // Explicit plan_type + acquisition source on every session, independent of
+  // the founding_member flag above — lets the Phase 13 recovery report (see
+  // functions/api/admin/pricing-recovery.js) identify which checkout surface
+  // a purchase came through (pricing page vs. an in-app paywall) without
+  // having to infer it. `source` is caller-supplied, sanitized to a small
+  // known allowlist so an arbitrary client value can't pollute metadata.
+  const ALLOWED_SOURCES = new Set(['pricing_page', 'signals_paywall', 'dashboard_paywall', 'settings_upgrade', 'homepage']);
+  const safeSource = ALLOWED_SOURCES.has(source) ? source : 'unknown';
+  params.set('metadata[plan_type]', isFounding ? 'founding_member' : 'pro');
+  params.set('metadata[source]', safeSource);
+  params.set('metadata[checkout_version]', 'founder-guard-v1');
 
   let res;
   try {

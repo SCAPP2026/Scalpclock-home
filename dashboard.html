@@ -797,6 +797,7 @@ body.drawer-open{overflow:hidden}
 
 </div>
 
+<script src="/js/founder-guard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/trade-score.js"></script>
 <script>
@@ -1185,14 +1186,32 @@ function getGaClientId() {
 
 async function startCheckout(btn) {
   const original = btn.textContent;
+  if (typeof gtag === 'function') gtag('event', 'pro_cta_click');
+
+  // Founder Protection Intercept — this dashboard upgrade prompt bypasses
+  // /pricing entirely, so it needs its own copy of the same safeguard.
+  // Resolves instantly with no modal if Founding Member pricing isn't
+  // currently active. See js/founder-guard.js.
+  if (typeof FounderGuard !== 'undefined') {
+    const gate = await FounderGuard.interceptProClick();
+    if (gate.action === 'cancelled') return;
+    if (gate.action === 'go_founding') {
+      window.location.href = '/pricing#foundingCard';
+      return;
+    }
+    const confirmed = await FounderGuard.confirmPro({ price: '$9.99', billing: 'monthly' });
+    if (!confirmed) return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const body = { tier: 'pro', billing: 'monthly', trial: true };
+    const body = { tier: 'pro', billing: 'monthly', trial: true, source: 'dashboard_paywall' };
     if (_uid) body.userId = _uid;
     const gaClientId = getGaClientId();
     if (gaClientId) body.gaClientId = gaClientId;
     if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
+    if (typeof gtag === 'function') gtag('event', 'pro_checkout_started');
 
     const res = await fetch('/api/stripe/checkout', {
       method:  'POST',

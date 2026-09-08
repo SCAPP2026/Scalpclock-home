@@ -188,6 +188,9 @@ const TOTAL_SECS = isFounding ? 8 : 5; // give the Founder-number poll below tim
 // that retry and could sit showing stale "Free" status until the session
 // token happened to naturally refresh on its own (up to ~1 hour later).
 if (sessionId) localStorage.setItem('sc_just_paid', new Date().toISOString());
+if (sessionId && typeof gtag === 'function') {
+  gtag('event', isFounding ? 'founder_checkout_completed' : 'pro_checkout_completed');
+}
 
 if (isTrial) {
   document.getElementById('mainHeading').innerHTML = '🎉 Welcome to <em>Pro</em>';

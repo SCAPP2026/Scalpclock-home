@@ -471,6 +471,7 @@ body.drawer-open{overflow:hidden}
 
 </div>
 
+<script src="/js/founder-guard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
@@ -673,15 +674,33 @@ function getGaClientId() {
 
 async function startCheckout(btn) {
   const original = btn.textContent;
+  if (typeof gtag === 'function') gtag('event', 'pro_cta_click');
+
+  // Founder Protection Intercept — this paywall CTA bypasses /pricing
+  // entirely, so it needs its own copy of the same safeguard rather than
+  // relying on pricing.html's. Resolves instantly with no modal at all if
+  // Founding Member pricing isn't currently active. See js/founder-guard.js.
+  if (typeof FounderGuard !== 'undefined') {
+    const gate = await FounderGuard.interceptProClick();
+    if (gate.action === 'cancelled') return;
+    if (gate.action === 'go_founding') {
+      window.location.href = '/pricing#foundingCard';
+      return;
+    }
+    const confirmed = await FounderGuard.confirmPro({ price: _billing === 'annual' ? '$7.99' : '$9.99', billing: _billing });
+    if (!confirmed) return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const body = { tier: 'pro', billing: _billing, trial: !_promoId };
+    const body = { tier: 'pro', billing: _billing, trial: !_promoId, source: 'signals_paywall' };
     if (_promoId) body.promoId = _promoId;
     if (_uid)     body.userId  = _uid;
     const gaClientId = getGaClientId();
     if (gaClientId) body.gaClientId = gaClientId;
     if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
+    if (typeof gtag === 'function') gtag('event', 'pro_checkout_started');
     const res = await fetch('/api/stripe/checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
