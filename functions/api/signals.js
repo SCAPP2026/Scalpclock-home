@@ -20,6 +20,16 @@
 //                           returns a verdict even for Hold / lower-
 //                           liquidity names instead of filtering them out
 //                           the way the market scan does.
+//
+// Scalp Opportunity Score: every candidate additionally gets a `scalpScore`
+// field (100-point breakdown across 8 categories — see functions/lib/
+// scalp-score.js) attached alongside all the fields above, which are left
+// completely untouched. This is a silent, additive rollout (Milestone 1 of
+// the Scalp Opportunity Engine plan) — nothing reading the pre-existing
+// fields (signals-snapshot.js, signal-performance.js, today's signals.html
+// renderer) is affected.
+import { computeScalpScore } from '../lib/scalp-score.js';
+
 export async function onRequest(context) {
   const { env, request } = context;
   const KEY_ID = env.ALPACA_KEY_ID;
@@ -195,6 +205,7 @@ export async function onRequest(context) {
   if (symbolParam) {
     try {
       let rsi, vwap, volSurge, price, prevClose, avgDailyVol;
+      let bars15ForScore = null, latestVolForScore = null; // day-range only — feeds the additive scalpScore below
       const newsTickersPromise = fetchNewsTickers(range === 'week' ? 72 : 6);
 
       if (range === 'day') {
@@ -208,6 +219,8 @@ export async function onRequest(context) {
         const latestBar = ((await safeJson(latestRes)).bars || {})[symbolParam] || null;
         const bars       = ((await safeJson(bars15Res)).bars || {})[symbolParam] || [];
         const dayBars    = ((await safeJson(barsDayRes)).bars || {})[symbolParam] || [];
+        bars15ForScore = bars;
+        latestVolForScore = latestBar ? latestBar.v : (bars.length ? bars[bars.length - 1].v : null);
 
         if (!bars.length && !latestBar) throw new Error('NO_DATA');
 
@@ -258,6 +271,20 @@ export async function onRequest(context) {
         ? `SampsonX says: not enough price history yet on ${symbolParam} to call this one — check back after the market's had more time to trade it.`
         : `SampsonX says: ${sig.signal}${sig.conviction === 'HARD' ? ' (high confidence)' : ''} — ${sig.explain}`;
 
+      // ── Scalp Opportunity Score (additive, day-range only — see the
+      // matching comment on the market-scan path above for why). ──────────
+      let scalpScore = null;
+      if (range === 'day' && bars15ForScore) {
+        try {
+          scalpScore = computeScalpScore({
+            symbol: symbolParam, price, avgDollarVol: avgDailyVol != null ? avgDailyVol * price : null,
+            bars15: bars15ForScore, vwapDist, latestVolume: latestVolForScore,
+            timeOfDayMinutes: now.getUTCHours() * 60 + now.getUTCMinutes(),
+            fallbackVolSurge: volSurge, hasNews, tone: sig.tone,
+          });
+        } catch (e) { console.error('scalp-score failed for', symbolParam, e.message); }
+      }
+
       return new Response(JSON.stringify({
         marketOpen: clockOpen, asOf: new Date().toISOString(), range,
         symbol: symbolParam,
@@ -269,6 +296,7 @@ export async function onRequest(context) {
           vwapDist, volSurge: Number(volSurge.toFixed(2)),
           lowLiquidity,
           ...sig,
+          scalpScore,
         },
         sampsonX,
       }), {
@@ -450,6 +478,27 @@ export async function onRequest(context) {
 
         if (sig.tone === 'hold') continue; // only Calls / Puts candidates compete for the top-10 slots
 
+        // ── Scalp Opportunity Score (additive) ──────────────────────────
+        // New fields only — every field above is untouched, so anything
+        // still reading the legacy shape (signals-snapshot.js, signal-
+        // performance.js, today's signals.html renderer) is unaffected.
+        // See functions/lib/scalp-score.js for the pure scoring function;
+        // this call intentionally omits optionsSnapshot (bounded top-N
+        // scoping — see that file's header comment on why options-chain
+        // data is never fetched universe-wide inside this loop).
+        let scalpScore = null;
+        try {
+          const avgDailyVolForDollar = dayBars.length ? dayBars.reduce((s, b) => s + b.v, 0) / dayBars.length : null;
+          const avgDollarVol = avgDailyVolForDollar != null ? avgDailyVolForDollar * price : null;
+          scalpScore = computeScalpScore({
+            symbol: sym, price, avgDollarVol, bars15: bars,
+            vwapDist, latestVolume: latestVol,
+            timeOfDayMinutes: now.getUTCHours() * 60 + now.getUTCMinutes(),
+            fallbackVolSurge: volSurge, hasNews: newsTickers.has(sym),
+            tone: sig.tone,
+          });
+        } catch (e) { console.error('scalp-score failed for', sym, e.message); }
+
         scored.push({
           symbol: sym, name: nameFor(sym), ok: true,
           price, changePct: changePct ?? 0,
@@ -457,6 +506,7 @@ export async function onRequest(context) {
           vwap: vwap ? Number(vwap.toFixed(2)) : null,
           vwapDist, volSurge: Number(volSurge.toFixed(2)),
           ...sig,
+          scalpScore,
         });
       } catch (e) { /* skip symbols with malformed data rather than fail the whole scan */ }
     }

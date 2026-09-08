@@ -23,9 +23,25 @@ export async function onRequest(context) {
 
     // Cap at top 5 each direction — enough to see real performance trends
     // without writing an unbounded number of rows per day.
+    //
+    // score/score_breakdown/confidence/setup/engine_version are additive
+    // columns (see supabase/scalp_score_setup.sql) — populated here so
+    // Scalp Opportunity Score calibration data starts accumulating
+    // immediately (Milestone 1 of the Scalp Opportunity Engine plan), even
+    // before any UI surfaces the score. `tone`/`conviction`/`snapshot_price`
+    // are the exact pre-existing fields this insert already wrote; nothing
+    // about them changes.
+    const rowFrom = (s, tone) => ({
+      symbol: s.symbol, tone, conviction: s.conviction, snapshot_price: s.price,
+      score:           s.scalpScore?.score ?? null,
+      score_breakdown: s.scalpScore?.breakdown ?? null,
+      confidence:      s.scalpScore?.confidence ?? null,
+      setup:           s.scalpScore?.setup ?? null,
+      engine_version:  s.scalpScore?.engineVersion ?? null,
+    });
     const rows = [
-      ...(data.calls || []).slice(0, 5).map(s => ({ symbol: s.symbol, tone: 'buy',  conviction: s.conviction, snapshot_price: s.price })),
-      ...(data.puts  || []).slice(0, 5).map(s => ({ symbol: s.symbol, tone: 'sell', conviction: s.conviction, snapshot_price: s.price })),
+      ...(data.calls || []).slice(0, 5).map(s => rowFrom(s, 'buy')),
+      ...(data.puts  || []).slice(0, 5).map(s => rowFrom(s, 'sell')),
     ].filter(r => r.snapshot_price != null);
 
     if (!rows.length) {
