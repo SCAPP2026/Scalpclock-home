@@ -512,18 +512,25 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div class="waitlist-toast toast toast-pro" id="foundingToast"></div>
       </div>
 
-      <!-- PRO -->
+      <!-- PRO — deliberately de-emphasized while the Founding Member
+           campaign is active: this is the standard/after-promo plan, not
+           the recommended purchase. See proSavingsAnchor for the live,
+           real (never fabricated) $1.99-vs-$9.99 comparison, shown only
+           while Founding is actually active. -->
       <div class="plan-card pro-card">
-        <div class="plan-badge pro">FULL ACCESS</div>
+        <div class="plan-badge pro" id="proBadge" style="background:var(--panel);color:var(--t55);border:1px solid var(--line);">STANDARD PRO</div>
         <div class="plan-name" style="margin-top:6px">Pro</div>
         <div class="plan-price">
           <span class="amount" id="proPrice">$9.99</span>
           <span class="per" id="proLabel">/month</span>
         </div>
+        <div id="proSavingsAnchor" style="display:none;text-align:center;font-size:.78rem;color:var(--t55);margin-bottom:10px;">
+          Founding Members pay <strong style="color:var(--gold)">$1.99/month</strong> instead — <strong style="color:var(--gold)">save $8.00/month ($96.00/year)</strong>, locked for life.
+        </div>
         <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);border-radius:20px;margin-bottom:10px;">
           <span style="font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:.04em;">🎁 5-DAY FREE TRIAL</span>
         </div>
-        <div class="plan-desc">Try Pro free for 5 days. Cancel before the trial ends and you won't be charged.</div>
+        <div class="plan-desc" id="proDesc">Standard pricing after the Founding Member promotion ends. Try free for 5 days — cancel before the trial ends and you won't be charged.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Unlimited real-time buy/sell signals</li>
@@ -570,29 +577,39 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-eyebrow gold">Founding Member</div>
-      <h2 class="sec-title">Why Become a Founding Member?</h2>
-      <p class="sec-sub">You're not just getting a lower price. You're getting in early.</p>
+      <h2 class="sec-title">Don't Just Get Signals. Understand Why.</h2>
+      <p class="sec-sub">Learn the setup. Practice the setup. See it on the market. Analyze your decisions. Build better trading habits — the Founding Member offer gives you the complete ScalpClock experience for $1.99/month.</p>
     </div>
     <div class="benefit-grid">
       <div class="benefit-card">
         <div class="benefit-num">01</div>
-        <div class="benefit-title">Lock Your Price</div>
-        <div class="benefit-body">$1.99/month for life under the existing Founding Member terms.</div>
+        <div class="benefit-title">Learn More</div>
+        <div class="benefit-body">Unlimited premium lessons and structured learning — not a locked 2-a-day limit.</div>
       </div>
       <div class="benefit-card">
         <div class="benefit-num">02</div>
-        <div class="benefit-title">Get Full Access</div>
-        <div class="benefit-body">Access the Pro tools and features included with the Founding Member plan.</div>
+        <div class="benefit-title">Practice More</div>
+        <div class="benefit-body">Replay historical market setups without risking real money.</div>
       </div>
       <div class="benefit-card">
         <div class="benefit-num">03</div>
-        <div class="benefit-title">Earn Through Referrals</div>
-        <div class="benefit-body">Share your personal referral link and participate in the existing recurring referral program.</div>
+        <div class="benefit-title">Analyze Better</div>
+        <div class="benefit-body">Use ScalpCharts, indicators, live signals, and the ORB Signal Engine.</div>
       </div>
       <div class="benefit-card">
         <div class="benefit-num">04</div>
-        <div class="benefit-title">Help Build ScalpClock</div>
-        <div class="benefit-body">Founding Members are the early community helping shape the platform.</div>
+        <div class="benefit-title">Manage Trades</div>
+        <div class="benefit-body">Use Exit Assistant and risk/reward tools to plan your exits, not just your entries.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-num">05</div>
+        <div class="benefit-title">Get Coached</div>
+        <div class="benefit-body">Use SampsonX to understand what you're seeing, not just what to click.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-num">06</div>
+        <div class="benefit-title">Lock In $1.99</div>
+        <div class="benefit-body">Your Founding Member price stays $1.99/month for as long as your subscription stays active — even after everyone else pays $9.99.</div>
       </div>
     </div>
   </div>
@@ -1067,8 +1084,17 @@ async function loadFoundingStatus() {
     // note only makes sense while Founding is genuinely active — hide it
     // rather than pointing users at an offer that no longer exists.
     const noFounderNote = document.getElementById('proNotFounderNote');
+    const savingsAnchor = document.getElementById('proSavingsAnchor');
+    const proBadge = document.getElementById('proBadge');
+    const proDesc = document.getElementById('proDesc');
     if (!data.active) {
       if (noFounderNote) noFounderNote.style.display = 'none';
+      if (savingsAnchor) savingsAnchor.style.display = 'none';
+      // Founding has genuinely ended — Pro becomes the primary plan again,
+      // so restore its original "full access" framing (Phase 10 requirement:
+      // the server-verified offer state, not a guess, decides this).
+      if (proBadge) { proBadge.textContent = 'FULL ACCESS'; proBadge.style.cssText = ''; proBadge.className = 'plan-badge pro'; }
+      if (proDesc) proDesc.textContent = 'Try Pro free for 5 days. Cancel before the trial ends and you won\'t be charged.';
       // Spots specifically full (as opposed to past the cutoff date or the
       // offer being killed) still shows the card — just full, disabled, and
       // explicit about why — rather than vanishing with no explanation.
@@ -1082,6 +1108,7 @@ async function loadFoundingStatus() {
       return;
     }
     if (noFounderNote) noFounderNote.style.display = '';
+    if (savingsAnchor) savingsAnchor.style.display = '';
     document.getElementById('foundingCard').style.display = '';
     document.getElementById('foundingCountdown').style.display = '';
     const spotsText = `${data.remaining} of ${data.cap} spots left`;

@@ -590,6 +590,12 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
 </section>
 
+<!-- FOUNDING MEMBER TEASER — directly beneath the hero, before Learn Hub.
+     Populated by js/founder-cta.js: hidden entirely for active Pro/Founder
+     members or once Founding is sold out, shows the real live spots count
+     otherwise. See admin-facing /pricing for the full offer. -->
+<div style="max-width:900px;margin:0 auto;padding:0 24px 32px;" id="homeFounderTeaser"></div>
+
 <!-- LEARN HUB — IMMEDIATELY BELOW THE HERO -->
 <div class="lesson-preview" id="learn-hub">
   <div class="lesson-preview-in">
@@ -955,6 +961,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 </footer>
 
 <script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // Page reveal (removed stale Supabase auth check — wrong project)
@@ -1063,6 +1070,11 @@ async function loadFoundingStatus() {
   }
 }
 loadFoundingStatus();
+
+if (typeof FounderCTA !== 'undefined') {
+  FounderCTA.mount(document.getElementById('homeFounderTeaser'), { location: 'homepage_hero' });
+  FounderCTA.mountSticky({ location: 'homepage' });
+}
 
 // Nav drawer
 function toggleDrawer(){

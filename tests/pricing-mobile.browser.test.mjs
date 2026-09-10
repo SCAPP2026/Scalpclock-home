@@ -101,7 +101,20 @@ try {
     const loadFired = new Promise((resolve) => { client.on((msg) => { if (msg.method === 'Page.loadEventFired') resolve(); }); setTimeout(resolve, 4000); });
     await client.send('Page.navigate', { url });
     await loadFired;
-    await new Promise(r => setTimeout(r, 400));
+    // Poll for the founding card to actually be visible/populated (its
+    // async /api/founding-status fetch needs a round trip) rather than a
+    // fixed sleep — a fixed 400ms occasionally read the DOM before that
+    // fetch resolved, especially on the first navigate() in this shared-tab
+    // loop, causing real but non-reproducible flakiness in this suite.
+    for (let i = 0; i < 20; i++) {
+      const ready = await client.send('Runtime.evaluate', {
+        expression: `document.getElementById('foundingBtn')?.getBoundingClientRect().height > 0`,
+        returnByValue: true,
+      }).then(r => r.result?.value).catch(() => false);
+      if (ready) break;
+      await new Promise(r => setTimeout(r, 150));
+    }
+    await new Promise(r => setTimeout(r, 100));
   }
 
   const WIDTHS = [320, 375, 390, 414, 430];

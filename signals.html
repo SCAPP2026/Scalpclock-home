@@ -472,6 +472,7 @@ body.drawer-open{overflow:hidden}
 </div>
 
 <script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
@@ -1005,6 +1006,7 @@ if ('serviceWorker' in navigator) {
 }
 
 init();
+if (typeof FounderCTA !== 'undefined') FounderCTA.mountSticky({ location: 'signals' });
 </script>
 </body>
 </html>

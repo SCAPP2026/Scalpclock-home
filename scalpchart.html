@@ -1052,6 +1052,7 @@
 </head>
 <body style="visibility:hidden">
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">ScalpCharts — AI Trade Coach for Day Trading &amp; Scalping: Candlestick Patterns &amp; Options Signals</h1>
+<script src="/js/founder-cta.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://unpkg.com/lightweight-charts@4.1.4/dist/lightweight-charts.standalone.production.js"></script>
 
@@ -3981,28 +3982,53 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
     document.body.style.visibility = 'visible';
     const wall = document.createElement('div');
     wall.id = 'proWall';
+
+    // Value-based Founding Member paywall (Section 8) — see the matching
+    // comment in exitassistant.html's identical wall for the full rationale.
+    let founderActive = false;
+    if (plan === 'free' || plan === 'expired') {
+      try { founderActive = (await (await fetch('/api/founding-status')).json()).active === true; } catch (_) {}
+    }
+
     const cta = plan === 'anon'
       ? `<a href="/login?from=/scalpchart" style="display:block;background:#16d97e;color:#04150d;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;padding:13px 24px;border-radius:11px;text-decoration:none;margin-bottom:10px;">Sign Up Free to Preview</a>
         <a href="/pricing" style="display:block;color:rgba(22,217,126,.7);font-size:.85rem;padding:8px;">See Pro plans →</a>`
+      : founderActive
+      ? `<a href="/pricing#foundingCard" style="display:block;background:#f5a623;color:#1a0d00;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;padding:13px 24px;border-radius:11px;text-decoration:none;margin-bottom:10px;box-shadow:0 0 24px rgba(245,166,35,.3);">🔥 CLAIM MY $1.99 FOUNDER PRICE</a>
+        <a href="/dashboard" style="display:block;color:rgba(22,217,126,.7);font-size:.85rem;padding:8px;">← Back to Dashboard</a>`
       : `<a href="/pricing" style="display:block;background:#16d97e;color:#04150d;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;padding:13px 24px;border-radius:11px;text-decoration:none;margin-bottom:10px;">Upgrade to Pro — Start Free Trial</a>
         <a href="/dashboard" style="display:block;color:rgba(22,217,126,.7);font-size:.85rem;padding:8px;">← Back to Dashboard</a>`;
+
+    const heading = founderActive && plan !== 'anon' ? 'Unlock This With Founding Member Access' : 'ScalpCharts is a Pro Feature';
+    const body = founderActive && plan !== 'anon'
+      ? 'You just found one of ScalpClock\'s premium tools. Founding Members get full access — real-time charts, AI Trade Coach, pattern detection, and Chart Replay included — for <strong style="color:#f5a623">$1.99/month, locked for life</strong>.'
+      : 'Real-time candlestick charts, AI Trade Coach, pattern detection, and Chart Replay are included in your Pro plan.';
+    const footNote = founderActive && plan !== 'anon'
+      ? `<div style="color:rgba(238,243,240,.4);font-size:.72rem;margin-top:14px;">Founding Member availability is limited to the first 500 members.</div>`
+      : '';
+
     // Anonymous/free visitors still get the real chart rendered underneath
     // (loadTicker() runs unconditionally earlier in the page, independent of
     // this auth check) — this overlay is a paywall teaser, not a redirect,
     // so Googlebot sees actual page content instead of a dead end at /login.
     wall.innerHTML = `<div style="position:fixed;inset:0;z-index:9999;background:rgba(7,10,8,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:'Inter',system-ui,sans-serif;">
-      <div style="max-width:400px;background:rgba(14,22,16,.95);border:1px solid rgba(22,217,126,.35);border-radius:20px;padding:40px 32px;box-shadow:0 0 60px rgba(22,217,126,.12);">
+      <div style="max-width:400px;background:rgba(14,22,16,.95);border:1px solid ${founderActive && plan !== 'anon' ? 'rgba(245,166,35,.35)' : 'rgba(22,217,126,.35)'};border-radius:20px;padding:40px 32px;box-shadow:0 0 60px ${founderActive && plan !== 'anon' ? 'rgba(245,166,35,.12)' : 'rgba(22,217,126,.12)'};">
         <div style="font-size:2.4rem;margin-bottom:12px;">📊</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;color:#eef3f0;margin-bottom:8px;">ScalpCharts is a Pro Feature</div>
-        <div style="color:rgba(238,243,240,.55);font-size:.9rem;line-height:1.6;margin-bottom:24px;">Real-time candlestick charts, AI Trade Coach, pattern detection, and Chart Replay are included in your Pro plan.</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;color:#eef3f0;margin-bottom:8px;">${heading}</div>
+        <div style="color:rgba(238,243,240,.55);font-size:.9rem;line-height:1.6;margin-bottom:24px;">${body}</div>
         ${cta}
+        ${footNote}
       </div>
     </div>`;
     document.body.appendChild(wall);
+    if (typeof gtag === 'function') gtag('event', 'premium_paywall_view', { location: 'scalpchart', founder_active: founderActive });
+    const ctaEl = wall.querySelector('a[href*="pricing"]');
+    if (ctaEl) ctaEl.addEventListener('click', () => { if (typeof gtag === 'function') gtag('event', 'premium_paywall_cta_click', { location: 'scalpchart', founder_active: founderActive }); });
     return;
   }
   document.body.style.visibility = 'visible';
 })();
+if (typeof FounderCTA !== 'undefined') FounderCTA.mountSticky({ location: 'scalpchart' });
 // Auto-switch to Replay tab when ?tab=replay is in the URL. If ?rdate= (optionally with
 // &rtime=) is also present — set by the Trade Journal's "Practice This Trade in Replay"
 // link — auto-start the session loaded to that specific symbol/date/time instead of

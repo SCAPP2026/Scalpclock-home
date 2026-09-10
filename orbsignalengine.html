@@ -541,6 +541,10 @@
       New to ORB? <a href="/learn-options-trading/orb/how-to-trade-orb" style="color:#16d97e;text-decoration:none;font-weight:600;">Read the guide →</a>
     </div>
 
+    <!-- Founding Member teaser — populated by js/founder-cta.js, hidden
+         entirely for active Pro/Founder members or once Founding is sold out. -->
+    <div style="max-width:640px;margin:10px auto 0;" id="orbFounderTeaser"></div>
+
     <div class="session-context">
       <span><span class="sc-note">NYSE Session</span> <b>9:30 AM–4:00 PM ET</b></span>
       <span><span class="sc-note">Opening Range</span> <b id="ctxOpeningRange">—</b></span>
@@ -2488,6 +2492,15 @@ function toggleDrawerGroup(btn){
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+<script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+if (typeof FounderCTA !== 'undefined') {
+  FounderCTA.mount(document.getElementById('orbFounderTeaser'), { location: 'orb_engine', mode: 'compact' });
+  FounderCTA.mountSticky({ location: 'orb_engine' });
+}
 </script>
 </body>
 </html>
