@@ -297,6 +297,16 @@ async function signUp() {
       try {
         await sb.from('profiles').upsert({ id: data.user.id, plan: 'free' }, { onConflict: 'id' });
       } catch (_) {}
+      // Fire-and-forget: stamps signup_country/signup_region from Cloudflare's
+      // edge geolocation via a service-role RPC (works even without a session,
+      // unlike the profiles upsert above). Never blocks or fails signup.
+      try {
+        fetch('/api/record-signup-geo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: data.user.id }),
+        });
+      } catch (_) {}
     }
     if (typeof gtag === 'function') gtag('event', 'sign_up', { method: 'email' });
     showMsg('Account created! Check your email to confirm, then sign in below.', 'success');
