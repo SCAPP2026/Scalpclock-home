@@ -288,17 +288,13 @@ body.drawer-open{overflow:hidden}
   <div class="upgrade">
     <h2>Unlock <span>Pro</span> Access</h2>
     <p>Unlimited real-time signals, options recommendations, confidence scoring, and live pattern alerts.</p>
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(22,217,126,.08);border:1px solid rgba(22,217,126,.25);border-radius:10px;margin-bottom:16px;">
-      <span style="font-size:1rem;">🎁</span>
-      <span style="font-size:.82rem;color:var(--text);font-weight:500;"><strong style="color:var(--green-ink);">FREE 5-Day Trial</strong> — Cancel anytime. Won't be charged until day 6.</span>
-    </div>
     <div class="upgrade-toggle">
       <button type="button" id="toggleMonthly" class="active" onclick="setBilling('monthly')">Monthly</button>
       <button type="button" id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
     </div>
     <br>
-    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Start 5-Day Free Trial</button>
-    <p style="text-align:center;font-size:.75rem;color:var(--t65);margin-top:8px;">Then $9.99/mo · Cancel anytime</p>
+    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Upgrade to Pro — $9.99/mo</button>
+    <p style="text-align:center;font-size:.75rem;color:var(--t65);margin-top:8px;">Cancel anytime</p>
     <div style="margin-top:14px;">
       <button type="button" onclick="toggleDashPromo()" style="background:none;border:none;color:var(--t65);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
     </div>
@@ -468,7 +464,7 @@ function setBilling(mode) {
   document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
   document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
   const btn = document.getElementById('upgradeBtn');
-  btn.textContent = _promoId ? 'Claim Free Month' : 'Start 5-Day Free Trial';
+  btn.textContent = _promoId ? 'Claim Free Month' : 'Upgrade to Pro — $9.99/mo';
 }
 
 function toggleDashPromo() {
@@ -540,7 +536,7 @@ async function startCheckout(btn) {
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const body = { tier: 'pro', billing: _billing, trial: !_promoId, source: 'settings_upgrade' };
+    const body = { tier: 'pro', billing: _billing, trial: false, source: 'settings_upgrade' };
     if (_promoId) body.promoId = _promoId;
     if (_uid)     body.userId  = _uid;
     const gaClientId = getGaClientId();

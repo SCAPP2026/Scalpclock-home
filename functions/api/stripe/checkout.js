@@ -159,12 +159,12 @@ async function handleCheckout(env, request) {
     return json({ error: `No price configured for ${tier}/${billing}` }, 400);
   }
 
-  // Founding Member checkout must NEVER have a trial, regardless of what the
-  // client sends — the frontend no longer sends trial:true for it (see
-  // pricing.html's startFoundingCheckout), but this must not depend on that:
-  // a stale cached page, a direct API call, or a tampered request must not be
-  // able to talk this endpoint into creating a trialing Founding subscription.
-  const isTrialSession = trial === true && tier === 'pro' && !isFounding;
+  // Trials removed sitewide (2026-09) — no tier ever gets trial_period_days
+  // now, regardless of what the client sends. Kept as a named constant
+  // (rather than deleting every reference below) so successUrl/metadata
+  // still resolve correctly with a single, obvious source of truth, and so
+  // a future re-introduction of a trial only needs one line changed here.
+  const isTrialSession = false;
   const origin          = new URL(request.url).origin;
 
   const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}` +
@@ -196,11 +196,6 @@ async function handleCheckout(env, request) {
     params.set('discounts[0][promotion_code]', promoId);
   } else {
     params.set('allow_promotion_codes', 'true');
-  }
-
-  if (isTrialSession) {
-    params.set('subscription_data[trial_period_days]', '5');
-    params.set('payment_method_collection', 'always');
   }
 
   // Session-level metadata is always present on the checkout.session.completed

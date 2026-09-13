@@ -656,6 +656,10 @@ body.drawer-open{overflow:hidden}
     </div>
   </div>
 
+  <!-- Founding Member teaser — populated by js/founder-cta.js, hidden
+       entirely for active Pro/Founder members or when the offer isn't active. -->
+  <div id="dashFounderTeaser" style="margin-bottom:18px;"></div>
+
   <div class="section-title">Tool Menu</div>
   <div class="links-grid">
     <a class="link-card" href="/learn">
@@ -721,7 +725,7 @@ body.drawer-open{overflow:hidden}
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
       <div class="sp-lock-msg">Scalp Signals — Pro Feature</div>
       <div class="sp-lock-sub">Scans the market's most active stocks and surfaces the strongest calls and puts setups, for today or this week.</div>
-      <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Start Free Trial →</button>
+      <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Upgrade to Pro →</button>
     </div>
   </div>
 
@@ -798,6 +802,7 @@ body.drawer-open{overflow:hidden}
 </div>
 
 <script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/trade-score.js"></script>
 <script>
@@ -1206,7 +1211,7 @@ async function startCheckout(btn) {
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const body = { tier: 'pro', billing: 'monthly', trial: true, source: 'dashboard_paywall' };
+    const body = { tier: 'pro', billing: 'monthly', trial: false, source: 'dashboard_paywall' };
     if (_uid) body.userId = _uid;
     const gaClientId = getGaClientId();
     if (gaClientId) body.gaClientId = gaClientId;
@@ -1815,6 +1820,10 @@ init();
 loadEarnings();
 loadNews();
 setInterval(loadNews, 300000);
+
+if (typeof FounderCTA !== 'undefined') {
+  FounderCTA.mount(document.getElementById('dashFounderTeaser'), { location: 'dashboard', mode: 'compact' });
+}
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">

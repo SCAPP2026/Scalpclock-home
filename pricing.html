@@ -123,7 +123,8 @@ body.drawer-open{overflow:hidden}
 .plan-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:32px 26px;display:flex;flex-direction:column;gap:0;transition:transform .2s,border-color .2s,box-shadow .2s;}
 .plan-card:hover{border-color:rgba(120,200,160,.3);transform:translateY(-2px);}
 @media(prefers-reduced-motion:reduce){.plan-card{transition:none;}.plan-card:hover{transform:none;}}
-.plan-card.pro-card{border-color:rgba(22,217,126,.35);}
+.plan-card.pro-card{border-color:rgba(22,217,126,.35);order:0;}
+.plan-card.free-card{order:1;}
 .plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.06em;padding:4px 14px;border-radius:20px;white-space:nowrap;}
 .plan-badge.pro{background:var(--green);color:#04150d;}
 .plan-name{font-family:var(--disp);font-weight:700;font-size:1.35rem;margin-bottom:6px;}
@@ -340,9 +341,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Pricing", "item": "https://scalpclock.com/pricing"}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
   {"@type": "Question", "name": "What's included in the Free plan?", "acceptedAnswer": {"@type": "Answer", "text": "Free includes the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges — no card required."}},
-  {"@type": "Question", "name": "How does the Pro 5-day trial work?", "acceptedAnswer": {"@type": "Answer", "text": "Start a Pro trial with a card on file — you get full Pro access immediately and aren't charged until day 5. Cancel any time before then and you won't be billed at all."}},
-  {"@type": "Question", "name": "When am I charged for Pro?", "acceptedAnswer": {"@type": "Answer", "text": "If you don't cancel before day 5, your card is charged the plan price you selected (monthly or annual) and your subscription continues automatically."}},
-  {"@type": "Question", "name": "What happens if I cancel during my trial?", "acceptedAnswer": {"@type": "Answer", "text": "You won't be charged anything. You keep Pro access through the remainder of the trial period, then your account reverts to Free."}},
+  {"@type": "Question", "name": "When am I charged for Pro?", "acceptedAnswer": {"@type": "Answer", "text": "Your card is charged immediately for the plan price you selected (monthly or annual), and your subscription continues automatically each billing period."}},
   {"@type": "Question", "name": "What is a Founding Member?", "acceptedAnswer": {"@type": "Answer", "text": "Founding Member is a limited offer for the first 500 ScalpClock traders: full Pro access at $1.99/month, locked for life, plus a personal referral link and recurring referral commissions."}},
   {"@type": "Question", "name": "How does the $1.99 Founding Member price work?", "acceptedAnswer": {"@type": "Answer", "text": "You're charged $1.99 today. As long as your subscription stays active, that price never increases, even after the 500 spots are gone and new subscribers pay full Pro price."}},
   {"@type": "Question", "name": "Is there a free trial for Founding Members?", "acceptedAnswer": {"@type": "Answer", "text": "No. Founding Member checkout charges $1.99 immediately, with full Pro access starting right after successful payment."}},
@@ -394,7 +393,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <a href="/pricing" class="active">Pricing</a>
       <a href="/dashboard">Dashboard</a>
     </div>
-    <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+    <a class="nav-cta" href="/login?tab=signup">Learn Free</a>
     <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
   </div>
 </nav>
@@ -432,7 +431,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
   </div>
   <a href="/pricing" class="active" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
-  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Learn Free →</a>
 </div>
 
 <!-- ============ SECTION 1: HERO ============ -->
@@ -480,7 +479,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> XP &amp; progress tracking</li>
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Daily streaks &amp; badges</li>
         </ul>
-        <a class="plan-cta cta-free" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Start Free</a>
+        <a class="plan-cta cta-free" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Learn Free</a>
       </div>
 
       <!-- FOUNDING MEMBER (hidden until /api/founding-status confirms offer is active) -->
@@ -527,10 +526,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div id="proSavingsAnchor" style="display:none;text-align:center;font-size:.78rem;color:var(--t55);margin-bottom:10px;">
           Founding Members pay <strong style="color:var(--gold)">$1.99/month</strong> instead — <strong style="color:var(--gold)">save $8.00/month ($96.00/year)</strong>, locked for life.
         </div>
-        <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(22,217,126,.1);border:1px solid rgba(22,217,126,.3);border-radius:20px;margin-bottom:10px;">
-          <span style="font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:.04em;">🎁 5-DAY FREE TRIAL</span>
-        </div>
-        <div class="plan-desc" id="proDesc">Standard pricing after the Founding Member promotion ends. Try free for 5 days — cancel before the trial ends and you won't be charged.</div>
+        <div class="plan-desc" id="proDesc">Standard pricing after the Founding Member promotion ends.</div>
         <hr class="plan-divider">
         <ul class="feature-list">
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Unlimited real-time buy/sell signals</li>
@@ -541,8 +537,8 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Unlimited daily lessons</li>
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> SampsonX AI coach</li>
         </ul>
-        <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout(true)">Start 5-Day Free Trial</button>
-        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">No charge for 5 days · Cancel anytime</p>
+        <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Upgrade to Pro — $9.99/mo</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Billed monthly · Cancel anytime</p>
         <p style="text-align:center;font-size:.72rem;color:var(--t55);margin-top:6px;" id="proNotFounderNote">Not the $1.99 Founding Member offer — <a href="#foundingCard" style="color:var(--gold);text-decoration:underline;" onclick="document.getElementById('foundingCard').scrollIntoView({behavior:'smooth',block:'center'});">that's available while Founder spots remain →</a></p>
         <!-- PROMO CODE -->
         <div style="margin-top:12px;text-align:center;">
@@ -569,7 +565,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 <div class="trust-row">
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Cancel anytime, no lock-in</div>
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Secure checkout via Stripe</div>
-  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Pro trial: no charge for 5 days · Founding Member: charged today</div>
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> No free trial — Pro and Founding Member are both charged today</div>
 </div>
 
 <!-- ============ SECTION 3: WHY FOUNDING MEMBER ============ -->
@@ -724,7 +720,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div class="recommend-tag">Ready for Full Access</div>
         <div class="recommend-title">Choose Pro</div>
         <p class="recommend-body">For traders who want the complete ScalpClock experience and the flexibility of the standard Pro subscription.</p>
-        <button type="button" class="recommend-cta solid" onclick="startCheckout(true)">START FREE TRIAL</button>
+        <button type="button" class="recommend-cta solid" onclick="startCheckout()">START PRO — $9.99/MO</button>
       </div>
     </div>
   </div>
@@ -764,16 +760,8 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <div class="faq-a">Free includes the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges — no card required.</div>
     </details>
     <details class="faq-item">
-      <summary>How does the Pro 5-day trial work?</summary>
-      <div class="faq-a">Start a Pro trial with a card on file — you get full Pro access immediately and aren't charged until day 5. Cancel any time before then and you won't be billed at all.</div>
-    </details>
-    <details class="faq-item">
       <summary>When am I charged for Pro?</summary>
-      <div class="faq-a">If you don't cancel before day 5, your card is charged the plan price you selected (monthly or annual) and your subscription continues automatically.</div>
-    </details>
-    <details class="faq-item">
-      <summary>What happens if I cancel during my trial?</summary>
-      <div class="faq-a">You won't be charged anything. You keep Pro access through the remainder of the trial period, then your account reverts to Free.</div>
+      <div class="faq-a">Your card is charged immediately for the plan price you selected (monthly or annual), and your subscription continues automatically each billing period.</div>
     </details>
     <details class="faq-item">
       <summary>What is a Founding Member?</summary>
@@ -824,7 +812,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 </section>
 
 <!-- ============ SECTION 10: LEGAL / TRUST ============ -->
-<p class="footer-note">Pro trial requires a card · no charge for 5 days · cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a> &nbsp;·&nbsp; <a href="mailto:admin@scalpclock.com">admin@scalpclock.com</a></p>
+<p class="footer-note">Cancel anytime. &nbsp;·&nbsp; <a href="/faq">FAQ</a> &nbsp;·&nbsp; <a href="/learn">Learn</a> &nbsp;·&nbsp; <a href="/">Home</a> &nbsp;·&nbsp; <a href="mailto:admin@scalpclock.com">admin@scalpclock.com</a></p>
 <p class="footer-note" style="margin-top:10px;padding-bottom:60px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
 <script src="/js/founder-guard.js"></script>
@@ -926,7 +914,7 @@ function getGaClientId() {
   return m ? m[1] : null;
 }
 
-async function startCheckout(isTrial) {
+async function startCheckout() {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
   const originalText = btn.textContent;
@@ -963,7 +951,7 @@ async function startCheckout(isTrial) {
     const body = {
       tier:    'pro',
       billing: annual ? 'annual' : 'monthly',
-      trial:   isTrial === true && !_promoId,
+      trial:   false,
       source:  'pricing_page',
     };
     if (_promoId) body.promoId = _promoId;
@@ -971,7 +959,6 @@ async function startCheckout(isTrial) {
     const gaClientId = getGaClientId();
     if (gaClientId) body.gaClientId = gaClientId;
     if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
-    if (typeof gtag === 'function') gtag('event', 'pro_trial_click');
     if (typeof gtag === 'function') gtag('event', 'pro_checkout_started');
 
     const res  = await fetch('/api/stripe/checkout', {
@@ -1094,7 +1081,7 @@ async function loadFoundingStatus() {
       // so restore its original "full access" framing (Phase 10 requirement:
       // the server-verified offer state, not a guess, decides this).
       if (proBadge) { proBadge.textContent = 'FULL ACCESS'; proBadge.style.cssText = ''; proBadge.className = 'plan-badge pro'; }
-      if (proDesc) proDesc.textContent = 'Try Pro free for 5 days. Cancel before the trial ends and you won\'t be charged.';
+      if (proDesc) proDesc.textContent = 'Full ScalpClock Pro access, billed monthly.';
       // Spots specifically full (as opposed to past the cutoff date or the
       // offer being killed) still shows the card — just full, disabled, and
       // explicit about why — rather than vanishing with no explanation.

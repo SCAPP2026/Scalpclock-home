@@ -7,7 +7,7 @@
  *   - Founding Member checkout is refused server-side when the offer isn't
  *     actually active, even if a client claims otherwise, and no Stripe
  *     session is created in that case
- *   - Founding Member sessions never get a trial, regardless of client input
+ *   - No tier ever gets a trial (trials removed sitewide 2026-09), regardless of client input
  *   - plan_type/source/checkout_version metadata is set correctly
  * All Stripe/Supabase calls are mocked — no live credentials or network.
  * Run with: node tests/stripe-checkout.test.mjs
@@ -90,6 +90,8 @@ const realFetch = global.fetch;
   global.fetch = realFetch;
   assert(sentParams.get('line_items[0][price]') === ENV.STRIPE_PRICE_PRO_MONTHLY, `Stripe session uses the real env-configured Pro price (got ${sentParams.get('line_items[0][price]')})`);
   assert(sentParams.get('line_items[0][price]') !== 'price_ATTACKER_CONTROLLED', 'client-supplied priceId is never used');
+  assert(sentParams.get('subscription_data[trial_period_days]') === null, 'Pro session never gets trial_period_days, even if the client requests trial:true (trials removed sitewide)');
+  assert(sentParams.get('metadata[trial]') === '0', 'metadata[trial] is forced to 0 for Pro regardless of client input');
 }
 
 // ── 4. Founding Member checkout uses the real Founding price, forces no trial ──

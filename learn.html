@@ -289,6 +289,8 @@ body.drawer-open{overflow:hidden}
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
 
 <nav>
   <a class="nav-logo" href="/">
@@ -334,7 +336,7 @@ body.drawer-open{overflow:hidden}
     <div class="nav-xp-bar"><div class="nav-xp-fill" id="nav-xp-fill" style="width:0%"></div></div>
   </div>
   <a href="/dashboard" class="nav-btn" style="margin-left:14px;">Dashboard</a>
-  <a href="/login?tab=signup" class="nav-btn nav-cta" style="margin-left:8px;">Start Free</a>
+  <a href="/login?tab=signup" class="nav-btn nav-cta" style="margin-left:8px;">Learn Free</a>
   <button class="nav-drawer-btn" onclick="openDrawer()">☰</button>
 </nav>
 
@@ -377,12 +379,16 @@ body.drawer-open{overflow:hidden}
   <div class="drawer-divider"></div>
   <a href="/faq">Broker Guide</a>
   <div class="drawer-divider"></div>
-  <a href="/login?tab=signup" style="color:var(--green-ink);font-weight:700;">Start Free →</a>
+  <a href="/login?tab=signup" style="color:var(--green-ink);font-weight:700;">Learn Free →</a>
 </div>
 
 <div class="page-wrap">
 
   <h1 style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.4rem;margin:0 0 14px;color:var(--text);">Learn Options &amp; Stock Trading — Daily Lessons, XP &amp; Streaks</h1>
+
+  <!-- Founding Member teaser — populated by js/founder-cta.js, hidden
+       entirely for active Pro/Founder members or when the offer isn't active. -->
+  <div id="learnFounderTeaser" style="margin-bottom:16px;"></div>
 
   <div class="hero-stats">
     <div class="stat-card">
@@ -1343,6 +1349,10 @@ function toggleDrawerGroup(btn){
 }
 
 init();
+
+if (typeof FounderCTA !== 'undefined') {
+  FounderCTA.mount(document.getElementById('learnFounderTeaser'), { location: 'learn', mode: 'compact' });
+}
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 <script>

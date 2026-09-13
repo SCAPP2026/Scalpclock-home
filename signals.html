@@ -345,7 +345,7 @@ body.drawer-open{overflow:hidden}
     </div>
     <div class="nav-right" id="navRightAnon">
       <a href="/login" style="font-size:.85rem;color:var(--t65);text-decoration:none;padding:6px 12px;">Log In</a>
-      <a href="/login?tab=signup" style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:8px 18px;border-radius:8px;background:var(--green);color:#04140c;text-decoration:none;">Start Free</a>
+      <a href="/login?tab=signup" style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:8px 18px;border-radius:8px;background:var(--green);color:#04140c;text-decoration:none;">Learn Free</a>
     </div>
     <button class="nav-ham" onclick="toggleNavDrawer()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -425,7 +425,7 @@ body.drawer-open{overflow:hidden}
       <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
       <div class="sp-lock-msg">Scalp Signals — Pro Feature</div>
       <div class="sp-lock-sub">Scans the market's most active stocks and surfaces the strongest calls and puts setups, for today or this week.</div>
-      <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Start Free Trial →</button>
+      <button type="button" class="sp-lock-btn" onclick="startCheckout(this)">Upgrade to Pro →</button>
     </div>
   </div>
   </div>
@@ -437,7 +437,7 @@ body.drawer-open{overflow:hidden}
       <div class="ap-stat-row" id="apStatRow"></div>
       <div class="ap-cta-row">
         <a class="ap-btn-primary" href="/login?tab=signup" onclick="apTrackCta('hero_unlock')">Unlock Full Signals</a>
-        <a class="ap-btn-ghost" href="/login?tab=signup" onclick="apTrackCta('hero_trial')">Start Free Trial</a>
+        <a class="ap-btn-ghost" href="/login?tab=signup" onclick="apTrackCta('hero_trial')">Learn Free</a>
       </div>
     </div>
 
@@ -463,7 +463,7 @@ body.drawer-open{overflow:hidden}
       <h2>Stop guessing your next trade.</h2>
       <p>Get the complete signal scan, real-time refreshes, and trade plans for every setup.</p>
       <div class="ap-cta-row">
-        <a class="ap-btn-primary" href="/login?tab=signup" onclick="apTrackCta('bottom_trial')">Start Free Trial</a>
+        <a class="ap-btn-primary" href="/login?tab=signup" onclick="apTrackCta('bottom_trial')">Learn Free</a>
         <a class="ap-btn-ghost" href="/pricing" onclick="apTrackCta('bottom_pricing')">Upgrade to Pro</a>
       </div>
     </div>
@@ -695,7 +695,7 @@ async function startCheckout(btn) {
   btn.disabled = true;
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const body = { tier: 'pro', billing: _billing, trial: !_promoId, source: 'signals_paywall' };
+    const body = { tier: 'pro', billing: _billing, trial: false, source: 'signals_paywall' };
     if (_promoId) body.promoId = _promoId;
     if (_uid)     body.userId  = _uid;
     const gaClientId = getGaClientId();

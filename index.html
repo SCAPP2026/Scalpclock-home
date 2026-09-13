@@ -466,7 +466,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
-      <a class="nav-cta" href="/login?tab=signup">Start Free</a>
+      <a class="nav-cta" href="/login?tab=signup">Learn Free</a>
     </nav>
     <button class="ham" onclick="toggleDrawer()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -507,7 +507,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
-  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Start Free →</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Learn Free →</a>
 </div>
 
 <!-- TICKER TAPE -->
@@ -554,9 +554,10 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       <p class="hero-sub2">Start in the Learn Hub with bite-sized lessons and quizzes, then apply what you learn with ScalpCharts, Replay, and Exit Assistant.</p>
 
       <div class="hero-btns">
-        <a class="btn-primary" href="/learn">Start Learning →</a>
-        <a class="btn-ghost" href="#learn-hub">See How It Works</a>
+        <a class="btn-primary" id="heroPrimaryCta" href="/learn">Start Learning →</a>
+        <a class="btn-ghost" id="heroSecondaryCta" href="/login?tab=signup">Learn Free</a>
       </div>
+      <p style="font-size:.78rem;color:var(--t55);margin-top:10px;">No credit card required to start learning.</p>
 
       <div class="loop-strip">
         <span class="stage">Learn</span><span class="arrow">→</span>
@@ -1075,6 +1076,32 @@ if (typeof FounderCTA !== 'undefined') {
   FounderCTA.mount(document.getElementById('homeFounderTeaser'), { location: 'homepage_hero' });
   FounderCTA.mountSticky({ location: 'homepage' });
 }
+
+// Hero primary CTA: leads with the $1.99 Founding Member offer whenever
+// it's genuinely active AND the visitor is actually eligible (not already
+// a Founder or paying member) — reuses the same two lookups FounderCTA/
+// FounderGuard already make on this page, no new network calls. Falls
+// back to the existing "Start Learning" CTA for every other state rather
+// than inventing copy for cases the funnel spec didn't address.
+(async function initHeroCta() {
+  if (typeof FounderCTA === 'undefined' || typeof FounderGuard === 'undefined') return;
+  try {
+    const [state, status] = await Promise.all([FounderCTA.getPlanState(), FounderGuard.getFoundingStatus()]);
+    const eligible = !state.isFounder && state.plan !== 'pro' && state.plan !== 'trial';
+    const primary = document.getElementById('heroPrimaryCta');
+    if (eligible && status && status.active === true && primary) {
+      primary.href = '/pricing#foundingCard';
+      primary.textContent = '🔥 Join Founding Members — $1.99/mo';
+      primary.addEventListener('click', () => {
+        if (typeof gtag === 'function') gtag('event', 'hero_founding_cta_click', { location: 'homepage_hero' });
+      });
+    }
+  } catch (e) { /* leave default hero CTA in place */ }
+})();
+
+document.getElementById('heroSecondaryCta')?.addEventListener('click', () => {
+  if (typeof gtag === 'function') gtag('event', 'hero_learn_free_click', { location: 'homepage_hero' });
+});
 
 // Nav drawer
 function toggleDrawer(){

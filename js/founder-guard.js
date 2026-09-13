@@ -1,5 +1,5 @@
 // ── FounderGuard — shared Pro/Founding-Member checkout safeguard ───────────
-// Included on every page with a "Start Pro Trial" CTA (pricing.html,
+// Included on every page with an "Upgrade to Pro" CTA (pricing.html,
 // index.html, signals.html, dashboard.html, settings.html) so a user who
 // clicks the $9.99 Pro option while $1.99 Founding Member spots are still
 // available gets one clear chance to switch before Stripe checkout is ever
@@ -132,7 +132,7 @@
     const html = `
       <div class="fg-eyebrow">🔥 Wait</div>
       <div class="fg-h">You may want the $1.99 Founder price</div>
-      <div class="fg-body">You're about to start the regular Pro plan at $9.99/month after a 5-day free trial. ${esc(spotsLine)} That price is locked for life, charged today, no trial.</div>
+      <div class="fg-body">You're about to start the regular Pro plan at $9.99/month. ${esc(spotsLine)} That price is locked for life, charged today.</div>
       <div class="fg-compare">
         <div class="fg-plan gold">
           <div class="fg-plan-name">FOUNDING MEMBER</div>
@@ -149,7 +149,7 @@
           <div class="fg-plan-name">REGULAR PRO</div>
           <div class="fg-plan-price">$9.99<span style="font-size:.6em;color:rgba(238,243,240,.55)">/mo</span></div>
           <ul>
-            <li><b>✓</b> 5-day free trial</li>
+            <li><b>✓</b> Billed monthly, cancel anytime</li>
             <li><b>✓</b> Full Pro access</li>
             <li><b>✓</b> Standard monthly pricing</li>
             <li><b>✗</b> No Founder benefits</li>
@@ -184,12 +184,12 @@
     const html = `
       <div class="fg-eyebrow">Confirm Your Plan</div>
       <div class="fg-h">Confirm Your Pro Plan</div>
-      <div class="fg-body" style="margin-bottom:10px;">ScalpClock Pro — 5-day free trial</div>
+      <div class="fg-body" style="margin-bottom:10px;">ScalpClock Pro</div>
       <div class="fg-plan" style="margin-bottom:16px;">
-        <div class="fg-plan-price">$0 <span style="font-size:.55em;color:rgba(238,243,240,.55)">today</span></div>
-        <div class="fg-fine" style="margin-top:6px;">Then ${esc(priceLabel)} unless cancelled before the trial ends.</div>
+        <div class="fg-plan-price">${esc(priceLabel)}</div>
+        <div class="fg-fine" style="margin-top:6px;">Charged today. Cancel anytime.</div>
       </div>
-      <button type="button" class="fg-btn fg-btn-green" data-fg="confirm">START MY 5-DAY PRO TRIAL</button>
+      <button type="button" class="fg-btn fg-btn-green" data-fg="confirm">CONFIRM $9.99 PRO</button>
       <button type="button" class="fg-btn fg-btn-ghost" data-fg="back">Go Back</button>
     `;
     const result = await showModal(html, (modal, cleanup) => {
