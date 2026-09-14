@@ -366,6 +366,7 @@ td:nth-child(5){display:none;}}
         </div>
       </div>
       <a href="/about">About</a>
+      <a href="/daily-system">Daily System</a>
       <a href="/scalpchart">ScalpCharts</a>
       <a href="/scalpchart?tab=replay">Replay</a>
       <a href="/exitassistant">Exit Assistant</a>
@@ -395,6 +396,7 @@ td:nth-child(5){display:none;}}
   <a href="/trading-resources" onclick="closeNavDrawer()" style="padding-left:28px">Trading Resources</a>
   <a href="/trading-pictionary" onclick="closeNavDrawer()" style="padding-left:28px">Pictionary</a>
   <a href="/about" onclick="closeNavDrawer()">About</a>
+  <a href="/daily-system" onclick="closeNavDrawer()">Daily System</a>
   <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
   <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
   <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
@@ -562,6 +564,7 @@ td:nth-child(5){display:none;}}
             <select class="modal-select" id="lt-source">
               <option value="">— Not specified —</option>
               <option value="orb">ORB Signal Engine</option>
+              <option value="exit_assistant">Exit Assistant</option>
               <option value="replay">ScalpClock Replay Setup</option>
               <option value="manual">Manual Setup</option>
               <option value="other">Other Strategy</option>
@@ -690,6 +693,7 @@ td:nth-child(5){display:none;}}
             <select class="modal-select" id="ct-source">
               <option value="">— Not specified —</option>
               <option value="orb">ORB Signal Engine</option>
+              <option value="exit_assistant">Exit Assistant</option>
               <option value="replay">ScalpClock Replay Setup</option>
               <option value="manual">Manual Setup</option>
               <option value="other">Other Strategy</option>
@@ -813,6 +817,11 @@ try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { cons
 let _uid = null;
 let _tradeToClose = null;
 let _logDir = 'calls';
+// Opaque ORB metadata carried in from sc_pending_trade (orb_direction/orb_score/
+// breakout_level) — displayed once in #lt-orb-fields but previously never
+// persisted to the trades row. Held here (not a hidden input) since it's
+// display-only, never user-edited, and only relevant for source_setup==='orb'.
+let _pendingOrbFields = null;
 
 // ── Gamification: same XP/badge storage learn.html uses (profiles.learn_progress),
 // so trade-journal activity and lesson activity share one XP economy site-wide. ──
@@ -983,7 +992,7 @@ async function loadOpenTrades() {
 }
 
 function sourceLabel(s) {
-  return { orb: '🎯 ORB', replay: '🎬 Replay', manual: '✍️ Manual', other: 'Other' }[s] || s;
+  return { orb: '🎯 ORB', exit_assistant: '🚪 Exit Assistant', replay: '🎬 Replay', manual: '✍️ Manual', other: 'Other' }[s] || s;
 }
 
 // Bounded set (most recent 200 closed trades) that all dashboard stats, the
@@ -1126,6 +1135,7 @@ function passChecklistAndLogTrade() {
 }
 
 function openLogModal() {
+  _pendingOrbFields = null;
   document.getElementById('lt-symbol').value   = '';
   document.getElementById('lt-entry').value    = '';
   document.getElementById('lt-contracts').value = '1';
@@ -1166,6 +1176,13 @@ function openLogModal() {
           const orbBox = document.getElementById('lt-orb-fields');
           orbBox.style.display = 'block';
           orbBox.innerHTML = `<b>Imported from ORB Signal Engine</b> — direction: ${pending.orb_direction || '—'}, score: ${pending.orb_score != null ? pending.orb_score + '/100' : '—'} (grade ${grade}), breakout level: ${pending.breakout_level != null ? '$' + Number(pending.breakout_level).toFixed(2) : '—'}.`;
+          // Carry the actual values through to logTrade()'s insert — previously
+          // only ever shown here and then discarded, never persisted to the row.
+          _pendingOrbFields = {
+            orb_direction:  pending.orb_direction ?? null,
+            orb_score:      pending.orb_score != null ? pending.orb_score : null,
+            breakout_level: pending.breakout_level != null ? pending.breakout_level : null,
+          };
         }
         afText = 'Auto-filled from ' + sourceLabel(pending.source_setup) + `: ${pending.symbol}`;
       }
@@ -1233,6 +1250,7 @@ async function logTrade() {
     status:      'open',
     tags,
     ...setupFields,
+    ...(_pendingOrbFields || {}),
   });
 
   if (error) {

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalpClock · Daily Trading System — Daily Trading Habit &amp; Discipline Score</title>
+<meta name="description" content="A structured daily routine for options traders — prepare, read the market, mark levels, confirm setups, plan risk, journal, and score your discipline. Free to start.">
+<link rel="canonical" href="https://scalpclock.com/daily-system">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="ScalpClock · Daily Trading System">
+<meta property="og:description" content="A structured daily routine for options traders — prepare, read the market, mark levels, confirm setups, plan risk, journal, and score your discipline.">
+<meta property="og:url" content="https://scalpclock.com/daily-system">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ScalpClock · Daily Trading System">
+<meta name="twitter:description" content="A structured daily routine for options traders — prepare, read the market, mark levels, confirm setups, plan risk, journal, and score your discipline.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"></noscript>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalpClock Daily Trading System",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "url": "https://scalpclock.com/daily-system",
+  "description": "A structured daily routine that teaches traders to prepare, read the market, identify setups, manage risk, document trades, and improve over time."
+}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Daily Trading System", "item": "https://scalpclock.com/daily-system"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+  {"@type": "Question", "name": "Does the Daily Trading System give trade signals?", "acceptedAnswer": {"@type": "Answer", "text": "No. It's a structured daily routine that teaches you to prepare, read the market, check for confirmation, and plan risk — it never tells you a trade will win, and a losing trade that followed every step still scores well."}},
+  {"@type": "Question", "name": "Is the Daily Trading System free?", "acceptedAnswer": {"@type": "Answer", "text": "The preparation, market bias, levels, opening range, and confirmation steps are free for everyone. Trade planning, the risk calculator, and the weekly scorecard are Founding Member / Pro features."}},
+  {"@type": "Question", "name": "Does my streak require me to take a trade?", "acceptedAnswer": {"@type": "Answer", "text": "No. Your streak is based on completing the daily process, not on placing a trade. A disciplined no-trade day keeps your streak alive."}}
+]}</script>
+<style>
+  :root{
+    --bg:#070b10;
+    --panel:#0e1824;
+    --panel-alt:#111d2b;
+    --border:#1e2d42;
+    --border-soft:#17202e;
+    --text:#dde8f5;
+    --text-dim:#8aa4c0;
+    --text-faint:#5a7292;
+    --bull:#16d97e;
+    --bull-dim:#0f2e22;
+    --bear:#ff4566;
+    --bear-dim:#3a1420;
+    --amber:#f5a623;
+    --amber-dim:#3a2a0c;
+    --blue:#5b9cf6;
+    --blue-dim:#101e3a;
+    --gold:#f5a623;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+    --disp:'Rajdhani', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  body{overflow-x:hidden;}
+  .wrap{max-width:820px;margin:0 auto;padding:18px 18px 60px;}
+  a{color:inherit;}
+
+  /* ===== Header / drawer nav (same shell as ScalpCharts/Exit Assistant/ORB) ===== */
+  .sc-overlay{display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+  .sc-overlay.open{display:block;}
+  .sc-drawer{position:fixed;top:0;right:0;bottom:0;width:270px;background:rgba(8,11,17,.98);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:99;display:flex;flex-direction:column;padding:0;transform:translateX(100%);transition:transform .25s ease;}
+  .sc-drawer.open{transform:translateX(0);}
+  .sc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+  .sc-drawer-head span{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text);letter-spacing:.04em;}
+  .sc-drawer-head button{background:none;border:none;color:var(--text-dim);font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+  .sc-drawer-links{display:flex;flex-direction:column;gap:2px;padding:12px;}
+  .sc-drawer-links a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;font-weight:600;font-size:1.02rem;color:var(--text-dim);text-decoration:none;transition:background .15s,color .15s;border:1px solid transparent;}
+  .sc-drawer-links a:hover{color:var(--text);background:var(--panel-alt);border-color:var(--border);}
+  .sc-drawer-links a.sc-active{color:var(--bull);}
+  .sc-drawer-links .sc-cta{margin-top:12px;background:var(--bull);color:#04140F;font-weight:700;justify-content:center;border-color:transparent;}
+  .sc-drawer-links .sc-cta:hover{background:#2EEFB6;color:#04140F;}
+  .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bull);padding:14px 16px 2px;}
+  .drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:var(--bull);}
+  .drawer-group-toggle .drawer-group-label{flex:1;}
+  .drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+  .drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+  .drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+  .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+  .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
+
+  header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap;gap:14px;}
+  .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+  .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+  @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:radial-gradient(circle at 50% 40%, #1a2b22, #070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+  .logo-mark svg{width:16px;height:16px;}
+  .logo-text{display:flex;flex-direction:column;gap:1px;}
+  .logo-name{font-family:var(--disp);font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:#eef3f0;line-height:1;}
+  .logo-name em{color:#16d97e;font-style:normal;}
+  .logo-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;opacity:.8;white-space:nowrap;}
+  .hdr-left{display:flex;align-items:center;gap:12px;}
+  .ham-btn{background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .ham-btn span{display:block;width:18px;height:2px;background:var(--text-dim);border-radius:2px;transition:.2s;}
+
+  /* ===== Session status strip ===== */
+  .status-strip{display:flex;flex-wrap:wrap;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:18px;font-size:.82rem;}
+  .status-strip .st-item{display:flex;flex-direction:column;gap:2px;}
+  .status-strip .st-k{font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);font-weight:600;}
+  .status-strip .st-v{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--text);}
+  .status-strip .st-v.open{color:var(--bull);}
+  .status-strip .st-v.closed{color:var(--text-faint);}
+  .progress-bar-outer{flex:1 1 140px;min-width:120px;height:8px;background:var(--panel-alt);border-radius:5px;overflow:hidden;}
+  .progress-bar-inner{height:100%;background:var(--bull);border-radius:5px;transition:width .3s ease;width:0%;}
+
+  /* ===== Step cards ===== */
+  .step-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;}
+  .step-card.done{border-color:rgba(22,217,126,.4);}
+  .step-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .step-num{width:26px;height:26px;border-radius:50%;background:var(--panel-alt);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--text-dim);flex-shrink:0;}
+  .step-card.done .step-num{background:var(--bull-dim);border-color:var(--bull);color:var(--bull);}
+  .step-title{font-family:var(--disp);font-weight:700;font-size:1.1rem;flex:1;}
+  .step-xp{font-family:var(--mono);font-size:.72rem;color:var(--amber);font-weight:700;}
+  .step-body{font-size:.88rem;color:var(--text-dim);line-height:1.6;}
+  .step-note{font-size:.76rem;color:var(--text-faint);font-style:italic;margin-top:8px;}
+
+  .checklist{list-style:none;margin:10px 0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .checklist li{display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer;}
+  .checklist input[type=checkbox]{width:18px;height:18px;accent-color:var(--bull);cursor:pointer;flex-shrink:0;}
+
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+  .chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--panel-alt);font-size:.82rem;cursor:pointer;color:var(--text-dim);transition:.15s;}
+  .chip.active{background:var(--bull-dim);border-color:var(--bull);color:var(--bull);}
+  .chip.bear.active{background:var(--bear-dim);border-color:var(--bear);color:var(--bear);}
+  .chip.neutral.active{background:var(--amber-dim);border-color:var(--amber);color:var(--amber);}
+
+  .field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:10px 0;}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field label{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);font-weight:600;}
+  .field input,.field select{background:var(--panel-alt);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 10px;font-family:var(--mono);font-size:.86rem;}
+
+  .btn{font-family:var(--disp);font-weight:700;font-size:.9rem;padding:11px 20px;border-radius:10px;border:none;cursor:pointer;transition:.15s;}
+  .btn-primary{background:var(--bull);color:#04140F;}
+  .btn-primary:hover{background:#2EEFB6;}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+  .btn-danger-ghost{background:transparent;border:1px solid rgba(255,69,102,.4);color:var(--bear);}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+
+  .confirm-count{font-family:var(--mono);font-size:1.6rem;font-weight:800;text-align:center;margin:10px 0;}
+  .confirm-verdict{text-align:center;font-family:var(--mono);font-weight:700;padding:8px 14px;border-radius:8px;margin-bottom:10px;}
+  .confirm-verdict.wait{background:var(--amber-dim);color:var(--amber);}
+  .confirm-verdict.go{background:var(--bull-dim);color:var(--bull);}
+  .confirm-verdict.pending{background:var(--panel-alt);color:var(--text-faint);}
+
+  /* ===== Partial-gate lock card (dashboard.html's #signalLock pattern) ===== */
+  .gate-wrap{position:relative;min-height:140px;}
+  .gate-lock{position:absolute;inset:0;background:rgba(7,11,16,.88);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:12px;text-align:center;padding:20px;z-index:2;}
+  .gate-lock svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.8;}
+  .gate-lock .gl-msg{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--text);}
+  .gate-lock .gl-sub{font-size:.78rem;color:var(--text-faint);max-width:280px;line-height:1.5;}
+  .gate-lock .gl-btn{margin-top:4px;background:var(--gold);color:#1a0d00;font-family:var(--disp);font-weight:700;font-size:.86rem;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;text-decoration:none;display:inline-block;}
+  .gate-blurred{filter:blur(3px);pointer-events:none;user-select:none;}
+
+  .score-ring{width:120px;height:120px;margin:0 auto 10px;position:relative;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:1.8rem;}
+  .score-grade{text-align:center;font-family:var(--disp);font-weight:700;font-size:1.1rem;margin-bottom:6px;}
+  .score-items{list-style:none;margin:14px 0 0;padding:0;font-size:.82rem;display:flex;flex-direction:column;gap:6px;}
+  .score-items li{display:flex;align-items:center;gap:8px;}
+  .score-items li.miss{color:var(--text-faint);}
+
+  .no-trade-banner{background:var(--bull-dim);border:1px solid rgba(22,217,126,.4);color:var(--bull);border-radius:10px;padding:14px;text-align:center;font-family:var(--disp);font-weight:700;margin-top:10px;}
+
+  @media(max-width:600px){
+    .field-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Daily Trading System — A Daily Trading Habit &amp; Discipline Score</h1>
+
+<!-- NAV -->
+<div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
+<div class="sc-drawer" id="scDrawer">
+  <div class="sc-drawer-head">
+    <span>NAVIGATE</span>
+    <button onclick="closeSCNav()">✕</button>
+  </div>
+  <div class="sc-drawer-links">
+    <a href="/">🏠 Home</a>
+    <div class="drawer-group">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+        <span class="drawer-group-label">Learn</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+          <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+          <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+          <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-group open">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="true">
+        <span class="drawer-group-label">Trade</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/daily-system" class="sc-active" style="padding-left:28px">📈 Daily System</a>
+          <a href="/scalpchart" style="padding-left:28px">📊 ScalpCharts</a>
+          <a href="/scalpchart?tab=replay" style="padding-left:28px">📅 Replay</a>
+          <a href="/exitassistant" style="padding-left:28px">🚪 Exit Assistant</a>
+          <a href="/orbsignalengine" style="padding-left:28px">📐 ORB Signal Engine</a>
+          <a href="/signals" style="padding-left:28px">🔔 Signals</a>
+        </div>
+      </div>
+    </div>
+    <a href="/pricing">💳 Pricing</a>
+    <a href="/dashboard">⚙️ Dashboard</a>
+    <a href="/login?tab=signup" class="sc-cta">Learn Free →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="hdr-left">
+      <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="9" cy="9" r="7"/>
+            <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+            <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">Scalp<em>Clock</em></span>
+          <span class="logo-motto">The Time To Profit Is Now</span>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <div style="text-align:center;margin-bottom:14px;">
+    <div style="font-family:var(--disp);font-weight:700;font-size:1.5rem;">Daily Trading System</div>
+    <div style="font-size:.86rem;color:var(--text-dim);">Prepare → Read the Market → Confirm → Plan → Execute or Pass → Journal → Score</div>
+  </div>
+
+  <!-- Founding Member teaser -->
+  <div style="max-width:640px;margin:0 auto 14px;" id="dailyFounderTeaser"></div>
+
+  <!-- ===== Today's Session status strip ===== -->
+  <div class="status-strip" id="statusStrip">
+    <div class="st-item"><span class="st-k">Market</span><span class="st-v" id="stMarket">—</span></div>
+    <div class="st-item"><span class="st-k">Date</span><span class="st-v" id="stDate">—</span></div>
+    <div class="st-item"><span class="st-k">🔥 Streak</span><span class="st-v" id="stStreak">—</span></div>
+    <div class="st-item"><span class="st-k">XP Today</span><span class="st-v" id="stXp">—</span></div>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="stProgressBar"></div></div>
+    <div class="st-item"><span class="st-k">Complete</span><span class="st-v" id="stProgressPct">0%</span></div>
+  </div>
+
+  <!-- ===== Step 1: Prepare ===== -->
+  <div class="step-card" id="cardPrepare">
+    <div class="step-head"><div class="step-num">1</div><div class="step-title">Prepare</div><div class="step-xp">+10 XP</div></div>
+    <div class="step-body">Run through your market-preparation checklist. Checking these off doesn't predict direction — it just means you showed up ready.</div>
+    <ul class="checklist" id="prepareChecklist">
+      <li><input type="checkbox" data-prep="events"><span>Reviewed major economic events</span></li>
+      <li><input type="checkbox" data-prep="earnings"><span>Reviewed today's earnings</span></li>
+      <li><input type="checkbox" data-prep="spy"><span>Checked SPY</span></li>
+      <li><input type="checkbox" data-prep="qqq"><span>Checked QQQ</span></li>
+      <li><input type="checkbox" data-prep="iwm"><span>Checked IWM</span></li>
+      <li><input type="checkbox" data-prep="vix"><span>Checked VIX</span></li>
+      <li><input type="checkbox" data-prep="premarket"><span>Checked premarket movement</span></li>
+      <li><input type="checkbox" data-prep="keylevels"><span>Identified important market levels</span></li>
+    </ul>
+  </div>
+
+  <!-- ===== Step 2: Market Bias ===== -->
+  <div class="step-card" id="cardBias">
+    <div class="step-head"><div class="step-num">2</div><div class="step-title">Market Bias</div><div class="step-xp">+10 XP</div></div>
+    <div class="step-body">What is the current market structure?</div>
+    <div class="chip-row" id="biasChips">
+      <div class="chip" data-bias="bullish">🟢 Bullish</div>
+      <div class="chip bear" data-bias="bearish">🔴 Bearish</div>
+      <div class="chip neutral" data-bias="neutral">🟡 Neutral</div>
+    </div>
+    <div class="step-body" style="margin-top:4px;">Why?</div>
+    <div class="chip-row" id="biasReasonChips">
+      <div class="chip" data-reason="hhhl">Higher highs / higher lows</div>
+      <div class="chip" data-reason="lhll">Lower highs / lower lows</div>
+      <div class="chip" data-reason="abovevwap">Above VWAP</div>
+      <div class="chip" data-reason="belowvwap">Below VWAP</div>
+      <div class="chip" data-reason="breakres">Breaking resistance</div>
+      <div class="chip" data-reason="breaksup">Breaking support</div>
+      <div class="chip" data-reason="range">Range-bound</div>
+      <div class="chip" data-reason="strongvol">Strong volume</div>
+      <div class="chip" data-reason="weakvol">Weak volume</div>
+    </div>
+  </div>
+
+  <!-- ===== Step 3: Levels ===== -->
+  <div class="step-card" id="cardLevels">
+    <div class="step-head"><div class="step-num">3</div><div class="step-title">Mark Your Levels</div><div class="step-xp">+10 XP</div></div>
+    <div class="step-body">Symbol to check, then pull yesterday's session and today's premarket automatically.</div>
+    <div class="field-grid">
+      <div class="field"><label>Symbol</label><input type="text" id="levelsSymbol" value="SPY" maxlength="6" style="text-transform:uppercase"></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-ghost" id="loadLevelsBtn" onclick="loadLevels()">Load Previous Day + Premarket →</button></div>
+    <div class="field-grid" style="margin-top:12px;">
+      <div class="field"><label>Prev Day High</label><input type="number" id="lvPrevHigh" readonly></div>
+      <div class="field"><label>Prev Day Low</label><input type="number" id="lvPrevLow" readonly></div>
+      <div class="field"><label>Prev Day Close</label><input type="number" id="lvPrevClose" readonly></div>
+      <div class="field"><label>Premarket High</label><input type="number" id="lvPmHigh" readonly></div>
+      <div class="field"><label>Premarket Low</label><input type="number" id="lvPmLow" readonly></div>
+    </div>
+    <div class="field-grid" style="margin-top:12px;">
+      <div class="field"><label>Support 1</label><input type="number" id="lvSup1" step="0.01"></div>
+      <div class="field"><label>Support 2</label><input type="number" id="lvSup2" step="0.01"></div>
+      <div class="field"><label>Resistance 1</label><input type="number" id="lvRes1" step="0.01"></div>
+      <div class="field"><label>Resistance 2</label><input type="number" id="lvRes2" step="0.01"></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="saveLevelsBtn" onclick="saveLevels()">Save Levels</button></div>
+  </div>
+
+  <!-- ===== Step 4: Opening Range ===== -->
+  <div class="step-card" id="cardOR">
+    <div class="step-head"><div class="step-num">4</div><div class="step-title">Opening Range</div><div class="step-xp">Included</div></div>
+    <div class="step-body">Don't chase the opening candle. The opening range is an early reference point — a breakout alone is not automatically a valid trade.</div>
+    <div class="field-grid">
+      <div class="field"><label>ORB Length</label>
+        <select id="orLength"><option value="1">5-minute ORB</option><option value="3" selected>15-minute ORB</option></select>
+      </div>
+    </div>
+    <div class="btn-row"><button class="btn btn-ghost" id="loadOrBtn" onclick="loadOpeningRange()">Load Today's Opening Range →</button></div>
+    <div class="field-grid" style="margin-top:12px;">
+      <div class="field"><label>Opening Range High</label><input type="number" id="orHighVal" readonly></div>
+      <div class="field"><label>Opening Range Low</label><input type="number" id="orLowVal" readonly></div>
+    </div>
+  </div>
+
+  <!-- ===== Step 5: Confirmation ===== -->
+  <div class="step-card" id="cardConfirm">
+    <div class="step-head"><div class="step-num">5</div><div class="step-title">Confirmation Check</div><div class="step-xp">+15 XP</div></div>
+    <div class="step-body">Number of conditions currently satisfied — not a prediction.</div>
+    <ul class="checklist" id="confirmChecklist">
+      <li><input type="checkbox" data-confirm="structure"><span>Market structure matches your bias</span></li>
+      <li><input type="checkbox" data-confirm="vwap"><span>Price confirms VWAP position</span></li>
+      <li><input type="checkbox" data-confirm="breakout"><span>Break above/below opening range or a key level</span></li>
+      <li><input type="checkbox" data-confirm="volume"><span>Volume confirms the move</span></li>
+    </ul>
+    <div class="confirm-count" id="confirmCount">0/4</div>
+    <div class="confirm-verdict pending" id="confirmVerdict">Check the conditions above as they occur.</div>
+  </div>
+
+  <!-- ===== Step 6+7: Trade Plan + Risk Calculator (gated) ===== -->
+  <div class="step-card">
+    <div class="step-head"><div class="step-num">6</div><div class="step-title">Trade Plan</div><div class="step-xp">+15 XP</div></div>
+    <div class="gate-wrap" id="tradePlanGateWrap">
+      <div class="step-body gate-blurred" id="tradePlanBody">
+        <div class="field-grid">
+          <div class="field"><label>Underlying</label>
+            <select id="tpUnderlying"><option>SPY</option><option>QQQ</option><option>IWM</option><option>Other</option></select>
+          </div>
+          <div class="field"><label>Direction</label>
+            <select id="tpDirection"><option value="calls">CALL</option><option value="puts">PUT</option></select>
+          </div>
+          <div class="field"><label>Entry</label><input type="number" id="tpEntry" step="0.01" placeholder="$"></div>
+          <div class="field"><label>Stop / Invalidation</label><input type="number" id="tpStop" step="0.01" placeholder="$"></div>
+          <div class="field"><label>Target</label><input type="number" id="tpTarget" step="0.01" placeholder="$"></div>
+          <div class="field"><label>Max Dollar Risk</label><input type="number" id="tpMaxRisk" step="1" placeholder="$"></div>
+        </div>
+        <div class="field" style="margin-top:10px;"><label>Reason for Entry</label><input type="text" id="tpReason" placeholder="Why this trade, right now?"></div>
+        <div class="step-note">If you don't know where you're wrong, you don't have a complete trade plan.</div>
+        <div class="btn-row"><button class="btn btn-primary" id="saveTradePlanBtn" onclick="saveTradePlan()">Save Trade Plan</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head"><div class="step-num">7</div><div class="step-title">Risk Calculator</div><div class="step-xp">Educational</div></div>
+    <div class="gate-wrap" id="riskCalcGateWrap">
+      <div class="step-body gate-blurred" id="riskCalcBody">
+        <div class="field-grid">
+          <div class="field"><label>Account Size</label><input type="number" id="rcAccount" step="1" placeholder="$"></div>
+          <div class="field"><label>Max Risk %</label><input type="number" id="rcRiskPct" step="0.1" placeholder="e.g. 1"></div>
+          <div class="field"><label>Entry Price</label><input type="number" id="rcEntry" step="0.01" placeholder="$"></div>
+          <div class="field"><label>Stop Price</label><input type="number" id="rcStop" step="0.01" placeholder="$"></div>
+          <div class="field"><label># Contracts</label><input type="number" id="rcContracts" step="1" placeholder="1"></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-ghost" onclick="calcRisk()">Calculate Max Planned Risk</button></div>
+        <div id="rcResult" style="margin-top:10px;font-family:var(--mono);"></div>
+        <div class="step-note">Educational estimate only. Protect the account first — never risk money you cannot afford to lose.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Step 8: Execute or Pass ===== -->
+  <div class="step-card" id="cardExecute">
+    <div class="step-head"><div class="step-num">8</div><div class="step-title">Execute or Pass</div><div class="step-xp">+5 XP</div></div>
+    <div class="step-body">A completed trade plan above is required to Execute. Passing is a valid, disciplined choice — cash is a position.</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="executeBtn" onclick="executeTrade()" disabled>🟢 Execute Trade</button>
+      <button class="btn btn-ghost" id="passBtn" onclick="passTrade()">⚪ Pass / No Trade</button>
+    </div>
+    <div id="executeResult"></div>
+  </div>
+
+  <!-- ===== Daily Score / Journal / Review ===== -->
+  <div class="step-card" id="cardReview">
+    <div class="step-head"><div class="step-num">9</div><div class="step-title">Journal &amp; Daily Score</div><div class="step-xp">+10 XP</div></div>
+    <div class="step-body">Your score measures process and discipline, not profitability. A losing trade that followed every step can still score well.</div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="finishSession()">Complete Today's Session</button></div>
+    <div id="sessionScoreResult" style="margin-top:14px;"></div>
+  </div>
+
+  <!-- ===== This Week (gated) ===== -->
+  <div class="step-card">
+    <div class="step-head"><div class="step-title">This Week</div></div>
+    <div class="gate-wrap" id="weekGateWrap">
+      <div class="step-body gate-blurred" id="weekBody">
+        Weekly Trader Scorecard, trend analysis, and best/worst setups are computed from your Trade Journal.
+        <div class="btn-row"><a class="btn btn-ghost" href="/journal?openWeeklyReview=1">Open Weekly Scorecard →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;font-size:.76rem;color:var(--text-faint);margin-top:20px;">
+    Not financial advice. This tool is educational and measures process, never a guarantee of profit.
+  </div>
+</div>
+
+<script>
+function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
+function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+<script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
+<script src="/js/daily-system-score.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// Deliberately NOT wrapped in an IIFE — every step function below is called
+// from an inline onclick="" attribute in the markup above, which resolves
+// in global scope, same pattern as learn.html/journal.html/orbsignalengine.html.
+
+// ── Shared XP/badge pool — same keys/functions journal.html duplicates from
+// learn.html (sc_learn_xp/sc_earned_badges), read-merge-write discipline,
+// never learn.html's clobber-style push. ──────────────────────────────────
+const LS = {
+  get: (k, d) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+const getXP     = () => LS.get('sc_learn_xp', 0);
+const addXP     = n  => LS.set('sc_learn_xp', getXP() + n);
+const getEarned = () => LS.get('sc_earned_badges', []);
+const earnBadge = id => { const b = getEarned(); if (!b.includes(id)) { b.push(id); LS.set('sc_earned_badges', b); return true; } return false; };
+
+const todayStr = () => new Date().toISOString().slice(0, 10);
+const DAY_KEY = 'sc_daily_session_' + todayStr();
+
+let _uid = null, _sb = null;
+let day = LS.get(DAY_KEY, {
+  prepare: {}, bias: null, biasReasons: [], levels: null, or: null,
+  confirm: {}, tradePlan: null, riskCalc: null, executed: null, noTrade: false,
+  journaled: false, completedSteps: [],
+});
+function saveDay() { LS.set(DAY_KEY, day); }
+
+let isEligible = false; // Founder / Pro / trial — unlocks gated sections
+
+// ── Status strip ────────────────────────────────────────────────────────
+async function loadMarketStatus() {
+  try {
+    const res = await fetch('/api/signals');
+    const data = await res.json();
+    const el = document.getElementById('stMarket');
+    el.textContent = data.marketOpen ? 'OPEN' : 'CLOSED';
+    el.className = 'st-v ' + (data.marketOpen ? 'open' : 'closed');
+  } catch (e) {
+    document.getElementById('stMarket').textContent = '—';
+  }
+}
+
+function updateStreakDisplay() {
+  const lastDate = LS.get('sc_daily_streak_date', '');
+  const count = LS.get('sc_daily_streak_count', 0);
+  const displayCount = (lastDate === todayStr() || isYesterday(lastDate)) ? count : 0;
+  document.getElementById('stStreak').textContent = displayCount;
+}
+function isYesterday(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(todayStr() + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - 1);
+  return dateStr === d.toISOString().slice(0, 10);
+}
+function bumpDailyStreak() {
+  const lastDate = LS.get('sc_daily_streak_date', '');
+  const count = LS.get('sc_daily_streak_count', 0);
+  const result = DailySystemScore.computeStreak(todayStr(), lastDate, count);
+  if (result.incremented) {
+    LS.set('sc_daily_streak_date', todayStr());
+    LS.set('sc_daily_streak_count', result.count);
+  }
+  return result.count;
+}
+
+function updateProgressUI() {
+  document.getElementById('stDate').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  document.getElementById('stXp').textContent = '+' + DailySystemScore.xpForSteps(day.completedSteps) + ' XP';
+  const pct = Math.round((day.completedSteps.length / 8) * 100);
+  document.getElementById('stProgressBar').style.width = pct + '%';
+  document.getElementById('stProgressPct').textContent = pct + '%';
+  updateStreakDisplay();
+}
+
+function markStepComplete(key) {
+  if (!day.completedSteps.includes(key)) {
+    day.completedSteps.push(key);
+    saveDay();
+  }
+  updateProgressUI();
+}
+
+// ── Step 1: Prepare ──────────────────────────────────────────────────────
+document.querySelectorAll('#prepareChecklist input[type=checkbox]').forEach(cb => {
+  cb.checked = !!(day.prepare && day.prepare[cb.dataset.prep]);
+  cb.addEventListener('change', () => {
+    day.prepare = day.prepare || {};
+    day.prepare[cb.dataset.prep] = cb.checked;
+    saveDay();
+    const allChecked = [...document.querySelectorAll('#prepareChecklist input[type=checkbox]')].every(c => c.checked);
+    document.getElementById('cardPrepare').classList.toggle('done', allChecked);
+    if (allChecked) markStepComplete('preMarket');
+  });
+});
+
+// ── Step 2: Bias ─────────────────────────────────────────────────────────
+document.querySelectorAll('#biasChips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#biasChips .chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    day.bias = chip.dataset.bias;
+    saveDay();
+    document.getElementById('cardBias').classList.add('done');
+    markStepComplete('bias');
+  });
+});
+document.querySelectorAll('#biasReasonChips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('active');
+    day.biasReasons = [...document.querySelectorAll('#biasReasonChips .chip.active')].map(c => c.dataset.reason);
+    saveDay();
+  });
+});
+
+// ── Step 3: Levels ───────────────────────────────────────────────────────
+function prevTradingDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00Z');
+  do { d.setUTCDate(d.getUTCDate() - 1); } while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+  return d.toISOString().slice(0, 10);
+}
+async function loadLevels() {
+  const btn = document.getElementById('loadLevelsBtn');
+  const symbol = (document.getElementById('levelsSymbol').value || 'SPY').toUpperCase();
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const prevDate = prevTradingDate(todayStr());
+    const [prevRes, pmRes] = await Promise.all([
+      fetch(`/api/orb-bars?symbol=${symbol}&date=${prevDate}`).then(r => r.json()),
+      fetch(`/api/orb-bars?symbol=${symbol}&date=${todayStr()}&session=premarket`).then(r => r.json()),
+    ]);
+    if (prevRes.candles && prevRes.candles.length) {
+      const highs = prevRes.candles.map(c => c.high), lows = prevRes.candles.map(c => c.low);
+      document.getElementById('lvPrevHigh').value = Math.max(...highs);
+      document.getElementById('lvPrevLow').value = Math.min(...lows);
+      document.getElementById('lvPrevClose').value = prevRes.candles[prevRes.candles.length - 1].close;
+    }
+    if (pmRes.candles && pmRes.candles.length) {
+      const highs = pmRes.candles.map(c => c.high), lows = pmRes.candles.map(c => c.low);
+      document.getElementById('lvPmHigh').value = Math.max(...highs);
+      document.getElementById('lvPmLow').value = Math.min(...lows);
+    } else {
+      document.getElementById('lvPmHigh').value = '';
+      document.getElementById('lvPmLow').value = '';
+    }
+  } catch (e) {
+    console.error('loadLevels error:', e.message);
+  }
+  btn.disabled = false; btn.textContent = 'Load Previous Day + Premarket →';
+}
+function saveLevels() {
+  day.levels = {
+    symbol: document.getElementById('levelsSymbol').value.toUpperCase(),
+    prevHigh: numOrNull('lvPrevHigh'), prevLow: numOrNull('lvPrevLow'), prevClose: numOrNull('lvPrevClose'),
+    pmHigh: numOrNull('lvPmHigh'), pmLow: numOrNull('lvPmLow'),
+    sup1: numOrNull('lvSup1'), sup2: numOrNull('lvSup2'), res1: numOrNull('lvRes1'), res2: numOrNull('lvRes2'),
+  };
+  saveDay();
+  document.getElementById('cardLevels').classList.add('done');
+  markStepComplete('levels');
+}
+function numOrNull(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) ? null : v;
+}
+
+// ── Step 4: Opening Range ───────────────────────────────────────────────
+async function loadOpeningRange() {
+  const btn = document.getElementById('loadOrBtn');
+  const symbol = (document.getElementById('levelsSymbol').value || 'SPY').toUpperCase();
+  const orCandles = parseInt(document.getElementById('orLength').value, 10);
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const res = await fetch(`/api/orb-bars?symbol=${symbol}&date=${todayStr()}`).then(r => r.json());
+    if (res.candles && res.candles.length) {
+      const orBars = res.candles.slice(0, orCandles);
+      const high = Math.max(...orBars.map(c => c.high));
+      const low = Math.min(...orBars.map(c => c.low));
+      document.getElementById('orHighVal').value = high;
+      document.getElementById('orLowVal').value = low;
+      day.or = { symbol, high, low, candles: orCandles === 1 ? '5m' : '15m' };
+      saveDay();
+      document.getElementById('cardOR').classList.add('done');
+      markStepComplete('openingRange');
+    } else {
+      document.getElementById('orHighVal').value = '';
+      document.getElementById('orLowVal').value = '';
+    }
+  } catch (e) {
+    console.error('loadOpeningRange error:', e.message);
+  }
+  btn.disabled = false; btn.textContent = 'Load Today\'s Opening Range →';
+}
+
+// ── Step 5: Confirmation ─────────────────────────────────────────────────
+document.querySelectorAll('#confirmChecklist input[type=checkbox]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    day.confirm = day.confirm || {};
+    day.confirm[cb.dataset.confirm] = cb.checked;
+    saveDay();
+    updateConfirmVerdict();
+  });
+});
+function updateConfirmVerdict() {
+  const checked = [...document.querySelectorAll('#confirmChecklist input[type=checkbox]')].filter(c => c.checked).length;
+  document.getElementById('confirmCount').textContent = checked + '/4';
+  const verdict = document.getElementById('confirmVerdict');
+  if (checked === 0) {
+    verdict.className = 'confirm-verdict pending';
+    verdict.textContent = 'Check the conditions above as they occur.';
+  } else if (checked < 3) {
+    verdict.className = 'confirm-verdict wait';
+    verdict.textContent = '⚠️ WAIT — your setup does not currently meet the confirmation criteria.';
+  } else {
+    verdict.className = 'confirm-verdict go';
+    verdict.textContent = '🟢 SETUP CONFIRMED — multiple conditions currently align. Continue to your trade plan.';
+  }
+  if (checked >= 3) {
+    document.getElementById('cardConfirm').classList.add('done');
+    markStepComplete('confirmation');
+  }
+  updateExecuteButtonState();
+}
+
+// ── Free/paid gate ───────────────────────────────────────────────────────
+function applyGate(wrapId, bodyId, message) {
+  const wrap = document.getElementById(wrapId);
+  const body = document.getElementById(bodyId);
+  if (isEligible) {
+    body.classList.remove('gate-blurred');
+    const lock = wrap.querySelector('.gate-lock');
+    if (lock) lock.remove();
+    return;
+  }
+  body.classList.add('gate-blurred');
+  if (wrap.querySelector('.gate-lock')) return;
+  const lock = document.createElement('div');
+  lock.className = 'gate-lock';
+  lock.innerHTML = `
+    <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+    <div class="gl-msg">${message}</div>
+    <div class="gl-sub">Become a Founding Member for just $1.99/month.</div>
+    <a class="gl-btn" href="/pricing#foundingCard">Unlock Full Access</a>
+  `;
+  wrap.appendChild(lock);
+}
+
+// ── Step 6: Trade Plan ───────────────────────────────────────────────────
+function saveTradePlan() {
+  const entry = numOrNull('tpEntry'), stop = numOrNull('tpStop'), target = numOrNull('tpTarget'), maxRisk = numOrNull('tpMaxRisk');
+  if (entry == null || stop == null || target == null || maxRisk == null) {
+    alert('Enter entry, stop, target, and max dollar risk to complete your trade plan.');
+    return;
+  }
+  day.tradePlan = {
+    underlying: document.getElementById('tpUnderlying').value,
+    direction: document.getElementById('tpDirection').value,
+    entry, stop, target, maxRisk,
+    reason: document.getElementById('tpReason').value.trim() || null,
+  };
+  saveDay();
+  markStepComplete('tradePlan');
+  updateExecuteButtonState();
+  alert('Trade plan saved. You can now Execute in Step 8.');
+}
+
+// ── Step 7: Risk Calculator ──────────────────────────────────────────────
+function calcRisk() {
+  const account = numOrNull('rcAccount'), riskPct = numOrNull('rcRiskPct');
+  const entry = numOrNull('rcEntry'), stop = numOrNull('rcStop'), contracts = numOrNull('rcContracts') || 1;
+  const out = document.getElementById('rcResult');
+  if (account == null || riskPct == null || entry == null || stop == null) {
+    out.textContent = 'Fill in all fields to calculate.';
+    return;
+  }
+  const perContractRisk = Math.abs(entry - stop) * 100;
+  const totalRisk = perContractRisk * contracts;
+  const maxAllowed = account * (riskPct / 100);
+  out.innerHTML = `Planned risk: <b>$${totalRisk.toFixed(2)}</b> across ${contracts} contract(s). ` +
+    `Your ${riskPct}% max risk rule allows up to <b>$${maxAllowed.toFixed(2)}</b>. ` +
+    (totalRisk > maxAllowed ? '<span style="color:var(--bear)">This plan exceeds your own risk rule.</span>' : '<span style="color:var(--bull)">Within your risk rule.</span>');
+}
+
+// ── Step 8: Execute or Pass ──────────────────────────────────────────────
+function updateExecuteButtonState() {
+  const btn = document.getElementById('executeBtn');
+  btn.disabled = !(isEligible && day.tradePlan && day.tradePlan.entry != null);
+}
+function executeTrade() {
+  if (!day.tradePlan) return;
+  const composite = { direction: day.bias === 'bearish' ? 'bear' : 'bull' };
+  const confirmCount = Object.values(day.confirm || {}).filter(Boolean).length;
+  const pending = {
+    symbol: day.tradePlan.underlying,
+    direction: day.tradePlan.direction,
+    entry: day.tradePlan.entry,
+    contracts: 1,
+    source_setup: 'daily_system',
+    strategy: 'Daily Trading System',
+    market_trend: day.bias,
+    entry_confirmation: confirmCount >= 3,
+    planned_entry: day.tradePlan.entry,
+    planned_stop: day.tradePlan.stop,
+    planned_target: day.tradePlan.target,
+    planned_risk: day.tradePlan.maxRisk,
+  };
+  try { localStorage.setItem('sc_pending_trade', JSON.stringify(pending)); } catch (e) {}
+  day.executed = true; day.noTrade = false;
+  saveDay();
+  markStepComplete('execute');
+  document.getElementById('executeResult').innerHTML = '<div class="step-note">Opening the journal to log this trade…</div>';
+  window.open('/journal', '_blank');
+}
+function passTrade() {
+  day.executed = false; day.noTrade = true;
+  saveDay();
+  markStepComplete('execute');
+  markStepComplete('noTradeBonus');
+  document.getElementById('executeResult').innerHTML = '<div class="no-trade-banner">Good decision. Cash is a position.</div>';
+}
+
+// ── Step 9: Finish session — score, XP, streak, badges, DB upsert ───────
+async function finishSession() {
+  const steps = {
+    preMarket: day.completedSteps.includes('preMarket'),
+    biasSet: day.bias,
+    levelsMarked: !!day.levels,
+    openingRangeRecorded: !!day.or,
+    confirmVWAP: !!(day.confirm && day.confirm.vwap),
+    confirmVolume: !!(day.confirm && day.confirm.volume),
+    noTrade: day.noTrade,
+    tradePlan: day.tradePlan,
+    journaled: day.executed === true || day.noTrade === true,
+  };
+  const scored = DailySystemScore.scoreDay(steps);
+  day.journaled = true;
+  markStepComplete('journal');
+  markStepComplete('dailyReview');
+  saveDay();
+
+  const xpEarned = DailySystemScore.xpForSteps(day.completedSteps);
+  addXP(xpEarned);
+  const newStreak = bumpDailyStreak();
+
+  const newBadges = [];
+  if (earnBadge('first_daily_system_complete')) newBadges.push('🏆 First Daily System Complete');
+  if (newStreak === 5 && earnBadge('daily_streak_5')) newBadges.push('🔥 5-Day Discipline Streak');
+  if (newStreak === 10 && earnBadge('daily_streak_10')) newBadges.push('🔥 10-Day Discipline Streak');
+  if (day.noTrade && earnBadge('no_trade_decision')) newBadges.push('🛡️ No-Trade Decision');
+
+  if (_uid && _sb) {
+    try {
+      await _sb.from('daily_system_sessions').upsert({
+        user_id: _uid, session_date: todayStr(), steps_completed: day.completedSteps,
+        daily_score: scored.total, xp_earned: xpEarned, no_trade: day.noTrade,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,session_date' });
+      const { data } = await _sb.from('profiles').select('learn_progress').eq('id', _uid).single();
+      const existing = (data && data.learn_progress) || {};
+      await _sb.from('profiles').upsert({ id: _uid, learn_progress: Object.assign({}, existing, {
+        xp: getXP(), badges: getEarned(), dailySystemStreakDate: todayStr(), dailySystemStreakCount: newStreak,
+      }) });
+    } catch (e) { console.warn('Daily System sync failed:', e.message); }
+  }
+
+  updateProgressUI();
+  const itemsHtml = scored.items.map(it => `<li class="${it.earned ? '' : 'miss'}">${it.earned ? '✓' : '—'} ${it.label}</li>`).join('');
+  const replayLink = day.or && day.levels
+    ? `/scalpchart?tab=replay&t=${day.levels.symbol}&rdate=${todayStr()}`
+    : '/scalpchart?tab=replay';
+  document.getElementById('sessionScoreResult').innerHTML = `
+    <div class="score-grade">${scored.total}/10 — ${scored.grade.label}</div>
+    <ul class="score-items">${itemsHtml}</ul>
+    <div style="text-align:center;margin-top:12px;font-family:var(--mono);color:var(--amber);">+${xpEarned} XP · 🔥 ${newStreak}-Day Streak</div>
+    ${newBadges.length ? `<div style="text-align:center;margin-top:8px;">${newBadges.join('<br>')}</div>` : ''}
+    <div class="btn-row" style="justify-content:center;">
+      <a class="btn btn-ghost" href="${replayLink}">Practice This Setup in Replay</a>
+      <a class="btn btn-ghost" href="/journal?openWeeklyReview=1">View My Week</a>
+    </div>
+  `;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+async function init() {
+  loadMarketStatus();
+  updateProgressUI();
+  updateConfirmVerdict();
+
+  try {
+    const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+      _uid = session.user.id;
+      const plan = session.user.app_metadata?.plan || 'free';
+      const isFounder = session.user.app_metadata?.founding_member === true;
+      isEligible = isFounder || plan === 'pro' || plan === 'trial';
+    }
+  } catch (e) { console.warn('Session check failed:', e.message); }
+
+  applyGate('tradePlanGateWrap', 'tradePlanBody', 'Trade Plan is a Founding Member feature');
+  applyGate('riskCalcGateWrap', 'riskCalcBody', 'Risk Calculator is a Founding Member feature');
+  applyGate('weekGateWrap', 'weekBody', 'Weekly Scorecard is a Founding Member feature');
+  updateExecuteButtonState();
+
+  if (typeof FounderCTA !== 'undefined') {
+    FounderCTA.mount(document.getElementById('dailyFounderTeaser'), { location: 'daily_system', mode: 'compact' });
+    FounderCTA.mountSticky({ location: 'daily_system' });
+  }
+}
+init();
+</script>
+</body>
+</html>

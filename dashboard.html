@@ -562,6 +562,7 @@ body.drawer-open{overflow:hidden}
       <div class="nav-dropdown" id="tradeDropdown">
         <button class="nav-dropdown-trigger" onclick="toggleTradeDropdown(event)" aria-haspopup="true" aria-expanded="false">Trade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/daily-system">Daily System</a>
           <a href="/scalpchart">ScalpCharts</a>
           <a href="/scalpchart?tab=replay">Replay</a>
           <a href="/exitassistant">Exit Assistant</a>
@@ -610,6 +611,7 @@ body.drawer-open{overflow:hidden}
     </button>
     <div class="drawer-group-items">
       <div class="drawer-group-items-inner">
+      <a href="/daily-system" onclick="closeNavDrawer()">Daily System</a>
       <a href="/scalpchart" onclick="closeNavDrawer()">ScalpCharts</a>
       <a href="/scalpchart?tab=replay" onclick="closeNavDrawer()">Replay</a>
       <a href="/exitassistant" onclick="closeNavDrawer()">Exit Assistant</a>
@@ -660,6 +662,19 @@ body.drawer-open{overflow:hidden}
        entirely for active Pro/Founder members or when the offer isn't active. -->
   <div id="dashFounderTeaser" style="margin-bottom:18px;"></div>
 
+  <!-- Daily Trading System progress — reads the same localStorage keys
+       daily-system.html itself writes (sc_daily_streak_*, sc_daily_session_*),
+       no new fetch. Hidden if the member has never started a session. -->
+  <a href="/daily-system" id="dailySystemCard" style="display:none;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:16px 18px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:var(--disp);font-weight:700;font-size:1rem;">📈 Today's Trading System</div>
+        <div id="dailySystemSub" style="font-size:.8rem;color:var(--t65);margin-top:2px;">—</div>
+      </div>
+      <div style="font-family:var(--disp);font-weight:700;color:var(--green-ink);white-space:nowrap;">Continue →</div>
+    </div>
+  </a>
+
   <div class="section-title">Tool Menu</div>
   <div class="links-grid">
     <a class="link-card" href="/learn">
@@ -671,6 +686,11 @@ body.drawer-open{overflow:hidden}
       <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg></div>
       <div class="link-title">Learn Options Trading</div>
       <div class="link-desc">Beginner guides on options basics, strategies, and technical analysis.</div>
+    </a>
+    <a class="link-card" href="/daily-system">
+      <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg></div>
+      <div class="link-title">Daily System</div>
+      <div class="link-desc">Your daily trading routine — prepare, confirm, plan, journal, and score your discipline.</div>
     </a>
     <a class="link-card" href="/scalpchart">
       <div class="link-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 9 9 9 21"/><polyline points="9 14 15 14 15 21"/><polyline points="15 9 21 9 21 21"/></svg></div>
@@ -1824,6 +1844,27 @@ setInterval(loadNews, 300000);
 if (typeof FounderCTA !== 'undefined') {
   FounderCTA.mount(document.getElementById('dashFounderTeaser'), { location: 'dashboard', mode: 'compact' });
 }
+
+// Daily Trading System progress card — reads the exact same localStorage
+// keys daily-system.html writes; hidden entirely if the member has never
+// started a session (no fabricated "0-day streak" nag for new users).
+(function renderDailySystemCard() {
+  function lget(k, d) { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch (e) { return d; } }
+  const today = new Date().toISOString().slice(0, 10);
+  const streakDate = lget('sc_daily_streak_date', '');
+  const streakCount = lget('sc_daily_streak_count', 0);
+  const todaySession = lget('sc_daily_session_' + today, null);
+  if (!streakDate && !todaySession) return; // never started — nothing to show
+  const yest = new Date(); yest.setDate(yest.getDate() - 1);
+  const isCurrent = streakDate === today || streakDate === yest.toISOString().slice(0, 10);
+  const streak = isCurrent ? streakCount : 0;
+  const completed = (todaySession && todaySession.completedSteps) ? todaySession.completedSteps.length : 0;
+  const pct = Math.round((completed / 8) * 100);
+  const card = document.getElementById('dailySystemCard');
+  const sub = document.getElementById('dailySystemSub');
+  sub.textContent = (streak > 0 ? '🔥 ' + streak + '-Day Streak · ' : '') + 'Today: ' + pct + '% complete';
+  card.style.display = 'block';
+})();
 </script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 <footer style="text-align:center;padding:18px 20px;font-size:11px;color:#3a4f6a;border-top:1px solid #1a2535;margin-top:32px;line-height:1.7">

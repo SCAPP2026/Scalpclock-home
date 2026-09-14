@@ -8,6 +8,8 @@ const CORS = {
 
 const RTH_START = '09:30';
 const RTH_END = '16:00';
+const PREMARKET_START = '04:00';
+const PREMARKET_END = '09:30';
 
 export async function onRequest(context) {
   const { env, request } = context;
@@ -27,6 +29,14 @@ export async function onRequest(context) {
   let date = url.searchParams.get('date') || todayET;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json({ error: 'Invalid date — use YYYY-MM-DD' }, 400);
   if (date > todayET) return json({ error: 'Date is in the future' }, 400);
+
+  // Optional ?session=premarket widens the window to 04:00-09:30 ET instead
+  // of the default regular session — added for the Daily Trading System's
+  // "mark your levels" step (today's premarket high/low). Omitting this
+  // param (every existing caller, e.g. ORB Signal Engine) is unaffected.
+  const sessionParam = url.searchParams.get('session');
+  const windowStart = sessionParam === 'premarket' ? PREMARKET_START : RTH_START;
+  const windowEnd   = sessionParam === 'premarket' ? PREMARKET_END   : RTH_END;
 
   // Request a 2-day UTC window starting at the target date — wide enough to
   // cover the full ET session (which can spill into the next UTC day)
@@ -56,15 +66,16 @@ export async function onRequest(context) {
         const et = etParts(b.t);
         return { et, open: +b.o.toFixed(2), high: +b.h.toFixed(2), low: +b.l.toFixed(2), close: +b.c.toFixed(2), volume: b.v || 0 };
       })
-      .filter(c => c.et.date === date && c.et.time >= RTH_START && c.et.time < RTH_END)
+      .filter(c => c.et.date === date && c.et.time >= windowStart && c.et.time < windowEnd)
       .map(c => ({ time: c.et.time, open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume }));
 
     if (!candles.length) {
-      return json({ error: `No regular-session bars found for ${symbol} on ${date} — market may have been closed, or the date is too far in the past for this feed.` }, 404);
+      const sessionLabel = sessionParam === 'premarket' ? 'premarket' : 'regular-session';
+      return json({ error: `No ${sessionLabel} bars found for ${symbol} on ${date} — market may have been closed, or the date is too far in the past for this feed.` }, 404);
     }
 
     const maxAge = date === todayET ? 15 : 3600;
-    return json({ symbol, date, candles }, 200, maxAge);
+    return json({ symbol, date, session: sessionParam === 'premarket' ? 'premarket' : 'regular', candles }, 200, maxAge);
 
   } catch (e) {
     console.error('orb-bars error:', e.message);
