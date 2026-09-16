@@ -919,6 +919,7 @@
 
   let stats = { wins: 0, losses: 0, flats: 0 };
   let isLiveData = false;
+  let liveRefreshTimer = null;
 
   // ================= HELPERS =================
   function rand(a, b){ return a + Math.random() * (b - a); }
@@ -1898,6 +1899,7 @@
 
   function resetSession(){
     clearInterval(timer); timer = null; playing = false;
+    stopLiveRefreshPoll();
     setPlayLabel();
     candles = generateSession();
     times = buildTimes();
@@ -1916,6 +1918,7 @@
     const sym = (document.getElementById('symbolInput').value.trim() || 'SPY').toUpperCase();
     const dateVal = document.getElementById('dateInput').value;
     clearInterval(timer); timer = null; playing = false; setPlayLabel();
+    stopLiveRefreshPoll();
     setPhase('LOADING LIVE DATA…', 'neutral');
     document.getElementById('loadLiveBtn').disabled = true;
     try {
@@ -1931,6 +1934,10 @@
       symbol = sym;
       SESSION_CANDLES = candles.length;
       applySession('LIVE SESSION LOADED', 'blue', 'Live 15m bars loaded for ' + symbol + ' (' + SESSION_CANDLES + ' candles). Press Play to run the ORB engine on real data.', true);
+      // Only today's session ever gets new bars as the day progresses — a
+      // specific past date (dateVal set) is permanently finished, nothing to
+      // poll for.
+      if (!dateVal) startLiveRefreshPoll();
     } catch (err){
       if (isAutoInit){
         resetSession();
@@ -2424,6 +2431,49 @@
   function pause(){
     playing = false; setPlayLabel();
     clearInterval(timer); timer = null;
+  }
+
+  // ================= LIVE DATA REFRESH =================
+  // tick() (above) has no way to know more real bars exist beyond whatever
+  // was loaded when the session started -- it just pauses forever once it
+  // reaches the end of that array, which is why a live session visibly
+  // "freezes" partway through the trading day even though the market is
+  // still open. This polls the same endpoint every 20s (a little past
+  // orb-bars.js's own 15s edge-cache window) purely to append any newly
+  // available bars -- if the engine had paused specifically because it ran
+  // out of data (not because the user paused it mid-session, or a trade
+  // concluded), it auto-resumes so the tool keeps advancing through the day
+  // on its own, matching what "live" should mean here.
+  function stopLiveRefreshPoll(){
+    if (liveRefreshTimer){ clearInterval(liveRefreshTimer); liveRefreshTimer = null; }
+  }
+  function startLiveRefreshPoll(){
+    stopLiveRefreshPoll();
+    liveRefreshTimer = setInterval(checkForNewLiveCandles, 20000);
+  }
+  async function checkForNewLiveCandles(){
+    if (!isLiveData || !symbol) return;
+    if (document.getElementById('dateInput').value) return; // viewing a fixed past date, never gets new bars
+    try {
+      const resp = await fetch('/api/orb-bars?symbol=' + encodeURIComponent(symbol));
+      const data = await resp.json();
+      if (!resp.ok || !data.candles || data.candles.length <= candles.length) return;
+
+      const wasCaughtUp = !playing && revealIdx === SESSION_CANDLES - 1;
+      const newBars = data.candles.slice(candles.length);
+      const startI = candles.length;
+      newBars.forEach((b, k) => {
+        candles.push({ i: startI + k, open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume || 0 });
+        times.push(b.time);
+      });
+      SESSION_CANDLES = candles.length;
+      // Keep the chart's Y-axis wide enough for the new bars too -- it's
+      // only ever set once, in applySession(), from whatever was loaded then.
+      priceMax = Math.max(priceMax, Math.max.apply(null, newBars.map(b => b.high)) * 1.003);
+      priceMin = Math.min(priceMin, Math.min.apply(null, newBars.map(b => b.low)) * 0.997);
+      document.getElementById('candleCountVal').textContent = (revealIdx + 1) + ' / ' + SESSION_CANDLES;
+      if (wasCaughtUp) play();
+    } catch (e) { /* transient network error -- next 20s poll retries */ }
   }
 
   // ================= EVENTS =================
