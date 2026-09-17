@@ -6,10 +6,10 @@
 //   - Active Pro subscribers    -> nothing rendered at all
 //   - Founding offer sold out   -> nothing rendered at all (never references
 //                                  an offer that no longer exists)
-//   - Everyone else (anon/free) -> the real promo, with the REAL live
-//                                  spots-remaining number from the same
+//   - Everyone else (anon/free) -> the real promo, gated by the same
 //                                  public /api/founding-status endpoint
-//                                  pricing.html's own countdown uses.
+//                                  pricing.html's own countdown uses
+//                                  (no spots-remaining count is shown here).
 //
 // Self-contained: creates its own Supabase client from the same public
 // anon key already used site-wide (not a secret), so it works regardless
@@ -99,13 +99,10 @@
     if (state.plan === 'pro' || state.plan === 'trial') return; // already an active paying (non-Founder) member — no nag
     if (!status || status.active !== true) return; // sold out / ended — never reference a dead offer
 
-    const remaining = Number.isFinite(status.remaining) ? status.remaining : null;
-    const spotsLine = remaining != null ? `${remaining} of ${status.cap || 500} spots remain` : 'Spots remain';
-
     container.innerHTML = `
       <div class="fc-banner ${mode === 'compact' ? 'compact' : ''}">
         <div class="fc-banner-copy">
-          <div class="fc-banner-eyebrow">🔥 Founding Member — ${esc(spotsLine)}</div>
+          <div class="fc-banner-eyebrow">🔥 Founding Member Pricing</div>
           <div class="fc-banner-h">Full Pro access for $1.99/month — locked for life</div>
           ${mode === 'compact' ? '' : '<div class="fc-banner-sub">First 500 members only. Charged today, no trial.</div>'}
         </div>
@@ -149,8 +146,6 @@
     });
     track('founder_cta_view', { location: location + '_sticky' });
   }
-
-  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
   global.FounderCTA = { mount, mountSticky, getPlanState };
 })(window);

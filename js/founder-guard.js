@@ -126,13 +126,10 @@
 
     track('pro_founder_intercept_shown');
 
-    const remaining = Number.isFinite(status.remaining) ? status.remaining : null;
-    const spotsLine = remaining != null ? `${remaining} of ${status.cap || 500} Founding Member spots remain.` : 'Founding Member spots are currently available.';
-
     const html = `
       <div class="fg-eyebrow">🔥 Wait</div>
       <div class="fg-h">You may want the $1.99 Founder price</div>
-      <div class="fg-body">You're about to start the regular Pro plan at $9.99/month. ${esc(spotsLine)} That price is locked for life, charged today.</div>
+      <div class="fg-body">You're about to start the regular Pro plan at $9.99/month. Founding Member pricing is still available. That price is locked for life, charged today.</div>
       <div class="fg-compare">
         <div class="fg-plan gold">
           <div class="fg-plan-name">FOUNDING MEMBER</div>

@@ -88,13 +88,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .hero p{color:var(--t65);font-size:1.02rem;max-width:600px;margin:0 auto;line-height:1.6;}
 
 /* PROGRESS */
-.progress-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:26px 28px;margin:32px 0;}
-.progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
-.progress-top .n{font-family:var(--mono);font-weight:700;font-size:1.6rem;color:var(--green-ink);}
-.progress-top .lbl{font-size:.85rem;color:var(--t65);}
-.progress-track{height:12px;border-radius:6px;background:var(--bg2);border:1px solid var(--line);overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-ink));border-radius:6px;transition:width .4s ease;}
-.progress-note{font-size:.8rem;color:var(--t65);margin-top:10px;}
 
 /* STEPS */
 .section-title{font-family:var(--disp);font-weight:700;font-size:1.3rem;text-align:center;margin:44px 0 20px;color:var(--t85);}
@@ -160,15 +153,6 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;posi
     <div class="hero-badge">FOUNDING MEMBER PROGRAM</div>
     <h1>Get in early. <span>Earn for life.</span></h1>
     <p>The first 500 ScalpClock Founding Members lock in $1.99/month for life — and earn a recurring monthly commission for every trader they bring to ScalpClock.</p>
-  </div>
-
-  <div class="progress-card">
-    <div class="progress-top">
-      <span class="n" id="progressCount">—</span>
-      <span class="lbl">of 500 Founding spots claimed</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-note" id="progressNote">Loading live spot count…</div>
   </div>
 
   <div class="rate-card">
@@ -249,17 +233,10 @@ async function loadStatus() {
 
     const claimed = data.claimed || 0;
     const cap = data.cap || 500;
-    const pct = Math.min(100, Math.round((claimed / cap) * 100));
-
-    document.getElementById('progressCount').textContent = claimed;
-    document.getElementById('progressFill').style.width = pct + '%';
 
     if (!data.active) {
-      document.getElementById('progressNote').textContent = 'The Founding Member promotion has ended.';
       document.getElementById('ctaBtn').textContent = 'View Pricing';
       document.getElementById('ctaSub').textContent = '';
-    } else {
-      document.getElementById('progressNote').textContent = `${data.remaining} spot${data.remaining === 1 ? '' : 's'} remaining — once they're gone, they're gone.`;
     }
 
     if (data.currentReferralRate != null) {

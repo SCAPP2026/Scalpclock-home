@@ -187,10 +187,6 @@ body.drawer-open{overflow:hidden}
 .countdown-unit{background:var(--panel);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:12px 16px;min-width:64px;}
 .countdown-num{font-family:var(--disp);font-weight:700;font-size:1.6rem;color:var(--gold);line-height:1;}
 .countdown-label{font-size:.65rem;color:var(--t55);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
-.countdown-spots{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:.9rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,166,35,.3);padding:8px 18px;border-radius:20px;}
-.spots-bar-wrap{max-width:340px;margin:14px auto 0;}
-.spots-bar-track{height:8px;border-radius:6px;background:rgba(245,166,35,.12);overflow:hidden;}
-.spots-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ffcf80);border-radius:6px;transition:width .6s ease;width:0%;}
 
 /* TRUST ROW */
 .trust-row{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;max-width:var(--max);margin:8px auto 0;padding:0 24px;}
@@ -457,8 +453,6 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
     <div class="countdown-unit"><div class="countdown-num" id="cdMins">--</div><div class="countdown-label">Mins</div></div>
     <div class="countdown-unit"><div class="countdown-num" id="cdSecs">--</div><div class="countdown-label">Secs</div></div>
   </div>
-  <div class="countdown-spots" id="cdSpots">Loading spots remaining…</div>
-  <div class="spots-bar-wrap"><div class="spots-bar-track"><div class="spots-bar-fill" id="spotsBarFill"></div></div></div>
 </div>
 
 <!-- ============ SECTION 2: PRICING CARDS ============ -->
@@ -1100,12 +1094,8 @@ async function loadFoundingStatus() {
     if (savingsAnchor) savingsAnchor.style.display = '';
     document.getElementById('foundingCard').style.display = '';
     document.getElementById('foundingCountdown').style.display = '';
-    const spotsText = `${data.remaining} of ${data.cap} spots left`;
-    document.getElementById('cdSpots').textContent = spotsText;
     document.getElementById('foundingLimitText').textContent =
-      `${spotsText} — everything in Pro, locked at this price for life.`;
-    const fill = document.getElementById('spotsBarFill');
-    if (fill && data.cap) fill.style.width = Math.min(100, Math.round(((data.cap - data.remaining) / data.cap) * 100)) + '%';
+      'Everything in Pro, locked at this price for life.';
     startFoundingCountdown(new Date(data.cutoff).getTime());
   } catch (e) {
     console.warn('founding status failed:', e.message);
