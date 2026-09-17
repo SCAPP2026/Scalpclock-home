@@ -308,7 +308,7 @@ async function signUp() {
         });
       } catch (_) {}
     }
-    if (typeof gtag === 'function') gtag('event', 'sign_up', { method: 'email' });
+    if (typeof gtag === 'function') { gtag('event', 'sign_up', { method: 'email' }); gtag('event', 'free_signup'); }
     showMsg('Account created! Check your email to confirm, then sign in below.', 'success');
     // Auto-switch to sign-in tab after 2 seconds
     setTimeout(() => showTab('signin'), 2000);

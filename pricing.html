@@ -390,7 +390,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <a href="/pricing" class="active">Pricing</a>
       <a href="/dashboard">Dashboard</a>
     </div>
-    <a class="nav-cta" href="/login?tab=signup">Learn Free</a>
+    <a class="nav-cta" href="/login?tab=signup" id="navFoundingCta">Learn Free</a>
     <button class="nav-burger" id="navBurger" onclick="toggleDrawer()" aria-label="Open menu">☰</button>
   </div>
 </nav>
@@ -429,7 +429,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
   </div>
   <a href="/pricing" class="active" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
-  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Learn Free →</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;" id="navFoundingCtaDrawer">Learn Free →</a>
 </div>
 
 <!-- ============ SECTION 1: HERO ============ -->
@@ -704,7 +704,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div class="recommend-tag">Just Starting</div>
         <div class="recommend-title">Choose Free</div>
         <p class="recommend-body">For traders who want to learn, explore ScalpClock, and build their foundation.</p>
-        <a class="recommend-cta" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">START FREE</a>
+        <a class="recommend-cta" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Learn Free</a>
       </div>
       <div class="recommend-card gold">
         <div class="recommend-tag gold">Best Value</div>
@@ -800,7 +800,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <h2>Ready to Start Your ScalpClock Journey?</h2>
       <p>Start learning for free — or lock in Founding Member access while spots remain.</p>
       <div class="final-cta-row">
-        <a class="final-btn ghost" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">START FREE</a>
+        <a class="final-btn ghost" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Learn Free</a>
         <button type="button" class="final-btn solid" onclick="startFoundingCheckout()">CLAIM $1.99 FOUNDING MEMBER</button>
       </div>
     </div>
@@ -812,6 +812,8 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 <p class="footer-note" style="margin-top:10px;padding-bottom:60px">&copy; 2026 VSLLC. All rights reserved. ScalpClock is a product of VSLLC. &nbsp;·&nbsp; Not financial advice.</p>
 
 <script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 let _sb = null;
@@ -822,7 +824,7 @@ try {
   );
 } catch (e) { console.warn('Supabase init failed:', e.message); }
 
-if (typeof gtag === 'function') gtag('event', 'pricing_view');
+if (typeof gtag === 'function') { gtag('event', 'pricing_view'); gtag('event', 'pricing_page_view'); }
 
 // Landed back here from a cancelled Stripe checkout (see checkout.js's
 // cancel_url) — fire the matching cancellation event once, then clean the
@@ -1007,6 +1009,7 @@ async function startFoundingCheckout() {
   try {
     if (typeof gtag === 'function') gtag('event', 'founding_member_click');
     if (typeof gtag === 'function') gtag('event', 'founder_checkout_started');
+    if (typeof gtag === 'function') gtag('event', 'founding_member_checkout_started');
     // Founding Member checkout never has a trial — $1.99 is charged
     // immediately. checkout.js also hard-enforces this server-side
     // regardless of what's sent here (defense in depth).
@@ -1106,6 +1109,10 @@ async function loadFoundingStatus() {
   }
 }
 loadFoundingStatus();
+
+if (typeof FounderNav !== 'undefined') {
+  FounderNav.initFounderNav('navFoundingCta', 'navFoundingCtaDrawer');
+}
 
 // Independent of loadFoundingStatus() above (does not touch its DOM or
 // state) — just surfaces the same public /api/founding-status response's

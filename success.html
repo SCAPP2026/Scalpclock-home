@@ -11,7 +11,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalpClock · Welcome to Pro</title>
+<title>ScalpClock · Welcome</title>
 <meta name="description" content="Your ScalpClock Pro subscription is active. Start trading with real-time edge.">
 <link rel="canonical" href="https://scalpclock.com/success">
 <meta name="robots" content="noindex, nofollow">
@@ -134,7 +134,7 @@ h1 em{color:var(--green);font-style:normal;}
     </svg>
   </div>
 
-  <h1 id="mainHeading">🎉 Welcome to <em>Pro</em></h1>
+  <h1 id="mainHeading">🎉 Welcome to <em>ScalpClock</em></h1>
   <p class="subtitle" id="mainSubtitle">Your subscription is active. Every Pro feature is unlocked.</p>
 
   <div class="trial-badge" id="trialBadge" style="display:none">
@@ -189,6 +189,7 @@ const TOTAL_SECS = isFounding ? 8 : 5; // give the Founder-number poll below tim
 if (sessionId) localStorage.setItem('sc_just_paid', new Date().toISOString());
 if (sessionId && typeof gtag === 'function') {
   gtag('event', isFounding ? 'founder_checkout_completed' : 'pro_checkout_completed');
+  gtag('event', isFounding ? 'founding_member_purchase' : 'pro_purchase');
 }
 
 if (isFounding) {

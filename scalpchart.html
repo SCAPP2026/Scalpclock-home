@@ -1053,6 +1053,7 @@
 <body style="visibility:hidden">
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">ScalpCharts — AI Trade Coach for Day Trading &amp; Scalping: Candlestick Patterns &amp; Options Signals</h1>
 <script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://unpkg.com/lightweight-charts@4.1.4/dist/lightweight-charts.standalone.production.js"></script>
 
@@ -1134,7 +1135,7 @@
     </div>
     <a href="/pricing">💳 Pricing</a>
     <a href="/dashboard">⚙️ Dashboard</a>
-    <a href="/login?tab=signup" class="sc-cta">Learn Free →</a>
+    <a href="/login?tab=signup" class="sc-cta" id="navFoundingCta">Learn Free →</a>
   </div>
 </div>
 
@@ -4030,6 +4031,7 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
   document.body.style.visibility = 'visible';
 })();
 if (typeof FounderCTA !== 'undefined') FounderCTA.mountSticky({ location: 'scalpchart' });
+if (typeof FounderNav !== 'undefined') FounderNav.initFounderNav('navFoundingCta');
 // Auto-switch to Replay tab when ?tab=replay is in the URL. If ?rdate= (optionally with
 // &rtime=) is also present — set by the Trade Journal's "Practice This Trade in Replay"
 // link — auto-start the session loaded to that specific symbol/date/time instead of

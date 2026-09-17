@@ -467,7 +467,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
       </div>
       <a href="/pricing">Pricing</a>
       <a href="/dashboard">Dashboard</a>
-      <a class="nav-cta" href="/login?tab=signup">Learn Free</a>
+      <a class="nav-cta" href="/login?tab=signup" id="navFoundingCta">Learn Free</a>
     </nav>
     <button class="ham" onclick="toggleDrawer()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -509,7 +509,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
   </div>
   <a href="/pricing" onclick="closeDrawer()">Pricing</a>
   <a href="/dashboard" onclick="closeDrawer()">Dashboard</a>
-  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;">Learn Free →</a>
+  <a href="/login?tab=signup" onclick="closeDrawer()" style="color:var(--green);font-weight:600;" id="navFoundingCtaDrawer">Learn Free →</a>
 </div>
 
 <!-- TICKER TAPE -->
@@ -966,6 +966,7 @@ footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;}
 
 <script src="/js/founder-guard.js"></script>
 <script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // Page reveal (removed stale Supabase auth check — wrong project)
@@ -1030,6 +1031,7 @@ async function startFoundingCheckout() {
     // immediately. checkout.js also hard-enforces this server-side
     // regardless of what's sent here (defense in depth).
     if (typeof gtag === 'function') gtag('event', 'founder_checkout_started');
+    if (typeof gtag === 'function') gtag('event', 'founding_member_checkout_started');
     const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'homepage' };
     if (userId) body.userId = userId;
 
@@ -1079,6 +1081,9 @@ if (typeof FounderCTA !== 'undefined') {
   FounderCTA.mount(document.getElementById('homeFounderTeaser'), { location: 'homepage_hero' });
   FounderCTA.mountSticky({ location: 'homepage' });
 }
+if (typeof FounderNav !== 'undefined') {
+  FounderNav.initFounderNav('navFoundingCta', 'navFoundingCtaDrawer');
+}
 
 // Hero primary CTA: leads with the $1.99 Founding Member offer whenever
 // it's genuinely active AND the visitor is actually eligible (not already
@@ -1096,7 +1101,10 @@ if (typeof FounderCTA !== 'undefined') {
       primary.href = '/pricing#foundingCard';
       primary.textContent = '🔥 Join Founding Members — $1.99/mo';
       primary.addEventListener('click', () => {
-        if (typeof gtag === 'function') gtag('event', 'hero_founding_cta_click', { location: 'homepage_hero' });
+        if (typeof gtag === 'function') {
+          gtag('event', 'hero_founding_cta_click', { location: 'homepage_hero' });
+          gtag('event', 'founding_member_cta_click', { location: 'homepage_hero', surface: 'hero' });
+        }
       });
     }
   } catch (e) { /* leave default hero CTA in place */ }

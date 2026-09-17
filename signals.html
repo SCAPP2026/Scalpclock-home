@@ -346,7 +346,7 @@ body.drawer-open{overflow:hidden}
     </div>
     <div class="nav-right" id="navRightAnon">
       <a href="/login" style="font-size:.85rem;color:var(--t65);text-decoration:none;padding:6px 12px;">Log In</a>
-      <a href="/login?tab=signup" style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:8px 18px;border-radius:8px;background:var(--green);color:#04140c;text-decoration:none;">Learn Free</a>
+      <a href="/login?tab=signup" style="font-family:var(--disp);font-weight:700;font-size:.85rem;padding:8px 18px;border-radius:8px;background:var(--green);color:#04140c;text-decoration:none;" id="navFoundingCta">Learn Free</a>
     </div>
     <button class="nav-ham" onclick="toggleNavDrawer()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -475,6 +475,7 @@ body.drawer-open{overflow:hidden}
 
 <script src="/js/founder-guard.js"></script>
 <script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
@@ -1009,6 +1010,7 @@ if ('serviceWorker' in navigator) {
 
 init();
 if (typeof FounderCTA !== 'undefined') FounderCTA.mountSticky({ location: 'signals' });
+if (typeof FounderNav !== 'undefined') FounderNav.initFounderNav('navFoundingCta');
 </script>
 </body>
 </html>

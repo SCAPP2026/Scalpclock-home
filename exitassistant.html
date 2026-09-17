@@ -1668,6 +1668,7 @@
 <body style="visibility:hidden">
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">AI Exit Assistant — Options Trade Exit Timing Tool</h1>
 <script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <!-- HEADER -->
@@ -1711,7 +1712,7 @@
     </div>
     <a href="/pricing">💳 Pricing</a>
     <a href="/dashboard">⚙️ Dashboard</a>
-    <a href="/login?tab=signup" class="sc-cta">Learn Free →</a>
+    <a href="/login?tab=signup" class="sc-cta" id="navFoundingCta">Learn Free →</a>
   </div>
 </div>
 <header>
@@ -2432,6 +2433,7 @@
   document.body.style.visibility = 'visible';
 })();
 if (typeof FounderCTA !== 'undefined') FounderCTA.mountSticky({ location: 'exitassistant' });
+if (typeof FounderNav !== 'undefined') FounderNav.initFounderNav('navFoundingCta');
 
 // ── State ──────────────────────────────────────────────────────────────────
 let ticker       = 'SPY';

@@ -110,7 +110,10 @@
       </div>`;
 
     const btn = container.querySelector('[data-fc-cta]');
-    if (btn) btn.addEventListener('click', () => track('founder_cta_click', { location }));
+    if (btn) btn.addEventListener('click', () => {
+      track('founder_cta_click', { location });
+      track('founding_member_cta_click', { location, surface: 'banner' });
+    });
     track('founder_cta_view', { location });
   }
 
@@ -147,5 +150,5 @@
     track('founder_cta_view', { location: location + '_sticky' });
   }
 
-  global.FounderCTA = { mount, mountSticky, getPlanState };
+  global.FounderCTA = { mount, mountSticky, getPlanState, getFoundingStatus };
 })(window);

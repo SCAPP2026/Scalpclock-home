@@ -494,7 +494,7 @@
     </div>
     <a href="/pricing">💳 Pricing</a>
     <a href="/dashboard">⚙️ Dashboard</a>
-    <a href="/login?tab=signup" class="sc-cta">Learn Free →</a>
+    <a href="/login?tab=signup" class="sc-cta" id="navFoundingCta">Learn Free →</a>
   </div>
 </div>
 
@@ -2566,11 +2566,13 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
 <script src="/js/founder-guard.js"></script>
 <script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 if (typeof FounderCTA !== 'undefined') {
   FounderCTA.mount(document.getElementById('orbFounderTeaser'), { location: 'orb_engine', mode: 'compact' });
   FounderCTA.mountSticky({ location: 'orb_engine' });
+  if (typeof FounderNav !== 'undefined') FounderNav.initFounderNav('navFoundingCta');
 }
 </script>
 </body>
