@@ -27,8 +27,8 @@ export async function onRequest(context) {
 // duplicated rather than imported so this file has zero cross-file
 // dependency risk for billing-critical code. Keep all three in sync.
 const FOUNDING_ACTIVE_OVERRIDE = true;
-const FOUNDING_CAP    = 500;
-const FOUNDING_CUTOFF = '2026-09-30T23:59:59Z';
+const FOUNDING_CAP    = 308;
+const FOUNDING_CUTOFF = '2026-12-01T23:59:59Z';
 
 // Returns { active, reason } instead of a bare boolean so the caller can show
 // the specific "spots are full" copy the cap case needs, rather than a single

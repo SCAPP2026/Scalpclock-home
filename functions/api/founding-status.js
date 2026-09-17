@@ -1,6 +1,6 @@
 // Public status for the Founding Member promotion — how many of the 500
 // spots are claimed, and whether the offer is still active (both the cap
-// and the 2026-09-30 cutoff). Used by the homepage banner, pricing page,
+// and the 2026-12-01 cutoff). Used by the homepage banner, pricing page,
 // and countdown section. Also the same eligibility check checkout.js
 // re-runs server-side before honoring the discounted price, so this file
 // exports the shared logic rather than duplicating it.
@@ -12,8 +12,8 @@ const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 // (checkout.js re-declares this same constant — see the comment there
 // for why it's duplicated rather than imported.)
 const ACTIVE_OVERRIDE = true;
-const CAP = 500;
-const CUTOFF = '2026-09-30T23:59:59Z';
+const CAP = 308;
+const CUTOFF = '2026-12-01T23:59:59Z';
 
 export async function getFoundingStatus(serviceKey) {
   let claimed = 0;

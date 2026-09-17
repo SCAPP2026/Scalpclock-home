@@ -15,8 +15,8 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 
 // Same constants as checkout.js / founding-status.js — duplicated for the
 // same billing-critical isolation reason. Keep all in sync.
-const FOUNDING_CAP    = 500;
-const FOUNDING_CUTOFF = '2026-09-30T23:59:59Z';
+const FOUNDING_CAP    = 308;
+const FOUNDING_CUTOFF = '2026-12-01T23:59:59Z';
 // Founding Member offer's actual launch — before this date, "Founder was
 // available" is meaningless (the offer didn't exist yet), so those Pro
 // purchases are never flagged as a possible accidental $9.99 purchase.
