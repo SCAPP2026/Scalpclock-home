@@ -72,12 +72,18 @@ function metaFor(urlKey) {
 function readRedirectSources() {
   const file = path.join(ROOT, "_redirects");
   if (!fs.existsSync(file)) return new Set();
+  const norm = (s) => s.replace(/^\//, "").replace(/\.html$/, "");
   const sources = new Set();
   for (const line of fs.readFileSync(file, "utf8").split("\n")) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
-    const [from] = trimmed.split(/\s+/);
-    if (from) sources.add(from.replace(/^\//, "").replace(/\.html$/, ""));
+    const [from, to] = trimmed.split(/\s+/);
+    if (!from) continue;
+    // A same-URL passthrough (e.g. a static file listed ahead of a wildcard
+    // rule so it wins) is not a redirect away from that URL — only exclude
+    // the source when it actually points somewhere else.
+    if (to && norm(from) === norm(to.split("?")[0])) continue;
+    sources.add(norm(from));
   }
   return sources;
 }

@@ -12,19 +12,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScalpClock · ORB Signal Engine — Opening Range Breakout Timing</title>
-<meta name="description" content="Practice and time Opening Range Breakout entries with ScalpClock's ORB Signal Engine — live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist.">
+<meta name="description" content="Practice Opening Range Breakout (ORB) entries with ScalpClock's live ORB Signal Engine — 15-minute bars, breakout/retest logic, and a no-trade filter checklist.">
 <link rel="canonical" href="https://scalpclock.com/orbsignalengine">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
 <meta property="og:title" content="ScalpClock · ORB Signal Engine — Opening Range Breakout Timing">
-<meta property="og:description" content="Practice and time Opening Range Breakout entries with ScalpClock's ORB Signal Engine — live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist.">
+<meta property="og:description" content="Practice Opening Range Breakout (ORB) entries with ScalpClock's live ORB Signal Engine — 15-minute bars, breakout/retest logic, and a no-trade filter checklist.">
 <meta property="og:url" content="https://scalpclock.com/orbsignalengine">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ScalpClock · ORB Signal Engine — Opening Range Breakout Timing">
-<meta name="twitter:description" content="Practice and time Opening Range Breakout entries with ScalpClock's ORB Signal Engine — live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist.">
+<meta name="twitter:description" content="Practice Opening Range Breakout (ORB) entries with ScalpClock's live ORB Signal Engine — 15-minute bars, breakout/retest logic, and a no-trade filter checklist.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -37,10 +37,11 @@
 <meta name="apple-mobile-web-app-title" content="ScalpClock">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap"></noscript>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -358,6 +359,12 @@
   .primary-actions #loadLiveBtn.loaded{color:var(--bull);border-color:var(--bull);}
   .or-divider{font-family:var(--mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;text-align:center;}
   .live-caption{font-size:11px;color:var(--text-faint);margin-top:8px;}
+  /* Load/Start feedback shown right under the button row itself -- the
+     existing toast layer lives several sections down inside the chart
+     card, easy to miss without scrolling. This doesn't replace it, just
+     puts an immediate answer to "did that work?" next to the click. */
+  .inline-load-status{display:none;margin-top:10px;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--panel-alt);color:var(--text-dim);}
+  .inline-load-status.show{display:block;}
 
   /* ===== 2. Progress strip ("Where Am I?") ===== */
   .progress-strip{
@@ -584,6 +591,7 @@
         <span class="or-divider">or</span>
         <button class="btn-ghost" id="stepBtn" disabled>⏭ Next Candle</button>
       </div>
+      <div class="inline-load-status" id="inlineLoadStatus"></div>
       <div class="live-caption">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</div>
     </div>
   </div>
@@ -1940,6 +1948,7 @@
     clearInterval(timer); timer = null; playing = false; setPlayLabel();
     stopLiveRefreshPoll();
     setPhase('LOADING LIVE DATA…', 'neutral');
+    setInlineLoadStatus('⏳ Loading live session for ' + sym + '…', 'neutral');
     document.getElementById('loadLiveBtn').disabled = true;
     try {
       const qs = new URLSearchParams({ symbol: sym });
@@ -1954,6 +1963,7 @@
       symbol = sym;
       SESSION_CANDLES = candles.length;
       applySession('LIVE SESSION LOADED', 'blue', 'Live 15m bars loaded for ' + symbol + ' (' + SESSION_CANDLES + ' candles). Press Play to run the ORB engine on real data.', true);
+      setInlineLoadStatus('✓ Live session loaded for ' + symbol + ' — ' + SESSION_CANDLES + ' candles. Click Start ORB Engine below.', 'bull');
       // Only today's session ever gets new bars as the day progresses — a
       // specific past date (dateVal set) is permanently finished, nothing to
       // poll for.
@@ -1962,9 +1972,11 @@
       if (isAutoInit){
         resetSession();
         fire('amber', '⚠️', 'LIVE DATA UNAVAILABLE — SHOWING PRACTICE SIMULATION', 'Could not load live bars for ' + sym + ' (' + String(err.message || err) + ') — the market may be closed right now. Enter a symbol and click "Load Live Session" to try again.', times[0] || '09:30');
+        setInlineLoadStatus('⚠️ Live data unavailable for ' + sym + ' — showing practice simulation instead. Try Load Live Session again.', 'amber');
       } else {
         setPhase('LIVE LOAD FAILED', 'bear');
         fire('bear', '⚠️', 'LIVE DATA ERROR', String(err.message || err), '--:--');
+        setInlineLoadStatus('⚠️ Live data error: ' + String(err.message || err), 'bear');
       }
     } finally {
       document.getElementById('loadLiveBtn').disabled = false;
@@ -2046,6 +2058,26 @@
     document.getElementById('retestZoneVal').textContent = '—';
     document.getElementById('breakoutQualityVal').textContent = '—';
     document.getElementById('liveRVal').textContent = '—';
+  }
+
+  // Mirrors setPhase's color tokens for the small status line right under
+  // the Load/Start buttons -- see .inline-load-status above for why this
+  // exists alongside the (farther-away) toast layer.
+  function setInlineLoadStatus(text, kind){
+    const el = document.getElementById('inlineLoadStatus');
+    if (!el) return;
+    if (!text){ el.classList.remove('show'); return; }
+    const map = {
+      neutral: ['var(--panel-alt)', 'var(--text-dim)', 'var(--border)'],
+      blue:    ['var(--blue-dim)', 'var(--blue)', 'var(--blue)'],
+      amber:   ['var(--amber-dim)', 'var(--amber)', 'var(--amber)'],
+      bull:    ['var(--bull-dim)', 'var(--bull)', 'var(--bull)'],
+      bear:    ['var(--bear-dim)', 'var(--bear)', 'var(--bear)'],
+    };
+    const c = map[kind] || map.neutral;
+    el.style.background = c[0]; el.style.color = c[1]; el.style.borderColor = c[2];
+    el.textContent = text;
+    el.classList.add('show');
   }
 
   function setPhase(label, kind){

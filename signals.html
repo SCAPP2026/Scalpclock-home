@@ -37,6 +37,7 @@
 <meta name="apple-mobile-web-app-title" content="ScalpClock">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
@@ -447,6 +448,17 @@ body.drawer-open{overflow:hidden}
       <div class="ap-pulse-title">Market Pulse</div>
       <div class="ap-pulse-grid" id="apPulseGrid"></div>
     </div>
+
+    <!-- Static description of the methodology, positioned right above the
+         live-scanned board below (#apFeaturedSignals is populated client-
+         side from current market data, so it can't be meaningfully static
+         without going stale — this paragraph explains how it works instead
+         of trying to fake example signals). -->
+    <p style="color:var(--t65,#8aa0b8);font-size:.9rem;line-height:1.6;max-width:720px;margin:0 0 18px;">
+      Each signal starts from a live technical-analysis scan — <a href="/learn-options-trading/technical-analysis/vwap-trading-strategy-explained" style="color:var(--green-ink,#16d97e);">VWAP</a> distance, RSI(14), and a volume surge relative to a stock's normal trading activity — across 100+ of the market's most active tickers.
+      A ticker is flagged as a potential Calls setup when its short-term momentum is bullish relative to VWAP and volume confirms it, or as a Puts setup on the bearish equivalent; ScalpClock's <a href="/learn-options-trading/orb" style="color:var(--green-ink,#16d97e);">Opening Range Breakout</a> logic and <a href="/learn-options-trading/technical-analysis" style="color:var(--green-ink,#16d97e);">broader chart-reading lessons</a> explain the same underlying concepts in more depth.
+      This is a screening tool, not a prediction — it surfaces what the data is showing right now, not a guarantee of what happens next.
+    </p>
 
     <div class="ap-featured-title">🎯 Featured Signals</div>
     <div id="apFeaturedSignals"><div class="sb-loading">Scanning the market…</div></div>

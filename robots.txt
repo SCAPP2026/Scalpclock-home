@@ -1,8 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard
-Disallow: /debug
-Disallow: /success
 Disallow: /api/
 
 Sitemap: https://scalpclock.com/sitemap.xml

@@ -33,6 +33,7 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#16d97e">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
@@ -388,6 +389,19 @@ body.drawer-open{overflow:hidden}
 <div class="page-wrap">
 
   <h1 style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.4rem;margin:0 0 14px;color:var(--text);">Learn Options &amp; Stock Trading — Daily Lessons, XP &amp; Streaks</h1>
+
+  <!-- Static, non-JS-dependent summary of the curriculum below -- the
+       actual 365-day path and badge wall render client-side into
+       #path-container / #badges-grid, so this paragraph is what a
+       crawler (or a visitor before JS finishes) sees describing what's
+       actually here, in the site's own words rather than a generic
+       placeholder. -->
+  <p style="color:var(--t65,#7a9bb5);font-size:.92rem;line-height:1.6;max-width:720px;margin:0 0 24px;">
+    The ScalpClock Learn Hub is a 365-day options and stock trading curriculum, organized into 52 weekly units you work through at your own pace — each day is a short interactive lesson plus a quiz, not a video to sit through.
+    Early weeks cover the foundations: what an option is, <a href="/learn-options-trading/technical-analysis" style="color:var(--green-ink,#16d97e);">reading candlesticks and chart patterns</a>, and <a href="/learn-options-trading/options-basics" style="color:var(--green-ink,#16d97e);">options mechanics and the Greeks</a>.
+    Later units go deeper into <a href="/learn-options-trading/orb" style="color:var(--green-ink,#16d97e);">Opening Range Breakout trading</a>, VWAP, market structure, <a href="/learn-options-trading/options-strategies" style="color:var(--green-ink,#16d97e);">defined-risk options strategies</a>, <a href="/learn-options-trading/risk-management" style="color:var(--green-ink,#16d97e);">position sizing and risk management</a>, and trading psychology.
+    Every lesson earns XP toward a level, and finishing lessons on consecutive days builds a streak — the same discipline-building loop used throughout ScalpClock's tools.
+  </p>
 
   <!-- Founding Member teaser — populated by js/founder-cta.js, hidden
        entirely for active Pro/Founder members or when the offer isn't active. -->
