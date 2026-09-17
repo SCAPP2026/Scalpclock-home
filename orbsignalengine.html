@@ -356,6 +356,7 @@
   .primary-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .primary-actions #loadLiveBtn,.primary-actions #playBtn{min-width:170px;text-align:center;}
   .primary-actions #loadLiveBtn.loaded{color:var(--bull);border-color:var(--bull);}
+  .or-divider{font-family:var(--mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;text-align:center;}
   .live-caption{font-size:11px;color:var(--text-faint);margin-top:8px;}
 
   /* ===== 2. Progress strip ("Where Am I?") ===== */
@@ -580,7 +581,8 @@
         </div>
         <button class="btn-ghost" id="loadLiveBtn">⇩ Load Live Session</button>
         <button class="btn-primary" id="playBtn" disabled>▶ Start ORB Engine</button>
-        <button class="btn-ghost" id="stepBtn" disabled>Step →</button>
+        <span class="or-divider">or</span>
+        <button class="btn-ghost" id="stepBtn" disabled>⏭ Next Candle</button>
       </div>
       <div class="live-caption">Simulated data runs with no setup. Leave the date blank and click Load Live Session for real 15-minute bars from Alpaca's IEX real-time feed (single-exchange coverage, not delayed, not the full consolidated tape).</div>
     </div>
