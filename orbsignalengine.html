@@ -72,7 +72,9 @@
     --sans:'Inter', sans-serif;
   }
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
   /* No hard min-width: this page previously forced a fixed 1080px-minimum
      desktop layout (horizontal-scroll on any narrower viewport), which is
      why nothing below it, however carefully reorganized, could ever have
@@ -357,8 +359,13 @@
   .live-caption{font-size:11px;color:var(--text-faint);margin-top:8px;}
 
   /* ===== 2. Progress strip ("Where Am I?") ===== */
-  .progress-strip{display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:16px;}
-  .progress-step{padding:5px 10px;border-radius:14px;letter-spacing:0.3px;white-space:nowrap;background:var(--panel);border:1px solid var(--border);color:var(--text-faint);}
+  .progress-strip{
+    display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:11px;font-weight:700;
+    margin:0 0 16px;position:sticky;top:0;z-index:20;background:rgba(7,11,16,.92);backdrop-filter:blur(8px);
+    padding:10px 0;border-bottom:1px solid var(--border-soft);
+  }
+  .progress-step{padding:5px 10px;border-radius:14px;letter-spacing:0.3px;white-space:nowrap;background:var(--panel);border:1px solid var(--border);color:var(--text-faint);text-decoration:none;cursor:pointer;transition:transform .1s;}
+  .progress-step:hover{transform:translateY(-1px);}
   .progress-step.done{color:var(--bull);border-color:var(--bull);background:var(--bull-dim);}
   .progress-step.active{color:var(--amber);border-color:var(--amber);background:var(--amber-dim);}
   .progress-arrow{color:var(--text-faint);font-size:10px;margin:0 2px;}
@@ -370,8 +377,8 @@
   .or-cell .v{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);}
 
   /* ===== 4. Market State hero — the single dominant message ===== */
-  .market-state-hero{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:16px;text-align:center;}
-  .phase-pill-hero{display:inline-block;font-family:var(--mono);font-size:20px;font-weight:800;padding:12px 26px;border-radius:14px;letter-spacing:0.5px;margin-bottom:14px;}
+  .market-state-hero{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 22px;margin-bottom:16px;text-align:center;}
+  .phase-pill-hero{display:inline-block;font-family:var(--mono);font-size:16px;font-weight:800;padding:8px 20px;border-radius:12px;letter-spacing:0.5px;margin-bottom:10px;}
   .ms-meta{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:18px;font-family:var(--mono);font-size:12px;color:var(--text-dim);}
   .ms-meta .sc-note{color:var(--text-faint);font-family:var(--sans);margin-right:4px;}
   .ms-meta b{color:var(--text);}
@@ -384,6 +391,7 @@
 
   /* ===== 6. Current Signal ===== */
   .current-signal-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:24px;}
+  .cs-row-inline{display:flex;flex-wrap:wrap;gap:24px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border-soft);}
   .cs-row{display:flex;flex-direction:column;gap:3px;}
   .cs-row .k{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
   .cs-row .v{font-family:var(--sans);font-size:18px;font-weight:800;color:var(--text);}
@@ -492,7 +500,7 @@
 <div class="wrap">
 
   <!-- ============ 1. SESSION CONTROL ============ -->
-  <div class="session-control-hero">
+  <div class="session-control-hero" id="sectionSession">
     <div class="sc-top-row">
       <div class="hdr-left">
         <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
@@ -581,8 +589,9 @@
   <!-- ============ 2. PROGRESS STRIP ("Where Am I?") ============ -->
   <div class="progress-strip" id="progressStrip"></div>
 
-  <!-- ============ 3. OPENING RANGE ============ -->
-  <div class="card">
+  <!-- ============ 3. OPENING RANGE + BIAS — merged so the empty "waiting" state
+       isn't three separate cards saying the same thing ============ -->
+  <div class="card" id="sectionRange">
     <div class="card-head"><h2>Opening Range</h2></div>
     <div class="card-body">
       <div class="or-grid">
@@ -593,6 +602,11 @@
         <div class="or-cell"><span class="k">Range %</span><span class="v" id="orRangePctVal">—</span></div>
         <div class="or-cell"><span class="k">Status</span><span class="v" id="orStatusVal">—</span></div>
       </div>
+      <div class="cs-row-inline">
+        <div class="cs-row"><span class="k">Directional Bias</span><span class="v" id="dirVal">—</span></div>
+        <div class="cs-row"><span class="k">Options Bias</span><span class="v" id="optBiasVal">—</span></div>
+      </div>
+      <div class="signal-disclaimer">Directional signal only — based on the underlying's ORB structure. This does not recommend an options contract, strike, expiration, position size, or broker execution.</div>
     </div>
   </div>
 
@@ -607,48 +621,12 @@
     </div>
   </div>
 
-  <!-- ============ 5. ORB TIMELINE — quick chronological version ============ -->
-  <div class="card">
-    <div class="card-head"><h2>ORB Timeline</h2></div>
-    <div class="card-body">
-      <div class="orb-timeline" id="orbTimeline"><div class="hist-empty">Press Play to start the session.</div></div>
-    </div>
-  </div>
-
-  <!-- ============ 6. CURRENT SIGNAL ============ -->
-  <div class="current-signal-card">
-    <div class="cs-row"><span class="k">Directional Bias</span><span class="v" id="dirVal">—</span></div>
-    <div class="cs-row"><span class="k">Options Bias</span><span class="v" id="optBiasVal">—</span></div>
-  </div>
-  <div class="signal-disclaimer">Directional signal only — based on the underlying's ORB structure. This does not recommend an options contract, strike, expiration, position size, or broker execution.</div>
-
-  <!-- ============ 7. WHY THIS SIGNAL? / WHAT WOULD INVALIDATE? — built from this session's actual FSM events ============ -->
-  <details class="why-details" id="whyDetails" open>
-    <summary>✓ Why This Signal?</summary>
-    <div class="why-body">
-      <ul class="signal-checklist" id="whySignalChecklist"><li class="sc-pending">Not enough of the session has played out yet to explain a signal.</li></ul>
-    </div>
-  </details>
-
-  <div class="invalidation-card">
-    <h3>✕ What Would Invalidate This?</h3>
-    <ul class="invalidation-list" id="invalidationChecklistFsm">
-      <li>Waiting for enough data to identify what would invalidate this read.</li>
-    </ul>
-  </div>
-
-  <div class="action-row">
-    <a class="action-btn btn-ghost" id="actScalpChart" href="/scalpchart" target="_blank" rel="noopener">📊 View on ScalpChart</a>
-    <a class="action-btn btn-ghost" id="actCoach" href="/scalpchart" target="_blank" rel="noopener">🧠 Analyze with SampsonX</a>
-    <a class="action-btn btn-ghost" id="actReplay" href="/scalpchart?tab=replay" target="_blank" rel="noopener">🎬 Practice This Setup</a>
-    <a class="action-btn btn-primary disabled" id="actExitAssistant" href="/exitassistant" target="_blank" rel="noopener">🚪 Send to Exit Assistant</a>
-    <a class="action-btn btn-ghost disabled" id="actJournal" href="/journal" target="_blank" rel="noopener" onclick="return sendOrbSetupToJournal(event)">📓 Log This Setup in Journal</a>
-  </div>
-
-  <!-- ============ 8. TRADE PLAN + RETEST ZONE + WHY THIS STOP (paired with the chart, which draws these same levels) ============ -->
+  <!-- ============ 5. TRADE PLAN + RETEST ZONE + WHY THIS STOP (paired with the chart,
+       which draws these same levels) — moved up so the live chart is reached in one
+       scroll instead of several; nothing removed, just reordered ============ -->
   <div class="grid">
     <!-- CHART -->
-    <div class="card">
+    <div class="card" id="sectionChart">
       <div class="card-head">
         <h2>15m Candles — Live Replay</h2>
         <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);" id="candleCountVal">0 / 26</span>
@@ -667,7 +645,7 @@
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-      <div class="card">
+      <div class="card" id="sectionPlan">
         <div class="card-head"><h2>Trade Plan</h2></div>
         <div class="card-body">
           <div class="trade-row"><span class="k">Current Price</span><span class="v" id="currentPriceVal">—</span></div>
@@ -715,6 +693,37 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ============ 6. ORB TIMELINE — quick chronological version ============ -->
+  <div class="card">
+    <div class="card-head"><h2>ORB Timeline</h2></div>
+    <div class="card-body">
+      <div class="orb-timeline" id="orbTimeline"><div class="hist-empty">Press Play to start the session.</div></div>
+    </div>
+  </div>
+
+  <!-- ============ 7. WHY THIS SIGNAL? / WHAT WOULD INVALIDATE? — built from this session's actual FSM events ============ -->
+  <details class="why-details" id="whyDetails" open>
+    <summary>✓ Why This Signal?</summary>
+    <div class="why-body">
+      <ul class="signal-checklist" id="whySignalChecklist"><li class="sc-pending">Not enough of the session has played out yet to explain a signal.</li></ul>
+    </div>
+  </details>
+
+  <div class="invalidation-card">
+    <h3>✕ What Would Invalidate This?</h3>
+    <ul class="invalidation-list" id="invalidationChecklistFsm">
+      <li>Waiting for enough data to identify what would invalidate this read.</li>
+    </ul>
+  </div>
+
+  <div class="action-row">
+    <a class="action-btn btn-ghost" id="actScalpChart" href="/scalpchart" target="_blank" rel="noopener">📊 View on ScalpChart</a>
+    <a class="action-btn btn-ghost" id="actCoach" href="/scalpchart" target="_blank" rel="noopener">🧠 Analyze with SampsonX</a>
+    <a class="action-btn btn-ghost" id="actReplay" href="/scalpchart?tab=replay" target="_blank" rel="noopener">🎬 Practice This Setup</a>
+    <a class="action-btn btn-primary disabled" id="actExitAssistant" href="/exitassistant" target="_blank" rel="noopener">🚪 Send to Exit Assistant</a>
+    <a class="action-btn btn-ghost disabled" id="actJournal" href="/journal" target="_blank" rel="noopener" onclick="return sendOrbSetupToJournal(event)">📓 Log This Setup in Journal</a>
   </div>
 
   <!-- ============ 9. SETUP QUALITY — a score, never a win probability ============ -->
@@ -769,7 +778,7 @@
   </div>
 
   <!-- ============ 12. SESSION RESULTS ============ -->
-  <div class="card">
+  <div class="card" id="sectionResults">
     <div class="card-head"><h2>Session Results</h2></div>
     <div class="card-body">
       <div class="stats-grid">
@@ -1671,11 +1680,20 @@
       { key: 'RESULT', label: 'Result', mark: (st === 'SESSION_COMPLETE' || st === 'NO_TRADE') ? '✓' : (st === 'TARGET_HIT' || st === 'STOP_HIT' ? '●' : '○') },
     ];
   }
+  // Each stage already existed as a plain label -- this just turns the strip
+  // into real navigation on top of that, since it's now pinned to the top of
+  // the viewport while scrolling. Colors still reflect the FSM's own state
+  // (done/active/pending), untouched -- this only adds where clicking a pill
+  // takes you, not what its color means.
+  const PROGRESS_TARGETS = {
+    SESSION: 'sectionSession', RANGE: 'sectionRange', BREAKOUT: 'sectionChart',
+    RETEST: 'sectionChart', CONFIRM: 'sectionChart', PLAN: 'sectionPlan', RESULT: 'sectionResults',
+  };
   function renderProgressStrip(){
     const el = document.getElementById('progressStrip');
     if (!el) return;
     const steps = deriveProgress(state);
-    el.innerHTML = steps.map(s => '<span class="progress-step ' + (s.mark === '✓' ? 'done' : s.mark === '●' ? 'active' : 'pending') + '">' + s.label + ' ' + s.mark + '</span>').join('<span class="progress-arrow">→</span>');
+    el.innerHTML = steps.map(s => '<a href="#' + PROGRESS_TARGETS[s.key] + '" class="progress-step ' + (s.mark === '✓' ? 'done' : s.mark === '●' ? 'active' : 'pending') + '">' + s.label + ' ' + s.mark + '</a>').join('<span class="progress-arrow">→</span>');
   }
 
   // ================= OPENING RANGE CARD =================
