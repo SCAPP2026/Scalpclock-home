@@ -91,8 +91,8 @@ tr:last-child td{border-bottom:none;}
     <div class="section-title">Referrer Balances</div>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Founder</th><th>Total Earned</th><th>Total Paid</th><th>Pending Balance</th><th></th></tr></thead>
-        <tbody id="balancesBody"><tr class="empty-row"><td colspan="5">Loading…</td></tr></tbody>
+        <thead><tr><th>Founder</th><th>Total Earned</th><th>Total Paid</th><th>Pending Balance</th><th>Payout Method</th><th></th></tr></thead>
+        <tbody id="balancesBody"><tr class="empty-row"><td colspan="6">Loading…</td></tr></tbody>
       </table>
     </div>
 
@@ -174,10 +174,12 @@ async function loadReferrals() {
   }
 }
 
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
 function renderBalances(rows) {
   const body = document.getElementById('balancesBody');
   if (!rows.length) {
-    body.innerHTML = '<tr class="empty-row"><td colspan="5">No Founding Members yet.</td></tr>';
+    body.innerHTML = '<tr class="empty-row"><td colspan="6">No Founding Members yet.</td></tr>';
     return;
   }
   body.innerHTML = rows.map(r => `
@@ -186,12 +188,13 @@ function renderBalances(rows) {
       <td>$${r.totalEarned.toFixed(2)}</td>
       <td>$${r.totalPaid.toFixed(2)}</td>
       <td class="${r.pendingBalance > 0 ? 'pending-positive' : 'pending-zero'}">$${r.pendingBalance.toFixed(2)}</td>
-      <td><button class="pay-btn" onclick="togglePayoutForm('${r.referrerId}', this)" ${r.pendingBalance <= 0 ? 'disabled' : ''}>Record Payout</button></td>
+      <td>${r.payoutMethod ? esc(r.payoutMethod) + ': ' + esc(r.payoutDestination) : '<span style="color:var(--t65);">Not set</span>'}</td>
+      <td><button class="pay-btn" onclick="togglePayoutForm('${r.referrerId}', '${esc(r.payoutMethod || '')}', this)" ${r.pendingBalance <= 0 ? 'disabled' : ''}>Record Payout</button></td>
     </tr>
   `).join('');
 }
 
-function togglePayoutForm(referrerId, btn) {
+function togglePayoutForm(referrerId, preferredMethod, btn) {
   const row = btn.closest('tr');
   const existing = row.nextElementSibling;
   if (existing && existing.classList.contains('payout-form-row')) {
@@ -205,7 +208,7 @@ function togglePayoutForm(referrerId, btn) {
   const formRow = document.createElement('tr');
   formRow.className = 'payout-form-row';
   formRow.innerHTML = `
-    <td colspan="5">
+    <td colspan="6">
       <div class="payout-form">
         <div class="payout-field">
           <label for="payAmount-${referrerId}">Amount ($)</label>
@@ -232,6 +235,7 @@ function togglePayoutForm(referrerId, btn) {
     </td>
   `;
   row.after(formRow);
+  if (preferredMethod) document.getElementById(`payMethod-${referrerId}`).value = preferredMethod;
   document.getElementById(`payAmount-${referrerId}`).focus();
 }
 

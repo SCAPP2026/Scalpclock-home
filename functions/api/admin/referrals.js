@@ -29,7 +29,7 @@ export async function onRequest(context) {
 
 async function handleList(serviceKey) {
   try {
-    const [refsRes, foundersRes, commissionsRes, payoutsRes] = await Promise.all([
+    const [refsRes, foundersRes, commissionsRes, payoutsRes, prefsRes] = await Promise.all([
       fetch(
         `${SUPABASE_URL}/rest/v1/referrals?select=id,referrer_id,referred_user_id,status,created_at&order=created_at.desc&limit=200`,
         { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
@@ -46,12 +46,18 @@ async function handleList(serviceKey) {
         `${SUPABASE_URL}/rest/v1/referral_payouts?select=referrer_id,amount`,
         { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
       ),
+      fetch(
+        `${SUPABASE_URL}/rest/v1/referral_payout_preferences?select=referrer_id,method,destination`,
+        { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+      ),
     ]);
     const refs        = await refsRes.json().catch(() => []);
     const founders     = await foundersRes.json().catch(() => []);
     const commissions  = await commissionsRes.json().catch(() => []);
     const payouts       = await payoutsRes.json().catch(() => []);
+    const prefs          = await prefsRes.json().catch(() => []);
     const numberByUserId = new Map((Array.isArray(founders) ? founders : []).map(f => [f.user_id, f.founder_number]));
+    const prefByReferrer  = new Map((Array.isArray(prefs) ? prefs : []).map(p => [p.referrer_id, { method: p.method, destination: p.destination }]));
 
     const referrals = (Array.isArray(refs) ? refs : []).map(r => ({
       id:              r.id,
@@ -69,12 +75,15 @@ async function handleList(serviceKey) {
     const referrers = (Array.isArray(founders) ? founders : []).map(f => {
       const totalEarned = earnedByReferrer.get(f.user_id) || 0;
       const totalPaid    = paidByReferrer.get(f.user_id) || 0;
+      const pref = prefByReferrer.get(f.user_id) || null;
       return {
-        referrerId:     f.user_id,
-        founderNumber:  f.founder_number,
+        referrerId:      f.user_id,
+        founderNumber:   f.founder_number,
         totalEarned,
         totalPaid,
-        pendingBalance: totalEarned - totalPaid,
+        pendingBalance:  totalEarned - totalPaid,
+        payoutMethod:      pref?.method ?? null,
+        payoutDestination: pref?.destination ?? null,
       };
     }).sort((a, b) => b.pendingBalance - a.pendingBalance);
 
