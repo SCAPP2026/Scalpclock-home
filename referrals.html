@@ -222,6 +222,7 @@ body.drawer-open{overflow:hidden}
       <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Active Referrals</div><div class="stat-val" id="statActive">—<span class="badge-tier-tag" id="badgeTierTag"></span></div></div>
       <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Monthly Residual</div><div class="stat-val" id="statMonthly">—</div></div>
       <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-label">Lifetime Earnings</div><div class="stat-val" id="statLifetime">—</div></div>
+      <div class="stat-card"><div class="stat-icon">💵</div><div class="stat-label">Pending Payout</div><div class="stat-val" id="statPending">—</div></div>
     </div>
 
     <div class="rate-banner" id="rateBanner">Loading current commission rate…</div>
@@ -259,6 +260,11 @@ body.drawer-open{overflow:hidden}
       <a class="leaderboard-link" href="/leaderboard">🏆 View Leaderboard</a>
     </div>
     <div class="ref-list" id="refList">
+      <div class="ref-empty">Loading…</div>
+    </div>
+
+    <div class="section-title">Payout History</div>
+    <div class="ref-list" id="payoutList">
       <div class="ref-empty">Loading…</div>
     </div>
 
@@ -315,6 +321,7 @@ function setupRealtime() {
     _realtimeChannel = sb.channel('referrals-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'referrals', filter: `referrer_id=eq.${_uid}` }, loadDashboard)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'referral_commissions', filter: `referrer_id=eq.${_uid}` }, loadDashboard)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'referral_payouts', filter: `referrer_id=eq.${_uid}` }, loadDashboard)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `user_id=eq.${_uid}` }, loadNotifications)
       .subscribe();
   } catch (e) {
@@ -324,16 +331,18 @@ function setupRealtime() {
 
 async function loadDashboard() {
   try {
-    const [founderRes, referralsRes, commissionsRes, rateRes] = await Promise.all([
+    const [founderRes, referralsRes, commissionsRes, payoutsRes, rateRes] = await Promise.all([
       sb.from('founding_members').select('founder_number, referral_code').eq('user_id', _uid).single(),
       sb.from('referrals').select('id, status, created_at').eq('referrer_id', _uid).order('created_at', { ascending: false }),
       sb.from('referral_commissions').select('amount').eq('referrer_id', _uid),
+      sb.from('referral_payouts').select('amount, method, paid_at, note').eq('referrer_id', _uid).order('paid_at', { ascending: false }),
       fetch('/api/founding-status').then(r => r.json()).catch(() => null),
     ]);
 
     const founder = founderRes.data;
     const referrals = referralsRes.data || [];
     const commissions = commissionsRes.data || [];
+    const payouts = payoutsRes.data || [];
 
     if (founder) {
       document.getElementById('statFounderNum').textContent = '#' + founder.founder_number;
@@ -345,10 +354,14 @@ async function loadDashboard() {
 
     const activeReferrals = referrals.filter(r => r.status === 'active').length;
     const lifetimeEarnings = commissions.reduce((s, c) => s + Number(c.amount || 0), 0);
+    const totalPaid = payouts.reduce((s, p) => s + Number(p.amount || 0), 0);
+    const pendingPayout = lifetimeEarnings - totalPaid;
 
     document.getElementById('statActive').firstChild.textContent = activeReferrals;
     document.getElementById('badgeTierTag').textContent = badgeTier(activeReferrals);
     document.getElementById('statLifetime').textContent = '$' + lifetimeEarnings.toFixed(2);
+    document.getElementById('statPending').textContent = '$' + pendingPayout.toFixed(2);
+    renderPayoutHistory(payouts);
 
     const rateBanner = document.getElementById('rateBanner');
     if (rateRes && rateRes.currentReferralRate != null) {
@@ -397,6 +410,21 @@ function renderReferralsList(referrals) {
     return `<div class="ref-row">
       <span>Referral joined ${date}</span>
       <span class="ref-status ${r.status}">${r.status.toUpperCase()}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderPayoutHistory(payouts) {
+  const el = document.getElementById('payoutList');
+  if (!payouts.length) {
+    el.innerHTML = '<div class="ref-empty">No payouts recorded yet — your pending balance is paid out manually; check back after your next payout.</div>';
+    return;
+  }
+  el.innerHTML = payouts.map(p => {
+    const date = new Date(p.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `<div class="ref-row">
+      <span>${date}${p.method ? ' · ' + p.method : ''}</span>
+      <span class="ref-status active">$${Number(p.amount).toFixed(2)}</span>
     </div>`;
   }).join('');
 }

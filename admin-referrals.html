@@ -45,6 +45,22 @@ tr:last-child td{border-bottom:none;}
 .toggle-btn{font-family:var(--disp);font-weight:700;font-size:.72rem;padding:5px 11px;border-radius:6px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;}
 .toggle-btn:hover{border-color:var(--red);color:var(--red-ink);}
 .empty-row td{text-align:center;color:var(--t65);font-family:var(--body);padding:24px;}
+.pay-btn{font-family:var(--disp);font-weight:700;font-size:.72rem;padding:5px 11px;border-radius:6px;background:var(--green-soft);border:1px solid rgba(22,217,126,.3);color:var(--green-ink);cursor:pointer;}
+.pay-btn:hover{background:rgba(22,217,126,.18);}
+.pay-btn:disabled{opacity:.5;cursor:not-allowed;}
+.pending-positive{color:var(--green-ink);font-weight:700;}
+.pending-zero{color:var(--t65);}
+.payout-form-row td{background:rgba(0,0,0,.02);padding:14px;}
+.payout-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;font-family:var(--body);white-space:normal;}
+.payout-field{display:flex;flex-direction:column;gap:4px;}
+.payout-field label{font-size:.68rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.payout-field input,.payout-field select{font-family:var(--body);font-size:.85rem;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--text);}
+.payout-field input[type="number"]{width:110px;}
+.payout-field input[type="text"]{width:200px;}
+.payout-submit-btn{font-family:var(--disp);font-weight:700;font-size:.78rem;padding:8px 16px;border-radius:6px;background:var(--green);color:var(--on-green,#04140c);border:none;cursor:pointer;}
+.payout-submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.payout-cancel-btn{font-family:var(--disp);font-weight:700;font-size:.78rem;padding:8px 14px;border-radius:6px;background:transparent;border:1px solid var(--line-strong);color:var(--t65);cursor:pointer;}
+.payout-error{color:var(--red-ink,#c0392b);font-size:.78rem;width:100%;}
 </style>
 </head>
 <body>
@@ -70,6 +86,14 @@ tr:last-child td{border-bottom:none;}
       <div class="stat-card"><div class="stat-label">Active Referrals</div><div class="stat-val" id="statActive">—</div></div>
       <div class="stat-card"><div class="stat-label">Inactive Referrals</div><div class="stat-val" id="statInactive">—</div></div>
       <div class="stat-card"><div class="stat-label">Commissions Paid</div><div class="stat-val" id="statCommTotal">—</div></div>
+    </div>
+
+    <div class="section-title">Referrer Balances</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Founder</th><th>Total Earned</th><th>Total Paid</th><th>Pending Balance</th><th></th></tr></thead>
+        <tbody id="balancesBody"><tr class="empty-row"><td colspan="5">Loading…</td></tr></tbody>
+      </table>
     </div>
 
     <div class="section-title">Referrals</div>
@@ -144,8 +168,107 @@ async function loadReferrals() {
     if (!res.ok) throw new Error('referrals fetch failed: ' + res.status);
     const data = await res.json();
     renderReferrals(data.referrals || []);
+    renderBalances(data.referrers || []);
   } catch (e) {
     console.error('loadReferrals failed:', e.message);
+  }
+}
+
+function renderBalances(rows) {
+  const body = document.getElementById('balancesBody');
+  if (!rows.length) {
+    body.innerHTML = '<tr class="empty-row"><td colspan="5">No Founding Members yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr data-referrer-id="${r.referrerId}">
+      <td>${r.founderNumber != null ? '#' + r.founderNumber : '—'}</td>
+      <td>$${r.totalEarned.toFixed(2)}</td>
+      <td>$${r.totalPaid.toFixed(2)}</td>
+      <td class="${r.pendingBalance > 0 ? 'pending-positive' : 'pending-zero'}">$${r.pendingBalance.toFixed(2)}</td>
+      <td><button class="pay-btn" onclick="togglePayoutForm('${r.referrerId}', this)" ${r.pendingBalance <= 0 ? 'disabled' : ''}>Record Payout</button></td>
+    </tr>
+  `).join('');
+}
+
+function togglePayoutForm(referrerId, btn) {
+  const row = btn.closest('tr');
+  const existing = row.nextElementSibling;
+  if (existing && existing.classList.contains('payout-form-row')) {
+    existing.remove();
+    return;
+  }
+  // Only one payout form open at a time, to avoid confusion about which
+  // referrer a submit applies to.
+  document.querySelectorAll('.payout-form-row').forEach(el => el.remove());
+
+  const formRow = document.createElement('tr');
+  formRow.className = 'payout-form-row';
+  formRow.innerHTML = `
+    <td colspan="5">
+      <div class="payout-form">
+        <div class="payout-field">
+          <label for="payAmount-${referrerId}">Amount ($)</label>
+          <input type="number" id="payAmount-${referrerId}" min="0.01" step="0.01" placeholder="0.00">
+        </div>
+        <div class="payout-field">
+          <label for="payMethod-${referrerId}">Method</label>
+          <select id="payMethod-${referrerId}">
+            <option value="PayPal">PayPal</option>
+            <option value="Venmo">Venmo</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Check">Check</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="payout-field">
+          <label for="payNote-${referrerId}">Note (optional)</label>
+          <input type="text" id="payNote-${referrerId}" placeholder="e.g. September payout">
+        </div>
+        <button type="button" class="payout-submit-btn" onclick="submitPayout('${referrerId}', this)">Confirm Payout</button>
+        <button type="button" class="payout-cancel-btn" onclick="this.closest('tr').remove()">Cancel</button>
+        <div class="payout-error" id="payError-${referrerId}" style="display:none;"></div>
+      </div>
+    </td>
+  `;
+  row.after(formRow);
+  document.getElementById(`payAmount-${referrerId}`).focus();
+}
+
+async function submitPayout(referrerId, btn) {
+  const amountEl = document.getElementById(`payAmount-${referrerId}`);
+  const methodEl = document.getElementById(`payMethod-${referrerId}`);
+  const noteEl   = document.getElementById(`payNote-${referrerId}`);
+  const errorEl  = document.getElementById(`payError-${referrerId}`);
+  const amount = Number(amountEl.value);
+  errorEl.style.display = 'none';
+  if (!Number.isFinite(amount) || amount <= 0) {
+    errorEl.textContent = 'Enter a valid amount greater than $0.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    const res = await authedFetch('/api/admin/referrals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        referrer_id: referrerId,
+        amount,
+        method: methodEl.value,
+        note: noteEl.value.trim() || null,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ('record payout failed: ' + res.status));
+    await loadReferrals();
+  } catch (e) {
+    console.error('submitPayout failed:', e.message);
+    errorEl.textContent = e.message || 'Failed to record payout.';
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Confirm Payout';
   }
 }
 
