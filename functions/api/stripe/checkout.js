@@ -98,9 +98,9 @@ async function findBlockingSubscription(userId, stripeSecretKey) {
 }
 
 async function handleCheckout(env, request) {
-  let tier, billing, trial, promoId, userId, gaClientId, source;
+  let tier, billing, trial, promoId, userId, gaClientId, source, referredByCode;
   try {
-    ({ tier, billing, trial, promoId, userId, gaClientId, source } = await request.json());
+    ({ tier, billing, trial, promoId, userId, gaClientId, source, referredByCode } = await request.json());
   } catch {
     return json({ error: 'Invalid JSON body' }, 400);
   }
@@ -218,6 +218,21 @@ async function handleCheckout(env, request) {
   // because analytics attribution is missing.
   if (gaClientId && /^[\w.-]{1,80}$/.test(gaClientId)) {
     params.set('metadata[ga_client_id]', gaClientId);
+  }
+
+  // Referral attribution: normally captured once at signup into
+  // user_metadata.referred_by_code (see login.html + webhook.js's
+  // recordReferralIfAttributed). This is the fallback path for a visitor
+  // who already had an account before ever seeing a referral link -- the
+  // scalpclock_ref cookie set by /r/CODE is forwarded from checkout too, so
+  // the webhook can still attribute at the moment they actually pay.
+  // Session-level metadata (not subscription_data) so it's directly present
+  // on the checkout.session.completed payload without a second Stripe call
+  // -- same reasoning as trial/founding_member/ga_client_id above. Only
+  // sanitized codes reach Stripe metadata; an invalid one is silently
+  // dropped rather than erroring the checkout.
+  if (referredByCode && /^[A-Za-z0-9]{1,12}$/.test(referredByCode)) {
+    params.set('metadata[referred_by_code]', referredByCode.toUpperCase());
   }
 
   if (isFounding) {

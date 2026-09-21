@@ -1035,6 +1035,14 @@ async function startFoundingCheckout() {
     if (typeof gtag === 'function') gtag('event', 'founding_member_checkout_started');
     const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'homepage' };
     if (userId) body.userId = userId;
+    // /r/CODE (or /join?ref=CODE) sets this cookie on first visit -- see
+    // functions/r/[code].js and login.html. Forwarded here too so a visitor
+    // who already had an account before seeing a referral link still gets
+    // attributed once they actually pay: the webhook prefers
+    // user_metadata.referred_by_code (set at signup) but falls back to this
+    // checkout-time value when that's empty.
+    const refMatch = document.cookie.match(/(?:^|;\s*)scalpclock_ref=([^;]+)/);
+    if (refMatch) body.referredByCode = decodeURIComponent(refMatch[1]);
 
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',

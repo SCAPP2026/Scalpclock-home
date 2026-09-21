@@ -105,9 +105,12 @@ export async function onRequest(context) {
 
       // Referral attribution — checked for EVERY paying user, not just
       // founders, since the referred person doesn't need to be a founder
-      // themselves, only signed up via one's link.
+      // themselves, only signed up via one's link. session.metadata.referred_by_code
+      // (set by checkout.js from the scalpclock_ref cookie, if present) is
+      // passed as a fallback for a visitor who already had an account
+      // before ever seeing a referral link — see recordReferralIfAttributed.
       if (userId && env.SUPABASE_SERVICE_ROLE_KEY) {
-        await recordReferralIfAttributed(userId, env.SUPABASE_SERVICE_ROLE_KEY);
+        await recordReferralIfAttributed(userId, env.SUPABASE_SERVICE_ROLE_KEY, session.metadata?.referred_by_code);
       }
 
       // Real conversion tracking. Fired server-side (not from the client
@@ -388,7 +391,15 @@ async function recordFoundingMember(userId, subscriptionId, serviceKey) {
 // login.html), record the referral now, at verified payment, rather than
 // trusting user_metadata at signup time (it's client-writable, so it isn't
 // safe to treat as commission-bearing truth until real money has moved).
-async function recordReferralIfAttributed(referredUserId, serviceKey) {
+//
+// checkoutFallbackCode covers the other real case: a visitor who already
+// had a ScalpClock account (so their signup-time metadata has no code)
+// before ever visiting a referral link, who then clicks one later and
+// checks out — checkout.js forwards the scalpclock_ref cookie into
+// session.metadata.referred_by_code at that point (see checkout.js). The
+// signup-time value always wins when both exist; this is only used when
+// the user has no signup-time attribution at all.
+async function recordReferralIfAttributed(referredUserId, serviceKey, checkoutFallbackCode) {
   try {
     const getRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${referredUserId}`, {
       headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
@@ -396,7 +407,7 @@ async function recordReferralIfAttributed(referredUserId, serviceKey) {
     if (!getRes.ok) return;
     const userData = await getRes.json();
     const userMeta = (userData?.user?.user_metadata || userData?.user_metadata) || {};
-    const code = userMeta.referred_by_code;
+    const code = userMeta.referred_by_code || checkoutFallbackCode;
     if (!code || typeof code !== 'string') return;
 
     const founderRes = await fetch(

@@ -913,6 +913,17 @@ function getGaClientId() {
   return m ? m[1] : null;
 }
 
+// /r/CODE (or /join?ref=CODE) sets this cookie on first visit -- see
+// functions/r/[code].js and login.html. Forwarded here too (not just read
+// at signup) so a visitor who already had an account before ever seeing a
+// referral link still gets attributed once they actually pay: the webhook
+// prefers user_metadata.referred_by_code (set at signup) but falls back to
+// this checkout-time value when that's empty.
+function getReferralCookie() {
+  const m = document.cookie.match(/(?:^|;\s*)scalpclock_ref=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
 async function startCheckout() {
   const btn   = document.getElementById('proBtn');
   const toast = document.getElementById('proToast');
@@ -957,6 +968,8 @@ async function startCheckout() {
     if (userId)   body.userId  = userId;
     const gaClientId = getGaClientId();
     if (gaClientId) body.gaClientId = gaClientId;
+    const refCode = getReferralCookie();
+    if (refCode) body.referredByCode = refCode;
     if (typeof gtag === 'function') gtag('event', 'begin_checkout', { currency: 'USD' });
     if (typeof gtag === 'function') gtag('event', 'pro_checkout_started');
 
@@ -1016,6 +1029,8 @@ async function startFoundingCheckout() {
     // regardless of what's sent here (defense in depth).
     const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'pricing_page' };
     if (userId) body.userId = userId;
+    const refCode = getReferralCookie();
+    if (refCode) body.referredByCode = refCode;
 
     const res  = await fetch('/api/stripe/checkout', {
       method:  'POST',
