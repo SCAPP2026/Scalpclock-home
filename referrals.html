@@ -279,15 +279,15 @@ body.drawer-open{overflow:hidden}
 
     <div class="section-title">Payout Method</div>
     <div class="payout-method-card">
-      <p class="hint">Tell us how you'd like to receive your commission payouts. We'll never ask for full bank account or card numbers here — for bank transfers, just leave contact info and we'll follow up securely to arrange the details.</p>
+      <p class="hint">Tell us how you'd like to receive your commission payouts. We'll never ask for full bank account or card numbers here.</p>
       <div class="payout-method-form">
         <div class="payout-method-field">
           <label for="payoutMethodSelect">Method</label>
           <select id="payoutMethodSelect" onchange="updatePayoutDestLabel()">
             <option value="PayPal">PayPal</option>
             <option value="Venmo">Venmo</option>
-            <option value="Bank Transfer">Bank Transfer</option>
-            <option value="Check">Check</option>
+            <option value="Zelle">Zelle</option>
+            <option value="Apple Pay">Apple Pay</option>
             <option value="Other">Other</option>
           </select>
         </div>
@@ -455,8 +455,8 @@ function renderReferralsList(referrals) {
 const PAYOUT_DEST_LABELS = {
   'PayPal': { label: 'PayPal Email', placeholder: 'you@example.com' },
   'Venmo': { label: 'Venmo Handle', placeholder: '@your-venmo' },
-  'Bank Transfer': { label: 'Contact Info (we\'ll follow up securely)', placeholder: 'Best way to reach you' },
-  'Check': { label: 'Mailing Address', placeholder: 'Street, City, State, ZIP' },
+  'Zelle': { label: 'Zelle Email or Phone', placeholder: 'you@example.com or (555) 555-5555' },
+  'Apple Pay': { label: 'Apple Pay Email or Phone', placeholder: 'you@example.com or (555) 555-5555' },
   'Other': { label: 'Details', placeholder: 'How should we pay you?' },
 };
 
