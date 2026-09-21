@@ -70,8 +70,15 @@ export async function onRequest(context) {
         // BEFORE app_metadata is patched, so a claim that's rejected at the cap
         // can never leave an account reading founding_member:true with no
         // corresponding founding_members row.
+        //
+        // When this session has a trial, the claim is deliberately DEFERRED
+        // to the trial's first real charge (see invoice.payment_succeeded
+        // below) rather than made here — a Founder slot should represent a
+        // paying member, not someone who merely started (and may cancel) a
+        // free trial. This session still only ever grants 'trial' plan
+        // access below, never founding_member:true, until that charge lands.
         let founderResult = null;
-        if (isFounding) {
+        if (isFounding && !hadTrial) {
           founderResult = await recordFoundingMember(userId, session.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
           if (founderResult === 'rejected') {
             // Extremely rare: checkout.js's pre-check passed but the atomic
@@ -214,7 +221,33 @@ export async function onRequest(context) {
         // must not flip plan early.
         if (inv.amount_paid > 0 && inv.billing_reason !== 'subscription_create'
             && (!inv.subscription || await isCurrentSubscription(userId, inv.subscription, env.SUPABASE_SERVICE_ROLE_KEY))) {
-          await upsertProfile(userId, { id: userId, plan: 'pro', plan_expired_reason: null }, env.SUPABASE_SERVICE_ROLE_KEY);
+          const patch = { id: userId, plan: 'pro', plan_expired_reason: null };
+
+          // This is also where a Founding Member trial's slot gets claimed —
+          // deliberately deferred from checkout.session.completed (see that
+          // handler's comment) to the trial's first real charge, so only
+          // paying members ever consume one of the 500 spots. Safe to run
+          // on every later renewal too: recordFoundingMember/claim_founding_member
+          // is idempotent per stripe_subscription_id ('duplicate' once a
+          // founding_members row already exists), so this just no-ops after
+          // month one.
+          const isFoundingSub = inv.subscription_details?.metadata?.founding_member === 'true';
+          if (isFoundingSub) {
+            const founderResult = await recordFoundingMember(userId, inv.subscription, env.SUPABASE_SERVICE_ROLE_KEY);
+            if (founderResult === 'claimed') patch.founding_member = true;
+            if (founderResult === 'rejected') {
+              // Same rare race as checkout.session.completed's cap-race log,
+              // just reached via a different path: the trial ran for 3 days
+              // and the cap filled from OTHER conversions in the meantime.
+              // The customer has already been charged $1.99 by Stripe — grant
+              // Pro access regardless, don't hand out a Founder slot beyond
+              // the cap, and flag for manual reconciliation.
+              console.error('FOUNDING CAP RACE at trial conversion: claim rejected after successful charge. user:', userId,
+                'subscription:', inv.subscription, '— granted Pro access, no Founder slot assigned. Needs manual review.');
+            }
+          }
+
+          await upsertProfile(userId, patch, env.SUPABASE_SERVICE_ROLE_KEY);
         }
 
         // Resumes the dashboard's "active" display after a prior failure —

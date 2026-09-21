@@ -140,7 +140,7 @@ h1 em{color:var(--green);font-style:normal;}
 
   <div class="trial-badge" id="trialBadge" style="display:none">
     <span class="trial-dot"></span>
-    <span id="trialBadgeText">5-Day Free Trial — Active</span>
+    <span id="trialBadgeText">3-Day Free Trial — Active</span>
   </div>
 
   <div class="founder-badge" id="founderBadge">
@@ -174,6 +174,7 @@ h1 em{color:var(--green);font-style:normal;}
 <script>
 const params     = new URLSearchParams(location.search);
 const isFounding = params.get('founding') === '1';
+const isTrial    = params.get('trial') === '1';
 const sessionId  = params.get('session_id') || '';
 const TOTAL_SECS = isFounding ? 8 : 5; // give the Founder-number poll below time to resolve and actually be seen
 
@@ -188,6 +189,10 @@ const TOTAL_SECS = isFounding ? 8 : 5; // give the Founder-number poll below tim
 // that retry and could sit showing stale "Free" status until the session
 // token happened to naturally refresh on its own (up to ~1 hour later).
 if (sessionId) localStorage.setItem('sc_just_paid', new Date().toISOString());
+if (sessionId && isTrial) {
+  localStorage.setItem('sc_trial_start', new Date().toISOString());
+  document.getElementById('trialBadge').style.display = 'inline-flex';
+}
 if (sessionId && typeof gtag === 'function') {
   gtag('event', isFounding ? 'founder_checkout_completed' : 'pro_checkout_completed');
   gtag('event', isFounding ? 'founding_member_purchase' : 'pro_purchase');
@@ -195,7 +200,9 @@ if (sessionId && typeof gtag === 'function') {
 
 if (isFounding) {
   document.getElementById('mainHeading').innerHTML = 'Welcome to ScalpClock — <em>You’re officially a Founding Member!</em>';
-  document.getElementById('mainSubtitle').textContent = 'You were charged $1.99 today — no trial. Pro access is now active.';
+  document.getElementById('mainSubtitle').textContent = isTrial
+    ? 'Your 3-day free trial has started. Pro access is active now — you\'ll be charged $1.99 automatically when the trial ends, unless you cancel first.'
+    : 'You were charged $1.99 today. Pro access is now active.';
 } else {
   document.getElementById('mainSubtitle').textContent = 'Your subscription is active — no trial, you were charged today. Every Pro feature is unlocked.';
 }

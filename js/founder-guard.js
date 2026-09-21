@@ -129,7 +129,7 @@
     const html = `
       <div class="fg-eyebrow">🔥 Wait</div>
       <div class="fg-h">You may want the $1.99 Founder price</div>
-      <div class="fg-body">You're about to start the regular Pro plan at $19.99/month. Founding Member pricing is still available. That price is locked for life, charged today.</div>
+      <div class="fg-body">You're about to start the regular Pro plan at $19.99/month. Founding Member pricing is still available — 3 days free, then $1.99/month, locked for life.</div>
       <div class="fg-compare">
         <div class="fg-plan gold">
           <div class="fg-plan-name">FOUNDING MEMBER</div>
@@ -139,7 +139,7 @@
             <li><b>✓</b> Full Pro access</li>
             <li><b>✓</b> Founding Member badge</li>
             <li><b>✓</b> Referral benefits</li>
-            <li><b>✓</b> Charged today</li>
+            <li><b>✓</b> 3 days free</li>
           </ul>
         </div>
         <div class="fg-plan">
@@ -209,8 +209,8 @@
           <li><b>✓</b> Founding Member benefits</li>
         </ul>
       </div>
-      <div class="fg-fine" style="margin-bottom:12px;">Charged today: $1.99. No free trial.</div>
-      <button type="button" class="fg-btn fg-btn-gold" data-fg="confirm">CONFIRM $1.99 FOUNDING MEMBER</button>
+      <div class="fg-fine" style="margin-bottom:12px;">3 days free, then $1.99/month. Cancel anytime before your trial ends to avoid being charged.</div>
+      <button type="button" class="fg-btn fg-btn-gold" data-fg="confirm">START 3-DAY FREE TRIAL</button>
       <button type="button" class="fg-btn fg-btn-ghost" data-fg="back">Go Back</button>
     `;
     const result = await showModal(html, (modal, cleanup) => {

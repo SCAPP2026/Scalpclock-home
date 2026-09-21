@@ -12,7 +12,7 @@ const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 // (checkout.js re-declares this same constant — see the comment there
 // for why it's duplicated rather than imported.)
 const ACTIVE_OVERRIDE = true;
-const CAP = 308;
+const CAP = 500;
 const CUTOFF = '2026-12-01T23:59:59Z';
 
 export async function getFoundingStatus(serviceKey) {

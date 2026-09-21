@@ -27,7 +27,7 @@ export async function onRequest(context) {
 // duplicated rather than imported so this file has zero cross-file
 // dependency risk for billing-critical code. Keep all three in sync.
 const FOUNDING_ACTIVE_OVERRIDE = true;
-const FOUNDING_CAP    = 308;
+const FOUNDING_CAP    = 500;
 const FOUNDING_CUTOFF = '2026-12-01T23:59:59Z';
 
 // Returns { active, reason } instead of a bare boolean so the caller can show
@@ -159,12 +159,16 @@ async function handleCheckout(env, request) {
     return json({ error: `No price configured for ${tier}/${billing}` }, 400);
   }
 
-  // Trials removed sitewide (2026-09) — no tier ever gets trial_period_days
-  // now, regardless of what the client sends. Kept as a named constant
-  // (rather than deleting every reference below) so successUrl/metadata
-  // still resolve correctly with a single, obvious source of truth, and so
-  // a future re-introduction of a trial only needs one line changed here.
-  const isTrialSession = false;
+  // Trials were removed sitewide in 2026-09, then reintroduced (2026-09-21)
+  // for the Founding Member funnel ONLY — Pro checkout stays trial-less.
+  // FOUNDING_TRIAL_ENABLED is a same-file kill switch (mirrors
+  // FOUNDING_ACTIVE_OVERRIDE above) so a future emergency disable is one
+  // line, not a re-deploy of removed logic. This is still the single,
+  // authoritative place that decides trial status — the client's own
+  // `trial` field is ignored, exactly as before.
+  const FOUNDING_TRIAL_DAYS    = 3;
+  const FOUNDING_TRIAL_ENABLED = true;
+  const isTrialSession = isFounding && FOUNDING_TRIAL_ENABLED;
   const origin          = new URL(request.url).origin;
 
   const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}` +
@@ -184,6 +188,15 @@ async function handleCheckout(env, request) {
     success_url:               successUrl,
     cancel_url:                cancelUrl,
   });
+
+  // Card is required upfront (not deferred) so Stripe can auto-charge the
+  // $1.99 the moment the trial ends without a second checkout step — the
+  // Founder slot itself is NOT claimed here (see webhook.js's
+  // invoice.payment_succeeded handler); this only affects billing.
+  if (isTrialSession) {
+    params.set('subscription_data[trial_period_days]', String(FOUNDING_TRIAL_DAYS));
+    params.set('payment_method_collection', 'always');
+  }
 
   // Stripe rejects a session that sets both `discounts` and
   // `allow_promotion_codes` — pre-apply the code the user already

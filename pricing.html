@@ -340,8 +340,8 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
   {"@type": "Question", "name": "What's included in the Free plan?", "acceptedAnswer": {"@type": "Answer", "text": "Free includes the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges — no card required."}},
   {"@type": "Question", "name": "When am I charged for Pro?", "acceptedAnswer": {"@type": "Answer", "text": "Your card is charged immediately for the plan price you selected (monthly or annual), and your subscription continues automatically each billing period."}},
   {"@type": "Question", "name": "What is a Founding Member?", "acceptedAnswer": {"@type": "Answer", "text": "Founding Member is a limited offer for the first 500 ScalpClock traders: full Pro access at $1.99/month, locked for life, plus a personal referral link and recurring referral commissions."}},
-  {"@type": "Question", "name": "How does the $1.99 Founding Member price work?", "acceptedAnswer": {"@type": "Answer", "text": "You're charged $1.99 today. As long as your subscription stays active, that price never increases, even after the 500 spots are gone and new subscribers pay full Pro price."}},
-  {"@type": "Question", "name": "Is there a free trial for Founding Members?", "acceptedAnswer": {"@type": "Answer", "text": "No. Founding Member checkout charges $1.99 immediately, with full Pro access starting right after successful payment."}},
+  {"@type": "Question", "name": "How does the $1.99 Founding Member price work?", "acceptedAnswer": {"@type": "Answer", "text": "Your 3-day free trial starts immediately. You're charged $1.99 automatically when the trial ends, unless you cancel first. As long as your subscription stays active, that price never increases, even after the 500 spots are gone and new subscribers pay full Pro price."}},
+  {"@type": "Question", "name": "Is there a free trial for Founding Members?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Founding Member checkout starts with a 3-day free trial, then charges $1.99/month automatically unless you cancel before the trial ends. A card is required upfront."}},
   {"@type": "Question", "name": "How does the referral program work?", "acceptedAnswer": {"@type": "Answer", "text": "Every Founding Member gets a personal referral link from their dashboard. When someone subscribes through it, the Founding Member earns a recurring monthly commission for as long as that referral stays subscribed, at the current rate shown in their referral dashboard."}},
   {"@type": "Question", "name": "Can I cancel my subscription?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. There's no lock-in on any plan — cancel from your account settings whenever you want and you'll keep access through the end of the period you already paid for."}},
   {"@type": "Question", "name": "Can I switch plans?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — you can switch between monthly and annual Pro billing from your account settings, and the change takes effect on your next billing cycle."}},
@@ -487,23 +487,24 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         </div>
         <div class="plan-name" style="margin-top:6px">Founding Member</div>
         <div class="plan-price">
-          <span class="amount">$1.99</span>
-          <span class="per">/month</span>
+          <span class="amount" style="font-size:1.8rem;">3 Days Free</span>
         </div>
+        <div style="text-align:center;font-size:.85rem;color:var(--t65);margin-top:-6px;margin-bottom:4px;">then $1.99<span class="per">/month</span></div>
         <div class="founding-lockprice">🏆 LOCKED FOR LIFE</div>
-        <div class="plan-desc" id="foundingLimitText">Get the full Pro experience at $1.99/month while Founding Member spots remain available.</div>
+        <div class="plan-desc" id="foundingLimitText">Try full Pro access free for 3 days, then $1.99/month while Founding Member spots remain available.</div>
         <hr class="plan-divider">
         <ul class="founding-checks">
+          <li><b>✓</b> 3-day free trial</li>
           <li><b>✓</b> All Pro features</li>
           <li><b>✓</b> $1.99/month price lock</li>
           <li><b>✓</b> Founding Member badge</li>
           <li><b>✓</b> Personal referral link</li>
           <li><b>✓</b> Referral dashboard</li>
           <li><b>✓</b> Recurring referral rewards</li>
-          <li><b>✓</b> Full access immediately after payment</li>
+          <li><b>✓</b> Full access immediately after signup</li>
         </ul>
-        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">CLAIM MY $1.99 FOUNDER SPOT</button>
-        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Charged $1.99 today. No free trial. Full Pro access begins after successful payment.</p>
+        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">CLAIM MY FOUNDING SPOT</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">3 days free, then $1.99/month. Cancel anytime before your trial ends to avoid being charged.</p>
         <p style="text-align:center;font-size:.75rem;margin-top:4px;"><a href="/founders" style="color:var(--gold);text-decoration:underline;" onclick="if(typeof gtag==='function')gtag('event','founders_link_click')">See referral program details →</a></p>
         <div class="waitlist-toast toast toast-pro" id="foundingToast"></div>
       </div>
@@ -562,7 +563,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 <div class="trust-row">
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Cancel anytime, no lock-in</div>
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Secure checkout via Stripe</div>
-  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> No free trial — Pro and Founding Member are both charged today</div>
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Founding Member: 3 days free, then $1.99/month</div>
 </div>
 
 <!-- ============ SECTION 3: WHY FOUNDING MEMBER ============ -->
@@ -711,7 +712,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div class="recommend-tag gold">Best Value</div>
         <div class="recommend-title">Choose Founding Member</div>
         <p class="recommend-body">For traders who want full access while locking in the Founding Member price.</p>
-        <button type="button" class="recommend-cta gold" onclick="startFoundingCheckout()">CLAIM $1.99</button>
+        <button type="button" class="recommend-cta gold" onclick="startFoundingCheckout()">START 3-DAY FREE TRIAL</button>
       </div>
       <div class="recommend-card">
         <div class="recommend-tag">Ready for Full Access</div>
@@ -766,11 +767,11 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
     </details>
     <details class="faq-item">
       <summary>How does the $1.99 Founding Member price work?</summary>
-      <div class="faq-a">You're charged $1.99 today. As long as your subscription stays active, that price never increases — even after the 500 spots are gone and new subscribers pay full Pro price.</div>
+      <div class="faq-a">Your 3-day free trial starts immediately. You're charged $1.99 automatically when the trial ends, unless you cancel first. As long as your subscription stays active, that price never increases — even after the 500 spots are gone and new subscribers pay full Pro price.</div>
     </details>
     <details class="faq-item">
       <summary>Is there a free trial for Founding Members?</summary>
-      <div class="faq-a">No. Founding Member checkout charges $1.99 immediately, with full Pro access starting right after successful payment.</div>
+      <div class="faq-a">Yes. Founding Member checkout starts with a 3-day free trial, then charges $1.99/month automatically unless you cancel before the trial ends. A card is required upfront so Stripe can bill you automatically when the trial ends.</div>
     </details>
     <details class="faq-item">
       <summary>How does the referral program work?</summary>
@@ -802,7 +803,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <p>Start learning for free — or lock in Founding Member access while spots remain.</p>
       <div class="final-cta-row">
         <a class="final-btn ghost" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Learn Free</a>
-        <button type="button" class="final-btn solid" onclick="startFoundingCheckout()">CLAIM $1.99 FOUNDING MEMBER</button>
+        <button type="button" class="final-btn solid" onclick="startFoundingCheckout()">START 3-DAY FREE TRIAL</button>
       </div>
     </div>
   </div>
@@ -1024,10 +1025,10 @@ async function startFoundingCheckout() {
     if (typeof gtag === 'function') gtag('event', 'founding_member_click');
     if (typeof gtag === 'function') gtag('event', 'founder_checkout_started');
     if (typeof gtag === 'function') gtag('event', 'founding_member_checkout_started');
-    // Founding Member checkout never has a trial — $1.99 is charged
-    // immediately. checkout.js also hard-enforces this server-side
-    // regardless of what's sent here (defense in depth).
-    const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'pricing_page' };
+    // Founding Member checkout always includes a 3-day trial — checkout.js
+    // decides this authoritatively server-side regardless of what's sent
+    // here (defense in depth); this field is kept for symmetry/clarity only.
+    const body = { tier: 'founding_member', billing: 'monthly', trial: true, source: 'pricing_page' };
     if (userId) body.userId = userId;
     const refCode = getReferralCookie();
     if (refCode) body.referredByCode = refCode;

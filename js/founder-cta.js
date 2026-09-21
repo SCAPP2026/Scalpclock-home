@@ -103,10 +103,10 @@
       <div class="fc-banner ${mode === 'compact' ? 'compact' : ''}">
         <div class="fc-banner-copy">
           <div class="fc-banner-eyebrow">🔥 Founding Member Pricing</div>
-          <div class="fc-banner-h">Full Pro access for $1.99/month — locked for life</div>
-          ${mode === 'compact' ? '' : '<div class="fc-banner-sub">First 500 members only. Charged today, no trial.</div>'}
+          <div class="fc-banner-h">3 days free, then $1.99/month — locked for life</div>
+          ${mode === 'compact' ? '' : '<div class="fc-banner-sub">First 500 members only. Cancel anytime before your trial ends to avoid being charged.</div>'}
         </div>
-        <a class="fc-banner-btn" href="/pricing#foundingCard" data-fc-cta>CLAIM MY $1.99 FOUNDER PRICE →</a>
+        <a class="fc-banner-btn" href="/pricing#foundingCard" data-fc-cta>START 3-DAY FREE TRIAL →</a>
       </div>`;
 
     const btn = container.querySelector('[data-fc-cta]');
