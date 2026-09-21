@@ -296,7 +296,7 @@ body.drawer-open{overflow:hidden}
       <button type="button" id="toggleAnnual" onclick="setBilling('annual')">Annual <span class="upgrade-save">SAVE 20%</span></button>
     </div>
     <br>
-    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Upgrade to Pro — $9.99/mo</button>
+    <button type="button" class="btn-upgrade" id="upgradeBtn" onclick="startCheckout(this)">Upgrade to Pro — $19.99/mo</button>
     <p style="text-align:center;font-size:.75rem;color:var(--t65);margin-top:8px;">Cancel anytime</p>
     <div style="margin-top:14px;">
       <button type="button" onclick="toggleDashPromo()" style="background:none;border:none;color:var(--t65);font-size:.78rem;cursor:pointer;text-decoration:underline;font-family:var(--body);">Have a promo code?</button>
@@ -467,7 +467,7 @@ function setBilling(mode) {
   document.getElementById('toggleMonthly').classList.toggle('active', mode === 'monthly');
   document.getElementById('toggleAnnual').classList.toggle('active', mode === 'annual');
   const btn = document.getElementById('upgradeBtn');
-  btn.textContent = _promoId ? 'Claim Free Month' : 'Upgrade to Pro — $9.99/mo';
+  btn.textContent = _promoId ? 'Claim Free Month' : ('Upgrade to Pro — ' + (mode === 'annual' ? '$16.58/mo' : '$19.99/mo'));
 }
 
 function toggleDashPromo() {
@@ -532,7 +532,7 @@ async function startCheckout(btn) {
       window.location.href = '/pricing#foundingCard';
       return;
     }
-    const confirmed = await FounderGuard.confirmPro({ price: _billing === 'annual' ? '$7.99' : '$9.99', billing: _billing });
+    const confirmed = await FounderGuard.confirmPro({ price: _billing === 'annual' ? '$16.58' : '$19.99', billing: _billing });
     if (!confirmed) return;
   }
 

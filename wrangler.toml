@@ -20,8 +20,14 @@ id = "34e6e1c9f8a4452b80e756848db5eb3a"
 # Stripe (payments):
 #   STRIPE_SECRET_KEY         — sk_live_... from Stripe dashboard
 #   STRIPE_WEBHOOK_SECRET     — whsec_... from Stripe webhook endpoint settings
-#   STRIPE_PRICE_PRO_MONTHLY  — price_... for $9.99/mo product
-#   STRIPE_PRICE_PRO_ANNUAL   — price_... for $95.88/yr product (~$7.99/mo)
+#   STRIPE_PRICE_PRO_MONTHLY  — price_... for $19.99/mo product (raised from
+#     $9.99/mo on 2026-09-21; existing subscribers grandfathered on the old
+#     price, which stays active for renewals only — new price object is
+#     price_1UI7PZIpxBaK009p0zJYRdmx, old is price_1TnRS5IpxBaK009pX71P4yB9)
+#   STRIPE_PRICE_PRO_ANNUAL   — price_... for $199.00/yr product (~$16.58/mo,
+#     raised from $99.00/yr on 2026-09-21, same grandfathering — new price
+#     object is price_1UI7PgIpxBaK009pJvMTyjP5, old is
+#     price_1Tnee4IpxBaK009prbOTbUmw)
 #   STRIPE_PRICE_ELITE_MONTHLY — price_... (when Elite launches)
 #   STRIPE_PRICE_ELITE_ANNUAL  — price_... (when Elite launches)
 # News feeds (all optional — sources with no key are silently skipped):

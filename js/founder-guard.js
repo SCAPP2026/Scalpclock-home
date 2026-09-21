@@ -1,7 +1,7 @@
 // ── FounderGuard — shared Pro/Founding-Member checkout safeguard ───────────
 // Included on every page with an "Upgrade to Pro" CTA (pricing.html,
 // index.html, signals.html, dashboard.html, settings.html) so a user who
-// clicks the $9.99 Pro option while $1.99 Founding Member spots are still
+// clicks the $19.99 Pro option while $1.99 Founding Member spots are still
 // available gets one clear chance to switch before Stripe checkout is ever
 // created — and so both plans get a final, unambiguous confirmation step
 // right before the Stripe redirect.
@@ -17,7 +17,7 @@
 //   if (gate.action === 'go_founding') { location.href = '/pricing#founding-plan'; return; }
 //   // gate.action === 'continue_pro' -> fall through to the page's own Pro checkout
 //
-//   const confirmed = await FounderGuard.confirmPro({ price: '$9.99', billing: 'monthly' });
+//   const confirmed = await FounderGuard.confirmPro({ price: '$19.99', billing: 'monthly' });
 //   if (!confirmed) return;
 //   // proceed with the existing fetch('/api/stripe/checkout', ...) call
 //
@@ -117,7 +117,7 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
   // ── Phase 5: Founder Protection Intercept ─────────────────────────────
-  // Only called by the host page when the user clicks the $9.99 Pro CTA.
+  // Only called by the host page when the user clicks the $19.99 Pro CTA.
   // Resolves immediately with continue_pro if Founding isn't active — never
   // shows a modal referencing an offer that isn't real.
   async function interceptProClick() {
@@ -129,7 +129,7 @@
     const html = `
       <div class="fg-eyebrow">🔥 Wait</div>
       <div class="fg-h">You may want the $1.99 Founder price</div>
-      <div class="fg-body">You're about to start the regular Pro plan at $9.99/month. Founding Member pricing is still available. That price is locked for life, charged today.</div>
+      <div class="fg-body">You're about to start the regular Pro plan at $19.99/month. Founding Member pricing is still available. That price is locked for life, charged today.</div>
       <div class="fg-compare">
         <div class="fg-plan gold">
           <div class="fg-plan-name">FOUNDING MEMBER</div>
@@ -144,7 +144,7 @@
         </div>
         <div class="fg-plan">
           <div class="fg-plan-name">REGULAR PRO</div>
-          <div class="fg-plan-price">$9.99<span style="font-size:.6em;color:rgba(238,243,240,.55)">/mo</span></div>
+          <div class="fg-plan-price">$19.99<span style="font-size:.6em;color:rgba(238,243,240,.55)">/mo</span></div>
           <ul>
             <li><b>✓</b> Billed monthly, cancel anytime</li>
             <li><b>✓</b> Full Pro access</li>
@@ -154,9 +154,9 @@
         </div>
       </div>
       <button type="button" class="fg-btn fg-btn-gold" data-fg="founding">🔥 CLAIM $1.99 FOUNDING MEMBER</button>
-      <button type="button" class="fg-btn fg-btn-ghost" data-fg="pro">Continue with $9.99 Pro</button>
+      <button type="button" class="fg-btn fg-btn-ghost" data-fg="pro">Continue with $19.99 Pro</button>
       <button type="button" class="fg-why" data-fg="why">Why am I seeing this?</button>
-      <div class="fg-why-body" id="fgWhyBody">Some visitors have started the $9.99 Pro trial without noticing the $1.99 Founding Member offer next to it. This is just a chance to make sure you're getting the plan you actually want — pick either one, no penalty either way.</div>
+      <div class="fg-why-body" id="fgWhyBody">Some visitors have started the $19.99 Pro plan without noticing the $1.99 Founding Member offer next to it. This is just a chance to make sure you're getting the plan you actually want — pick either one, no penalty either way.</div>
     `;
 
     const result = await showModal(html, (modal, cleanup) => {
@@ -176,7 +176,7 @@
   }
 
   // ── Phase 6: final checkout confirmation (both plans) ─────────────────
-  async function confirmPro({ price = '$9.99', billing = 'monthly' } = {}) {
+  async function confirmPro({ price = '$19.99', billing = 'monthly' } = {}) {
     const priceLabel = billing === 'annual' ? `${price}/month, billed annually` : `${price}/month`;
     const html = `
       <div class="fg-eyebrow">Confirm Your Plan</div>
@@ -186,7 +186,7 @@
         <div class="fg-plan-price">${esc(priceLabel)}</div>
         <div class="fg-fine" style="margin-top:6px;">Charged today. Cancel anytime.</div>
       </div>
-      <button type="button" class="fg-btn fg-btn-green" data-fg="confirm">CONFIRM $9.99 PRO</button>
+      <button type="button" class="fg-btn fg-btn-green" data-fg="confirm">CONFIRM ${esc(price)} PRO</button>
       <button type="button" class="fg-btn fg-btn-ghost" data-fg="back">Go Back</button>
     `;
     const result = await showModal(html, (modal, cleanup) => {

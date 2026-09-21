@@ -1,6 +1,8 @@
 // Phase 13 of the pricing/checkout hardening work: a read-only admin report
-// identifying customers who purchased the $9.99 Pro plan at a time when the
-// $1.99 Founding Member offer was genuinely available — so the business
+// identifying customers who purchased the Pro plan (whatever
+// STRIPE_PRICE_PRO_MONTHLY/ANNUAL currently point to — $19.99/mo as of
+// 2026-09-21, previously $9.99/mo) at a time when the $1.99 Founding
+// Member offer was genuinely available — so the business
 // owner can review and decide whether to reach out. This endpoint NEVER
 // modifies a subscription or downgrades/upgrades anyone; it only surfaces
 // information for manual review, per the task's explicit "do not
@@ -19,7 +21,8 @@ const FOUNDING_CAP    = 308;
 const FOUNDING_CUTOFF = '2026-12-01T23:59:59Z';
 // Founding Member offer's actual launch — before this date, "Founder was
 // available" is meaningless (the offer didn't exist yet), so those Pro
-// purchases are never flagged as a possible accidental $9.99 purchase.
+// purchases are never flagged as a possible accidental Pro-instead-of-
+// Founding purchase.
 const FOUNDING_LAUNCH = '2026-07-14T00:00:00Z';
 
 export async function onRequest(context) {

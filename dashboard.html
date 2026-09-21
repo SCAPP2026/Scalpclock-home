@@ -1225,7 +1225,7 @@ async function startCheckout(btn) {
       window.location.href = '/pricing#foundingCard';
       return;
     }
-    const confirmed = await FounderGuard.confirmPro({ price: '$9.99', billing: 'monthly' });
+    const confirmed = await FounderGuard.confirmPro({ price: '$19.99', billing: 'monthly' });
     if (!confirmed) return;
   }
 

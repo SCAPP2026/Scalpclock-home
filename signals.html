@@ -703,7 +703,7 @@ async function startCheckout(btn) {
       window.location.href = '/pricing#foundingCard';
       return;
     }
-    const confirmed = await FounderGuard.confirmPro({ price: _billing === 'annual' ? '$7.99' : '$9.99', billing: _billing });
+    const confirmed = await FounderGuard.confirmPro({ price: _billing === 'annual' ? '$16.58' : '$19.99', billing: _billing });
     if (!confirmed) return;
   }
 

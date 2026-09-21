@@ -328,7 +328,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
     {
       "@type": "Offer",
       "name": "Pro",
-      "price": "9.99",
+      "price": "19.99",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
       "url": "https://scalpclock.com/pricing"
@@ -511,17 +511,17 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <!-- PRO — deliberately de-emphasized while the Founding Member
            campaign is active: this is the standard/after-promo plan, not
            the recommended purchase. See proSavingsAnchor for the live,
-           real (never fabricated) $1.99-vs-$9.99 comparison, shown only
+           real (never fabricated) $1.99-vs-$19.99 comparison, shown only
            while Founding is actually active. -->
       <div class="plan-card pro-card">
         <div class="plan-badge pro" id="proBadge" style="background:var(--panel);color:var(--t55);border:1px solid var(--line);">STANDARD PRO</div>
         <div class="plan-name" style="margin-top:6px">Pro</div>
         <div class="plan-price">
-          <span class="amount" id="proPrice">$9.99</span>
+          <span class="amount" id="proPrice">$19.99</span>
           <span class="per" id="proLabel">/month</span>
         </div>
         <div id="proSavingsAnchor" style="display:none;text-align:center;font-size:.78rem;color:var(--t55);margin-bottom:10px;">
-          Founding Members pay <strong style="color:var(--gold)">$1.99/month</strong> instead — <strong style="color:var(--gold)">save $8.00/month ($96.00/year)</strong>, locked for life.
+          Founding Members pay <strong style="color:var(--gold)">$1.99/month</strong> instead — <strong style="color:var(--gold)">save $18.00/month ($216.00/year)</strong>, locked for life.
         </div>
         <div class="plan-desc" id="proDesc">Standard pricing after the Founding Member promotion ends.</div>
         <hr class="plan-divider">
@@ -534,7 +534,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Unlimited daily lessons</li>
           <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> SampsonX AI coach</li>
         </ul>
-        <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Upgrade to Pro — $9.99/mo</button>
+        <button type="button" class="plan-cta cta-pro" id="proBtn" onclick="startCheckout()">Upgrade to Pro — $19.99/mo</button>
         <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Billed monthly · Cancel anytime</p>
         <p style="text-align:center;font-size:.72rem;color:var(--t55);margin-top:6px;" id="proNotFounderNote">Not the $1.99 Founding Member offer — <a href="#foundingCard" style="color:var(--gold);text-decoration:underline;" onclick="document.getElementById('foundingCard').scrollIntoView({behavior:'smooth',block:'center'});">that's available while Founder spots remain →</a></p>
         <!-- PROMO CODE -->
@@ -602,7 +602,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <div class="benefit-card">
         <div class="benefit-num">06</div>
         <div class="benefit-title">Lock In $1.99</div>
-        <div class="benefit-body">Your Founding Member price stays $1.99/month for as long as your subscription stays active — even after everyone else pays $9.99.</div>
+        <div class="benefit-body">Your Founding Member price stays $1.99/month for as long as your subscription stays active — even after everyone else pays $19.99.</div>
       </div>
     </div>
   </div>
@@ -686,7 +686,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
           <tr><td>Recurring referral rewards</td><td>—</td><td class="founding-col">Yes</td><td>—</td></tr>
 
           <tr class="cat-row"><td colspan="4">Price</td></tr>
-          <tr><td>Monthly price</td><td>$0</td><td class="founding-col"><strong style="color:var(--gold)">$1.99 for life</strong></td><td id="cmpProPrice">$9.99</td></tr>
+          <tr><td>Monthly price</td><td>$0</td><td class="founding-col"><strong style="color:var(--gold)">$1.99 for life</strong></td><td id="cmpProPrice">$19.99</td></tr>
         </tbody>
       </table>
     </div>
@@ -717,7 +717,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div class="recommend-tag">Ready for Full Access</div>
         <div class="recommend-title">Choose Pro</div>
         <p class="recommend-body">For traders who want the complete ScalpClock experience and the flexibility of the standard Pro subscription.</p>
-        <button type="button" class="recommend-cta solid" onclick="startCheckout()">START PRO — $9.99/MO</button>
+        <button type="button" class="recommend-cta solid" onclick="startCheckout()">START PRO — $19.99/MO</button>
       </div>
     </div>
   </div>
@@ -849,10 +849,10 @@ function toggleBilling() {
   annual = !annual;
   document.getElementById('billingToggle').classList.toggle('annual', annual);
   document.getElementById('billingToggle').setAttribute('aria-checked', String(annual));
-  document.getElementById('proPrice').textContent = annual ? '$7.99' : '$9.99';
+  document.getElementById('proPrice').textContent = annual ? '$16.58' : '$19.99';
   document.getElementById('proLabel').textContent = annual ? '/month, billed annually' : '/month';
   const cmpPrice = document.getElementById('cmpProPrice');
-  if (cmpPrice) cmpPrice.textContent = annual ? '$7.99' : '$9.99';
+  if (cmpPrice) cmpPrice.textContent = annual ? '$16.58' : '$19.99';
   if (typeof gtag === 'function') gtag('event', annual ? 'annual_toggle' : 'monthly_toggle');
 }
 
@@ -932,7 +932,7 @@ async function startCheckout() {
   }
 
   // Founder Protection Intercept — never sent to Stripe checkout for the
-  // $9.99 Pro plan without a chance to switch to $1.99 Founding Member
+  // $19.99 Pro plan without a chance to switch to $1.99 Founding Member
   // first, whenever that offer is genuinely still active. Resolves
   // immediately with no modal shown at all if Founding isn't active
   // (sold out / ended) — see js/founder-guard.js.
@@ -940,7 +940,7 @@ async function startCheckout() {
   if (gate.action === 'cancelled') return;
   if (gate.action === 'go_founding') { return startFoundingCheckout(); }
 
-  const confirmed = await FounderGuard.confirmPro({ price: annual ? '$7.99' : '$9.99', billing: annual ? 'annual' : 'monthly' });
+  const confirmed = await FounderGuard.confirmPro({ price: annual ? '$16.58' : '$19.99', billing: annual ? 'annual' : 'monthly' });
   if (!confirmed) return;
 
   btn.disabled    = true;
