@@ -129,7 +129,7 @@
     const html = `
       <div class="fg-eyebrow">🔥 Wait</div>
       <div class="fg-h">You may want the $1.99 Founder price</div>
-      <div class="fg-body">You're about to start the regular Pro plan at $19.99/month. Founding Member pricing is still available — 3 days free, then $1.99/month, locked for life.</div>
+      <div class="fg-body">You're about to start the regular Pro plan at $19.99/month. Founding Member pricing is still available. That price is locked for life, charged today.</div>
       <div class="fg-compare">
         <div class="fg-plan gold">
           <div class="fg-plan-name">FOUNDING MEMBER</div>
@@ -139,7 +139,7 @@
             <li><b>✓</b> Full Pro access</li>
             <li><b>✓</b> Founding Member badge</li>
             <li><b>✓</b> Referral benefits</li>
-            <li><b>✓</b> 3 days free</li>
+            <li><b>✓</b> Charged today</li>
           </ul>
         </div>
         <div class="fg-plan">
@@ -209,7 +209,39 @@
           <li><b>✓</b> Founding Member benefits</li>
         </ul>
       </div>
-      <div class="fg-fine" style="margin-bottom:12px;">3 days free, then $1.99/month. Cancel anytime before your trial ends to avoid being charged.</div>
+      <div class="fg-fine" style="margin-bottom:12px;">Charged today: $1.99. No free trial.</div>
+      <button type="button" class="fg-btn fg-btn-gold" data-fg="confirm">CONFIRM $1.99 FOUNDING MEMBER</button>
+      <button type="button" class="fg-btn fg-btn-ghost" data-fg="back">Go Back</button>
+    `;
+    const result = await showModal(html, (modal, cleanup) => {
+      modal.querySelector('[data-fg="confirm"]').onclick = () => cleanup({ action: 'confirmed' });
+      modal.querySelector('[data-fg="back"]').onclick = () => cleanup({ action: 'cancelled' });
+    });
+    return result.action === 'confirmed';
+  }
+
+  // ── Phase 7: 3-day free trial confirmation (Free-card entry point only) ──
+  // Distinct from confirmFounding() above — that one is for the Founding
+  // Member card's immediate $1.99 charge. This is for the Free card's
+  // "Start 3-Day Free Trial" button, which hits the SAME founding_member
+  // Stripe tier but with trial:true, converting to $1.99/month automatically
+  // after 3 days (see checkout.js). The disclosure language here is the
+  // load-bearing one — it must be unambiguous that a card is charged
+  // automatically unless the customer cancels first.
+  async function confirmFreeTrial() {
+    const html = `
+      <div class="fg-eyebrow">Confirm Your Plan</div>
+      <div class="fg-h">Start Your 3-Day Free Trial</div>
+      <div class="fg-body" style="margin-bottom:10px;">ScalpClock Founding Member</div>
+      <div class="fg-plan gold" style="margin-bottom:16px;">
+        <div class="fg-plan-price">3 Days Free</div>
+        <ul>
+          <li><b>✓</b> Full Pro access during your trial</li>
+          <li><b>✓</b> Then $1.99/month, locked for life</li>
+          <li><b>✓</b> Founding Member benefits</li>
+        </ul>
+      </div>
+      <div class="fg-fine" style="margin-bottom:12px;">3 days free, then $1.99/month. Cancel anytime before your trial ends to avoid being charged. A card is required to start your trial.</div>
       <button type="button" class="fg-btn fg-btn-gold" data-fg="confirm">START 3-DAY FREE TRIAL</button>
       <button type="button" class="fg-btn fg-btn-ghost" data-fg="back">Go Back</button>
     `;
@@ -220,5 +252,5 @@
     return result.action === 'confirmed';
   }
 
-  global.FounderGuard = { getFoundingStatus, interceptProClick, confirmPro, confirmFounding };
+  global.FounderGuard = { getFoundingStatus, interceptProClick, confirmPro, confirmFounding, confirmFreeTrial };
 })(window);

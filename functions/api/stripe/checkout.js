@@ -160,15 +160,19 @@ async function handleCheckout(env, request) {
   }
 
   // Trials were removed sitewide in 2026-09, then reintroduced (2026-09-21)
-  // for the Founding Member funnel ONLY — Pro checkout stays trial-less.
-  // FOUNDING_TRIAL_ENABLED is a same-file kill switch (mirrors
-  // FOUNDING_ACTIVE_OVERRIDE above) so a future emergency disable is one
-  // line, not a re-deploy of removed logic. This is still the single,
-  // authoritative place that decides trial status — the client's own
-  // `trial` field is ignored, exactly as before.
-  const FOUNDING_TRIAL_DAYS    = 3;
-  const FOUNDING_TRIAL_ENABLED = true;
-  const isTrialSession = isFounding && FOUNDING_TRIAL_ENABLED;
+  // as an explicit CUSTOMER CHOICE on top of the founding_member tier only
+  // — Pro checkout stays trial-less regardless of what's sent (isFounding
+  // gates that below). There are now two distinct ways to become a Founding
+  // Member, both hitting this same tier: the Founding Member card charges
+  // $1.99 immediately (trial:false — the pricing.html/index.html CTA still
+  // hardcodes this), and the Free card's "Start 3-Day Free Trial" button
+  // sends trial:true. Trusting the client's `trial` flag here is safe
+  // (unlike the 2026-08 bug that removed this) because the 500-cap is
+  // enforced atomically in webhook.js regardless of trial choice — a
+  // trial claims its Founder slot at conversion, a non-trial claims it
+  // immediately, but neither can ever bypass the cap.
+  const FOUNDING_TRIAL_DAYS = 3;
+  const isTrialSession = isFounding && trial === true;
   const origin          = new URL(request.url).origin;
 
   const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}` +

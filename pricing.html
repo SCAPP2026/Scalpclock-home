@@ -337,11 +337,11 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 }</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Pricing", "item": "https://scalpclock.com/pricing"}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
-  {"@type": "Question", "name": "What's included in the Free plan?", "acceptedAnswer": {"@type": "Answer", "text": "Free includes the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges — no card required."}},
+  {"@type": "Question", "name": "What's included in the Free plan?", "acceptedAnswer": {"@type": "Answer", "text": "While Founding Member spots remain, the Free plan is a 3-day free trial of full Pro access, then $1.99/month unless you cancel first. If you'd rather just explore first with no card, you can create a free account instead. Once all 500 Founding spots are claimed, Free reverts to the plain no-card plan: the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges."}},
   {"@type": "Question", "name": "When am I charged for Pro?", "acceptedAnswer": {"@type": "Answer", "text": "Your card is charged immediately for the plan price you selected (monthly or annual), and your subscription continues automatically each billing period."}},
   {"@type": "Question", "name": "What is a Founding Member?", "acceptedAnswer": {"@type": "Answer", "text": "Founding Member is a limited offer for the first 500 ScalpClock traders: full Pro access at $1.99/month, locked for life, plus a personal referral link and recurring referral commissions."}},
-  {"@type": "Question", "name": "How does the $1.99 Founding Member price work?", "acceptedAnswer": {"@type": "Answer", "text": "Your 3-day free trial starts immediately. You're charged $1.99 automatically when the trial ends, unless you cancel first. As long as your subscription stays active, that price never increases, even after the 500 spots are gone and new subscribers pay full Pro price."}},
-  {"@type": "Question", "name": "Is there a free trial for Founding Members?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Founding Member checkout starts with a 3-day free trial, then charges $1.99/month automatically unless you cancel before the trial ends. A card is required upfront."}},
+  {"@type": "Question", "name": "How does the $1.99 Founding Member price work?", "acceptedAnswer": {"@type": "Answer", "text": "You're charged $1.99 today if you claim your Founding Member spot directly, or after a 3-day free trial if you start from the Free plan instead. Either way, as long as your subscription stays active, that price never increases, even after the 500 spots are gone and new subscribers pay full Pro price."}},
+  {"@type": "Question", "name": "Is there a free trial for Founding Members?", "acceptedAnswer": {"@type": "Answer", "text": "The Founding Member plan itself charges $1.99 immediately with no trial. If you'd like to try full Pro access free for 3 days first, start from the Free plan instead — it converts to the same $1.99/month Founding Member price automatically unless you cancel before the trial ends."}},
   {"@type": "Question", "name": "How does the referral program work?", "acceptedAnswer": {"@type": "Answer", "text": "Every Founding Member gets a personal referral link from their dashboard. When someone subscribes through it, the Founding Member earns a recurring monthly commission for as long as that referral stays subscribed, at the current rate shown in their referral dashboard."}},
   {"@type": "Question", "name": "Can I cancel my subscription?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. There's no lock-in on any plan — cancel from your account settings whenever you want and you'll keep access through the end of the period you already paid for."}},
   {"@type": "Question", "name": "Can I switch plans?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — you can switch between monthly and annual Pro billing from your account settings, and the change takes effect on your next billing cycle."}},
@@ -461,22 +461,26 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
   <div class="wrap">
     <div class="plans-grid">
 
-      <!-- FREE -->
+      <!-- FREE / 3-DAY TRIAL — the trial entry point into the founding_member
+           tier (see startFreeTrialCheckout()). Falls back to the original
+           plain $0/no-card Free plan (see showFreeCardFallback()) once
+           /api/founding-status reports the offer inactive — a trial that
+           converts to $1.99 must not be offered past the 500-member cap. -->
       <div class="plan-card free-card">
         <div class="plan-name">Free</div>
-        <div class="plan-price"><span class="amount">$0</span></div>
-        <div class="plan-desc">Learn and practice at your own pace.</div>
+        <div class="plan-price" id="freePriceArea"><span class="amount" style="font-size:1.8rem;">3 Days Free</span></div>
+        <div id="freeSubPrice" style="text-align:center;font-size:.85rem;color:var(--t65);margin-top:-6px;margin-bottom:4px;">then $1.99/month</div>
+        <div class="plan-desc" id="freeDesc">Try full Pro access free for 3 days, then $1.99/month. Cancel anytime before your trial ends.</div>
         <hr class="plan-divider">
-        <ul class="feature-list">
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Learn Hub — daily lessons (2/day)</li>
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Market news &amp; economic calendar</li>
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Trading resources &amp; guides</li>
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Watchlist (up to 5 stocks)</li>
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Trade journal (manual logging)</li>
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> XP &amp; progress tracking</li>
-          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Daily streaks &amp; badges</li>
+        <ul class="feature-list" id="freeFeatureList">
+          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Full Pro access during your trial</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Then $1.99/month, locked for life</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Founding Member badge &amp; referral link</li>
+          <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Cancel anytime before your trial ends</li>
         </ul>
-        <a class="plan-cta cta-free" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Learn Free</a>
+        <button type="button" class="plan-cta cta-free" id="freeTrialBtn" onclick="startFreeTrialCheckout()">START 3-DAY FREE TRIAL</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;" id="freeTrialFine">3 days free, then $1.99/month. Cancel anytime before your trial ends to avoid being charged. Card required to start.</p>
+        <p style="text-align:center;font-size:.75rem;margin-top:4px;" id="freeExploreLink"><a href="/login?tab=signup" style="color:var(--t65);text-decoration:underline;" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Just want to explore first? Create a free account →</a></p>
       </div>
 
       <!-- FOUNDING MEMBER (hidden until /api/founding-status confirms offer is active) -->
@@ -487,24 +491,23 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         </div>
         <div class="plan-name" style="margin-top:6px">Founding Member</div>
         <div class="plan-price">
-          <span class="amount" style="font-size:1.8rem;">3 Days Free</span>
+          <span class="amount">$1.99</span>
+          <span class="per">/month</span>
         </div>
-        <div style="text-align:center;font-size:.85rem;color:var(--t65);margin-top:-6px;margin-bottom:4px;">then $1.99<span class="per">/month</span></div>
         <div class="founding-lockprice">🏆 LOCKED FOR LIFE</div>
-        <div class="plan-desc" id="foundingLimitText">Try full Pro access free for 3 days, then $1.99/month while Founding Member spots remain available.</div>
+        <div class="plan-desc" id="foundingLimitText">Get the full Pro experience at $1.99/month while Founding Member spots remain available.</div>
         <hr class="plan-divider">
         <ul class="founding-checks">
-          <li><b>✓</b> 3-day free trial</li>
           <li><b>✓</b> All Pro features</li>
           <li><b>✓</b> $1.99/month price lock</li>
           <li><b>✓</b> Founding Member badge</li>
           <li><b>✓</b> Personal referral link</li>
           <li><b>✓</b> Referral dashboard</li>
           <li><b>✓</b> Recurring referral rewards</li>
-          <li><b>✓</b> Full access immediately after signup</li>
+          <li><b>✓</b> Full access immediately after payment</li>
         </ul>
-        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">CLAIM MY FOUNDING SPOT</button>
-        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">3 days free, then $1.99/month. Cancel anytime before your trial ends to avoid being charged.</p>
+        <button type="button" class="plan-cta cta-founding" id="foundingBtn" onclick="startFoundingCheckout()">CLAIM MY $1.99 FOUNDER SPOT</button>
+        <p style="text-align:center;font-size:.75rem;color:var(--t55);margin-top:8px;">Charged $1.99 today. No free trial. Full Pro access begins after successful payment.</p>
         <p style="text-align:center;font-size:.75rem;margin-top:4px;"><a href="/founders" style="color:var(--gold);text-decoration:underline;" onclick="if(typeof gtag==='function')gtag('event','founders_link_click')">See referral program details →</a></p>
         <div class="waitlist-toast toast toast-pro" id="foundingToast"></div>
       </div>
@@ -563,7 +566,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
 <div class="trust-row">
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Cancel anytime, no lock-in</div>
   <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Secure checkout via Stripe</div>
-  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Founding Member: 3 days free, then $1.99/month</div>
+  <div class="trust-item"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Founding Member: $1.99 today, no trial. Free plan: 3-day trial, then $1.99.</div>
 </div>
 
 <!-- ============ SECTION 3: WHY FOUNDING MEMBER ============ -->
@@ -712,7 +715,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
         <div class="recommend-tag gold">Best Value</div>
         <div class="recommend-title">Choose Founding Member</div>
         <p class="recommend-body">For traders who want full access while locking in the Founding Member price.</p>
-        <button type="button" class="recommend-cta gold" onclick="startFoundingCheckout()">START 3-DAY FREE TRIAL</button>
+        <button type="button" class="recommend-cta gold" onclick="startFoundingCheckout()">CLAIM $1.99</button>
       </div>
       <div class="recommend-card">
         <div class="recommend-tag">Ready for Full Access</div>
@@ -755,7 +758,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
     </div>
     <details class="faq-item">
       <summary>What's included in the Free plan?</summary>
-      <div class="faq-a">Free includes the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges — no card required.</div>
+      <div class="faq-a">While Founding Member spots remain, the Free plan is a 3-day free trial of full Pro access, then $1.99/month unless you cancel first. Just want to explore first with no card? You can create a free account instead. Once all 500 Founding spots are claimed, Free reverts to the plain no-card plan: the Learn Hub with daily lessons (2/day), market news, the economic calendar, a 5-stock watchlist, manual trade journaling, XP and leveling, and daily streak badges.</div>
     </details>
     <details class="faq-item">
       <summary>When am I charged for Pro?</summary>
@@ -767,11 +770,11 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
     </details>
     <details class="faq-item">
       <summary>How does the $1.99 Founding Member price work?</summary>
-      <div class="faq-a">Your 3-day free trial starts immediately. You're charged $1.99 automatically when the trial ends, unless you cancel first. As long as your subscription stays active, that price never increases — even after the 500 spots are gone and new subscribers pay full Pro price.</div>
+      <div class="faq-a">You're charged $1.99 today if you claim your Founding Member spot directly, or after a 3-day free trial if you start from the Free plan instead. Either way, as long as your subscription stays active, that price never increases — even after the 500 spots are gone and new subscribers pay full Pro price.</div>
     </details>
     <details class="faq-item">
       <summary>Is there a free trial for Founding Members?</summary>
-      <div class="faq-a">Yes. Founding Member checkout starts with a 3-day free trial, then charges $1.99/month automatically unless you cancel before the trial ends. A card is required upfront so Stripe can bill you automatically when the trial ends.</div>
+      <div class="faq-a">The Founding Member plan itself charges $1.99 immediately with no trial. If you'd like to try full Pro access free for 3 days first, start from the Free plan instead — it converts to the same $1.99/month Founding Member price automatically unless you cancel before the trial ends.</div>
     </details>
     <details class="faq-item">
       <summary>How does the referral program work?</summary>
@@ -803,7 +806,7 @@ table.compare td.founding-col{background:rgba(245,166,35,.05);}
       <p>Start learning for free — or lock in Founding Member access while spots remain.</p>
       <div class="final-cta-row">
         <a class="final-btn ghost" href="/login?tab=signup" onclick="if(typeof gtag==='function')gtag('event','free_signup_click')">Learn Free</a>
-        <button type="button" class="final-btn solid" onclick="startFoundingCheckout()">START 3-DAY FREE TRIAL</button>
+        <button type="button" class="final-btn solid" onclick="startFoundingCheckout()">CLAIM $1.99 FOUNDING MEMBER</button>
       </div>
     </div>
   </div>
@@ -1025,10 +1028,11 @@ async function startFoundingCheckout() {
     if (typeof gtag === 'function') gtag('event', 'founding_member_click');
     if (typeof gtag === 'function') gtag('event', 'founder_checkout_started');
     if (typeof gtag === 'function') gtag('event', 'founding_member_checkout_started');
-    // Founding Member checkout always includes a 3-day trial — checkout.js
-    // decides this authoritatively server-side regardless of what's sent
-    // here (defense in depth); this field is kept for symmetry/clarity only.
-    const body = { tier: 'founding_member', billing: 'monthly', trial: true, source: 'pricing_page' };
+    // Founding Member card checkout never has a trial — $1.99 is charged
+    // immediately. checkout.js also hard-enforces this server-side
+    // regardless of what's sent here (defense in depth). The 3-day trial
+    // lives only on the Free card's startFreeTrialCheckout() below.
+    const body = { tier: 'founding_member', billing: 'monthly', trial: false, source: 'pricing_page' };
     if (userId) body.userId = userId;
     const refCode = getReferralCookie();
     if (refCode) body.referredByCode = refCode;
@@ -1054,6 +1058,95 @@ async function startFoundingCheckout() {
     btn.disabled    = false;
     btn.textContent = originalText;
   }
+}
+
+// Free card's 3-day-trial entry into the same founding_member Stripe tier
+// (see checkout.js — trial:true is what makes the difference from
+// startFoundingCheckout() above). Mirrors that function's structure closely
+// on purpose — same auth gate, same referral-cookie forwarding, same error
+// handling — just a different confirm modal and a trial:true payload.
+async function startFreeTrialCheckout() {
+  const btn = document.getElementById('freeTrialBtn');
+  if (!btn) return; // fallback (offer inactive) state has no trial button
+  const originalText = btn.textContent;
+  if (typeof gtag === 'function') gtag('event', 'free_trial_cta_click');
+
+  let userId = null;
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    userId = session?.user?.id || null;
+  } catch(_) {}
+
+  if (!userId) {
+    window.location.href = '/login?tab=signup&from=' + encodeURIComponent('/pricing');
+    return;
+  }
+
+  const confirmed = await FounderGuard.confirmFreeTrial();
+  if (!confirmed) return;
+
+  btn.disabled    = true;
+  btn.textContent = 'Redirecting…';
+
+  try {
+    if (typeof gtag === 'function') gtag('event', 'free_trial_checkout_started');
+    const body = { tier: 'founding_member', billing: 'monthly', trial: true, source: 'pricing_page' };
+    if (userId) body.userId = userId;
+    const refCode = getReferralCookie();
+    if (refCode) body.referredByCode = refCode;
+
+    const res  = await fetch('/api/stripe/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL returned');
+    }
+  } catch (err) {
+    console.error('startFreeTrialCheckout error:', err);
+    alert(err.message || 'Something went wrong — please try again.');
+    btn.disabled    = false;
+    btn.textContent = originalText;
+  }
+}
+
+// Reverts the Free card from the 3-day-trial offer back to the original
+// plain $0/no-card plan — called from loadFoundingStatus() only when the
+// founding_member offer (cap/cutoff) is no longer active. A trial that
+// converts to $1.99 must never be offered once the 500 spots are gone.
+function showFreeCardFallback() {
+  const priceArea = document.getElementById('freePriceArea');
+  if (priceArea) priceArea.innerHTML = '<span class="amount">$0</span>';
+  const subPrice = document.getElementById('freeSubPrice');
+  if (subPrice) subPrice.style.display = 'none';
+  const desc = document.getElementById('freeDesc');
+  if (desc) desc.textContent = 'Learn and practice at your own pace.';
+  const list = document.getElementById('freeFeatureList');
+  if (list) list.innerHTML = `
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Learn Hub — daily lessons (2/day)</li>
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Market news &amp; economic calendar</li>
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Trading resources &amp; guides</li>
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Watchlist (up to 5 stocks)</li>
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Trade journal (manual logging)</li>
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> XP &amp; progress tracking</li>
+    <li><svg class="ic ic-yes" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 9 7 13 15 5"/></svg> Daily streaks &amp; badges</li>`;
+  const btn = document.getElementById('freeTrialBtn');
+  if (btn) {
+    const link = document.createElement('a');
+    link.className = 'plan-cta cta-free';
+    link.href = '/login?tab=signup';
+    link.textContent = 'Learn Free';
+    link.onclick = () => { if (typeof gtag === 'function') gtag('event', 'free_signup_click'); };
+    btn.replaceWith(link);
+  }
+  const fine = document.getElementById('freeTrialFine');
+  if (fine) fine.style.display = 'none';
+  const explore = document.getElementById('freeExploreLink');
+  if (explore) explore.style.display = 'none';
 }
 
 function startFoundingCountdown(cutoffMs) {
@@ -1108,6 +1201,7 @@ async function loadFoundingStatus() {
         btn.disabled = true;
         btn.textContent = 'Spots Full';
       }
+      showFreeCardFallback();
       return;
     }
     if (noFounderNote) noFounderNote.style.display = '';
@@ -1123,6 +1217,9 @@ async function loadFoundingStatus() {
     // don't fabricate availability — just show the generic cap statement.
     const limitText = document.getElementById('foundingLimitText');
     if (limitText) limitText.textContent = 'Limited to the first 500 traders.';
+    // Fail closed on the Free card's trial offer too — never offer a trial
+    // that converts to $1.99 without confirming the offer is still active.
+    showFreeCardFallback();
   }
 }
 loadFoundingStatus();
