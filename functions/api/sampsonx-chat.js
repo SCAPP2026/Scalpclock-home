@@ -39,7 +39,7 @@ If a question is genuinely ambiguous (e.g. "is this a good setup?" with no conte
 
 For more complex questions, you may structure your answer as: Quick Answer (1-2 sentences), Why, What to Watch, ScalpClock Connection (only if a real ScalpClock tool/lesson genuinely applies — never invent a feature that doesn't exist: real ones are the Learn Hub, Daily System, ORB Signal Engine, ScalpCharts, Replay, Exit Assistant), and Practice (a small exercise or question). Do not force this structure onto simple questions — a one-line answer is fine when that's all the question needs.
 
-You have no access to live market data — no real-time prices, volume, open interest, options chains, news, or earnings dates. If asked for any of that, say plainly that you don't have live data rather than fabricating a number. If the user pastes their own numbers/context, you can reason about those.
+You do not have standing access to live market data. For each message, ScalpClock's own live feed is checked for any ticker symbols mentioned, and if real data was found it appears below under "Live market data" — you may state those exact numbers as current fact. For anything NOT in that block (options chains, open interest, news, earnings dates, or any ticker not listed there), say plainly that you don't have that data rather than fabricating a number. Never invent a price, RSI, or VWAP value that isn't explicitly given to you. If the user pastes their own numbers/context, you can reason about those too.
 
 Never claim certainty about future price movement, guarantee a profit, or say a setup or breakout is "guaranteed." Distinguish observation (what's visible), possibility (what could happen), risk (what could go wrong), and educational explanation (the underlying concept).
 
@@ -62,6 +62,67 @@ function personalizationBlock(progress) {
   // learn.html's curriculum data, which is a documented future step, not
   // built here.
   return `\n\nWhat you know about this user (use lightly, to sound aware of their progress, never to claim they do/don't understand a specific concept): they've completed ${done} Learn Hub lesson(s), have ${xp} XP, a ${streak}-day streak, and earned badges: ${badges.length ? badges.join(', ') : 'none yet'}.`;
+}
+
+// ── Live market data ─────────────────────────────────────────────────────
+// Sampson X has no standing market-data access (by design — see the system
+// prompt), but ScalpClock's own live signals feed (functions/api/signals.js,
+// the same Alpaca-backed per-symbol lookup signals.html's "Ask SampsonX"
+// ticker search already uses) is public and free to call. So instead of the
+// model refusing every price question, extract plausible ticker symbols
+// from the user's latest message and fetch real numbers for this one
+// request only — never cached across turns, never fabricated if the lookup
+// comes back empty.
+const TICKER_STOPWORDS = new Set([
+  // Trading/options jargon that would otherwise look like a ticker
+  'VWAP','EMA','RSI','ATR','ORB','ATM','OTM','ITM','ROI','ETF','IV','ROC','PNL','SMA','MACD','ADX','OBV','CCI','DTE','IRA',
+  // Common short English words that show up in caps (start of sentence, emphasis, acronym-shaped)
+  'I','A','THE','AND','FOR','ARE','YOU','NOT','BUT','CAN','WILL','WHAT','WHY','HOW','ALL','NOW','SO','IS','IT','TO','OF','IN','ON','AT','DO','BE','IF','OR','MY','ME','GO','UP','NO','OK',
+  'CEO','CFO','SEC','IPO','API','FAQ','USD','AI','FYI','ASAP','ELI5',
+]);
+const MAX_TICKER_LOOKUPS = 3;
+
+function extractTickerCandidates(text) {
+  const matches = (text.match(/\b[A-Z]{1,5}\b/g) || []);
+  const seen = new Set();
+  const candidates = [];
+  for (const m of matches) {
+    if (TICKER_STOPWORDS.has(m) || seen.has(m)) continue;
+    seen.add(m);
+    candidates.push(m);
+    if (candidates.length >= MAX_TICKER_LOOKUPS) break;
+  }
+  return candidates;
+}
+
+async function fetchLiveData(origin, symbols) {
+  const results = await Promise.all(symbols.map(async (sym) => {
+    try {
+      const res = await fetch(`${origin}/api/signals?symbol=${encodeURIComponent(sym)}&range=day`);
+      const data = await res.json().catch(() => null);
+      if (data && data.result && data.result.ok) return { symbol: sym, marketOpen: data.marketOpen, asOf: data.asOf, ...data.result };
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }));
+  return results.filter(Boolean);
+}
+
+function liveDataBlock(rows) {
+  if (!rows.length) return '';
+  const lines = rows.map(r => {
+    const parts = [
+      `price $${r.price}`,
+      r.changePct != null ? `${r.changePct >= 0 ? '+' : ''}${r.changePct}% today` : null,
+      r.rsi != null ? `RSI(14) ${r.rsi}` : null,
+      r.vwap != null ? `VWAP $${r.vwap} (${r.vwapDist >= 0 ? '+' : ''}${r.vwapDist}% from price)` : null,
+      r.signal ? `ScalpClock signal: ${r.signal}` : null,
+    ].filter(Boolean).join(', ');
+    return `- ${r.symbol}: ${parts}`;
+  }).join('\n');
+  const asOf = rows[0].asOf ? new Date(rows[0].asOf).toISOString() : new Date().toISOString();
+  return `\n\nLive market data (fetched just now via ScalpClock's own feed, as of ${asOf}, market ${rows[0].marketOpen ? 'OPEN' : 'CLOSED'}):\n${lines}\nOnly use these exact numbers for these symbols — do not extrapolate to other tickers or later times.`;
 }
 
 export async function onRequest(context) {
@@ -169,9 +230,23 @@ export async function onRequest(context) {
     }
   }
 
+  // Live market data: only checked against the LATEST user message (not the
+  // whole history, to keep this cheap and relevant to what's actually being
+  // asked right now).
+  let liveRows = [];
+  const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+  if (lastUserMsg) {
+    const candidates = extractTickerCandidates(lastUserMsg.content);
+    if (candidates.length) {
+      const origin = new URL(request.url).origin;
+      liveRows = await fetchLiveData(origin, candidates);
+    }
+  }
+
   const system = SAMPSONX_BASE_PROMPT
     + (learningMode === true ? LEARNING_MODE_ADDENDUM : '')
-    + personalizationBlock(learnProgress);
+    + personalizationBlock(learnProgress)
+    + liveDataBlock(liveRows);
 
   // Only the LAST user message may carry an image (matches the chat UI —
   // one attachment per turn, not retroactively injected into history).
