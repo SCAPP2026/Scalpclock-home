@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask Sampson X™ | AI Trading Coach | ScalpClock</title>
+<meta name="description" content="Learn options trading, technical analysis, ORB strategies, chart reading, and risk management with Sampson X, the AI trading coach from ScalpClock.">
+<link rel="canonical" href="https://scalpclock.com/sampson-x">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="Ask Sampson X™ | AI Trading Coach | ScalpClock">
+<meta property="og:description" content="Learn options trading, technical analysis, ORB strategies, chart reading, and risk management with Sampson X, the AI trading coach from ScalpClock.">
+<meta property="og:url" content="https://scalpclock.com/sampson-x">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ask Sampson X™ | AI Trading Coach | ScalpClock">
+<meta name="twitter:description" content="Learn options trading, technical analysis, ORB strategies, chart reading, and risk management with Sampson X, the AI trading coach from ScalpClock.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"></noscript>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Ask Sampson X",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "url": "https://scalpclock.com/sampson-x",
+  "description": "An AI trading coach that teaches options trading, technical analysis, chart reading, and risk management through natural-language conversation."
+}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Ask Sampson X", "item": "https://scalpclock.com/sampson-x"}]}</script>
+<style>
+  :root{
+    --bg:#070b10;
+    --panel:#0e1824;
+    --panel-alt:#111d2b;
+    --border:#1e2d42;
+    --border-soft:#17202e;
+    --text:#dde8f5;
+    --text-dim:#8aa4c0;
+    --text-faint:#5a7292;
+    --bull:#16d97e;
+    --bull-dim:#0f2e22;
+    --bear:#ff4566;
+    --bear-dim:#3a1420;
+    --amber:#f5a623;
+    --amber-dim:#3a2a0c;
+    --blue:#5b9cf6;
+    --blue-dim:#101e3a;
+    --gold:#f5a623;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+    --disp:'Rajdhani', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);height:100%;}
+  body{overflow-x:hidden;display:flex;flex-direction:column;}
+  .wrap{max-width:820px;margin:0 auto;padding:18px 18px 24px;width:100%;flex:1;display:flex;flex-direction:column;min-height:0;}
+  a{color:inherit;}
+
+  /* ===== Header / drawer nav (same shell as ScalpCharts/Exit Assistant/ORB/Daily System) ===== */
+  .sc-overlay{display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+  .sc-overlay.open{display:block;}
+  .sc-drawer{position:fixed;top:0;right:0;bottom:0;width:270px;background:rgba(8,11,17,.98);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:99;display:flex;flex-direction:column;padding:0;transform:translateX(100%);transition:transform .25s ease;}
+  .sc-drawer.open{transform:translateX(0);}
+  .sc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+  .sc-drawer-head span{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text);letter-spacing:.04em;}
+  .sc-drawer-head button{background:none;border:none;color:var(--text-dim);font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+  .sc-drawer-links{display:flex;flex-direction:column;gap:2px;padding:12px;}
+  .sc-drawer-links a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;font-weight:600;font-size:1.02rem;color:var(--text-dim);text-decoration:none;transition:background .15s,color .15s;border:1px solid transparent;}
+  .sc-drawer-links a:hover{color:var(--text);background:var(--panel-alt);border-color:var(--border);}
+  .sc-drawer-links a.sc-active{color:var(--bull);}
+  .sc-drawer-links .sc-cta{margin-top:12px;background:var(--bull);color:#04140F;font-weight:700;justify-content:center;border-color:transparent;}
+  .sc-drawer-links .sc-cta:hover{background:#2EEFB6;color:#04140F;}
+  .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bull);padding:14px 16px 2px;}
+  .drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:var(--bull);}
+  .drawer-group-toggle .drawer-group-label{flex:1;}
+  .drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+  .drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+  .drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+  .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+  .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
+
+  header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap;gap:14px;flex-shrink:0;}
+  .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+  .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+  @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:radial-gradient(circle at 50% 40%, #1a2b22, #070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+  .logo-mark svg{width:16px;height:16px;}
+  .logo-text{display:flex;flex-direction:column;gap:1px;}
+  .logo-name{font-family:var(--disp);font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:#eef3f0;line-height:1;}
+  .logo-name em{color:#16d97e;font-style:normal;}
+  .logo-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;opacity:.8;white-space:nowrap;}
+  .hdr-left{display:flex;align-items:center;gap:12px;}
+  .ham-btn{background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .ham-btn span{display:block;width:18px;height:2px;background:var(--text-dim);border-radius:2px;transition:.2s;}
+
+  /* ===== SampsonX avatar (same mood-state pattern as ScalpCharts/Exit Assistant/Signals) ===== */
+  .sx-avatar-svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+  .sx-mood-neutral{color:var(--text-dim);}
+  .sx-mood-bull{color:var(--bull);}
+  .sx-mood-bear{color:var(--bear);}
+  .sx-mood-thinking{color:var(--amber);animation:sx-pulse 1.4s ease-in-out infinite;}
+  @keyframes sx-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+  /* ===== Page header ===== */
+  .sx-hero{text-align:center;margin-bottom:16px;flex-shrink:0;}
+  .sx-hero h1{font-family:var(--disp);font-weight:700;font-size:1.7rem;margin:8px 0 2px;}
+  .sx-hero .sub{font-family:var(--mono);font-size:.78rem;color:var(--bull);text-transform:uppercase;letter-spacing:.08em;}
+  .sx-hero p{font-size:.86rem;color:var(--text-dim);max-width:480px;margin:8px auto 0;line-height:1.5;}
+
+  /* ===== Sign-in gate ===== */
+  .sx-gate{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center;max-width:420px;margin:20px auto;}
+  .sx-gate p{color:var(--text-dim);font-size:.88rem;margin-bottom:16px;}
+  .sx-gate .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+  /* ===== Chat shell ===== */
+  .sx-app{display:none;flex:1;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .sx-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .sx-learning-toggle{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--text-dim);cursor:pointer;user-select:none;}
+  .sx-learning-toggle input{accent-color:var(--bull);cursor:pointer;}
+  .sx-new-chat{background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:7px;padding:5px 10px;font-size:.74rem;cursor:pointer;}
+
+  .sx-chips{display:flex;gap:8px;padding:10px 14px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid var(--border-soft);}
+  .sx-chip{flex-shrink:0;padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:var(--panel-alt);font-size:.78rem;color:var(--text-dim);cursor:pointer;white-space:nowrap;transition:.15s;}
+  .sx-chip:hover{border-color:var(--bull);color:var(--text);}
+
+  .sx-thread{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:12px;min-height:0;}
+  .sx-msg{max-width:88%;padding:11px 15px;border-radius:12px;font-size:.87rem;line-height:1.6;}
+  .sx-msg.user{align-self:flex-end;background:var(--panel-alt);color:var(--text);border-bottom-right-radius:3px;}
+  .sx-msg.bot{align-self:flex-start;background:var(--bull-dim);border:1px solid rgba(22,217,126,.2);color:var(--text);border-bottom-left-radius:3px;}
+  .sx-msg.bot .sx-name{color:var(--bull);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:5px;margin-bottom:5px;}
+  .sx-msg.error{align-self:center;background:var(--bear-dim);border:1px solid rgba(255,69,102,.3);color:var(--bear);font-size:.8rem;}
+  .sx-msg img{max-width:100%;border-radius:8px;margin-top:8px;display:block;}
+  .sx-msg ul{margin:6px 0;padding-left:20px;}
+  .sx-msg b{color:var(--bull);}
+  .sx-msg.user b{color:var(--text);}
+
+  .sx-empty{text-align:center;color:var(--text-faint);font-size:.84rem;margin:auto;padding:20px;}
+
+  .sx-composer{border-top:1px solid var(--border);padding:12px 14px;flex-shrink:0;}
+  .sx-preview{display:none;align-items:center;gap:8px;margin-bottom:8px;background:var(--panel-alt);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:.76rem;color:var(--text-dim);}
+  .sx-preview img{width:36px;height:36px;object-fit:cover;border-radius:5px;}
+  .sx-preview button{margin-left:auto;background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:1rem;}
+  .sx-input-row{display:flex;gap:8px;align-items:flex-end;}
+  .sx-input-row textarea{flex:1;resize:none;background:var(--panel-alt);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 12px;font-family:var(--sans);font-size:.88rem;max-height:120px;min-height:42px;}
+  .sx-input-row textarea:focus{outline:none;border-color:var(--bull);}
+  .sx-icon-btn{background:var(--panel-alt);border:1px solid var(--border);border-radius:10px;width:42px;height:42px;flex-shrink:0;cursor:pointer;color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+  .sx-send-btn{background:var(--bull);color:#04140F;border:none;border-radius:10px;width:42px;height:42px;flex-shrink:0;cursor:pointer;font-family:var(--disp);font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .sx-send-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .sx-limit-note{font-size:.7rem;color:var(--text-faint);margin-top:8px;text-align:center;}
+
+  .sx-disclaimer{text-align:center;font-size:.72rem;color:var(--text-faint);padding:10px 8px 0;flex-shrink:0;}
+
+  @media(max-width:600px){
+    .wrap{padding:12px 10px 12px;}
+    .sx-hero h1{font-size:1.4rem;}
+  }
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Ask Sampson X — AI Trading Coach</h1>
+
+<!-- NAV -->
+<div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
+<div class="sc-drawer" id="scDrawer">
+  <div class="sc-drawer-head">
+    <span>NAVIGATE</span>
+    <button onclick="closeSCNav()">✕</button>
+  </div>
+  <div class="sc-drawer-links">
+    <a href="/">🏠 Home</a>
+    <div class="drawer-group">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+        <span class="drawer-group-label">Learn</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+          <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+          <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+          <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-group open">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="true">
+        <span class="drawer-group-label">Trade</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/daily-system" style="padding-left:28px">📈 Daily System</a>
+          <a href="/scalpchart" style="padding-left:28px">📊 ScalpCharts</a>
+          <a href="/scalpchart?tab=replay" style="padding-left:28px">📅 Replay</a>
+          <a href="/exitassistant" style="padding-left:28px">🚪 Exit Assistant</a>
+          <a href="/orbsignalengine" style="padding-left:28px">📐 ORB Signal Engine</a>
+          <a href="/sampson-x" class="sc-active" style="padding-left:28px">🤖 Sampson X</a>
+          <a href="/signals" style="padding-left:28px">🔔 Signals</a>
+        </div>
+      </div>
+    </div>
+    <a href="/pricing">💳 Pricing</a>
+    <a href="/dashboard">⚙️ Dashboard</a>
+    <a href="/login?tab=signup" class="sc-cta">Learn Free →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="hdr-left">
+      <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="9" cy="9" r="7"/>
+            <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+            <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">Scalp<em>Clock</em></span>
+          <span class="logo-motto">The Time To Profit Is Now</span>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <div class="sx-hero">
+    <svg class="sx-avatar-svg sx-mood-neutral" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>
+    <h1 style="position:static;width:auto;height:auto;padding:0;margin:8px 0 2px;overflow:visible;clip:auto;white-space:normal;border:0;">Ask Sampson X™</h1>
+    <div class="sub">Your AI Trading Coach</div>
+    <p>Ask questions. Understand the market. Learn the why behind every setup. <strong style="color:var(--text-dim)">Learn first. Trade smarter.</strong></p>
+  </div>
+
+  <!-- Signed-out state -->
+  <div class="sx-gate" id="sxGate">
+    <p>Sign in to start chatting with Sampson X — it's available to every ScalpClock member, free or paid.</p>
+    <div class="btn-row">
+      <a href="/login?from=/sampson-x" class="sx-icon-btn" style="width:auto;padding:0 18px;background:var(--bull);color:#04140F;border-color:transparent;font-family:var(--disp);font-weight:700;">Sign In</a>
+      <a href="/login?tab=signup&from=/sampson-x" class="sx-icon-btn" style="width:auto;padding:0 18px;font-family:var(--disp);font-weight:700;">Create Free Account</a>
+    </div>
+  </div>
+
+  <!-- Chat app (shown once signed in) -->
+  <div class="sx-app" id="sxApp">
+    <div class="sx-toolbar">
+      <label class="sx-learning-toggle">
+        <input type="checkbox" id="sxLearningMode"> 🎓 Learning Mode
+      </label>
+      <button type="button" class="sx-new-chat" onclick="sxNewChat()">New Chat</button>
+    </div>
+    <div class="sx-chips">
+      <button class="sx-chip" onclick="sxUsePrompt('Explain VWAP like I\'m a beginner.')">🎓 Teach Me</button>
+      <button class="sx-chip" onclick="sxUsePrompt('Help me understand this setup.')">📊 Analyze</button>
+      <button class="sx-chip" onclick="sxUsePrompt('Quiz me on ORB trading.')">🧠 Quiz Me</button>
+      <button class="sx-chip" onclick="sxUsePrompt('Why did this breakout fail?')">🔍 Explain</button>
+      <button class="sx-chip" onclick="sxUsePrompt('What should I learn next?')">📚 Learn</button>
+    </div>
+    <div class="sx-thread" id="sxThread">
+      <div class="sx-empty" id="sxEmpty">Ask Sampson X anything about trading, or tap a prompt above to get started.</div>
+    </div>
+    <div class="sx-composer">
+      <div class="sx-preview" id="sxPreview">
+        <img id="sxPreviewImg" alt="Attached chart">
+        <span>Chart attached</span>
+        <button type="button" onclick="sxClearImage()">✕</button>
+      </div>
+      <div class="sx-input-row">
+        <input type="file" id="sxFileInput" accept="image/png,image/jpeg" style="display:none" onchange="sxHandleFile(this)">
+        <button type="button" class="sx-icon-btn" onclick="document.getElementById('sxFileInput').click()" title="Attach a chart screenshot">📷</button>
+        <textarea id="sxInput" placeholder="Ask me anything about trading..." rows="1" onkeydown="sxOnKeydown(event)"></textarea>
+        <button type="button" class="sx-send-btn" id="sxSendBtn" onclick="sxSend()">➤</button>
+      </div>
+      <div class="sx-limit-note">Sampson X provides educational information to help you learn. It does not guarantee trading results or provide personalized financial advice.</div>
+    </div>
+  </div>
+
+  <div class="sx-disclaimer">🤖 Sampson X is an educational AI assistant, not a signal provider. Always do your own research.</div>
+</div>
+
+<script>
+function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
+function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+<script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let _sb = null, _token = null;
+
+// ── Conversation state — in-memory only per this page load, matching the
+// scope Claude's own Messages API already works in. No server-side chat
+// history persistence (not requested, and keeps the backend stateless).
+let sxMessages = [];
+let sxPendingImage = null; // { base64, mediaType, dataUrl }
+let sxSending = false;
+
+function sxEsc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+}
+
+// Minimal, safe formatter: escape everything first, then allow only a small
+// known set of markdown-lite patterns back in as real markup (bold, bullet
+// lists, line breaks). Never uses innerHTML on raw model output directly.
+function sxFormat(text) {
+  const escaped = sxEsc(text);
+  const lines = escaped.split('\n');
+  let html = '';
+  let inList = false;
+  for (const line of lines) {
+    const bulletMatch = line.match(/^-\s+(.*)/);
+    if (bulletMatch) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += `<li>${bulletMatch[1]}</li>`;
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (line.trim() === '') { html += '<br>'; }
+      else { html += line + '<br>'; }
+    }
+  }
+  if (inList) html += '</ul>';
+  return html.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+}
+
+function sxAddMessage(role, text, imageDataUrl) {
+  document.getElementById('sxEmpty').style.display = 'none';
+  const thread = document.getElementById('sxThread');
+  const div = document.createElement('div');
+  div.className = 'sx-msg ' + (role === 'user' ? 'user' : role === 'error' ? 'error' : 'bot');
+  let inner = '';
+  if (role === 'bot') {
+    inner += `<div class="sx-name"><svg class="sx-avatar-svg sx-mood-neutral" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9.5" y="9" width="5" height="6" rx="1.2" fill="currentColor"/></svg>Sampson X</div>`;
+  }
+  inner += role === 'error' ? sxEsc(text) : sxFormat(text);
+  if (imageDataUrl) inner += `<img src="${imageDataUrl}" alt="Attached chart">`;
+  div.innerHTML = inner;
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+  return div;
+}
+
+function sxUsePrompt(text) {
+  document.getElementById('sxInput').value = text;
+  document.getElementById('sxInput').focus();
+}
+
+function sxOnKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sxSend();
+  }
+}
+
+function sxHandleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!['image/png', 'image/jpeg'].includes(file.type)) {
+    alert('Please choose a PNG or JPEG image.');
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    alert('That image is too large — try a screenshot under 4MB.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    sxPendingImage = { base64: reader.result.split(',')[1], mediaType: file.type, dataUrl: reader.result };
+    document.getElementById('sxPreviewImg').src = reader.result;
+    document.getElementById('sxPreview').style.display = 'flex';
+    if (typeof gtag === 'function') gtag('event', 'sampson_x_chart_uploaded');
+  };
+  reader.readAsDataURL(file);
+}
+
+function sxClearImage() {
+  sxPendingImage = null;
+  document.getElementById('sxPreview').style.display = 'none';
+  document.getElementById('sxFileInput').value = '';
+}
+
+function sxNewChat() {
+  sxMessages = [];
+  sxClearImage();
+  document.getElementById('sxThread').innerHTML = '<div class="sx-empty" id="sxEmpty">Ask Sampson X anything about trading, or tap a prompt above to get started.</div>';
+}
+
+async function sxSend() {
+  if (sxSending) return;
+  const input = document.getElementById('sxInput');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!_token) {
+    alert('Please sign in again.');
+    return;
+  }
+
+  const isQuiz = /quiz/i.test(text);
+  if (typeof gtag === 'function') {
+    gtag('event', 'sampson_x_question_submitted');
+    if (isQuiz) gtag('event', 'sampson_x_quiz_started');
+  }
+
+  const attachedImage = sxPendingImage;
+  sxAddMessage('user', text, attachedImage ? attachedImage.dataUrl : null);
+  sxMessages.push({ role: 'user', content: text });
+  input.value = '';
+  sxClearImage();
+
+  sxSending = true;
+  const sendBtn = document.getElementById('sxSendBtn');
+  sendBtn.disabled = true;
+  const thinkingEl = sxAddMessage('bot', '…thinking…');
+
+  try {
+    const body = {
+      messages: sxMessages,
+      learningMode: document.getElementById('sxLearningMode').checked,
+    };
+    if (attachedImage) {
+      body.image = attachedImage.base64;
+      body.mediaType = attachedImage.mediaType;
+    }
+    const res = await fetch('/api/sampsonx-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    thinkingEl.remove();
+    if (!res.ok) {
+      sxAddMessage('error', data.error || 'Something went wrong — please try again.');
+      sxMessages.pop(); // don't keep a failed turn in history
+      if (typeof gtag === 'function') gtag('event', 'sampson_x_error');
+    } else {
+      sxAddMessage('bot', data.reply);
+      sxMessages.push({ role: 'assistant', content: data.reply });
+      if (typeof gtag === 'function') gtag('event', 'sampson_x_question_completed');
+    }
+  } catch (e) {
+    thinkingEl.remove();
+    sxAddMessage('error', '⚠ Could not reach Sampson X — check your connection and try again.');
+    sxMessages.pop();
+  }
+
+  sxSending = false;
+  sendBtn.disabled = false;
+}
+
+async function init() {
+  try {
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+      _token = session.access_token;
+      document.getElementById('sxGate').style.display = 'none';
+      document.getElementById('sxApp').style.display = 'flex';
+      if (typeof gtag === 'function') gtag('event', 'sampson_x_opened');
+      if (typeof FounderCTA !== 'undefined') {
+        FounderCTA.mountSticky({ location: 'sampson_x' });
+      }
+    }
+  } catch (e) {
+    console.warn('Session check failed:', e.message);
+  }
+}
+init();
+</script>
+</body>
+</html>

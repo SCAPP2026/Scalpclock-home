@@ -110,6 +110,8 @@
   Cache-Control: no-store
 /orbsignalengine
   Cache-Control: no-store
+/sampson-x
+  Cache-Control: no-store
 
 # ── Account / dashboard / session pages ─────────────────────────────────────
 # Cloudflare Pages doesn't edge-cache HTML by default today, so this is a
