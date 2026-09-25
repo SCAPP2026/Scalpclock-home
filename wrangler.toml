@@ -21,6 +21,11 @@ id = "34e6e1c9f8a4452b80e756848db5eb3a"
 #   ANTHROPIC_API_KEY — sk-ant-... from console.anthropic.com; used with
 #   model claude-sonnet-5, open to any logged-in user, gated only by the
 #   KV caps above (not by plan — see that file's header comment)
+# Resend (Founding Member daily reminder email, functions/api/admin/daily-reminder.js):
+#   RESEND_API_KEY — re_... from resend.com dashboard; sends from
+#   admin@scalpclock.com, which must be a verified domain in Resend
+#   (Domains → Add Domain → add the SPF/DKIM DNS records it gives you) or
+#   sends will fail/land in spam. Admin-triggered only, no automated cron.
 # Stripe (payments):
 #   STRIPE_SECRET_KEY         — sk_live_... from Stripe dashboard
 #   STRIPE_WEBHOOK_SECRET     — whsec_... from Stripe webhook endpoint settings

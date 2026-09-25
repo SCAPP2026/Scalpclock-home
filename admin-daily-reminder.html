@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Reminder Email — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/css/theme-light.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{ --max:900px; }
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(247,249,247,.9);border-bottom:1px solid var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-title{font-family:var(--disp);font-weight:700;font-size:1.1rem;color:var(--text);}
+.nav-title span{color:var(--green-ink);}
+.nav-back{font-size:.82rem;color:var(--t65);text-decoration:none;}
+
+.shell{max-width:var(--max);margin:0 auto;padding:32px 24px;}
+
+.deny-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:40px 32px;text-align:center;max-width:480px;margin:60px auto;}
+.deny-card h2{font-family:var(--disp);font-weight:700;font-size:1.3rem;margin-bottom:10px;}
+.deny-card p{color:var(--t65);font-size:.9rem;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:16px 18px;}
+.stat-label{font-size:.7rem;color:var(--t65);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.stat-val{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--text);margin-top:2px;}
+
+.section-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:28px 0 12px;color:var(--t85);}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:20px 22px;}
+.card p{color:var(--t65);font-size:.88rem;line-height:1.6;margin-bottom:10px;}
+
+.tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.83rem;}
+th{text-align:left;padding:10px 14px;color:var(--t65);font-weight:600;text-transform:uppercase;font-size:.68rem;letter-spacing:.05em;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;font-family:var(--mono);}
+tr:last-child td{border-bottom:none;}
+.empty-row td{text-align:center;color:var(--t65);font-family:var(--body);padding:24px;}
+.status-pill{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:5px;}
+.status-pill.ok{background:var(--green-soft);color:var(--green-ink);}
+.status-pill.fail{background:rgba(245,166,35,.12);color:#c98a1a;}
+
+.send-btn{font-family:var(--disp);font-weight:700;font-size:.95rem;padding:12px 24px;border-radius:8px;background:var(--green);color:var(--on-green,#04140c);border:none;cursor:pointer;}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;}
+.send-btn.confirming{background:#c0392b;}
+.last-sent{font-size:.8rem;color:var(--t65);margin-top:10px;}
+.send-error{color:var(--red-ink,#c0392b);font-size:.85rem;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <span class="nav-title">Scalp<span>Clock</span> — Daily Reminder Admin</span>
+    <a class="nav-back" href="/dashboard">&larr; Dashboard</a>
+  </div>
+</nav>
+
+<div class="shell">
+  <div id="denyView" style="display:none;">
+    <div class="deny-card">
+      <h2>Access Denied</h2>
+      <p>This page is restricted to ScalpClock admins.</p>
+    </div>
+  </div>
+
+  <div id="adminView" style="display:none;">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Recipients Today</div><div class="stat-val" id="statCount">—</div></div>
+      <div class="stat-card"><div class="stat-label">Last Sent</div><div class="stat-val" id="statLastSent" style="font-size:.9rem;">—</div></div>
+    </div>
+
+    <div class="section-title">Send Today's Reminder</div>
+    <div class="card">
+      <p>Sends the Daily Trading System reminder email to every Founding Member below who hasn't unsubscribed. This is a manual send — nothing goes out automatically.</p>
+      <button class="send-btn" id="sendBtn" onclick="handleSendClick()">Send Today's Reminder</button>
+      <div class="last-sent" id="sendStatus"></div>
+      <div class="send-error" id="sendError" style="display:none;"></div>
+    </div>
+
+    <div class="section-title">Recipients</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Founder</th><th>Email</th></tr></thead>
+        <tbody id="recipientsBody"><tr class="empty-row"><td colspan="2">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section-title" id="resultsTitle" style="display:none;">Last Send Results</div>
+    <div class="tbl-wrap" id="resultsWrap" style="display:none;">
+      <table>
+        <thead><tr><th>Email</th><th>Status</th></tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { console.warn('Supabase init failed:', e.message); }
+
+let _token = null;
+
+async function init() {
+  if (!sb) { window.location.href = '/login'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/login'; return; }
+
+  if (session.user.app_metadata?.is_admin !== true) {
+    document.getElementById('denyView').style.display = 'block';
+    return;
+  }
+
+  _token = session.access_token;
+  document.getElementById('adminView').style.display = 'block';
+  await loadPreview();
+}
+
+async function authedFetch(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    headers: { ...(options.headers || {}), Authorization: `Bearer ${_token}` },
+  });
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+async function loadPreview() {
+  try {
+    const res = await authedFetch('/api/admin/daily-reminder');
+    if (!res.ok) throw new Error('preview fetch failed: ' + res.status);
+    const data = await res.json();
+    document.getElementById('statCount').textContent = data.count;
+    document.getElementById('statLastSent').textContent = data.lastSent ? new Date(data.lastSent).toLocaleString() : 'Never';
+    renderRecipients(data.recipients || []);
+  } catch (e) {
+    console.error('loadPreview failed:', e.message);
+  }
+}
+
+function renderRecipients(rows) {
+  const body = document.getElementById('recipientsBody');
+  if (!rows.length) {
+    body.innerHTML = '<tr class="empty-row"><td colspan="2">No recipients — everyone has unsubscribed, or no Founding Members have a linked email.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td>#${r.founderNumber}</td>
+      <td>${esc(r.email)}</td>
+    </tr>
+  `).join('');
+}
+
+// Two-click confirm (send real email to real people) — first click asks for
+// confirmation, second click within a few seconds actually sends.
+let _confirmPending = false;
+function handleSendClick() {
+  const btn = document.getElementById('sendBtn');
+  if (!_confirmPending) {
+    _confirmPending = true;
+    btn.classList.add('confirming');
+    btn.textContent = 'Click again to confirm send';
+    setTimeout(() => {
+      if (_confirmPending) {
+        _confirmPending = false;
+        btn.classList.remove('confirming');
+        btn.textContent = 'Send Today\'s Reminder';
+      }
+    }, 5000);
+    return;
+  }
+  _confirmPending = false;
+  sendReminder();
+}
+
+async function sendReminder() {
+  const btn = document.getElementById('sendBtn');
+  const errorEl = document.getElementById('sendError');
+  const statusEl = document.getElementById('sendStatus');
+  errorEl.style.display = 'none';
+  btn.disabled = true;
+  btn.classList.remove('confirming');
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await authedFetch('/api/admin/daily-reminder', { method: 'POST' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ('send failed: ' + res.status));
+
+    statusEl.textContent = `Sent to ${data.sent} recipient(s)${data.failed ? `, ${data.failed} failed` : ''} just now.`;
+    renderResults(data.results || []);
+    await loadPreview();
+  } catch (e) {
+    console.error('sendReminder failed:', e.message);
+    errorEl.textContent = e.message || 'Failed to send.';
+    errorEl.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Send Today\'s Reminder';
+}
+
+function renderResults(rows) {
+  if (!rows.length) return;
+  document.getElementById('resultsTitle').style.display = 'block';
+  document.getElementById('resultsWrap').style.display = 'block';
+  document.getElementById('resultsBody').innerHTML = rows.map(r => `
+    <tr>
+      <td>${esc(r.email)}</td>
+      <td><span class="status-pill ${r.ok ? 'ok' : 'fail'}">${r.ok ? 'SENT' : 'FAILED'}</span></td>
+    </tr>
+  `).join('');
+}
+
+init();
+</script>
+</body>
+</html>
