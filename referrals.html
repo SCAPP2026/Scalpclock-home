@@ -408,7 +408,7 @@ async function loadDashboard() {
       const capFilled = (rateRes.claimed || 0) >= (rateRes.cap || 500);
       rateBanner.textContent = capFilled
         ? `🎉 All Founding spots are claimed — you're earning $${rate.toFixed(2)}/mo per active referral.`
-        : `Current rate: $${rate.toFixed(2)}/mo per active referral. Once all ${rateRes.cap || 500} Founding spots fill, this rises to $1.99/mo automatically.`;
+        : `Current rate: $${rate.toFixed(2)}/mo per active referral. Once all ${rateRes.cap || 500} Founding spots fill, this rises to $6.99/mo automatically.`;
     } else {
       document.getElementById('statMonthly').textContent = '$' + (activeReferrals * 1).toFixed(2);
       rateBanner.textContent = 'Commission rate unavailable right now — showing an estimate.';

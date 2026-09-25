@@ -518,9 +518,11 @@ async function setReferralStatus(referredUserId, status, serviceKey) {
 
 // Reads the CURRENT commission rate at the moment of payment (never stored
 // on the referral row itself) so existing referrals automatically jump from
-// $1.00 to $1.99/mo the instant the 500th founding spot fills — no backfill
-// needed. Returns null (meaning: create no commission) if the program is
-// disabled or settings can't be read — fails closed.
+// $1.00 to $6.99/mo (referral_program_settings.commission_rate_post_cap,
+// raised from $1.99 on 2026-09-25 alongside the $19.99 Pro price) the
+// instant the 500th founding spot fills — no backfill needed. Returns null
+// (meaning: create no commission) if the program is disabled or settings
+// can't be read — fails closed.
 async function getCurrentCommissionRate(serviceKey) {
   try {
     const settingsRes = await fetch(

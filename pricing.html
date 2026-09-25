@@ -1247,7 +1247,7 @@ async function loadReferralRate() {
       const capFilled = data.remaining <= 0;
       noteEl.textContent = capFilled
         ? 'All 500 Founding spots are claimed, so every referral now earns the top rate, for as long as they stay subscribed.'
-        : `For as long as your referral stays subscribed — rising to $1.99/mo per referral once all ${data.cap || 500} Founding spots are claimed.`;
+        : `For as long as your referral stays subscribed — rising to $6.99/mo per referral once all ${data.cap || 500} Founding spots are claimed.`;
     }
   } catch (e) {
     console.warn('referral rate load failed:', e.message);
