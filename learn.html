@@ -581,22 +581,44 @@ async function syncProgressFromCloud() {
 async function pushProgressToCloud() {
   if(!_uid) return;
   try {
+    // Read-then-merge, NOT a blind overwrite — same read-merge-write
+    // discipline journal.html's syncJournalXP() and daily-system.html
+    // already use for this same column. A raw overwrite here used to
+    // replace the cloud's learn_progress with whatever this browser's
+    // localStorage held at push time. If this device's local `done` list
+    // was ever behind the account's real cloud progress — a slow/failed
+    // pull on a new device, a second tab, or completing a lesson before
+    // syncProgressFromCloud() finished on page load — finishing one more
+    // lesson would silently overwrite the cloud with a SHORTER completed-
+    // lessons list, erasing already-saved lessons and making the next
+    // login look like progress reset to day 1. Union/max-merging against
+    // the latest cloud row before writing means a push can only ever add
+    // to saved progress, never regress it — and this device's localStorage
+    // adopts the merged result too, so it can't fall behind what it just
+    // wrote to the cloud.
+    const {data,error}=await sb.from('profiles').select('learn_progress').eq('id',_uid).single();
+    const cloud=(!error&&data&&data.learn_progress)||{};
+    const mergedStreakDate=(cloud.streakDate||'')>=LS.get('sc_streak_date','')?(cloud.streakDate||LS.get('sc_streak_date','')):LS.get('sc_streak_date','');
+    const merged={
+      done:Array.from(new Set([...(Array.isArray(cloud.done)?cloud.done:[]),...getDone()])),
+      badges:Array.from(new Set([...(Array.isArray(cloud.badges)?cloud.badges:[]),...getEarned()])),
+      xp:Math.max(typeof cloud.xp==='number'?cloud.xp:0,getXP()),
+      streakDate:mergedStreakDate,
+      streakCount:Math.max(typeof cloud.streakCount==='number'?cloud.streakCount:0,LS.get('sc_streak_count',0)),
+      quizFirstTry:Math.max(typeof cloud.quizFirstTry==='number'?cloud.quizFirstTry:0,LS.get('sc_quiz_first_try',0)),
+    };
+    LS.set('sc_lessons_done',merged.done);
+    LS.set('sc_earned_badges',merged.badges);
+    LS.set('sc_learn_xp',merged.xp);
+    LS.set('sc_streak_date',merged.streakDate);
+    LS.set('sc_streak_count',merged.streakCount);
+    LS.set('sc_quiz_first_try',merged.quizFirstTry);
     // upsert, not update — if this account's profiles row is missing for
     // any reason (e.g. signup's insert ran before the table existed, or
     // the row was never created), update() would silently affect zero
     // rows and progress would never actually save. upsert self-heals by
     // creating the row instead of depending on it already being there.
-    await sb.from('profiles').upsert({
-      id:_uid,
-      learn_progress:{
-        done:getDone(),
-        badges:getEarned(),
-        xp:getXP(),
-        streakDate:LS.get('sc_streak_date',''),
-        streakCount:LS.get('sc_streak_count',0),
-        quizFirstTry:LS.get('sc_quiz_first_try',0),
-      },
-    }, {onConflict:'id'});
+    await sb.from('profiles').upsert({ id:_uid, learn_progress:merged }, {onConflict:'id'});
   } catch(e) { console.warn('Progress sync (push) failed:',e.message); }
 }
 function hoursUntilMidnightStr() {
