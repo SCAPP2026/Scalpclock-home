@@ -1,3 +1,5 @@
+import { fulfillMerchOrder, alertMerchFailure } from '../../lib/merch-fulfill.js';
+
 const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
 const GA4_MEASUREMENT_ID = 'G-M4F7X9HDDW'; // same public ID used by gtag.js on every page
 
@@ -51,6 +53,31 @@ export async function onRequest(context) {
 
     case 'checkout.session.completed': {
       const session = event.data.object;
+
+      // Merch shop order (functions/api/shop/checkout.js) — a one-time
+      // payment with no account or subscription behind it. Handled entirely
+      // here so none of the membership logic below ever runs for it.
+      if (session.metadata?.kind === 'merch') {
+        try {
+          const result = await fulfillMerchOrder(env, session);
+          console.log('Merch order', session.id, result.status, result.orderId || '');
+          if (result.status === 'created') {
+            await sendGA4Event(env, session.metadata?.ga_client_id, 'purchase', {
+              transaction_id: session.id,
+              value:          session.amount_total != null ? session.amount_total / 100 : undefined,
+              currency:       session.currency ? session.currency.toUpperCase() : 'USD',
+              items: [{ item_id: 'merch', item_name: 'Merch order' }],
+            });
+          }
+        } catch (e) {
+          console.error('MERCH FULFILLMENT FAILED for', session.id, '-', e.message);
+          await alertMerchFailure(env, session, e.message);
+          // Non-2xx so Stripe retries — the customer has already paid.
+          return new Response('Merch fulfillment failed', { status: 500 });
+        }
+        break;
+      }
+
       const userId  = session.client_reference_id;
       const isFounding = session.metadata?.founding_member === 'true';
 

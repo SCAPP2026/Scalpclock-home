@@ -39,6 +39,14 @@ id = "34e6e1c9f8a4452b80e756848db5eb3a"
 #     price_1Tnee4IpxBaK009prbOTbUmw)
 #   STRIPE_PRICE_ELITE_MONTHLY — price_... (when Elite launches)
 #   STRIPE_PRICE_ELITE_ANNUAL  — price_... (when Elite launches)
+# Printify (merch shop — /shop, functions/api/shop/*.js, functions/lib/printify.js):
+#   PRINTIFY_API_TOKEN — personal access token from Printify → Account →
+#     Connections → API tokens. Catalog, prices and shipping rates are read
+#     live from the Printify store; paid orders are created there by the
+#     merch branch of functions/api/stripe/webhook.js. Until this is set,
+#     /shop shows "Shop opening soon".
+#   PRINTIFY_SHOP_ID   — numeric shop id; only required if the Printify
+#     account has more than one store
 # News feeds (all optional — sources with no key are silently skipped):
 #   POLYGON_KEY  — api.polygon.io key (also used for news endpoint)
 #   FINNHUB_KEY  — finnhub.io key (free tier: 60 calls/min)

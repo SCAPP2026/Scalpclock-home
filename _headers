@@ -61,6 +61,8 @@
   Cache-Control: public, max-age=300, s-maxage=3600
 /pricing
   Cache-Control: public, max-age=300, s-maxage=3600
+/shop
+  Cache-Control: public, max-age=300, s-maxage=3600
 /terms
   Cache-Control: public, max-age=300, s-maxage=3600
 /privacy
