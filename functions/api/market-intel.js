@@ -72,7 +72,9 @@ export async function onRequest(context) {
 }
 
 async function cachedCalendar(cache, request, env, nowMs) {
-  const key = new Request(new URL('/api/__market-intel-calendar?v=1', request.url).toString());
+  // Keyed on whether FRED is configured, so adding or removing the key takes
+  // effect on the next request instead of after the cached copy expires.
+  const key = new Request(new URL(`/api/__market-intel-calendar?v=2&fred=${env.FRED_API_KEY ? 1 : 0}`, request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit.json();
   const cal = await buildCalendar({ fredKey: env.FRED_API_KEY, nowMs });
