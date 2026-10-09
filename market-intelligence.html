@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPY, QQQ &amp; IWM Market Intelligence Center — ScalpClock</title>
+<meta name="description" content="Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense.">
+<link rel="canonical" href="https://scalpclock.com/market-intelligence">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="SPY, QQQ &amp; IWM Market Intelligence Center — ScalpClock">
+<meta property="og:description" content="Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense.">
+<meta property="og:url" content="https://scalpclock.com/market-intelligence">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SPY, QQQ &amp; IWM Market Intelligence Center — ScalpClock">
+<meta name="twitter:description" content="Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#070b10">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap"></noscript>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalpClock Market Intelligence Center",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "isAccessibleForFree": true,
+  "url": "https://scalpclock.com/market-intelligence",
+  "description": "Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense."
+}</script>
+<style>
+  :root{
+    --bg:#070b10;
+    --panel:#0e1824;
+    --panel-alt:#111d2b;
+    --border:#1e2d42;
+    --border-soft:#17202e;
+    --text:#dde8f5;
+    --text-dim:#8aa4c0;
+    --text-faint:#5a7292;
+    --bull:#16d97e;
+    --bull-dim:#0f2e22;
+    --bear:#ff4566;
+    --bear-dim:#3a1420;
+    --amber:#f5a623;
+    --amber-dim:#3a2a0c;
+    --blue:#5b9cf6;
+    --blue-dim:#101e3a;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+  /* No hard min-width: this page previously forced a fixed 1080px-minimum
+     desktop layout (horizontal-scroll on any narrower viewport), which is
+     why nothing below it, however carefully reorganized, could ever have
+     reached mobile visitors. @media(max-width:860px) below now has room
+     to actually apply. */
+  body{overflow-x:hidden;}
+  .wrap{max-width:1440px;margin:0 auto;padding:18px 22px 40px;}
+
+  /* ===== Header ===== */
+  header{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;gap:14px;}
+  .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+  .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+  @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:radial-gradient(circle at 50% 40%, #1a2b22, #070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+  .logo-mark svg{width:16px;height:16px;}
+  .logo-text{display:flex;flex-direction:column;gap:1px;}
+  .logo-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:#eef3f0;line-height:1;}
+  .logo-name em{color:#16d97e;font-style:normal;}
+  .logo-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;opacity:.8;white-space:nowrap;}
+
+  .hdr-left{display:flex;align-items:center;gap:12px;}
+  .ham-btn{background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .ham-btn span{display:block;width:18px;height:2px;background:var(--text-dim);border-radius:2px;transition:.2s;}
+  .sc-overlay{display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+  .sc-overlay.open{display:block;}
+  .sc-drawer{position:fixed;top:0;right:0;bottom:0;width:270px;background:rgba(8,11,17,.98);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:99;display:flex;flex-direction:column;padding:0;transform:translateX(100%);transition:transform .25s ease;}
+  .sc-drawer.open{transform:translateX(0);}
+  .sc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+  .sc-drawer-head span{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text);letter-spacing:.04em;}
+  .sc-drawer-head button{background:none;border:none;color:var(--text-dim);font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+  .sc-drawer-links{display:flex;flex-direction:column;gap:2px;padding:12px;}
+  .sc-drawer-links a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;font-weight:600;font-size:1.02rem;color:var(--text-dim);text-decoration:none;transition:background .15s,color .15s;border:1px solid transparent;}
+  .sc-drawer-links a:hover{color:var(--text);background:var(--panel-alt);border-color:var(--border);}
+  .sc-drawer-links a.sc-active{color:var(--bull);}
+  .sc-drawer-links .sc-cta{margin-top:12px;background:var(--bull);color:#04140F;font-weight:700;justify-content:center;border-color:transparent;}
+  .sc-drawer-links .sc-cta:hover{background:#2EEFB6;color:#04140F;}
+  .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bull);padding:14px 16px 2px;}
+  .drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:var(--bull);}
+  .drawer-group-toggle .drawer-group-label{flex:1;}
+  .drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+  .drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+  .drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+  .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+  .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
+  /* ===== Page ===== */
+  .wrap{max-width:1240px;margin:0 auto;padding:16px 18px 48px;}
+  a{color:var(--blue);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-dim);}
+  .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--panel);border-radius:999px;padding:5px 11px;font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--text-faint);}
+  .dot.regular{background:var(--bull);box-shadow:0 0 0 3px rgba(22,217,126,.18);}
+  .dot.premarket,.dot.afterhours{background:var(--amber);}
+  .dot.closed{background:var(--text-faint);}
+  h1{font-family:'Rajdhani',sans-serif;font-size:clamp(1.55rem,4vw,2.1rem);margin:20px 0 6px;letter-spacing:.01em;line-height:1.15;}
+  .lede{color:var(--text-dim);font-size:.98rem;line-height:1.6;max-width:820px;margin:0 0 14px;}
+  .banner{border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.55;margin:10px 0;border:1px solid var(--border);background:var(--panel);color:var(--text-dim);}
+  .banner.warn{border-color:rgba(245,166,35,.45);background:var(--amber-dim);color:#f3d9a4;}
+  .banner.err{border-color:rgba(255,69,102,.5);background:var(--bear-dim);color:#ffc2cd;}
+  .banner strong{color:var(--text);}
+  section{margin-top:30px;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+  h2{font-family:'Rajdhani',sans-serif;font-size:1.4rem;margin:0;letter-spacing:.01em;}
+  .sec-sub{color:var(--text-dim);font-size:.9rem;line-height:1.55;margin:0 0 14px;max-width:860px;}
+  h3{font-size:.98rem;margin:0 0 8px;}
+  .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 7px;border:1px solid var(--border);color:var(--text-dim);white-space:nowrap;}
+  .tag.fact{color:#9cc4ff;border-color:rgba(91,156,246,.4);background:var(--blue-dim);}
+  .tag.calc{color:#c9b6ff;border-color:rgba(160,130,255,.4);background:rgba(120,90,220,.14);}
+  .tag.interp{color:#f3d9a4;border-color:rgba(245,166,35,.4);background:var(--amber-dim);}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;}
+  .muted{color:var(--text-dim);} .faint{color:var(--text-faint);} .mono{font-family:var(--mono);}
+  .up{color:var(--bull);} .down{color:var(--bear);} .flat{color:var(--text-dim);}
+  .small{font-size:12px;line-height:1.5;}
+  .src{font-size:11.5px;color:var(--text-faint);line-height:1.5;margin-top:10px;}
+
+  /* At a glance */
+  .glance{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .glance .q{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;}
+  .glance .a{font-size:1.02rem;font-weight:700;line-height:1.35;}
+  .glance .d{font-size:12.5px;color:var(--text-dim);line-height:1.5;margin-top:5px;}
+
+  /* ETF cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;border-top:3px solid var(--border);}
+  .card.bullish{border-top-color:var(--bull);} .card.bearish{border-top-color:var(--bear);} .card.neutral{border-top-color:var(--amber);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .sym{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;line-height:1;}
+  .sym-name{font-size:12px;color:var(--text-dim);margin-top:3px;}
+  .bias{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:7px;padding:5px 9px;white-space:nowrap;}
+  .bias.bullish{background:var(--bull-dim);color:var(--bull);} .bias.bearish{background:var(--bear-dim);color:var(--bear);} .bias.neutral{background:var(--amber-dim);color:var(--amber);}
+  .price{font-family:var(--mono);font-size:1.9rem;font-weight:700;line-height:1.1;}
+  .chg{font-family:var(--mono);font-size:.95rem;font-weight:600;margin-top:3px;}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;font-size:12.5px;}
+  .kv div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--border-soft);padding-bottom:5px;}
+  .kv span:first-child{color:var(--text-dim);} .kv span:last-child{font-family:var(--mono);font-weight:600;text-align:right;}
+  .trend-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+  .tf{border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center;font-size:10.5px;color:var(--text-dim);background:var(--panel-alt);}
+  .tf b{display:block;font-size:11.5px;margin-top:2px;text-transform:capitalize;}
+  .tf.bullish b{color:var(--bull);} .tf.bearish b{color:var(--bear);} .tf.neutral b{color:var(--amber);} .tf.unknown b{color:var(--text-faint);}
+  .near{font-size:12.5px;line-height:1.6;color:var(--text-dim);}
+  .near b{color:var(--text);font-family:var(--mono);font-weight:600;}
+  .card-foot{font-size:11px;color:var(--text-faint);line-height:1.5;border-top:1px solid var(--border-soft);padding-top:9px;margin-top:auto;}
+  .conf{font-size:12px;color:var(--text-dim);}
+  .conf b{color:var(--text);}
+
+  /* Tabs / focus selector */
+  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap;}
+  .seg button{font-family:var(--sans);font-weight:700;font-size:13px;border:none;background:none;color:var(--text-dim);border-radius:7px;padding:7px 14px;cursor:pointer;}
+  .seg button[aria-pressed="true"]{background:var(--blue-dim);color:#cfe1ff;box-shadow:inset 0 0 0 1px rgba(91,156,246,.45);}
+  .seg button:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+  .focusbar{position:sticky;top:0;z-index:20;background:rgba(7,11,16,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);margin:26px -18px 0;padding:9px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .focusbar span{font-size:12px;color:var(--text-dim);font-weight:600;}
+
+  /* Scenarios */
+  .lean{border-radius:12px;padding:13px 15px;font-size:.95rem;line-height:1.55;font-weight:600;border:1px solid var(--border);background:var(--panel-alt);margin-bottom:14px;}
+  .lean.calls{border-color:rgba(22,217,126,.45);} .lean.puts{border-color:rgba(255,69,102,.45);} .lean.no-trade{border-color:rgba(245,166,35,.45);}
+  .scen{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .scen .panel{border-top:3px solid var(--border);}
+  .scen .calls{border-top-color:var(--bull);} .scen .puts{border-top-color:var(--bear);} .scen .nt{border-top-color:var(--amber);}
+  .scen h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;letter-spacing:.03em;text-transform:uppercase;}
+  .scen ul{margin:6px 0 10px;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text);}
+  .scen .lbl{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin-top:10px;}
+  .scen p{font-size:13px;line-height:1.6;margin:4px 0 0;}
+  .check{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.5;padding:6px 0;border-bottom:1px dashed var(--border-soft);}
+  .check:last-child{border-bottom:none;}
+  .check .ic{flex:0 0 18px;font-weight:800;}
+  .check.on .ic{color:var(--amber);} .check.off .ic{color:var(--text-faint);}
+  .check.off{color:var(--text-dim);}
+  .check small{display:block;color:var(--text-dim);font-size:12px;}
+
+  /* Score */
+  .score-row{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--border-soft);}
+  .score-row:last-child{border-bottom:none;}
+  .sc-badge{font-family:var(--mono);font-weight:800;font-size:13px;border-radius:7px;text-align:center;padding:5px 0;}
+  .sc-badge.p{background:var(--bull-dim);color:var(--bull);} .sc-badge.n{background:var(--bear-dim);color:var(--bear);} .sc-badge.z{background:var(--panel-alt);color:var(--text-dim);}
+  .score-row b{font-size:13.5px;} .score-row p{margin:3px 0 0;font-size:12.5px;line-height:1.55;color:var(--text-dim);}
+  details{border-top:1px solid var(--border-soft);margin-top:8px;padding-top:8px;}
+  details>summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--blue);list-style:none;}
+  details>summary::-webkit-details-marker{display:none;}
+  details>summary::before{content:'＋ ';} details[open]>summary::before{content:'－ ';}
+  details p,details li{font-size:12.5px;line-height:1.6;color:var(--text-dim);}
+  .learn{background:var(--blue-dim);border:1px solid rgba(91,156,246,.3);border-radius:9px;padding:9px 12px;font-size:12.5px;line-height:1.55;color:#c6d8f5;margin-top:6px;}
+  .learn b{color:#e3edff;}
+
+  /* Chart + levels */
+  .chart-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start;}
+  #chart{height:380px;width:100%;}
+  .chart-note{font-size:11.5px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
+  .lvl{border-bottom:1px solid var(--border-soft);padding:8px 0;}
+  .lvl:last-child{border-bottom:none;}
+  .lvl-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:13px;}
+  .lvl-top .p{font-family:var(--mono);font-weight:700;white-space:nowrap;}
+  .lvl-meta{font-size:11.5px;color:var(--text-dim);margin-top:2px;}
+  .lvl.resistance .p{color:var(--bear);} .lvl.support .p{color:var(--bull);} .lvl.pivot .p{color:var(--amber);}
+  .lvl details{border-top:none;margin-top:3px;padding-top:0;}
+  .here{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue);padding:6px 0;}
+  .here::before,.here::after{content:'';flex:1;height:1px;background:rgba(91,156,246,.45);}
+  .lvl-list{max-height:520px;overflow:auto;padding-right:4px;}
+
+  /* Tables */
+  .tbl-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);text-align:right;padding:7px 8px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  td{padding:8px;border-bottom:1px solid var(--border-soft);text-align:right;font-family:var(--mono);vertical-align:top;}
+  th:first-child,td:first-child{text-align:left;font-family:var(--sans);}
+  td.txt{font-family:var(--sans);text-align:left;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .read{border-left:3px solid var(--border);padding:8px 0 8px 12px;margin-bottom:10px;}
+  .read.bullish{border-left-color:var(--bull);} .read.bearish{border-left-color:var(--bear);} .read.neutral{border-left-color:var(--amber);}
+  .read b{font-size:13.5px;} .read p{margin:3px 0 0;font-size:12.5px;line-height:1.6;color:var(--text-dim);}
+  .bar-cell{position:relative;min-width:110px;}
+  .bar{height:6px;border-radius:3px;background:var(--panel-alt);overflow:hidden;margin-top:4px;position:relative;}
+  .bar i{position:absolute;top:0;bottom:0;display:block;}
+  .rel{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:2px 6px;}
+  .rel.high{background:var(--blue-dim);color:#9cc4ff;} .rel.medium{background:var(--panel-alt);color:var(--text-dim);} .rel.low,.rel.unknown{color:var(--text-faint);}
+  .mover-name{font-weight:700;} .mover-sub{font-size:11.5px;color:var(--text-dim);font-family:var(--sans);}
+  .hl{font-family:var(--sans);font-size:12px;line-height:1.5;color:var(--text-dim);max-width:340px;text-align:left;}
+  .hl a{color:var(--text);text-decoration:none;} .hl a:hover{text-decoration:underline;}
+
+  /* Calendar */
+  .ev{display:grid;grid-template-columns:132px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid var(--border-soft);}
+  .ev:last-child{border-bottom:none;}
+  .ev-when{font-size:12.5px;line-height:1.5;}
+  .ev-when b{display:block;font-size:13.5px;}
+  .ev-name{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .imp{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 6px;}
+  .imp.high{background:var(--bear-dim);color:#ff9bae;} .imp.medium{background:var(--amber-dim);color:var(--amber);}
+  .st{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);}
+  .st.released{color:var(--bull);}
+  .rd{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:8px;}
+  .rd div{background:var(--panel-alt);border:1px solid var(--border-soft);border-radius:8px;padding:7px 9px;font-size:12px;line-height:1.55;}
+  .rd div b{display:block;font-size:11.5px;color:var(--text-dim);font-weight:600;}
+  .rd span{font-family:var(--mono);}
+  .na{color:var(--text-faint);font-style:italic;font-family:var(--sans);}
+
+  /* Outlook */
+  .out-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .out-grid ul{margin:6px 0 8px;padding-left:17px;font-size:12.5px;line-height:1.6;color:var(--text-dim);}
+  .sc3{font-size:12.5px;line-height:1.55;margin:6px 0 0;}
+  .sc3 b{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;display:block;}
+  .sc3 .b1{color:var(--bull);} .sc3 .b2{color:var(--bear);} .sc3 .b3{color:var(--amber);} .sc3 .b4{color:var(--blue);}
+  .macro{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;}
+  .macro div{background:var(--panel-alt);border:1px solid var(--border-soft);border-radius:9px;padding:9px 11px;}
+  .macro span{display:block;font-size:11.5px;color:var(--text-dim);} .macro b{font-family:var(--mono);font-size:1.05rem;} .macro small{display:block;font-size:11px;color:var(--text-faint);margin-top:2px;}
+
+  .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+  .links a{display:block;background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:12px 14px;text-decoration:none;color:var(--text);font-weight:600;font-size:13.5px;}
+  .links a:hover{border-color:var(--blue);}
+  .links a small{display:block;color:var(--text-dim);font-weight:400;font-size:12px;margin-top:3px;line-height:1.45;}
+  .disclaimer{margin-top:30px;font-size:12px;line-height:1.65;color:var(--text-faint);border-top:1px solid var(--border);padding-top:16px;}
+  .skeleton{color:var(--text-faint);font-size:13px;padding:22px 0;text-align:center;}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+  @media(max-width:980px){
+    .cards,.scen,.out-grid,.glance{grid-template-columns:1fr;}
+    .chart-grid,.two{grid-template-columns:1fr;}
+    #chart{height:300px;}
+  }
+  @media(max-width:560px){
+    .wrap{padding:12px 13px 40px;} .focusbar{margin:22px -13px 0;padding:8px 13px;}
+    .ev{grid-template-columns:1fr;gap:5px;}
+    .price{font-size:1.65rem;}
+    .seg button{padding:7px 11px;}
+    .logo-motto{display:none;}
+  }
+</style>
+</head>
+<body>
+
+
+<!-- NAV -->
+<div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
+<div class="sc-drawer" id="scDrawer">
+  <div class="sc-drawer-head">
+    <span>NAVIGATE</span>
+    <button onclick="closeSCNav()">✕</button>
+  </div>
+  <div class="sc-drawer-links">
+    <a href="/">🏠 Home</a>
+    <div class="drawer-group">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+        <span class="drawer-group-label">Learn</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+          <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+          <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+          <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-group open">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="true">
+        <span class="drawer-group-label">Trade</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/daily-system" style="padding-left:28px">📈 Daily System</a>
+          <a href="/scalpchart" style="padding-left:28px">📊 ScalpCharts</a>
+          <a href="/scalpchart?tab=replay" style="padding-left:28px">📅 Replay</a>
+          <a href="/exitassistant" style="padding-left:28px">🚪 Exit Assistant</a>
+          <a href="/market-intelligence" class="sc-active" style="padding-left:28px">🧭 Market Intelligence</a>
+          <a href="/orbsignalengine" style="padding-left:28px">📐 ORB Signal Engine</a>
+          <a href="/sampson-x" style="padding-left:28px">🤖 Sampson X</a>
+          <a href="/signals" style="padding-left:28px">🔔 Signals</a>
+        </div>
+      </div>
+    </div>
+    <a href="/pricing">💳 Pricing</a>
+    <a href="/shop">🛍️ Shop</a>
+    <a href="/dashboard">⚙️ Dashboard</a>
+    <a href="/login?tab=signup" class="sc-cta" id="navFoundingCta">Learn Free →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="hdr-left">
+      <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="9" cy="9" r="7"/>
+            <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+            <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">Scalp<em>Clock</em></span>
+          <span class="logo-motto" style="line-height:1.4"><span style="font-size:.88em;letter-spacing:.02em">Learn. Practice. Apply. Improve.</span></span>
+        </div>
+      </a>
+    </div>
+    <div class="status" aria-live="polite">
+      <span class="pill"><span class="dot" id="sessDot"></span><span id="sessLabel">Loading…</span></span>
+      <span class="pill" id="updPill">Updated —</span>
+      <span id="nextRefresh" class="faint"></span>
+    </div>
+  </div>
+
+  <h1>SPY, QQQ &amp; IWM Market Intelligence Center</h1>
+  <p class="lede">One place to read the three ETFs that drive most options trading: who is in control, what is moving them, where the important price levels are, and what would need to happen before calls or puts make sense. Built to teach you how to read the market — not to tell you what to buy.</p>
+
+  <div id="founderTeaser"></div>
+  <div id="banners"></div>
+
+  <!-- 1. AT A GLANCE -->
+  <section aria-labelledby="hGlance">
+    <div class="sec-head"><h2 id="hGlance">The market in 10 seconds</h2><div class="tags"><span class="tag interp">Interpretation</span></div></div>
+    <div class="glance" id="glance"><div class="skeleton">Loading market data…</div></div>
+  </section>
+
+  <!-- 2. ETF CARDS -->
+  <section aria-labelledby="hCards">
+    <div class="sec-head"><h2 id="hCards">The three ETFs</h2><div class="tags"><span class="tag fact">Fact</span><span class="tag calc">Calculated</span></div></div>
+    <p class="sec-sub">Prices are real trades. Moving averages, VWAP and relative volume are calculated from them. The coloured label is a rule-based reading you can open up and check below.</p>
+    <div class="cards" id="cards"><div class="skeleton">Loading…</div></div>
+    <div class="src" id="dataNote"></div>
+  </section>
+
+  <!-- FOCUS SELECTOR -->
+  <div class="focusbar">
+    <span>Looking at:</span>
+    <div class="seg" id="focusSeg" role="group" aria-label="Choose an ETF">
+      <button data-sym="SPY" aria-pressed="true">SPY</button>
+      <button data-sym="QQQ" aria-pressed="false">QQQ</button>
+      <button data-sym="IWM" aria-pressed="false">IWM</button>
+    </div>
+    <span class="faint" id="focusHint">Sections 3–5 follow this choice.</span>
+  </div>
+
+  <!-- 3. CALLS VS PUTS -->
+  <section aria-labelledby="hScen">
+    <div class="sec-head"><h2 id="hScen">Calls, puts, or wait? — <span class="focusSym">SPY</span></h2><div class="tags"><span class="tag interp">Interpretation</span></div></div>
+    <p class="sec-sub">Three scenarios side by side. Each one lists what has to happen first and what would prove it wrong. If the "wait" list has several flags lit, that is the answer.</p>
+    <div id="scen"><div class="skeleton">Loading…</div></div>
+  </section>
+
+  <!-- 4. SCORE -->
+  <section aria-labelledby="hScore">
+    <div class="sec-head"><h2 id="hScore">Why that reading? — <span class="focusSym">SPY</span></h2><div class="tags"><span class="tag calc">Calculated</span><span class="tag interp">Interpretation</span></div></div>
+    <p class="sec-sub">Eight checks, each scored +1 (bullish), 0 (no lean) or −1 (bearish). Three or more net points either way sets the bias. Confidence is Low, Medium or High depending on how much of the evidence agrees — it is not a win rate.</p>
+    <div class="panel" id="score"><div class="skeleton">Loading…</div></div>
+  </section>
+
+  <!-- 5. CHART + LEVELS -->
+  <section aria-labelledby="hLevels">
+    <div class="sec-head"><h2 id="hLevels">Support &amp; resistance — <span class="focusSym">SPY</span></h2><div class="tags"><span class="tag fact">Fact</span><span class="tag calc">Calculated</span></div></div>
+    <p class="sec-sub">Levels are places price has reacted before, or that many traders watch. Treat them as areas, not exact lines — price often pokes through by a few cents before deciding.</p>
+    <div class="chart-grid">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <div class="seg" id="tfSeg" role="group" aria-label="Chart timeframe">
+            <button data-tf="intraday" aria-pressed="true">5-minute</button>
+            <button data-tf="daily" aria-pressed="false">Daily</button>
+          </div>
+          <span class="small faint" id="chartLegend"></span>
+        </div>
+        <div id="chart" role="img" aria-label="Price chart with support and resistance levels"></div>
+        <div class="chart-note" id="chartNote"></div>
+      </div>
+      <div class="panel">
+        <h3>Levels, highest to lowest</h3>
+        <div class="lvl-list" id="levels"><div class="skeleton">Loading…</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. RELATIVE STRENGTH -->
+  <section aria-labelledby="hRel">
+    <div class="sec-head"><h2 id="hRel">Are they confirming each other?</h2><div class="tags"><span class="tag calc">Calculated</span><span class="tag interp">Interpretation</span></div></div>
+    <p class="sec-sub">SPY is large companies, QQQ is mostly big technology, IWM is small companies. When all three agree, a move has broad support. When they split, something is uneven.</p>
+    <div class="two">
+      <div class="panel"><h3>What the relationship is saying</h3><div id="reads"><div class="skeleton">Loading…</div></div></div>
+      <div class="panel">
+        <h3>Performance</h3>
+        <div class="tbl-wrap" id="perf"></div>
+        <h3 style="margin-top:16px;">How closely they move together</h3>
+        <div class="tbl-wrap" id="corr"></div>
+        <div class="src" id="corrNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. MOVERS -->
+  <section aria-labelledby="hMov">
+    <div class="sec-head"><h2 id="hMov">What is moving each ETF?</h2><div class="tags"><span class="tag fact">Fact</span><span class="tag calc">Calculated</span></div></div>
+    <p class="sec-sub">An ETF moves because the stocks inside it move. A stock's pull on the ETF is its weight in the fund multiplied by how far it moved — so a giant company that is flat matters less than a mid-sized one that jumps.</p>
+    <div class="seg" id="movSeg" role="group" aria-label="Choose an ETF for movers" style="margin-bottom:12px;">
+      <button data-sym="SPY" aria-pressed="true">SPY</button>
+      <button data-sym="QQQ" aria-pressed="false">QQQ</button>
+      <button data-sym="IWM" aria-pressed="false">IWM</button>
+    </div>
+    <div class="panel" id="movers"><div class="skeleton">Loading movers…</div></div>
+    <div class="panel" style="margin-top:14px;">
+      <h3>Sector leadership today</h3>
+      <div class="tbl-wrap" id="sectors"><div class="skeleton">Loading…</div></div>
+      <div class="src" id="sectorNote"></div>
+    </div>
+  </section>
+
+  <!-- 8. CATALYSTS -->
+  <section aria-labelledby="hCal">
+    <div class="sec-head"><h2 id="hCal">Catalyst calendar</h2><div class="tags"><span class="tag fact">Fact</span></div></div>
+    <p class="sec-sub">Scheduled events that can move all three ETFs at once. All times are Eastern. Good news can sink stocks and bad news can lift them — it depends on what the number means for interest rates and what was already expected.</p>
+    <div class="panel" id="calendar"><div class="skeleton">Loading calendar…</div></div>
+    <div class="two" style="margin-top:14px;">
+      <div class="panel"><h3>Earnings from the biggest holdings (next two weeks)</h3><div id="earnings"><div class="skeleton">Loading…</div></div></div>
+      <div class="panel"><h3>Latest market headlines</h3><div id="headlines"><div class="skeleton">Loading…</div></div></div>
+    </div>
+  </section>
+
+  <!-- 9. OUTLOOK -->
+  <section aria-labelledby="hOut">
+    <div class="sec-head"><h2 id="hOut">Outlook</h2><div class="tags"><span class="tag calc">Calculated</span><span class="tag interp">Interpretation</span></div></div>
+    <p class="sec-sub">The same evidence at three zoom levels. Each view says what would make it bullish, bearish or neutral — and what would change the assessment.</p>
+    <div class="seg" id="outSeg" role="group" aria-label="Outlook timeframe" style="margin-bottom:12px;">
+      <button data-out="daily" aria-pressed="true">Daily</button>
+      <button data-out="weekly" aria-pressed="false">Weekly</button>
+      <button data-out="monthly" aria-pressed="false">Monthly</button>
+    </div>
+    <div id="outlook"><div class="skeleton">Loading…</div></div>
+  </section>
+
+  <!-- 10. OPTIONS CONTEXT -->
+  <section aria-labelledby="hOpt">
+    <div class="sec-head"><h2 id="hOpt">Options market context</h2><div class="tags"><span class="tag fact">Fact · delayed</span></div></div>
+    <p class="sec-sub">Everything above is about the ETF itself. This is separate: what the options market looks like for each one. It is delayed data and it does not recommend a contract.</p>
+    <div class="panel"><div class="tbl-wrap" id="options"><div class="skeleton">Loading…</div></div><div class="src" id="optNote"></div></div>
+  </section>
+
+  <!-- 11. KEEP LEARNING -->
+  <section aria-labelledby="hLearn">
+    <div class="sec-head"><h2 id="hLearn">Practise what you just read</h2></div>
+    <div class="links">
+      <a href="/learn-options-trading/technical-analysis/support-and-resistance-explained">Support &amp; resistance explained<small>Why levels work and how to draw them.</small></a>
+      <a href="/learn-options-trading/technical-analysis/vwap-trading-strategy-explained">VWAP explained<small>Why the day's average price matters.</small></a>
+      <a href="/learn-options-trading/technical-analysis/volume-confirmation">Volume confirmation<small>Why breakouts without volume fail.</small></a>
+      <a href="/learn-options-trading/technical-analysis/moving-averages-explained">Moving averages explained<small>Reading trend with the 9, 20, 50 and 200.</small></a>
+      <a href="/learn-options-trading/technical-analysis/breakout-retest-explained">Breakout &amp; retest<small>Waiting for confirmation instead of chasing.</small></a>
+      <a href="/orbsignalengine">ORB Signal Engine<small>Practise the opening-range breakout on live bars.</small></a>
+      <a href="/scalpchart?tab=replay">Chart Replay<small>Replay a past session and test your read.</small></a>
+      <a href="/daily-system">Daily System<small>Turn this into a repeatable morning routine.</small></a>
+      <a href="/learn">Daily Lessons<small>Short lessons with XP and streaks.</small></a>
+    </div>
+  </section>
+
+  <div class="disclaimer">
+    <strong>Educational tool — not investment advice.</strong> ScalpClock is not a broker or a registered investment adviser. Prices are real-time trades from the IEX exchange supplied by Alpaca, which is one exchange rather than the full US market; volume figures are IEX-only. Options figures are delayed 15–20 minutes (CBOE). Bias labels, confidence levels and scenarios are rule-based readings of the data shown on this page. They are not predictions, have not been back-tested, and are not a probability of profit. Options can lose their entire value. Never trade with money you cannot afford to lose. See the <a href="/trading-education-disclaimer">full disclaimer</a>.
+  </div>
+</div>
+
+<script src="https://unpkg.com/lightweight-charts@4.1.4/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { core: null, movers: null, focus: 'SPY', movSym: 'SPY', tf: 'intraday', out: 'daily', lastOk: null, failed: false, timer: null, nextAt: 0, chart: null, series: null, lines: [], earnings: null, news: null, options: {} };
+
+  // ── formatting ──────────────────────────────────────────────────────────
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function num(v, dp) { return v == null || !isFinite(v) ? null : Number(v).toLocaleString('en-US', { minimumFractionDigits: dp == null ? 2 : dp, maximumFractionDigits: dp == null ? 2 : dp }); }
+  function na(text) { return '<span class="na">' + esc(text || 'unavailable') + '</span>'; }
+  function money(v) { var n = num(v); return n == null ? na() : n; }
+  function pct(v, dp) { if (v == null || !isFinite(v)) return na('n/a'); return (v > 0 ? '+' : '') + Number(v).toFixed(dp == null ? 2 : dp) + '%'; }
+  function cls(v) { return v == null ? 'flat' : v > 0 ? 'up' : v < 0 ? 'down' : 'flat'; }
+  function compact(v) { if (v == null) return na(); if (v >= 1e9) return (v / 1e9).toFixed(2) + 'B'; if (v >= 1e6) return (v / 1e6).toFixed(2) + 'M'; if (v >= 1e3) return (v / 1e3).toFixed(0) + 'K'; return String(Math.round(v)); }
+  var ET = 'America/New_York';
+  function etTime(ms) { return new Date(ms).toLocaleTimeString('en-US', { timeZone: ET, hour: 'numeric', minute: '2-digit', second: '2-digit' }) + ' ET'; }
+  function etShort(ms) { return new Date(ms).toLocaleTimeString('en-US', { timeZone: ET, hour: 'numeric', minute: '2-digit' }) + ' ET'; }
+  function etDay(dateStr) { return new Date(dateStr + 'T12:00:00Z').toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric' }); }
+  function etStamp(ms) { return new Date(ms).toLocaleString('en-US', { timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' ET'; }
+  function zone(l) { return l.isZone ? money(l.lo) + '–' + money(l.hi) : money(l.price); }
+  function track(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
+  function etf(sym) { return state.core && state.core.etfs.filter(function (e) { return e.symbol === sym; })[0]; }
+  function nearest(levels, role) {
+    var best = null;
+    levels.forEach(function (l) { if (l.role === role && l.distPct != null && (!best || Math.abs(l.distPct) < Math.abs(best.distPct))) best = l; });
+    return best;
+  }
+
+  // ── fetch + refresh loop ────────────────────────────────────────────────
+  function getJSON(url) {
+    return fetch(url, { headers: { Accept: 'application/json' } }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
+  function loadCore() {
+    return getJSON('/api/market-intel').then(function (d) {
+      if (!d || !d.ok) throw new Error((d && d.error) || 'No data returned');
+      state.core = d; state.lastOk = Date.now(); state.failed = false; state.failMsg = null;
+      renderCore();
+    }).catch(function (e) {
+      state.failed = true; state.failMsg = e.message;
+      renderBanners(); renderStatus();
+      if (!state.core) ['glance', 'cards', 'scen', 'score', 'levels', 'reads', 'calendar', 'outlook'].forEach(function (id) { $(id).innerHTML = '<div class="skeleton">Market data could not be loaded. Nothing is shown rather than showing made-up numbers.</div>'; });
+    });
+  }
+  function loadMovers() {
+    return getJSON('/api/market-intel-movers').then(function (d) {
+      if (!d || !d.ok) throw new Error((d && d.error) || 'No data returned');
+      state.movers = d; state.moversErr = null; renderMovers(); renderEarnings();
+    }).catch(function (e) {
+      state.moversErr = e.message;
+      if (!state.movers) { $('movers').innerHTML = '<div class="skeleton">Movers could not be loaded (' + esc(e.message) + ').</div>'; $('sectors').innerHTML = '<div class="skeleton">Unavailable.</div>'; }
+    });
+  }
+  function loadSide() {
+    getJSON('/api/earnings').then(function (d) { state.earnings = d.earnings || []; renderEarnings(); }).catch(function () { state.earnings = false; renderEarnings(); });
+    getJSON('/api/news').then(function (d) { state.news = d.articles || []; renderNews(); }).catch(function () { state.news = false; renderNews(); });
+    ['SPY', 'QQQ', 'IWM'].forEach(function (s) {
+      getJSON('/api/options?symbol=' + s).then(function (d) { state.options[s] = d; renderOptions(); }).catch(function () { state.options[s] = { noData: true }; renderOptions(); });
+    });
+  }
+  var ticks = 0;
+  function cycle() {
+    ticks++;
+    var secs = (state.core && state.core.refreshSeconds) || 30;
+    var jobs = [loadCore()];
+    // Movers refresh every other cycle while the market is open, and with every cycle when closed.
+    if (ticks === 1 || secs >= 300 || ticks % 2 === 1) jobs.push(loadMovers());
+    if (ticks === 1 || ticks % 20 === 0) loadSide();
+    Promise.all(jobs).then(schedule);
+  }
+  function schedule() {
+    clearTimeout(state.timer);
+    var secs = (state.core && state.core.refreshSeconds) || 30;
+    if (state.failed) secs = 30;
+    state.nextAt = Date.now() + secs * 1000;
+    if (document.hidden) return;                 // resume on visibilitychange
+    state.timer = setTimeout(cycle, secs * 1000);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { clearTimeout(state.timer); return; }
+    if (Date.now() >= state.nextAt - 500) cycle(); else state.timer = setTimeout(cycle, state.nextAt - Date.now());
+  });
+  setInterval(function () {
+    var el = $('nextRefresh');
+    if (!state.nextAt) return;
+    if (document.hidden) { el.textContent = ''; return; }
+    var s = Math.max(0, Math.round((state.nextAt - Date.now()) / 1000));
+    el.textContent = 'Auto-refresh in ' + (s >= 90 ? Math.round(s / 60) + ' min' : s + 's');
+  }, 1000);
+
+  // ── render: status + banners ────────────────────────────────────────────
+  function renderStatus() {
+    var d = state.core;
+    if (!d) { $('sessLabel').textContent = state.failed ? 'Data unavailable' : 'Loading…'; return; }
+    $('sessDot').className = 'dot ' + d.session.state;
+    var label = d.session.label;
+    if (d.session.state === 'closed' || d.session.state === 'afterhours') label += ' · next open ' + etDay(d.session.nextOpenDate) + ' 9:30 AM ET';
+    if (d.session.state === 'premarket') label += ' · opens 9:30 AM ET';
+    if (d.session.earlyClose) label += ' · early close 1:00 PM ET';
+    $('sessLabel').textContent = label;
+    $('updPill').textContent = 'Updated ' + etTime(Date.parse(d.asOf));
+  }
+  function renderBanners() {
+    var d = state.core, out = [];
+    if (state.failed) {
+      out.push('<div class="banner err"><strong>Could not refresh market data.</strong> ' + esc(state.failMsg || '') + (d ? ' Showing the last successful update from <strong>' + etTime(Date.parse(d.asOf)) + '</strong> — treat every number below as stale.' : '') + ' Retrying automatically.</div>');
+    }
+    if (d) {
+      if (d.stale) out.push('<div class="banner warn"><strong>Stale prices.</strong> The newest trade is more than 15 minutes old even though the market is open.</div>');
+      if (d.session.state !== 'regular') {
+        var txt = d.session.state === 'premarket' ? 'Premarket. Prices are early trades on one exchange and can be thin. VWAP, the opening range and relative volume start once the regular session opens at 9:30 AM ET; until then the readings lean on yesterday\'s session.'
+          : d.session.state === 'afterhours' ? 'After-hours. The readings below describe today\'s finished regular session (' + etDay(d.session.refDate) + ').'
+          : 'The market is closed. Everything below describes the most recent session (' + etDay(d.session.refDate) + '). Next regular session: ' + etDay(d.session.nextOpenDate) + ', 9:30 AM ET.';
+        out.push('<div class="banner"><strong>' + esc(d.session.label) + '.</strong> ' + esc(txt) + '</div>');
+      }
+      (d.warnings || []).forEach(function (w) { if (!/more than 15 minutes old/.test(w)) out.push('<div class="banner warn">' + esc(w) + '</div>'); });
+    }
+    $('banners').innerHTML = out.join('');
+  }
+
+  // ── render: at a glance ─────────────────────────────────────────────────
+  function renderGlance() {
+    var d = state.core, es = d.etfs;
+    var biases = es.map(function (e) { return e.score.bias; });
+    var b = biases.filter(function (x) { return x === 'bullish'; }).length, r = biases.filter(function (x) { return x === 'bearish'; }).length;
+    var control = b === 3 ? ['Bulls, across the board', 'up'] : r === 3 ? ['Bears, across the board', 'down'] : b >= 2 && r === 0 ? ['Leaning bullish', 'up'] : r >= 2 && b === 0 ? ['Leaning bearish', 'down'] : b && r ? ['Split — no one in control', 'flat'] : ['No clear control', 'flat'];
+    var day = d.comparison.performance.day;
+    var lead = day.leader, lag = day.laggard;
+    var rows = {}; day.rows.forEach(function (x) { rows[x.symbol] = x.pct; });
+    var agree = d.comparison.agreement;
+    var agreeTxt = agree === 'all-up' ? 'Confirming — all three up' : agree === 'all-down' ? 'Confirming — all three down' : 'Diverging';
+    var when = d.session.state === 'regular' ? 'right now' : 'in the most recent session';
+    $('glance').innerHTML =
+      '<div class="panel"><div class="q">Who is in control ' + when + '?</div><div class="a ' + control[1] + '">' + control[0] + '</div><div class="d">' +
+        es.map(function (e) { return e.symbol + ': <b>' + e.score.bias + '</b>'; }).join(' · ') + '</div></div>' +
+      '<div class="panel"><div class="q">Strongest and weakest</div><div class="a">' + (lead ? esc(lead) + ' leads' + (lag && lag !== lead ? ', ' + esc(lag) + ' lags' : '') : 'Not available') + '</div><div class="d">' +
+        day.rows.map(function (x) { return x.symbol + ' <span class="mono ' + cls(x.pct) + '">' + pct(x.pct) + '</span>'; }).join(' · ') + '</div></div>' +
+      '<div class="panel"><div class="q">Do the three agree?</div><div class="a ' + (agree === 'all-up' ? 'up' : agree === 'all-down' ? 'down' : 'flat') + '">' + agreeTxt + '</div><div class="d">' +
+        esc((d.comparison.reads[0] || {}).text || '') + '</div></div>';
+  }
+
+  // ── render: ETF cards ───────────────────────────────────────────────────
+  function renderCards() {
+    var d = state.core;
+    $('cards').innerHTML = d.etfs.map(function (e) {
+      var s = e.score, res = nearest(e.levels, 'resistance'), sup = nearest(e.levels, 'support');
+      var live = d.session.state === 'regular' || d.session.state === 'premarket';
+      var mainPrice = live ? e.price : (e.regClose != null ? e.regClose : e.price);
+      var priceLabel = d.session.state === 'regular' ? 'Last trade' : d.session.state === 'premarket' ? 'Premarket trade' : 'Regular-session close';
+      var ext = (!live && e.extChange != null && Math.abs(e.extChange) >= 0.005)
+        ? '<div class="small muted">Last extended-hours trade: <span class="mono">' + money(e.price) + '</span> <span class="mono ' + cls(e.extChange) + '">(' + pct(e.extChangePct) + ' vs close)</span></div>' : '';
+      var tfs = ['intraday', 'daily', 'weekly', 'monthly'].map(function (k) {
+        var t = e.trend[k];
+        return '<div class="tf ' + t.dir + '" title="' + esc(t.reason) + '">' + k + '<b>' + (t.dir === 'unknown' ? 'no data' : t.dir) + '</b></div>';
+      }).join('');
+      var cat = d.calendar && d.calendar.events.filter(function (ev) { return ev.status === 'upcoming'; })[0];
+      return '<article class="card ' + s.bias + '">' +
+        '<div class="card-top"><div><div class="sym">' + e.symbol + '</div><div class="sym-name">' + esc(e.name) + '</div></div>' +
+          '<div style="text-align:right"><span class="bias ' + s.bias + '">' + s.bias + '</span><div class="conf" style="margin-top:6px">Confidence: <b>' + s.confidence + '</b></div></div></div>' +
+        '<div><div class="small faint">' + priceLabel + '</div><div class="price">' + money(mainPrice) + '</div>' +
+          '<div class="chg ' + cls(e.change) + '">' + (e.change == null ? na('change unavailable') : (e.change > 0 ? '+' : '') + num(e.change) + ' (' + pct(e.changePct) + ')') + ' <span class="small faint" style="font-family:var(--sans);font-weight:400">vs prev close ' + money(e.prevClose) + '</span></div>' + ext + '</div>' +
+        '<div class="kv">' +
+          '<div><span>Day high</span><span>' + (e.dayHigh != null ? money(e.dayHigh) : na('not open yet')) + '</span></div>' +
+          '<div><span>Day low</span><span>' + (e.dayLow != null ? money(e.dayLow) : na('not open yet')) + '</span></div>' +
+          '<div><span>VWAP</span><span>' + (e.vwap != null ? money(e.vwap) + ' <small class="' + cls(e.vwapDistPct) + '">' + (e.vwapDistPct >= 0 ? 'above' : 'below') + '</small>' : na('not open yet')) + '</span></div>' +
+          '<div><span>Rel. volume</span><span>' + (e.rvol != null ? num(e.rvol) + '×' : na('not yet')) + '</span></div>' +
+          '<div><span>9 EMA (daily)</span><span>' + money(e.ma.dailyEma9) + '</span></div>' +
+          '<div><span>20 EMA (daily)</span><span>' + money(e.ma.dailyEma20) + '</span></div>' +
+          '<div><span>50 SMA</span><span>' + money(e.ma.dailySma50) + '</span></div>' +
+          '<div><span>200 SMA</span><span>' + money(e.ma.dailySma200) + '</span></div>' +
+        '</div>' +
+        '<div><div class="small faint" style="margin-bottom:5px">Trend by timeframe</div><div class="trend-row">' + tfs + '</div></div>' +
+        '<div class="near">Nearest resistance: ' + (res ? '<b>' + zone(res) + '</b> ' + esc(res.label) : na('none mapped above')) + '<br>Nearest support: ' + (sup ? '<b>' + zone(sup) + '</b> ' + esc(sup.label) : na('none mapped below')) +
+          '<br>Next catalyst: ' + (cat ? esc(cat.name) + ' — ' + etDay(cat.date) + ', ' + esc(cat.timeLabel) : na(d.calendar ? 'none on the tracked calendar' : 'calendar unavailable')) + '</div>' +
+        '<div class="card-foot">' + (e.priceTs ? 'Trade time ' + etStamp(e.priceTs) : 'Price from the latest bar') + ' · Alpaca IEX feed' + (e.volumeToday != null ? ' · IEX volume ' + compact(e.volumeToday) : '') + (e.rvolBasis ? ' · rel. volume ' + esc(e.rvolBasis) : '') + '</div>' +
+      '</article>';
+    }).join('');
+    var n = d.dataNotes;
+    $('dataNote').innerHTML = '<strong>Source:</strong> ' + esc(n.provider) + '. ' + esc(n.timeliness) + ' ' + esc(n.volume) + ' ' + esc(n.extendedHours);
+  }
+
+  // ── render: scenarios + score (focus ETF) ───────────────────────────────
+  function listHtml(items) { return '<ul>' + items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
+  function renderScenarios() {
+    var e = etf(state.focus); if (!e) return;
+    var sc = e.scenarios;
+    function side(o, c) {
+      return '<div class="panel ' + c + '"><h3>' + esc(o.title) + '</h3><div class="lbl">What needs to happen</div>' + listHtml(o.needs) +
+        '<div class="lbl">It is wrong if</div><p>' + esc(o.invalidation) + '</p>' +
+        (o.risks.length ? '<div class="lbl">Risks right now</div>' + listHtml(o.risks) : '') + '</div>';
+    }
+    var nt = sc.noTrade;
+    $('scen').innerHTML = '<div class="lean ' + sc.lean + '">' + esc(sc.leanText) + '</div>' +
+      '<div class="scen">' + side(sc.calls, 'calls') + side(sc.puts, 'puts') +
+      '<div class="panel nt"><h3>' + esc(nt.title) + '</h3><div class="lbl">' + nt.activeCount + ' of ' + nt.checks.length + ' wait-flags active</div>' +
+        nt.checks.map(function (c) { return '<div class="check ' + (c.active ? 'on' : 'off') + '"><span class="ic" aria-hidden="true">' + (c.active ? '!' : '·') + '</span><span>' + esc(c.label) + '<span class="sr">' + (c.active ? ' — active' : ' — clear') + '</span><small>' + esc(c.detail) + '</small></span></div>'; }).join('') +
+      '</div></div><div class="src">' + esc(sc.note) + '</div>';
+  }
+  function renderScore() {
+    var e = etf(state.focus); if (!e) return;
+    var s = e.score;
+    $('score').innerHTML =
+      '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><span class="bias ' + s.bias + '">' + s.bias + '</span>' +
+        '<span class="mono" style="font-weight:700">Net score ' + (s.total > 0 ? '+' : '') + s.total + ' of ±' + s.max + '</span><span class="conf">Confidence: <b>' + s.confidence + '</b></span></div>' +
+      '<p class="small muted" style="margin:0 0 6px">' + s.confidenceWhy.map(esc).join(' ') + '</p>' +
+      s.components.map(function (c) {
+        var k = c.score > 0 ? 'p' : c.score < 0 ? 'n' : 'z';
+        return '<div class="score-row"><div class="sc-badge ' + k + '">' + (c.score > 0 ? '+1' : c.score < 0 ? '−1' : '0') + '</div><div><b>' + esc(c.label) + '</b>' + (c.dataOk ? '' : ' <span class="tag">data missing</span>') +
+          '<p>' + esc(c.reason) + '</p>' + (c.learn ? '<details><summary>Why this matters</summary><div class="learn">' + esc(c.learn) + '</div></details>' : '') + '</div></div>';
+      }).join('') + '<div class="src">' + esc(s.disclaimer) + '</div>';
+  }
+
+  // ── render: chart + levels ──────────────────────────────────────────────
+  function toEtSec(sec) {
+    // lightweight-charts draws timestamps as UTC; shift so the axis reads Eastern Time.
+    var s = new Date(sec * 1000).toLocaleString('en-US', { timeZone: ET, hour12: false });
+    var t = Date.parse(s.replace(',', '') + ' UTC');
+    return isFinite(t) ? Math.floor(t / 1000) : sec;
+  }
+  function ensureChart() {
+    if (state.chart || typeof LightweightCharts === 'undefined') return;
+    var el = $('chart');
+    state.chart = LightweightCharts.createChart(el, {
+      width: el.clientWidth, height: el.clientHeight,
+      layout: { background: { color: 'transparent' }, textColor: '#8aa4c0', fontFamily: 'Inter, sans-serif' },
+      grid: { vertLines: { color: '#131d2b' }, horzLines: { color: '#131d2b' } },
+      rightPriceScale: { borderColor: '#1e2d42' }, timeScale: { borderColor: '#1e2d42', timeVisible: true, secondsVisible: false },
+      crosshair: { mode: 0 },
+    });
+    state.series = state.chart.addCandlestickSeries({ upColor: '#16d97e', downColor: '#ff4566', borderVisible: false, wickUpColor: '#16d97e', wickDownColor: '#ff4566' });
+    if (typeof ResizeObserver !== 'undefined') new ResizeObserver(function () { state.chart.applyOptions({ width: el.clientWidth, height: el.clientHeight }); }).observe(el);
+    else window.addEventListener('resize', function () { state.chart.applyOptions({ width: el.clientWidth }); });
+  }
+  function renderChart(fit) {
+    var e = etf(state.focus); if (!e) return;
+    ensureChart();
+    if (!state.chart) { $('chartNote').textContent = 'The chart library did not load. The levels list still works.'; return; }
+    var data = state.tf === 'daily' ? e.chart.daily : e.chart.intraday.map(function (b) { return { time: toEtSec(b.time), open: b.open, high: b.high, low: b.low, close: b.close }; });
+    state.series.setData(data);
+    state.lines.forEach(function (l) { state.series.removePriceLine(l); }); state.lines = [];
+    var pick = e.levels.filter(function (l) { return state.tf === 'daily' ? l.timeframe !== 'intraday' : (l.distPct != null && Math.abs(l.distPct) <= 1.6); });
+    // Nearest levels only, so labels stay readable.
+    pick.sort(function (a, b) { return Math.abs(a.distPct) - Math.abs(b.distPct); });
+    pick.slice(0, state.tf === 'daily' ? 8 : 6).forEach(function (l) {
+      var color = l.key === 'vwap' ? '#5b9cf6' : l.role === 'resistance' ? '#ff4566' : l.role === 'support' ? '#16d97e' : '#f5a623';
+      var short = l.label.replace(/ \(.*\)$/, '').replace("Previous day's", 'Prev day').replace("Previous week's", 'Prev wk').replace("Previous month's", 'Prev mo').replace('Opening range', 'OR');
+      state.lines.push(state.series.createPriceLine({ price: l.price, color: color, lineWidth: 1, lineStyle: l.isZone ? 2 : 0, axisLabelVisible: true, title: short }));
+    });
+    if (fit) state.chart.timeScale().fitContent();
+    $('chartLegend').innerHTML = '<span class="down">■</span> resistance &nbsp;<span class="up">■</span> support &nbsp;<span style="color:var(--amber)">■</span> being tested &nbsp;<span style="color:var(--blue)">■</span> VWAP';
+    $('chartNote').textContent = state.tf === 'daily'
+      ? 'Daily candles, last ' + e.chart.daily.length + ' sessions. Dashed lines are zones, drawn at their midpoint.'
+      : '5-minute candles for ' + e.chart.intradayDates.map(etDay).join(' and ') + ', including any extended-hours trades. Times are Eastern. Only the six nearest levels are drawn; the full list is on the right.';
+  }
+  function renderLevels() {
+    var e = etf(state.focus); if (!e) return;
+    var html = '', placed = false;
+    e.levels.forEach(function (l) {
+      if (!placed && e.price != null && l.price < e.price) { html += '<div class="here">' + e.symbol + ' ' + money(e.price) + '</div>'; placed = true; }
+      html += '<div class="lvl ' + l.role + '"><div class="lvl-top"><span>' + esc(l.label) + '</span><span class="p">' + zone(l) + '</span></div>' +
+        '<div class="lvl-meta">' + esc(l.timeframe) + ' · price is <b>' + esc(l.status) + '</b>' + (l.status === 'testing' ? '' : ' it') + (l.distPct != null ? ' (' + Math.abs(l.distPct).toFixed(2) + '% away)' : '') + ' · acting as ' + (l.role === 'pivot' ? 'a pivot' : l.role) + '</div>' +
+        '<details><summary>Why it matters, and what to watch</summary><p>' + esc(l.why) + '</p><p><b>Strengthens the setup:</b> ' + esc(l.confirm) + '</p><p><b>Invalidates it:</b> ' + esc(l.invalidate) + '</p></details></div>';
+    });
+    if (!placed && e.price != null) html += '<div class="here">' + e.symbol + ' ' + money(e.price) + '</div>';
+    $('levels').innerHTML = html || '<div class="skeleton">No levels could be calculated — price data is missing.</div>';
+  }
+
+  // ── render: comparison ──────────────────────────────────────────────────
+  function renderComparison() {
+    var c = state.core.comparison;
+    $('reads').innerHTML = (c.reads.length ? c.reads.map(function (r) { return '<div class="read ' + r.tone + '"><b>' + esc(r.title) + '</b><p>' + esc(r.text) + '</p></div>'; }).join('') : '<p class="small muted">Not enough data to compare the three ETFs.</p>') +
+      '<div class="learn"><b>Remember:</b> these are observations, not trading rules. Two ETFs moving together does not mean one is causing the other.</div>';
+    var syms = ['SPY', 'QQQ', 'IWM'], periods = [['day', 'Today'], ['week', '5 sessions'], ['month', '21 sessions'], ['quarter', '63 sessions']];
+    $('perf').innerHTML = '<table><thead><tr><th>Period</th>' + syms.map(function (s) { return '<th>' + s + '</th>'; }).join('') + '<th>Leader</th></tr></thead><tbody>' +
+      periods.map(function (p) {
+        var perf = c.performance[p[0]], m = {}; perf.rows.forEach(function (r) { m[r.symbol] = r.pct; });
+        return '<tr><td>' + p[1] + '</td>' + syms.map(function (s) { return '<td class="' + cls(m[s]) + '">' + pct(m[s]) + '</td>'; }).join('') + '<td>' + (perf.leader || '—') + '</td></tr>';
+      }).join('') + '</tbody></table>';
+    function cv(v) { return v == null ? na('n/a') : v.toFixed(2); }
+    $('corr').innerHTML = '<table><thead><tr><th>Pair</th><th>Today (5-min)</th><th>20 days</th><th>60 days</th><th>Change</th></tr></thead><tbody>' +
+      c.correlations.map(function (x) { return '<tr><td>' + esc(x.pair) + '</td><td>' + cv(x.intraday) + '</td><td>' + cv(x.d20) + '</td><td>' + cv(x.d60) + '</td><td class="' + cls(x.change) + '">' + (x.change == null ? na('n/a') : (x.change > 0 ? '+' : '') + x.change.toFixed(2)) + '</td></tr>'; }).join('') + '</tbody></table>';
+    $('corrNote').innerHTML = '1.00 = move in lockstep, 0 = unrelated. ' + esc(c.lookback) + ' "Today" needs about an hour of trading before it appears. ' + esc(c.note);
+  }
+
+  // ── render: movers ──────────────────────────────────────────────────────
+  function renderMovers() {
+    var m = state.movers; if (!m) return;
+    var e = m.etfs.filter(function (x) { return x.symbol === state.movSym; })[0];
+    var h = e.holdings, html = '';
+    if (!e.available) html = '<p class="small" style="line-height:1.65;margin:0">' + esc(e.message) + '</p>';
+    else {
+      var rows = e.movers.slice(0, 12), maxAbs = Math.max.apply(null, rows.map(function (r) { return Math.abs(r.contributionPts || 0); })) || 1;
+      html = '<p class="small muted" style="margin:0 0 10px;line-height:1.6">' + esc(e.message) + '</p><div class="tbl-wrap"><table><thead><tr><th>Company</th><th>Weight</th><th>Move</th><th>Pull on ' + e.symbol + '</th><th>Relevance</th><th style="text-align:left">Related headline</th></tr></thead><tbody>' +
+        rows.map(function (r) {
+          var w = Math.round(Math.abs(r.contributionPts || 0) / maxAbs * 50), pos = (r.contributionPts || 0) >= 0;
+          var others = r.otherEtfs.map(function (o) { return o.etf + ': ' + o.effect; }).join(' · ');
+          var hl = r.headline ? '<a href="' + esc(r.headline.url) + '" target="_blank" rel="noopener nofollow">' + esc(r.headline.title) + '</a><br><span class="faint">' + esc(r.headline.source) + ' · ' + etStamp(Date.parse(r.headline.publishedAt)) + '</span>' : '<span class="na">No matching headline in our feeds</span>';
+          return '<tr><td><span class="mover-name">' + esc(r.ticker) + '</span> <span class="' + cls(r.changePct) + '" aria-hidden="true">' + (r.direction === 'up' ? '▲' : r.direction === 'down' ? '▼' : '') + '</span><div class="mover-sub">' + esc(r.name) + '</div><div class="mover-sub faint" title="' + esc(r.otherEtfs.map(function (o) { return o.etf + ': ' + o.detail; }).join(' | ')) + '">Direct for ' + e.symbol + ' · ' + esc(others) + '</div></td>' +
+            '<td>' + r.weight.toFixed(2) + '%</td><td class="' + cls(r.changePct) + '">' + (r.changePct == null ? na(r.quoteNote || 'n/a') : pct(r.changePct)) + '</td>' +
+            '<td class="bar-cell ' + cls(r.contributionPts) + '">' + (r.contributionPts == null ? na('n/a') : (pos ? '+' : '') + r.contributionPts.toFixed(3) + ' pts') + '<div class="bar"><i style="' + (pos ? 'left:50%' : 'right:50%') + ';width:' + w + '%;background:' + (pos ? 'var(--bull)' : 'var(--bear)') + '"></i></div></td>' +
+            '<td><span class="rel ' + r.relevance + '">' + r.relevance + '</span></td><td class="txt"><div class="hl">' + hl + '</div></td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    var est = h.method === 'estimated-market-cap' ? ' <strong>Weights are estimated from market cap, not the fund\'s published weights.</strong>' : '';
+    html += '<div class="src">' + (h.source ? '<strong>Weights:</strong> ' + esc(h.source) + ', as of ' + esc(h.asOf || 'unknown') + '.' + est + ' ' : '') + esc(m.methodNote) + ' ' + esc(m.priceNote) + ' ' + esc(m.newsNote) + ' Updated ' + etTime(Date.parse(m.asOf)) + '.</div>';
+    $('movers').innerHTML = html;
+    var smax = Math.max.apply(null, m.sectors.map(function (s) { return Math.abs(s.changePct || 0); })) || 1;
+    $('sectors').innerHTML = '<table><thead><tr><th>Sector</th><th>ETF</th><th>Today</th><th style="width:40%"></th></tr></thead><tbody>' + m.sectors.map(function (s) {
+      var w = Math.round(Math.abs(s.changePct || 0) / smax * 50), pos = (s.changePct || 0) >= 0;
+      return '<tr><td>' + esc(s.name) + '</td><td>' + esc(s.ticker) + '</td><td class="' + cls(s.changePct) + '">' + pct(s.changePct) + '</td><td><div class="bar"><i style="' + (pos ? 'left:50%' : 'right:50%') + ';width:' + w + '%;background:' + (pos ? 'var(--bull)' : 'var(--bear)') + '"></i></div></td></tr>';
+    }).join('') + '</tbody></table>';
+    $('sectorNote').textContent = m.sectorNote;
+  }
+
+  // ── render: calendar ────────────────────────────────────────────────────
+  function reading(r) {
+    function v(x, period) { return x == null ? na() : '<span>' + esc(typeof x === 'number' ? num(x, Math.abs(x) >= 1000 ? 0 : (Number.isInteger(x) ? 0 : 2)) : x) + esc(r.unit && typeof x === 'number' ? (r.unit === '%' ? '%' : ' ' + r.unit) : '') + '</span>' + (period ? ' <span class="faint">(' + esc(period) + ')</span>' : ''); }
+    return '<div><b>' + esc(r.label) + '</b>Actual: ' + v(r.actual, r.actualPeriod) + '<br>Previous: ' + v(r.previous, r.previousPeriod) + '<br>Consensus: ' + na('unavailable') + (r.note ? '<br><span class="faint">' + esc(r.note) + '</span>' : '') + '</div>';
+  }
+  function renderCalendar() {
+    var d = state.core, c = d.calendar;
+    if (!c) { $('calendar').innerHTML = '<div class="skeleton">The catalyst calendar could not be loaded. No events are shown rather than guessed.</div>'; return; }
+    var now = Date.parse(d.asOf), html = '';
+    var evs = c.events.filter(function (e) { return e.ts >= now - 4 * 86400000 && e.ts <= now + 45 * 86400000; });
+    if (!c.status.fred.configured) html += '<div class="banner warn" style="margin-top:0"><strong>Economic releases are not connected yet.</strong> CPI, PPI, jobs, GDP, PCE, retail sales and Treasury yields need a free FRED API key added to the site settings. Until then only the Federal Reserve meeting schedule is shown.</div>';
+    else if (!c.status.fred.ok) html += '<div class="banner warn" style="margin-top:0"><strong>Economic release data failed to load.</strong> ' + esc((c.status.fred.errors || []).join(' · ')) + '</div>';
+    if (!evs.length) html += '<p class="small muted">No tracked events in the next 45 days.</p>';
+    html += evs.map(function (e) {
+      var rx = '';
+      if (e.reaction) {
+        rx = '<div class="small" style="margin-top:8px"><b>Actual market reaction</b> — ' + ['SPY', 'QQQ', 'IWM'].map(function (s) {
+          var r = e.reaction.bySymbol[s] || {};
+          return s + ': first 30 min <span class="mono ' + cls(r.initialPct) + '">' + pct(r.initialPct) + '</span>, then to the close <span class="mono ' + cls(r.laterPct) + '">' + pct(r.laterPct) + '</span>';
+        }).join(' · ') + '<div class="faint">' + esc(e.reaction.note) + '</div></div>';
+      } else if (e.status === 'released') rx = '<div class="small faint" style="margin-top:8px">Market reaction: not measurable (no bars around the release time, or the release is older than our intraday window).</div>';
+      return '<div class="ev"><div class="ev-when"><b>' + etDay(e.date) + '</b>' + esc(e.timeLabel) + '<div class="st ' + e.status + '">' + (e.status === 'released' ? 'Released' : 'Upcoming') + '</div></div><div>' +
+        '<div class="ev-name">' + esc(e.name) + ' <span class="imp ' + e.impact + '">' + e.impact + ' impact</span></div>' +
+        '<div class="rd">' + e.readings.map(reading).join('') + '</div>' + rx +
+        '<details><summary>What it could mean for SPY, QQQ and IWM</summary><p><b>SPY:</b> ' + esc(e.implications.SPY) + '</p><p><b>QQQ:</b> ' + esc(e.implications.QQQ) + '</p><p><b>IWM:</b> ' + esc(e.implications.IWM) + '</p><p class="faint">' + esc(e.timeNote) + '</p></details>' +
+        '<div class="src" style="margin-top:6px">Source: <a href="' + esc(e.sourceUrl) + '" target="_blank" rel="noopener">' + esc(e.source) + '</a></div></div></div>';
+    }).join('');
+    html += '<div class="src"><strong>Not covered:</strong> consensus estimates (' + esc(c.status.consensus.replace(/^unavailable — /, '')) + '); Fed speeches (no structured free feed — see the <a href="' + esc(c.status.fedSpeeches.link) + '" target="_blank" rel="noopener">Federal Reserve calendar</a>). FOMC dates are from the Federal Reserve Board\'s published schedule through ' + esc(c.status.fomc.through) + '.</div>';
+    $('calendar').innerHTML = html;
+  }
+  function renderEarnings() {
+    var el = $('earnings');
+    if (state.earnings === false) { el.innerHTML = '<p class="small muted">The earnings calendar could not be loaded.</p>'; return; }
+    if (!state.earnings || !state.movers) return;
+    var weights = {};
+    state.movers.etfs.forEach(function (e) { e.movers.forEach(function (m) { (weights[m.ticker] = weights[m.ticker] || []).push(e.symbol + ' ' + m.weight.toFixed(2) + '%'); }); });
+    var rows = state.earnings.filter(function (x) { return weights[x.symbol]; }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    if (!rows.length) { el.innerHTML = '<p class="small muted">None of the top SPY or QQQ holdings report in the next two weeks, according to Finnhub.</p>'; return; }
+    el.innerHTML = '<div class="tbl-wrap"><table><thead><tr><th>Company</th><th>Date</th><th>When</th><th>EPS estimate</th><th>Weight</th></tr></thead><tbody>' + rows.map(function (x) {
+      return '<tr><td><b>' + esc(x.symbol) + '</b><div class="mover-sub">' + esc(x.company || '') + '</div></td><td class="txt">' + etDay(x.date) + '</td><td class="txt">' + esc(x.time === 'unknown' || !x.time ? 'time not listed' : x.time.replace('-', ' ')) + '</td><td>' + (x.epsEstimate == null ? na() : num(x.epsEstimate)) + '</td><td class="txt small">' + esc(weights[x.symbol].join(', ')) + '</td></tr>';
+    }).join('') + '</tbody></table></div><div class="src">Source: Finnhub earnings calendar (dates and analyst EPS estimates as published there). Limited to the top holdings of SPY and QQQ. Big holdings reporting can move the whole ETF, especially after the close.</div>';
+  }
+  function renderNews() {
+    var el = $('headlines');
+    if (state.news === false) { el.innerHTML = '<p class="small muted">Headlines could not be loaded.</p>'; return; }
+    if (!state.news) return;
+    el.innerHTML = state.news.slice(0, 8).map(function (a) {
+      return '<div class="lvl"><a href="' + esc(a.url) + '" target="_blank" rel="noopener nofollow" style="color:var(--text);text-decoration:none;font-size:13px;line-height:1.5;font-weight:600">' + esc(a.title) + '</a><div class="lvl-meta">' + esc(a.sourceLabel || a.source || '') + ' · ' + etStamp(Date.parse(a.publishedAt)) + '</div></div>';
+    }).join('') + '<div class="src">An unfiltered general news feed (Massive and Finnhub) — geopolitical and breaking stories appear here first. Headlines are not scored as bullish or bearish. <a href="/news">More news →</a></div>';
+  }
+
+  // ── render: outlook ─────────────────────────────────────────────────────
+  function renderOutlook() {
+    var d = state.core, o = d.outlooks[state.out];
+    var html = '<p class="small muted" style="margin:0 0 10px">Horizon: <b style="color:var(--text)">' + esc(o.horizon) + '</b> · data as of ' + etStamp(Date.parse(d.asOf)) + '</p><div class="out-grid">' + o.etfs.map(function (e) {
+      return '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="sym" style="font-size:1.3rem">' + e.symbol + '</span><span class="bias ' + e.bias + '">' + e.bias + (e.confidence ? ' · ' + e.confidence : '') + '</span></div>' +
+        '<div class="lbl small faint" style="margin-top:8px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;font-size:10.5px">Evidence</div><ul>' + e.evidence.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+        '<p class="sc3"><b class="b1">Bullish if</b>' + esc(e.bullish) + '</p><p class="sc3"><b class="b2">Bearish if</b>' + esc(e.bearish) + '</p><p class="sc3"><b class="b3">Neutral if</b>' + esc(e.neutral) + '</p><p class="sc3"><b class="b4">What would change this</b>' + esc(e.changes) + '</p></div>';
+    }).join('') + '</div>';
+    if (o.leadership && o.leadership.rows.length) html += '<div class="panel" style="margin-top:14px"><h3>Relative strength over this period</h3><p class="small" style="margin:0">' + o.leadership.rows.map(function (r) { return r.symbol + ' <span class="mono ' + cls(r.pct) + '">' + pct(r.pct) + '</span>'; }).join(' · ') + ' — <b>' + esc(o.leadership.leader) + '</b> is leading' + (o.leadership.laggard ? ', <b>' + esc(o.leadership.laggard) + '</b> is lagging' : '') + '.</p></div>';
+    if (state.out === 'monthly') {
+      var m = o.macro;
+      html += '<div class="panel" style="margin-top:14px"><h3>Economy, inflation and the Fed</h3>';
+      if (!m || !m.available) html += '<p class="small muted" style="margin:0">' + esc(m && m.reason ? 'Economic data is not connected yet (' + m.reason + ')' : 'Economic data is unavailable.') + (m && m.nextFomc ? ' Next Fed decision: <b style="color:var(--text)">' + etDay(m.nextFomc.date) + ', ' + esc(m.nextFomc.timeLabel) + '</b>.' : '') + '</p>';
+      else {
+        html += '<div class="macro">' + m.items.map(function (i) { return '<div><span>' + esc(i.label) + '</span><b>' + num(i.value, i.unit === 'K jobs' ? 0 : (i.unit === '%' ? 1 : 2)) + (i.unit === '%' ? '%' : ' ' + esc(i.unit)) + '</b><small>' + esc(i.period) + (i.prior != null ? ' · prior ' + num(i.prior, i.unit === 'K jobs' ? 0 : 1) : '') + '</small></div>'; }).join('') +
+          (m.fedFunds ? '<div><span>Fed funds target</span><b>' + esc(m.fedFunds.range) + '</b><small>as of ' + esc(m.fedFunds.asOf) + '</small></div>' : '') +
+          (m.yields ? '<div><span>10-year Treasury</span><b>' + num(m.yields.tenYear) + '%</b><small>' + (m.yields.tenYearChange1d != null ? (m.yields.tenYearChange1d > 0 ? '+' : '') + m.yields.tenYearChange1d.toFixed(2) + ' pts on the day · ' : '') + esc(m.yields.asOf) + '</small></div><div><span>2-year Treasury</span><b>' + (m.yields.twoYear != null ? num(m.yields.twoYear) + '%' : '—') + '</b><small>10y minus 2y: ' + (m.yields.spread2s10s != null ? m.yields.spread2s10s.toFixed(2) + ' pts' : 'n/a') + '</small></div>' : '') + '</div>' +
+          '<div class="src">' + (m.nextFomc ? 'Next Fed decision: ' + etDay(m.nextFomc.date) + ', ' + esc(m.nextFomc.timeLabel) + '. ' : '') + esc(m.fedExpectations) + ' ' + (m.yields ? esc(m.yields.note) + ' ' : '') + 'Source: <a href="' + esc(m.sourceUrl) + '" target="_blank" rel="noopener">' + esc(m.source) + '</a>.</div>';
+      }
+      html += '</div>';
+    }
+    var cats = o.catalysts || [];
+    html += '<div class="panel" style="margin-top:14px"><h3>Scheduled catalysts in this window</h3>' + (o.calNote ? '<p class="small muted" style="margin:0">' + esc(o.calNote) + '</p>' : cats.length ? '<ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.7">' + cats.map(function (c) { return '<li><b>' + etDay(c.date) + ', ' + esc(c.timeLabel) + '</b> — ' + esc(c.name) + ' <span class="imp ' + c.impact + '">' + c.impact + '</span>' + (c.status === 'released' ? ' <span class="st released">released</span>' : '') + '</li>'; }).join('') + '</ul>' : '<p class="small muted" style="margin:0">Nothing on the tracked calendar in this window.</p>') + '</div>';
+    $('outlook').innerHTML = html;
+  }
+
+  // ── render: options context ─────────────────────────────────────────────
+  function renderOptions() {
+    var syms = ['SPY', 'QQQ', 'IWM'];
+    function cell(v, f) { return v == null ? na() : f(v); }
+    $('options').innerHTML = '<table><thead><tr><th>ETF</th><th>Implied volatility (near the money)</th><th>Put / call volume</th><th>Call volume</th><th>Put volume</th><th>Call open interest</th><th>Put open interest</th></tr></thead><tbody>' + syms.map(function (s) {
+      var o = state.options[s];
+      if (!o) return '<tr><td>' + s + '</td><td colspan="6" class="txt"><span class="na">loading…</span></td></tr>';
+      if (o.noData || o.error) return '<tr><td>' + s + '</td><td colspan="6" class="txt">' + na('Options data unavailable from CBOE right now') + '</td></tr>';
+      return '<tr><td><b>' + s + '</b></td><td>' + cell(o.iv, function (v) { return num(v, 1) + '%'; }) + '</td><td>' + cell(o.pcRatio, function (v) { return num(v); }) + '</td><td>' + cell(o.callVolume, compact) + '</td><td>' + cell(o.putVolume, compact) + '</td><td>' + cell(o.callOI, compact) + '</td><td>' + cell(o.putOI, compact) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+    $('optNote').innerHTML = '<strong>Source:</strong> CBOE delayed quotes, about 15–20 minutes behind, contracts expiring in the next two weeks. <strong>How to read it:</strong> higher implied volatility means options are more expensive, so the ETF has to move further for a bought option to profit. A put/call ratio above 1 means more puts than calls traded — that can be hedging as easily as a bearish bet, so it is context, not a signal. For a specific contract, check its bid/ask spread and open interest in your broker before anything else. <a href="/learn-options-trading/options-basics/implied-volatility-explained">Implied volatility explained →</a>';
+  }
+
+  // ── wiring ──────────────────────────────────────────────────────────────
+  function renderFocus(fit) {
+    Array.prototype.forEach.call(document.querySelectorAll('.focusSym'), function (el) { el.textContent = state.focus; });
+    renderScenarios(); renderScore(); renderLevels(); renderChart(fit);
+  }
+  function renderCore() {
+    renderStatus(); renderBanners(); renderGlance(); renderCards(); renderComparison(); renderCalendar(); renderOutlook();
+    renderFocus(!state.fitted); state.fitted = true;
+  }
+  function seg(id, attr, fn) {
+    $(id).addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      Array.prototype.forEach.call($(id).querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      fn(b.getAttribute(attr));
+    });
+  }
+  seg('focusSeg', 'data-sym', function (v) { state.focus = v; track('market_intel_focus', { symbol: v }); if (state.core) renderFocus(true); });
+  seg('tfSeg', 'data-tf', function (v) { state.tf = v; if (state.core) renderChart(true); });
+  seg('movSeg', 'data-sym', function (v) { state.movSym = v; renderMovers(); });
+  seg('outSeg', 'data-out', function (v) { state.out = v; track('market_intel_outlook', { view: v }); if (state.core) renderOutlook(); });
+
+  renderOptions();
+  cycle();
+  track('market_intel_view');
+})();
+</script>
+
+<script>
+function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
+function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+<script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
+<script src="/js/founder-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+if (typeof FounderCTA !== 'undefined') {
+  FounderCTA.mount(document.getElementById('founderTeaser'), { location: 'market_intelligence', mode: 'compact' });
+  if (typeof FounderNav !== 'undefined') FounderNav.initFounderNav('navFoundingCta');
+}
+</script>
+</body>
+</html>

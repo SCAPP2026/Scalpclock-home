@@ -859,16 +859,29 @@ export function buildScenarios(e, score, all, { nowMs }) {
 
   // No-trade conditions, each evaluated against current data.
   const checks = [];
-  const chk = (label, active, detail) => checks.push({ label, active: !!active, detail });
+  // Each check carries its own wording for the lit and the clear state, so a
+  // clear flag never reads as if it were a problem.
+  const chk = (label, active, on, off) => checks.push({ label, active: !!active, detail: active ? on : off });
   const disagree = score.components.find(x => x.key === 'confirmation')?.score === 0 && e.changePct != null;
-  chk('Market is not in the regular session', session.state !== 'regular', `${session.label}. Extended-hours prices are thin and levels set there are less reliable.`);
-  chk('Price is stuck to VWAP', e.vwapDistPct != null && Math.abs(e.vwapDistPct) < 0.05, e.vwapDistPct != null ? `Price is ${Math.abs(e.vwapDistPct).toFixed(2)}% from VWAP — neither side is in control.` : 'VWAP not available yet.');
-  chk('The three ETFs disagree', disagree, disagree ? 'The other two ETFs are not confirming this one\'s direction.' : 'The other two ETFs are moving the same way.');
-  chk('Volume is light', e.rvol != null && e.rvol < 0.8, e.rvol != null ? `Relative volume ${e.rvol}× — thin participation.` : 'Relative volume not available yet.');
-  chk('A high-impact release is close', !!score.eventRisk, score.eventRisk ? `${score.eventRisk.name} is due within 24 hours.` : 'Nothing high-impact on the tracked calendar in the next 24 hours.');
-  chk('Price is extended from VWAP', e.vwapDistPct != null && e.atrPct != null && Math.abs(e.vwapDistPct) > e.atrPct * 0.75, e.vwapDistPct != null && e.atrPct != null ? `Price is ${Math.abs(e.vwapDistPct).toFixed(2)}% from VWAP; a normal full day's range is about ${e.atrPct}%.` : 'Not measurable yet.');
-  chk('Opening range is still forming', session.state === 'regular' && e.openingRangeHigh == null, 'The first 15 minutes are not finished — the opening range is not set.');
-  chk('Evidence is mixed', score.bias === 'neutral', `Component score ${score.total > 0 ? '+' : ''}${score.total} of ±${score.max}${score.bias === 'neutral' ? ': no clear lean.' : `: leans ${score.bias}.`}`);
+  const vd = e.vwapDistPct != null ? Math.abs(e.vwapDistPct).toFixed(2) : null;
+  chk('Market is not in the regular session', session.state !== 'regular',
+    `${session.label}. Extended-hours prices are thin and levels set there are less reliable.`, 'The regular session is open.');
+  chk('Price is stuck to VWAP', e.vwapDistPct != null && Math.abs(e.vwapDistPct) < 0.05,
+    `Price is ${vd}% from VWAP — neither side is in control.`, vd != null ? `Price is ${vd}% from VWAP — it has picked a side.` : 'VWAP is not available yet.');
+  chk('The three ETFs disagree', disagree,
+    'The other two ETFs are not confirming this one\'s direction.', e.changePct != null ? 'The other two ETFs are moving the same way.' : 'Not measurable yet.');
+  chk('Volume is light', e.rvol != null && e.rvol < 0.8,
+    `Relative volume ${e.rvol}× — thin participation.`, e.rvol != null ? `Relative volume ${e.rvol}× — participation is normal or better.` : 'Relative volume is not available yet.');
+  chk('A high-impact release is close', !!score.eventRisk,
+    score.eventRisk ? `${score.eventRisk.name} is due within 24 hours.` : '', 'Nothing high-impact on the tracked calendar in the next 24 hours.');
+  const ext = e.vwapDistPct != null && e.atrPct != null;
+  chk('Price is extended from VWAP', ext && Math.abs(e.vwapDistPct) > e.atrPct * 0.75,
+    `Price is ${vd}% from VWAP; a normal full day's range is about ${e.atrPct}%. Chasing here risks buying the end of the move.`,
+    ext ? `Price is ${vd}% from VWAP against a normal daily range of about ${e.atrPct}% — not stretched.` : 'Not measurable yet.');
+  chk('Opening range is still forming', session.state === 'regular' && e.openingRangeHigh == null,
+    'The first 15 minutes are not finished — the opening range is not set.', e.openingRangeHigh != null ? `Opening range is set: ${e.openingRangeLow}–${e.openingRangeHigh}.` : 'Not applicable outside the regular session.');
+  const tot = `${score.total > 0 ? '+' : ''}${score.total} of ±${score.max}`;
+  chk('Evidence is mixed', score.bias === 'neutral', `Component score ${tot}: no clear lean.`, `Component score ${tot}: leans ${score.bias}.`);
   const active = checks.filter(x => x.active);
 
   const lean = active.some(x => x.label === 'Market is not in the regular session') ? 'no-trade'

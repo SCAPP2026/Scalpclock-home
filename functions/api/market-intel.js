@@ -14,11 +14,9 @@
 //
 // Failure policy: if the provider is down the response is {ok:false, error}.
 // There are no fallback numbers anywhere in this file.
-import {
-  ETFS, analyzeEtf, compareEtfs, scoreEtf, buildScenarios, buildOutlooks,
-  publicEtf, marketSession, etParts,
-} from '../lib/market-intel.js';
-import { buildCalendar, measureReaction } from '../lib/market-intel-calendar.js';
+import { ETFS, marketSession } from '../lib/market-intel.js';
+import { buildCalendar } from '../lib/market-intel-calendar.js';
+import { buildCoreResponse } from '../lib/market-intel-response.js';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -66,60 +64,8 @@ export async function onRequest(context) {
     warnings.push(`Catalyst calendar failed to load: ${e.message}`);
     return null;
   });
-  const events = calendar ? calendar.events : null;
-
-  const etfs = ETFS.map(symbol => analyzeEtf({
-    symbol, daily: daily[symbol] || [], intraday: intraday[symbol] || [],
-    trade: trades[symbol] || null, nowMs,
-  }));
-  for (const e of etfs) {
-    if (e.price == null) warnings.push(`${e.symbol}: no price data returned.`);
-    if (e.dailyBars < 200) warnings.push(`${e.symbol}: only ${e.dailyBars} daily bars — long moving averages may be unavailable.`);
-  }
-  if (etfs.every(e => e.price == null)) {
-    return json({ ok: false, error: 'The provider returned no bars for SPY, QQQ or IWM.', asOf: new Date(nowMs).toISOString(), session }, 0);
-  }
-
-  const comparison = compareEtfs(etfs);
-  const scores = etfs.map(e => scoreEtf(e, etfs, { nowMs, events }));
-  const scenarios = etfs.map((e, i) => buildScenarios(e, scores[i], etfs, { nowMs }));
-  const outlooks = buildOutlooks(etfs, scores, comparison, { nowMs, events, macro: calendar ? calendar.macro : null });
-
-  // Actual market reaction for anything released inside the intraday window.
-  if (calendar) {
-    for (const ev of calendar.events) {
-      ev.reaction = ev.status === 'released' && nowMs - ev.ts < 9 * DAY ? measureReaction(ev.ts, intraday, nowMs) : null;
-    }
-  }
-
-  const newest = Math.max(...etfs.map(e => e.priceTs || 0));
-  const ageMin = newest ? (nowMs - newest) / 60000 : null;
-  const stale = session.state === 'regular' && (ageMin == null || ageMin > 15);
-  if (stale) warnings.push('The newest trade is more than 15 minutes old during market hours — treat prices as stale.');
-
-  const body = {
-    ok: true,
-    asOf: new Date(nowMs).toISOString(),
-    session, stale,
-    refreshSeconds: session.state === 'closed' ? 300 : 30,
-    dataNotes: {
-      provider: 'Alpaca Market Data — IEX feed',
-      timeliness: 'Real-time trades from the IEX exchange only (not the consolidated tape, and not delayed).',
-      volume: 'Volume figures are IEX-only — roughly a few percent of total US volume. Relative volume compares IEX with IEX, so it is still like-for-like.',
-      extendedHours: 'Premarket and after-hours bars exist only when IEX traded; quiet symbols can show gaps.',
-      indicators: 'Moving averages, VWAP, RSI, ATR, correlation and relative volume are calculated by ScalpClock from those bars.',
-    },
-    etfs: etfs.map((e, i) => ({
-      ...publicEtf(e),
-      score: scores[i],
-      scenarios: scenarios[i],
-      chart: chartData(daily[e.symbol] || [], intraday[e.symbol] || [], session.refDate),
-    })),
-    comparison, outlooks,
-    calendar: calendar ? { events: calendar.events, status: calendar.status } : null,
-    macro: calendar ? calendar.macro : null,
-    warnings,
-  };
+  const body = buildCoreResponse({ daily, intraday, trades, calendar, nowMs, warnings });
+  if (!body.ok) return json(body, 0);
   const res = json(body, ttl);
   context.waitUntil(cache.put(cacheKey, res.clone()));
   return res;
@@ -167,16 +113,6 @@ async function fetchLatestTrades(headers) {
   const out = {};
   for (const [sym, t] of Object.entries(data.trades || {})) out[sym] = { p: t.p, t: Date.parse(t.t) };
   return out;
-}
-
-function chartData(daily, intraday, refDate) {
-  const d = daily.slice(-130).map(b => ({ time: etParts(b.t + 12 * 3600 * 1000).date, open: b.o, high: b.h, low: b.l, close: b.c }));
-  // Reference session plus the one before it, so the intraday chart is never
-  // empty before the open.
-  const dates = [...new Set(intraday.map(b => etParts(b.t).date))].filter(x => x <= refDate).slice(-2);
-  const i = intraday.filter(b => dates.includes(etParts(b.t).date))
-    .map(b => ({ time: Math.floor(b.t / 1000), open: b.o, high: b.h, low: b.l, close: b.c, volume: b.v }));
-  return { daily: d, intraday: i, intradayDates: dates };
 }
 
 function json(data, ttl) {

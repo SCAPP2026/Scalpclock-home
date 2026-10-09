@@ -1,0 +1,35 @@
+name: Refresh ETF holdings
+
+# Keeps the Market Intelligence Center's constituent weights current.
+# Weights drift slowly, so weekly is enough; a commit here redeploys the site.
+on:
+  schedule:
+    - cron: "30 11 * * 1"   # Mondays 11:30 UTC, before the US open
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  holdings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch issuer holdings
+        run: python3 scripts/update-etf-holdings.py
+
+      - name: Sanity-check the generated module
+        run: node --input-type=module -e "const d=(await import('./functions/lib/etf-holdings-data.js')).default; if(!d.etfs.SPY.holdings.length) throw new Error('SPY holdings empty'); console.log(Object.entries(d.etfs).map(([k,v])=>k+': '+v.method+' '+v.asOf).join(' | '))"
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- functions/lib/etf-holdings-data.js; then
+            echo "Holdings unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add functions/lib/etf-holdings-data.js
+          git commit -m "chore: refresh ETF holdings weights"
+          git push

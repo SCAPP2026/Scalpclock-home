@@ -61,7 +61,9 @@ export async function onRequest(context) {
   for (const t of tickers) quotes[t] = quoteFromSnapshot(snaps[t], session);
 
   const newsStatus = {};
-  const news = await collectNews(env, headers, stockTickers, nowMs, newsStatus);
+  const names = {};
+  for (const s of ETFS) for (const h of HOLDINGS.etfs[s]?.holdings || []) names[h.ticker] = h.name;
+  const news = await collectNews(env, headers, stockTickers, names, nowMs, newsStatus);
 
   const weightIn = (etf, ticker) => HOLDINGS.etfs[etf]?.holdings.find(h => h.ticker === ticker)?.weight ?? null;
 
@@ -76,7 +78,7 @@ export async function onRequest(context) {
       return {
         ...base, available: false, movers: [], explainedPts: null,
         message: symbol === 'IWM'
-          ? 'Per-company contribution is not shown for IWM. The Russell 2000 holds about 2,000 small companies — the largest is well under 1% of the fund, so no single stock moves it — and its issuer does not allow automated downloads of the holdings file. Use the sector table and the IWM-vs-SPY comparison instead.'
+          ? 'Per-company contribution is not shown for IWM. The Russell 2000 spreads its weight across roughly 2,000 small companies, so single stocks contribute very little, and the fund\'s issuer does not allow automated downloads of its holdings file. Use the sector table and the IWM-vs-SPY comparison instead.'
           : 'Constituent weights for this ETF could not be loaded, so contribution is not shown.',
       };
     }
@@ -126,7 +128,7 @@ export async function onRequest(context) {
     etfs, sectors,
     sectorNote: 'Sector SPDR ETFs (large-cap S&P 500 sectors), used as a read on which sectors are leading. Small-cap sector breakdowns are not available from our data.',
     newsStatus,
-    newsNote: `Headlines are matched by the ticker tags news providers attach, from the last ${NEWS_WINDOW_H} hours. A matched headline is news about the company — it is not proof of why the stock moved.`,
+    newsNote: `Headlines are from the last ${NEWS_WINDOW_H} hours and are shown only when the provider tagged the company and the headline names it. A matched headline is news about the company — it is not proof of why the stock moved.`,
     priceNote: 'Stock prices are IEX trades; a thinly traded name can show a slightly older last trade than the consolidated tape.',
     methodNote: 'Contribution = holding weight × the stock\'s percentage change. It is an estimate: weights are from the issuer\'s last published holdings and drift during the day.',
   };
@@ -145,7 +147,7 @@ async function fetchSnapshots(symbols, headers) {
 }
 
 // Change vs. the previous regular-session close, for the reference session.
-function quoteFromSnapshot(s, session) {
+export function quoteFromSnapshot(s, session) {
   const none = note => ({ price: null, priceTs: null, changePct: null, note });
   if (!s || !s.dailyBar) return none('No data from the provider.');
   const barDate = etParts(Date.parse(s.dailyBar.t) + 12 * 3600 * 1000).date;
@@ -166,7 +168,18 @@ function quoteFromSnapshot(s, session) {
 }
 
 // Newest headline per ticker from whichever providers are configured.
-async function collectNews(env, alpacaHeaders, tickers, nowMs, status) {
+// Names the headline may use instead of the legal company name.
+const ALIASES = { GOOGL: ['Google', 'Alphabet'], GOOG: ['Google', 'Alphabet'], META: ['Meta', 'Facebook'], 'BRK.B': ['Berkshire'], JPM: ['JPMorgan', 'JP Morgan'], XOM: ['Exxon'], JNJ: ['Johnson & Johnson', 'J&J'], LLY: ['Lilly'], PG: ['Procter'], HD: ['Home Depot'], BAC: ['Bank of America'], KO: ['Coca-Cola'], TMUS: ['T-Mobile'], AMD: ['AMD', 'Advanced Micro'], MU: ['Micron'], ASML: ['ASML'] };
+// A ticker tag alone is weak evidence (round-ups tag every stock they
+// mention). The headline itself has to name the company or its ticker.
+function headlineNames(title, ticker, name) {
+  const keys = [...(ALIASES[ticker] || []), (name || '').split(/[\s.,]/)[0]].filter(k => k && k.length >= 3);
+  const t = title.toLowerCase();
+  if (keys.some(k => t.includes(k.toLowerCase()))) return true;
+  return new RegExp(`(^|[^A-Za-z])${ticker.replace('.', '\\.')}([^A-Za-z]|$)`).test(title);
+}
+
+async function collectNews(env, alpacaHeaders, tickers, names, nowMs, status) {
   const want = new Set(tickers);
   const cutoff = nowMs - NEWS_WINDOW_H * 3600 * 1000;
   const sources = [
@@ -204,7 +217,7 @@ async function collectNews(env, alpacaHeaders, tickers, nowMs, status) {
       // about any one company.
       if (a.tickers.length > 6) continue;
       for (const t of a.tickers) {
-        if (!want.has(t)) continue;
+        if (!want.has(t) || !headlineNames(a.title, t, names[t])) continue;
         if (!best[t] || ts > best[t].ts) best[t] = { title: a.title, url: a.url, publishedAt: new Date(ts).toISOString(), source: a.source, ts };
       }
     }
