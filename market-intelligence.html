@@ -872,7 +872,7 @@
         '<details><summary>What it could mean for SPY, QQQ and IWM</summary><p><b>SPY:</b> ' + esc(e.implications.SPY) + '</p><p><b>QQQ:</b> ' + esc(e.implications.QQQ) + '</p><p><b>IWM:</b> ' + esc(e.implications.IWM) + '</p><p class="faint">' + esc(e.timeNote) + '</p></details>' +
         '<div class="src" style="margin-top:6px">Source: <a href="' + esc(e.sourceUrl) + '" target="_blank" rel="noopener">' + esc(e.source) + '</a></div></div></div>';
     }).join('');
-    html += '<div class="src"><strong>Not covered:</strong> consensus estimates (' + esc(c.status.consensus.replace(/^unavailable — /, '')) + '); Fed speeches (no structured free feed — see the <a href="' + esc(c.status.fedSpeeches.link) + '" target="_blank" rel="noopener">Federal Reserve calendar</a>). FOMC dates are from the Federal Reserve Board\'s published schedule through ' + esc(c.status.fomc.through) + '.</div>';
+    html += '<div class="src"><strong>Not covered:</strong> consensus estimates (' + esc(c.status.consensus.replace(/^unavailable — /, '')) + '); Fed speeches (no structured free feed — see the <a href="' + esc(c.status.fedSpeeches.link) + '" target="_blank" rel="noopener">Federal Reserve calendar</a>). FOMC dates are from the Federal Reserve Board\'s published schedule through ' + esc(c.status.fomc.through) + '.' + (c.status.fred.configured ? ' This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis.' : '') + '</div>';
     $('calendar').innerHTML = html;
   }
   function renderEarnings() {
