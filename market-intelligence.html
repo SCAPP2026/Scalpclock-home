@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPY, QQQ &amp; IWM Market Intelligence Center — ScalpClock</title>
-<meta name="description" content="Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense.">
+<title>SPY, QQQ &amp; IWM Today: Real-Time Levels, Trend &amp; Market Analysis | ScalpClock</title>
+<meta name="description" content="Free SPY, QQQ and IWM dashboard: today's support and resistance, VWAP, trend, the stocks moving each ETF and the economic calendar, explained for options traders.">
 <link rel="canonical" href="https://scalpclock.com/market-intelligence">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="SPY, QQQ &amp; IWM Market Intelligence Center — ScalpClock">
-<meta property="og:description" content="Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense.">
+<meta property="og:title" content="SPY, QQQ &amp; IWM Today: Real-Time Levels, Trend &amp; Market Analysis | ScalpClock">
+<meta property="og:description" content="Free SPY, QQQ and IWM dashboard: today's support and resistance, VWAP, trend, the stocks moving each ETF and the economic calendar, explained for options traders.">
 <meta property="og:url" content="https://scalpclock.com/market-intelligence">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SPY, QQQ &amp; IWM Market Intelligence Center — ScalpClock">
-<meta name="twitter:description" content="Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense.">
+<meta name="twitter:title" content="SPY, QQQ &amp; IWM Today: Real-Time Levels, Trend &amp; Market Analysis | ScalpClock">
+<meta name="twitter:description" content="Free SPY, QQQ and IWM dashboard: today's support and resistance, VWAP, trend, the stocks moving each ETF and the economic calendar, explained for options traders.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -43,8 +43,10 @@
   "operatingSystem": "Web",
   "isAccessibleForFree": true,
   "url": "https://scalpclock.com/market-intelligence",
-  "description": "Read SPY, QQQ and IWM in one place: trend, VWAP, support and resistance, what is moving each ETF, the catalyst calendar, and what would have to happen before calls or puts make sense."
+  "description": "Free SPY, QQQ and IWM dashboard: today's support and resistance, VWAP, trend, the stocks moving each ETF and the economic calendar, explained for options traders."
 }</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Market Intelligence Center", "item": "https://scalpclock.com/market-intelligence"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does the Market Intelligence Center show?", "acceptedAnswer": {"@type": "Answer", "text": "It tracks SPY, QQQ and IWM in one place: price, VWAP, moving averages, support and resistance levels, which of the three is leading, the companies moving each ETF, upcoming economic releases, and what would need to happen before a calls or puts setup makes sense."}}, {"@type": "Question", "name": "Is the SPY, QQQ and IWM data real-time?", "acceptedAnswer": {"@type": "Answer", "text": "Prices are real-time trades from the IEX exchange, supplied by Alpaca. IEX is one exchange rather than the whole US market, so volume figures are IEX-only. Options figures come from CBOE and are delayed 15 to 20 minutes. Every section shows its source and timestamp."}}, {"@type": "Question", "name": "How are the support and resistance levels calculated?", "acceptedAnswer": {"@type": "Answer", "text": "From price history: the previous day's high, low and close, the premarket range, the first 15 minutes of trading (the opening range), VWAP, the 9 and 20 EMA, the 50 and 200 day SMA, last week's and last month's highs and lows, and zones where price has turned at least twice in recent months."}}, {"@type": "Question", "name": "Why compare SPY, QQQ and IWM together?", "acceptedAnswer": {"@type": "Answer", "text": "SPY is large US companies, QQQ is mostly big technology, and IWM is small companies. When all three move the same way, a move has broad participation. When they split, for example SPY and QQQ rising while IWM falls, the market is uneven and a directional trade deserves more caution."}}, {"@type": "Question", "name": "Does it tell me whether to buy calls or puts?", "acceptedAnswer": {"@type": "Answer", "text": "No. It shows whether conditions lean bullish, bearish or neutral, lists what would have to happen first, and says what would prove the idea wrong. It never picks a strike or expiry and it is not a prediction or investment advice."}}, {"@type": "Question", "name": "What does the confidence level mean?", "acceptedAnswer": {"@type": "Answer", "text": "Low, Medium or High describes how much of the evidence agrees: trend, VWAP, momentum, volume, levels, relative strength and confirmation from the other ETFs. It is not a win rate and has not been back-tested. Missing or stale data, or a major economic release within 24 hours, lowers it."}}, {"@type": "Question", "name": "Is it free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The Market Intelligence Center is free for everyone and needs no account."}}]}</script>
 <style>
   :root{
     --bg:#070b10;
@@ -282,6 +284,12 @@
   .links a{display:block;background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:12px 14px;text-decoration:none;color:var(--text);font-weight:600;font-size:13.5px;}
   .links a:hover{border-color:var(--blue);}
   .links a small{display:block;color:var(--text-dim);font-weight:400;font-size:12px;margin-top:3px;line-height:1.45;}
+  .prose p,.prose li{font-size:14px;line-height:1.7;color:var(--text-dim);}
+  .prose ol{padding-left:20px;margin:8px 0 0;}
+  .prose li{margin-bottom:6px;}
+  .prose strong{color:var(--text);}
+  .prose details summary{font-size:14px;color:var(--text);}
+  .prose details p{font-size:13.5px;}
   .disclaimer{margin-top:30px;font-size:12px;line-height:1.65;color:var(--text-faint);border-top:1px solid var(--border);padding-top:16px;}
   .skeleton{color:var(--text-faint);font-size:13px;padding:22px 0;text-align:center;}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
@@ -351,6 +359,7 @@
   </div>
 </div>
 
+<noscript><div style="max-width:900px;margin:20px auto;padding:14px 18px;border:1px solid #f5a623;border-radius:10px;color:#f3d9a4;font:14px/1.6 sans-serif;">The live SPY, QQQ and IWM data on this page needs JavaScript. The guide and questions at the bottom of the page work without it.</div></noscript>
 <div class="wrap">
   <div class="topbar">
     <div class="hdr-left">
@@ -520,6 +529,31 @@
       <a href="/scalpchart?tab=replay">Chart Replay<small>Replay a past session and test your read.</small></a>
       <a href="/daily-system">Daily System<small>Turn this into a repeatable morning routine.</small></a>
       <a href="/learn">Daily Lessons<small>Short lessons with XP and streaks.</small></a>
+    </div>
+  </section>
+
+  <!-- 12. HOW IT WORKS + FAQ (static, so it is readable without JavaScript) -->
+  <section aria-labelledby="hHow">
+    <div class="sec-head"><h2 id="hHow">How to read SPY, QQQ and IWM with this page</h2></div>
+    <div class="panel prose">
+      <p>SPY, QQQ and IWM are the three most traded index ETFs, and most short-term options volume sits in them. Reading them together tells you more than reading any one alone. A simple routine:</p>
+      <ol>
+        <li><strong>Start with direction.</strong> The three cards at the top show whether each ETF is above or below VWAP and its key moving averages, and how its trend looks intraday, daily, weekly and monthly.</li>
+        <li><strong>Check agreement.</strong> If SPY, QQQ and IWM are all moving the same way, the move has broad support. If they disagree, be more careful.</li>
+        <li><strong>Find the levels.</strong> Support and resistance — yesterday's high and low, the opening range, VWAP, weekly and monthly levels — show where price is likely to react. Buying calls directly under resistance, or puts directly above support, leaves little room.</li>
+        <li><strong>Look for the reason.</strong> The movers table shows which companies are pulling each ETF up or down, and the calendar shows the scheduled releases — CPI, jobs, the Fed — that can reverse a move in seconds.</li>
+        <li><strong>Decide whether to wait.</strong> The calls, puts and no-trade scenarios list what has to happen first and what would prove the idea wrong. Often the right answer is to wait.</li>
+      </ol>
+    </div>
+    <div class="panel prose" style="margin-top:14px;">
+      <h3>Frequently asked questions</h3>
+      <details><summary>What does the Market Intelligence Center show?</summary><p>It tracks SPY, QQQ and IWM in one place: price, VWAP, moving averages, support and resistance levels, which of the three is leading, the companies moving each ETF, upcoming economic releases, and what would need to happen before a calls or puts setup makes sense.</p></details>
+      <details><summary>Is the SPY, QQQ and IWM data real-time?</summary><p>Prices are real-time trades from the IEX exchange, supplied by Alpaca. IEX is one exchange rather than the whole US market, so volume figures are IEX-only. Options figures come from CBOE and are delayed 15 to 20 minutes. Every section shows its source and timestamp.</p></details>
+      <details><summary>How are the support and resistance levels calculated?</summary><p>From price history: the previous day's high, low and close, the premarket range, the first 15 minutes of trading (the opening range), VWAP, the 9 and 20 EMA, the 50 and 200 day SMA, last week's and last month's highs and lows, and zones where price has turned at least twice in recent months.</p></details>
+      <details><summary>Why compare SPY, QQQ and IWM together?</summary><p>SPY is large US companies, QQQ is mostly big technology, and IWM is small companies. When all three move the same way, a move has broad participation. When they split, for example SPY and QQQ rising while IWM falls, the market is uneven and a directional trade deserves more caution.</p></details>
+      <details><summary>Does it tell me whether to buy calls or puts?</summary><p>No. It shows whether conditions lean bullish, bearish or neutral, lists what would have to happen first, and says what would prove the idea wrong. It never picks a strike or expiry and it is not a prediction or investment advice.</p></details>
+      <details><summary>What does the confidence level mean?</summary><p>Low, Medium or High describes how much of the evidence agrees: trend, VWAP, momentum, volume, levels, relative strength and confirmation from the other ETFs. It is not a win rate and has not been back-tested. Missing or stale data, or a major economic release within 24 hours, lowers it.</p></details>
+      <details><summary>Is it free?</summary><p>Yes. The Market Intelligence Center is free for everyone and needs no account.</p></details>
     </div>
   </section>
 
