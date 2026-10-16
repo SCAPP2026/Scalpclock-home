@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M4F7X9HDDW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Trading — Practice Stocks & Options Risk-Free | ScalpClock</title>
+<meta name="description" content="Practice trading stocks and options with $25,000 in virtual cash at live market prices. Free paper trading account for every ScalpClock member.">
+<link rel="canonical" href="https://scalpclock.com/paper-trading">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalpClock">
+<meta property="og:title" content="Paper Trading — Practice Stocks & Options Risk-Free | ScalpClock">
+<meta property="og:description" content="Practice trading stocks and options with $25,000 in virtual cash at live market prices. Free paper trading account for every ScalpClock member.">
+<meta property="og:url" content="https://scalpclock.com/paper-trading">
+<meta property="og:image" content="https://scalpclock.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Paper Trading — Practice Stocks & Options Risk-Free | ScalpClock">
+<meta name="twitter:description" content="Practice trading stocks and options with $25,000 in virtual cash at live market prices. Free paper trading account for every ScalpClock member.">
+<meta name="twitter:image" content="https://scalpclock.com/og-image.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16d97e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScalpClock">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"></noscript>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Paper Trading", "item": "https://scalpclock.com/paper-trading"}]}</script>
+<style>
+  :root{
+    --bg:#070b10;
+    --panel:#0e1824;
+    --panel-alt:#111d2b;
+    --border:#1e2d42;
+    --border-soft:#17202e;
+    --text:#dde8f5;
+    --text-dim:#8aa4c0;
+    --text-faint:#5a7292;
+    --bull:#16d97e;
+    --bull-dim:#0f2e22;
+    --bear:#ff4566;
+    --bear-dim:#3a1420;
+    --amber:#f5a623;
+    --amber-dim:#3a2a0c;
+    --blue:#5b9cf6;
+    --blue-dim:#101e3a;
+    --gold:#f5a623;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+    --disp:'Rajdhani', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);height:100%;}
+  body{overflow-x:hidden;display:flex;flex-direction:column;}
+  .wrap{max-width:820px;margin:0 auto;padding:18px 18px 24px;width:100%;flex:1;display:flex;flex-direction:column;min-height:0;}
+  a{color:inherit;}
+
+  /* ===== Header / drawer nav (same shell as ScalpCharts/Exit Assistant/ORB/Daily System) ===== */
+  .sc-overlay{display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+  .sc-overlay.open{display:block;}
+  .sc-drawer{position:fixed;top:0;right:0;bottom:0;width:270px;background:rgba(8,11,17,.98);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:99;display:flex;flex-direction:column;padding:0;transform:translateX(100%);transition:transform .25s ease;}
+  .sc-drawer.open{transform:translateX(0);}
+  .sc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+  .sc-drawer-head span{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text);letter-spacing:.04em;}
+  .sc-drawer-head button{background:none;border:none;color:var(--text-dim);font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;}
+  .sc-drawer-links{display:flex;flex-direction:column;gap:2px;padding:12px;}
+  .sc-drawer-links a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;font-weight:600;font-size:1.02rem;color:var(--text-dim);text-decoration:none;transition:background .15s,color .15s;border:1px solid transparent;}
+  .sc-drawer-links a:hover{color:var(--text);background:var(--panel-alt);border-color:var(--border);}
+  .sc-drawer-links a.sc-active{color:var(--bull);}
+  .sc-drawer-links .sc-cta{margin-top:12px;background:var(--bull);color:#04140F;font-weight:700;justify-content:center;border-color:transparent;}
+  .sc-drawer-links .sc-cta:hover{background:#2EEFB6;color:#04140F;}
+  .drawer-group-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bull);padding:14px 16px 2px;}
+  .drawer-group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;padding:0;text-align:left;color:var(--bull);}
+  .drawer-group-toggle .drawer-group-label{flex:1;}
+  .drawer-group-toggle svg{width:14px;height:14px;margin-right:16px;flex-shrink:0;transition:transform .2s ease;}
+  .drawer-group.open .drawer-group-toggle svg{transform:rotate(180deg);}
+  .drawer-group-items{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+  .drawer-group-items-inner{overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+  .drawer-group.open .drawer-group-items{grid-template-rows:1fr;}
+
+  header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap;gap:14px;flex-shrink:0;}
+  .clock-svg .hand-min{transform-origin:9px 9px;animation:spin-min 6s linear infinite;}
+  .clock-svg .hand-sec{transform-origin:9px 9px;animation:spin-sec 1s linear infinite;}
+  @keyframes spin-min{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes spin-sec{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .logo-mark{width:32px;height:32px;border-radius:9px;background:radial-gradient(circle at 50% 40%, #1a2b22, #070a08);border:1px solid rgba(22,217,126,.55);box-shadow:0 0 16px rgba(22,217,126,.30);display:grid;place-items:center;flex-shrink:0;}
+  .logo-mark svg{width:16px;height:16px;}
+  .logo-text{display:flex;flex-direction:column;gap:1px;}
+  .logo-name{font-family:var(--disp);font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:#eef3f0;line-height:1;}
+  .logo-name em{color:#16d97e;font-style:normal;}
+  .logo-motto{font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#16d97e;opacity:.8;white-space:nowrap;}
+  .hdr-left{display:flex;align-items:center;gap:12px;}
+  .ham-btn{background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;padding:7px 9px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .ham-btn span{display:block;width:18px;height:2px;background:var(--text-dim);border-radius:2px;transition:.2s;}
+
+  /* ===== Paper Trading ===== */
+  .pt-hero{text-align:center;margin-bottom:16px;}
+  .pt-hero .sub{font-family:var(--mono);font-size:.78rem;color:var(--bull);text-transform:uppercase;letter-spacing:.08em;}
+  .pt-hero p{font-size:.86rem;color:var(--text-dim);max-width:520px;margin:8px auto 0;line-height:1.5;}
+  .pt-gate{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center;max-width:420px;margin:20px auto;}
+  .pt-gate p{color:var(--text-dim);font-size:.88rem;margin:0 0 16px;}
+  .pt-gate .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .pt-app{display:none;flex-direction:column;gap:14px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 16px;}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .card-title{font-family:var(--disp);font-weight:700;font-size:1.05rem;letter-spacing:.02em;}
+
+  .btn{border:1px solid var(--border);background:var(--panel-alt);color:var(--text);border-radius:9px;padding:9px 14px;font-family:var(--disp);font-weight:700;font-size:.95rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-bull{background:var(--bull);color:#04140F;border-color:transparent;}
+  .btn-bear{background:var(--bear);color:#fff;border-color:transparent;}
+  .btn-ghost{background:none;color:var(--text-dim);}
+  .btn-sm{padding:5px 10px;font-size:.8rem;border-radius:7px;}
+  .btn-ghost.armed{color:var(--bear);border-color:var(--bear);}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .stat{background:var(--panel-alt);border:1px solid var(--border-soft);border-radius:10px;padding:10px 12px;min-width:0;}
+  .stat .k{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);}
+  .stat .v{font-family:var(--mono);font-weight:700;font-size:1.08rem;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pos{color:var(--bull);} .neg{color:var(--bear);}
+  .pill{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:20px;border:1px solid var(--border);color:var(--text-dim);}
+  .pill.open{color:var(--bull);border-color:rgba(22,217,126,.4);background:var(--bull-dim);}
+  .pill.closed{color:var(--amber);border-color:rgba(245,166,35,.4);background:var(--amber-dim);}
+
+  .tabs{display:flex;gap:6px;background:var(--panel-alt);border:1px solid var(--border);border-radius:10px;padding:4px;}
+  .tab{flex:1;background:none;border:none;color:var(--text-dim);font-family:var(--disp);font-weight:700;font-size:.95rem;padding:7px 10px;border-radius:7px;cursor:pointer;}
+  .tab.active{background:var(--panel);color:var(--text);box-shadow:0 0 0 1px var(--border);}
+
+  .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .field label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);}
+  .field input,.field select{background:var(--panel-alt);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:10px 12px;font-family:var(--mono);font-size:.95rem;width:100%;}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--bull);}
+  .row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+  .row .field{flex:1 1 120px;}
+  .quote{font-family:var(--mono);font-size:.85rem;color:var(--text-dim);margin:10px 0;min-height:1.2em;}
+  .quote b{color:var(--text);}
+  .est{font-size:.8rem;color:var(--text-dim);margin-top:8px;}
+  .actions{display:flex;gap:10px;margin-top:12px;}
+  .actions .btn{flex:1;padding:12px;}
+  .note{font-size:.74rem;color:var(--text-faint);line-height:1.5;margin-top:10px;}
+  .msg{margin-top:10px;font-size:.84rem;padding:9px 12px;border-radius:9px;display:none;}
+  .msg.ok{display:block;background:var(--bull-dim);color:var(--bull);border:1px solid rgba(22,217,126,.3);}
+  .msg.err{display:block;background:var(--bear-dim);color:var(--bear);border:1px solid rgba(255,69,102,.3);}
+
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;font-size:.82rem;}
+  th{text-align:right;font-size:.66rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);padding:6px 8px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  td{text-align:right;padding:8px;border-bottom:1px solid var(--border-soft);font-family:var(--mono);white-space:nowrap;}
+  th:first-child,td:first-child{text-align:left;}
+  th.l,td.sym{text-align:left;}
+  .sym{font-family:var(--sans);font-weight:700;}
+  .sym small{display:block;font-weight:500;color:var(--text-faint);font-size:.72rem;}
+  .empty{color:var(--text-faint);font-size:.84rem;text-align:center;padding:16px 8px;}
+
+  .chain td{cursor:default;}
+  .chain td.q{cursor:pointer;border-radius:6px;}
+  .chain td.q:hover{background:var(--panel-alt);}
+  .chain td.q.sel{background:var(--bull-dim);color:var(--bull);box-shadow:inset 0 0 0 1px rgba(22,217,126,.4);}
+  .chain td.strike{text-align:center;font-weight:700;color:var(--text);background:var(--panel-alt);}
+  .chain tr.atm td.strike{color:var(--amber);}
+  .chain th.mid{text-align:center;}
+  .chain .side-h{text-align:center;color:var(--text-dim);}
+  .selected-contract{font-family:var(--mono);font-size:.85rem;margin:10px 0 0;color:var(--text-dim);}
+  .selected-contract b{color:var(--text);}
+
+  .pt-disclaimer{text-align:center;font-size:.72rem;color:var(--text-faint);padding:6px 8px 0;line-height:1.5;}
+
+  @media(max-width:600px){
+    .wrap{padding:12px 16px;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .card{padding:12px;}
+  }
+  /* This page scrolls normally (the shell's full-height flex layout is for the chat page). */
+  html,body{height:auto;min-height:100%;}
+  .wrap{display:block;}
+
+</style>
+</head>
+<body>
+<!-- NAV -->
+<div class="sc-overlay" id="scOverlay" onclick="closeSCNav()"></div>
+<div class="sc-drawer" id="scDrawer">
+  <div class="sc-drawer-head">
+    <span>NAVIGATE</span>
+    <button onclick="closeSCNav()">✕</button>
+  </div>
+  <div class="sc-drawer-links">
+    <a href="/">🏠 Home</a>
+    <div class="drawer-group">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="false">
+        <span class="drawer-group-label">Learn</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/learn" style="padding-left:28px">📚 Daily Lessons</a>
+          <a href="/learn-options-trading" style="padding-left:28px">🎓 Guides</a>
+          <a href="/blog/" style="padding-left:28px">📖 Blog</a>
+          <a href="/trading-resources" style="padding-left:28px">📚 Trading Resources</a>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-group open">
+      <button class="drawer-group-toggle" onclick="toggleDrawerGroup(this)" aria-expanded="true">
+        <span class="drawer-group-label">Trade</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="drawer-group-items">
+        <div class="drawer-group-items-inner">
+          <a href="/daily-system" style="padding-left:28px">📈 Daily System</a>
+          <a href="/scalpchart" style="padding-left:28px">📊 ScalpCharts</a>
+          <a href="/scalpchart?tab=replay" style="padding-left:28px">📅 Replay</a>
+          <a href="/paper-trading" class="sc-active" style="padding-left:28px">💵 Paper Trading</a>
+          <a href="/exitassistant" style="padding-left:28px">🚪 Exit Assistant</a>
+          <a href="/market-intelligence" style="padding-left:28px">🧭 Market Intelligence</a>
+          <a href="/orbsignalengine" style="padding-left:28px">📐 ORB Signal Engine</a>
+          <a href="/sampson-x" style="padding-left:28px">🤖 Sampson X</a>
+          <a href="/signals" style="padding-left:28px">🔔 Signals</a>
+        </div>
+      </div>
+    </div>
+    <a href="/pricing">💳 Pricing</a>
+    <a href="/shop">🛍️ Shop</a>
+    <a href="/dashboard">⚙️ Dashboard</a>
+    <a href="/login?tab=signup" class="sc-cta">Learn Free →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="hdr-left">
+      <button class="ham-btn" onclick="toggleSCNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg class="clock-svg" viewBox="0 0 18 18" fill="none" stroke="#16d97e" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="9" cy="9" r="7"/>
+            <line class="hand-min" x1="9" y1="9" x2="9" y2="4.5"/>
+            <line class="hand-sec" x1="9" y1="9" x2="12.5" y2="9"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">Scalp<em>Clock</em></span>
+          <span class="logo-motto" style="line-height:1.4"><span style="font-size:.88em;letter-spacing:.02em">Learn. Practice. Apply. Improve.</span></span>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <div class="pt-hero">
+    <h1 style="font-family:var(--disp);font-weight:700;font-size:1.7rem;margin:8px 0 2px;">Paper Trading</h1>
+    <div class="sub">Practice with $25,000 in virtual cash</div>
+    <p>Trade stocks and options at live market prices without risking a dollar. Build the habit first, then bring it to a real account.</p>
+  </div>
+
+  <!-- Signed-out state -->
+  <div class="pt-gate" id="ptGate">
+    <p>Sign in to open your paper trading account. It's free for every ScalpClock member.</p>
+    <div class="btn-row">
+      <a href="/login?from=/paper-trading" class="btn btn-bull">Sign In</a>
+      <a href="/login?tab=signup&from=/paper-trading" class="btn">Create Free Account</a>
+    </div>
+  </div>
+
+  <div class="pt-app" id="ptApp">
+    <!-- Account -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Your Account</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="pill" id="ptMarket">—</span>
+          <button class="btn btn-ghost btn-sm" id="ptResetBtn" onclick="ptReset()">Reset</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k">Equity</div><div class="v" id="ptEquity">—</div></div>
+        <div class="stat"><div class="k">Cash</div><div class="v" id="ptCash">—</div></div>
+        <div class="stat"><div class="k">Total P&amp;L</div><div class="v" id="ptTotal">—</div></div>
+        <div class="stat"><div class="k">Realized</div><div class="v" id="ptRealized">—</div></div>
+      </div>
+      <div class="msg" id="ptAccountMsg"></div>
+    </div>
+
+    <!-- Order ticket -->
+    <div class="card">
+      <div class="card-head"><span class="card-title">Place an Order</span></div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" id="tabStock" onclick="ptTab('stock')" role="tab">Stocks</button>
+        <button class="tab" id="tabOption" onclick="ptTab('option')" role="tab">Options</button>
+      </div>
+
+      <div id="paneStock" style="margin-top:12px;">
+        <div class="row">
+          <div class="field"><label for="stSymbol">Symbol</label><input id="stSymbol" placeholder="SPY" autocomplete="off" autocapitalize="characters" maxlength="7" onkeydown="if(event.key==='Enter')ptStockQuote()"></div>
+          <div class="field" style="flex:0 1 110px"><label for="stQty">Shares</label><input id="stQty" type="number" min="1" step="1" value="10" oninput="ptStockEst()"></div>
+          <button class="btn" onclick="ptStockQuote()">Quote</button>
+        </div>
+        <div class="quote" id="stQuote">Enter a ticker to get a live quote.</div>
+        <div class="est" id="stEst"></div>
+        <div class="actions">
+          <button class="btn btn-bull" id="stBuy" onclick="ptStockOrder('buy')">Buy</button>
+          <button class="btn btn-bear" id="stSell" onclick="ptStockOrder('sell')">Sell</button>
+        </div>
+      </div>
+
+      <div id="paneOption" style="margin-top:12px;display:none;">
+        <div class="row">
+          <div class="field"><label for="opSymbol">Underlying</label><input id="opSymbol" placeholder="SPY" autocomplete="off" autocapitalize="characters" maxlength="6" onkeydown="if(event.key==='Enter')ptLoadChain()"></div>
+          <div class="field"><label for="opExpiry">Expiration</label><select id="opExpiry" onchange="ptLoadChain(this.value)" disabled><option>Load a chain first</option></select></div>
+          <button class="btn" onclick="ptLoadChain()">Load Chain</button>
+        </div>
+        <div class="quote" id="opQuote">Load a chain, then tap a bid or ask to pick a contract.</div>
+        <div class="scroll-x"><table class="chain" id="opChain"></table></div>
+        <div class="selected-contract" id="opSelected"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="field" style="flex:0 1 140px"><label for="opQty">Contracts</label><input id="opQty" type="number" min="1" step="1" value="1" oninput="ptOptionEst()"></div>
+        </div>
+        <div class="est" id="opEst"></div>
+        <div class="actions">
+          <button class="btn btn-bull" onclick="ptOptionOrder('buy')">Buy to Open</button>
+          <button class="btn btn-bear" onclick="ptOptionOrder('sell')">Sell to Close</button>
+        </div>
+        <div class="note">Option quotes come from CBOE and are delayed 15–20 minutes. Each contract controls 100 shares. You can buy calls and puts and sell what you hold; writing (shorting) options isn't supported. Contracts still open at expiration settle automatically at their intrinsic value.</div>
+      </div>
+
+      <div class="msg" id="ptOrderMsg"></div>
+      <div class="note">Market orders only, filled during regular hours (9:30 AM – 4:00 PM ET). Buys fill at the ask, sells at the bid.</div>
+    </div>
+
+    <!-- Positions -->
+    <div class="card">
+      <div class="card-head"><span class="card-title">Positions</span><button class="btn btn-ghost btn-sm" onclick="ptLoadAccount()">Refresh</button></div>
+      <div class="scroll-x"><table id="ptPositions"></table></div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+      <div class="card-head"><span class="card-title">Recent Fills</span></div>
+      <div class="scroll-x"><table id="ptFills"></table></div>
+    </div>
+  </div>
+
+  <div class="pt-disclaimer">Paper trading is a simulation for education. No real money or orders are involved, and simulated results don't account for every real-world factor like partial fills, slippage beyond the quote, or commissions. Past simulated performance does not predict real results.</div>
+</div>
+
+<script>
+function toggleSCNav(){document.getElementById('scDrawer').classList.toggle('open');document.getElementById('scOverlay').classList.toggle('open');}
+function closeSCNav(){document.getElementById('scDrawer').classList.remove('open');document.getElementById('scOverlay').classList.remove('open');}
+function toggleDrawerGroup(btn){
+  const grp=btn.closest('.drawer-group');
+  const open=grp.classList.toggle('open');
+  btn.setAttribute('aria-expanded',open);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSCNav();});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+<script src="/js/founder-guard.js"></script>
+<script src="/js/founder-cta.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+let _sb = null;
+
+// Every write goes through /api/paper/*, which prices fills server-side —
+// this page only ever says what and how much, never at what price.
+let ptAccount = null;
+let ptStock = null;      // { symbol, price, bid, ask }
+let ptChain = null;      // /api/paper/chain response
+let ptContract = null;   // selected chain cell { contract, type, strike, expiry, bid, ask }
+let ptBusy = false;
+
+const $ = id => document.getElementById(id);
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c])); }
+function money(v) { return v == null ? '—' : (v < 0 ? '-$' : '$') + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function signed(v) { return v == null ? '—' : (v > 0 ? '+' : '') + money(v); }
+function cls(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : ''; }
+function px(v) { return v == null ? '—' : Number(v).toFixed(2); }
+function shortDate(d) { const [y, m, dd] = d.split('-'); return `${+m}/${+dd}/${y.slice(2)}`; }
+
+async function authedFetch(path, opts = {}) {
+  // getSession() refreshes an expired access token, so long-open tabs keep working.
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) { location.href = '/login?from=/paper-trading'; throw new Error('Signed out'); }
+  const r = await fetch(path, {
+    ...opts,
+    headers: { ...(opts.headers || {}), Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+  });
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(body.error || `Request failed (${r.status})`);
+  return body;
+}
+
+function showMsg(id, text, ok) {
+  const el = $(id);
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  el.textContent = text;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = 'msg'; }, ok ? 5000 : 9000);
+}
+
+function describe(p) {
+  if (p.assetClass === 'option' || p.asset_class === 'option') {
+    const type = p.optionType || p.option_type;
+    return `${esc(p.underlying)} ${px(p.strike).replace(/\.00$/, '')} ${type === 'call' ? 'Call' : 'Put'}<small>Exp ${shortDate(p.expiry)}</small>`;
+  }
+  return `${esc(p.symbol)}<small>Stock</small>`;
+}
+
+// ── Account ──────────────────────────────────────────────────────────────
+async function ptLoadAccount() {
+  try {
+    ptAccount = await authedFetch('/api/paper/account');
+    renderAccount();
+    if (ptAccount.settled) showMsg('ptAccountMsg', `${ptAccount.settled} expired option position(s) settled at intrinsic value.`, true);
+  } catch (e) {
+    showMsg('ptAccountMsg', e.message, false);
+  }
+}
+
+function renderAccount() {
+  const a = ptAccount;
+  $('ptEquity').textContent = money(a.equity);
+  $('ptCash').textContent = money(a.cash);
+  $('ptTotal').textContent = signed(a.totalPnl);
+  $('ptTotal').className = 'v ' + cls(a.totalPnl);
+  $('ptRealized').textContent = signed(a.realizedPnl);
+  $('ptRealized').className = 'v ' + cls(a.realizedPnl);
+  const m = $('ptMarket');
+  m.textContent = a.marketOpen ? 'Market open' : 'Market closed';
+  m.className = 'pill ' + (a.marketOpen ? 'open' : 'closed');
+
+  const pos = a.positions || [];
+  $('ptPositions').innerHTML = pos.length ? `
+    <tr><th>Position</th><th>Qty</th><th>Avg</th><th>Mark</th><th>Value</th><th>P&amp;L</th><th></th></tr>
+    ${pos.map((p, i) => `<tr>
+      <td class="sym">${describe(p)}</td>
+      <td>${p.qty}</td><td>${px(p.avgCost)}</td><td>${px(p.mark)}</td>
+      <td>${money(p.marketValue)}</td>
+      <td class="${cls(p.unrealizedPnl)}">${signed(p.unrealizedPnl)}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="ptClose(${i})">Close</button></td>
+    </tr>`).join('')}` : `<tr><td class="empty" colspan="7">No open positions. Place an order above to get started.</td></tr>`;
+
+  const fills = a.fills || [];
+  $('ptFills').innerHTML = fills.length ? `
+    <tr><th>Time</th><th>Side</th><th class="l">Position</th><th>Qty</th><th>Price</th><th>Realized</th></tr>
+    ${fills.map(f => `<tr>
+      <td>${new Date(f.created_at).toLocaleString([], { month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+      <td class="${f.side === 'buy' ? 'pos' : 'neg'}">${f.side.toUpperCase()}</td>
+      <td class="sym">${describe(f)}${f.note ? `<small>${esc(f.note)}</small>` : ''}</td>
+      <td>${Number(f.qty)}</td><td>${px(f.price)}</td>
+      <td class="${cls(Number(f.realized_pnl))}">${f.realized_pnl == null ? '' : signed(Number(f.realized_pnl))}</td>
+    </tr>`).join('')}` : `<tr><td class="empty" colspan="6">No fills yet.</td></tr>`;
+}
+
+async function ptClose(i) {
+  const p = ptAccount?.positions?.[i];
+  if (!p || ptBusy) return;
+  const body = p.assetClass === 'option'
+    ? { assetClass: 'option', contract: p.symbol, side: 'sell', qty: p.qty }
+    : { assetClass: 'stock', symbol: p.symbol, side: 'sell', qty: p.qty };
+  await ptSubmit(body);
+}
+
+// Two-tap reset instead of a blocking confirm() dialog.
+let resetArmed = null;
+async function ptReset() {
+  const btn = $('ptResetBtn');
+  if (!resetArmed) {
+    btn.textContent = 'Tap again to reset';
+    btn.classList.add('armed');
+    resetArmed = setTimeout(() => { resetArmed = null; btn.textContent = 'Reset'; btn.classList.remove('armed'); }, 4000);
+    return;
+  }
+  clearTimeout(resetArmed); resetArmed = null;
+  btn.textContent = 'Reset'; btn.classList.remove('armed');
+  try {
+    await authedFetch('/api/paper/reset', { method: 'POST', body: '{}' });
+    showMsg('ptAccountMsg', 'Account reset to $25,000. Positions and history cleared.', true);
+    await ptLoadAccount();
+  } catch (e) { showMsg('ptAccountMsg', e.message, false); }
+}
+
+// ── Orders ───────────────────────────────────────────────────────────────
+async function ptSubmit(body) {
+  if (ptBusy) return;
+  ptBusy = true;
+  document.querySelectorAll('.actions .btn').forEach(b => b.disabled = true);
+  try {
+    const r = await authedFetch('/api/paper/order', { method: 'POST', body: JSON.stringify(body) });
+    const what = body.assetClass === 'option' ? `${r.qty} contract${r.qty > 1 ? 's' : ''} of ${r.contract}` : `${r.qty} ${r.symbol}`;
+    const pnl = r.realized_pnl != null ? ` · Realized ${signed(Number(r.realized_pnl))}` : '';
+    showMsg('ptOrderMsg', `Filled: ${body.side === 'buy' ? 'Bought' : 'Sold'} ${what} at $${px(r.price)}${pnl}`, true);
+    if (typeof gtag === 'function') gtag('event', 'paper_trade', { asset_class: body.assetClass, side: body.side });
+    await ptLoadAccount();
+  } catch (e) {
+    showMsg('ptOrderMsg', e.message, false);
+  } finally {
+    ptBusy = false;
+    document.querySelectorAll('.actions .btn').forEach(b => b.disabled = false);
+  }
+}
+
+function ptTab(which) {
+  $('tabStock').classList.toggle('active', which === 'stock');
+  $('tabOption').classList.toggle('active', which === 'option');
+  $('paneStock').style.display = which === 'stock' ? '' : 'none';
+  $('paneOption').style.display = which === 'option' ? '' : 'none';
+}
+
+// Stocks
+async function ptStockQuote() {
+  const sym = $('stSymbol').value.trim().toUpperCase();
+  if (!sym) return;
+  $('stQuote').textContent = 'Loading quote…';
+  try {
+    const r = await fetch(`/api/price?symbol=${encodeURIComponent(sym)}`);
+    const q = await r.json();
+    if (!r.ok || !q.price) throw new Error(q.error || `No quote for ${sym}`);
+    ptStock = { symbol: sym, price: q.price, bid: q.bid, ask: q.ask };
+    const chg = q.changePct != null ? ` <span class="${cls(q.changePct)}">${q.changePct > 0 ? '+' : ''}${q.changePct}%</span>` : '';
+    $('stQuote').innerHTML = `<b>${esc(sym)}</b> $${px(q.price)}${chg} · Bid ${px(q.bid)} · Ask ${px(q.ask)}`;
+    ptStockEst();
+  } catch (e) {
+    ptStock = null;
+    $('stQuote').textContent = e.message;
+    $('stEst').textContent = '';
+  }
+}
+
+function ptStockEst() {
+  const qty = parseInt($('stQty').value, 10);
+  if (!ptStock || !(qty > 0)) { $('stEst').textContent = ''; return; }
+  const ref = ptStock.ask || ptStock.price;
+  $('stEst').textContent = `Estimated cost: ${money(ref * qty)} (final price is set when the order fills)`;
+}
+
+function ptStockOrder(side) {
+  const symbol = $('stSymbol').value.trim().toUpperCase();
+  const qty = parseInt($('stQty').value, 10);
+  if (!symbol) return showMsg('ptOrderMsg', 'Enter a ticker symbol.', false);
+  if (!(qty > 0)) return showMsg('ptOrderMsg', 'Enter a whole number of shares.', false);
+  ptSubmit({ assetClass: 'stock', symbol, side, qty });
+}
+
+// Options
+async function ptLoadChain(expiry) {
+  const sym = $('opSymbol').value.trim().toUpperCase();
+  if (!sym) return;
+  $('opQuote').textContent = 'Loading chain…';
+  try {
+    const qs = new URLSearchParams({ symbol: sym });
+    if (expiry) qs.set('expiry', expiry);
+    const r = await fetch(`/api/paper/chain?${qs}`);
+    const c = await r.json();
+    if (!r.ok) throw new Error(c.error || `No options for ${sym}`);
+    ptChain = c;
+    ptContract = null;
+    $('opExpiry').disabled = false;
+    $('opExpiry').innerHTML = c.expiries.map(e => `<option value="${e}"${e === c.expiry ? ' selected' : ''}>${shortDate(e)}</option>`).join('');
+    $('opQuote').innerHTML = `<b>${esc(c.symbol)}</b> $${px(c.underlying)} · Tap a bid or ask to pick a contract`;
+    renderChain();
+    ptOptionEst();
+  } catch (e) {
+    ptChain = null;
+    $('opChain').innerHTML = '';
+    $('opQuote').textContent = e.message;
+  }
+}
+
+function renderChain() {
+  const c = ptChain;
+  let atm = -1, best = Infinity;
+  c.rows.forEach((r, i) => { const d = Math.abs(r.strike - c.underlying); if (d < best) { best = d; atm = i; } });
+  const cell = (q, type, strike) => {
+    if (!q) return '<td>—</td><td>—</td>';
+    const sel = ptContract && ptContract.contract === q.contract ? ' sel' : '';
+    const pick = `ptPick('${q.contract}','${type}',${strike})`;
+    return `<td class="q${sel}" onclick="${pick}">${px(q.bid)}</td><td class="q${sel}" onclick="${pick}">${px(q.ask)}</td>`;
+  };
+  $('opChain').innerHTML = `
+    <tr><th class="side-h" colspan="2">Calls</th><th class="mid"></th><th class="side-h" colspan="2">Puts</th></tr>
+    <tr><th>Bid</th><th>Ask</th><th class="mid">Strike</th><th>Bid</th><th>Ask</th></tr>
+    ${c.rows.map((r, i) => `<tr class="${i === atm ? 'atm' : ''}">${cell(r.call, 'call', r.strike)}<td class="strike">${r.strike}</td>${cell(r.put, 'put', r.strike)}</tr>`).join('')}`;
+}
+
+function ptPick(contract, type, strike) {
+  const row = ptChain.rows.find(r => r.strike === strike);
+  const q = row && row[type];
+  if (!q) return;
+  ptContract = { contract, type, strike, expiry: ptChain.expiry, bid: q.bid, ask: q.ask, delta: q.delta, iv: q.iv };
+  renderChain();
+  const greeks = [q.delta != null ? `Δ ${Number(q.delta).toFixed(2)}` : '', q.iv != null ? `IV ${(q.iv * 100).toFixed(0)}%` : ''].filter(Boolean).join(' · ');
+  $('opSelected').innerHTML = `Selected: <b>${esc(ptChain.symbol)} ${strike} ${type === 'call' ? 'Call' : 'Put'}</b> exp ${shortDate(ptChain.expiry)} · Bid ${px(q.bid)} / Ask ${px(q.ask)}${greeks ? ' · ' + greeks : ''}`;
+  ptOptionEst();
+}
+
+function ptOptionEst() {
+  const qty = parseInt($('opQty').value, 10);
+  if (!ptContract || !(qty > 0)) { $('opEst').textContent = ''; return; }
+  $('opEst').textContent = ptContract.ask > 0
+    ? `Estimated cost: ${money(ptContract.ask * 100 * qty)} (${qty} × $${px(ptContract.ask)} × 100 shares)`
+    : 'No ask price on this contract right now.';
+}
+
+function ptOptionOrder(side) {
+  const qty = parseInt($('opQty').value, 10);
+  if (!ptContract) return showMsg('ptOrderMsg', 'Pick a contract from the chain first.', false);
+  if (!(qty > 0)) return showMsg('ptOrderMsg', 'Enter a whole number of contracts.', false);
+  ptSubmit({ assetClass: 'option', contract: ptContract.contract, side, qty });
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session) return;
+    $('ptGate').style.display = 'none';
+    $('ptApp').style.display = 'flex';
+    if (typeof gtag === 'function') gtag('event', 'paper_trading_opened');
+    await ptLoadAccount();
+    // Keep marks fresh while the tab is visible during market hours.
+    setInterval(() => { if (!document.hidden && ptAccount?.marketOpen && !ptBusy) ptLoadAccount(); }, 20000);
+  } catch (e) {
+    console.warn('Session check failed:', e.message);
+  }
+}
+init();
+
+</script>
+</body>
+</html>
