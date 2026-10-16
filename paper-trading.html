@@ -538,7 +538,10 @@ async function ptStockQuote() {
     if (!r.ok || !q.price) throw new Error(q.error || `No quote for ${sym}`);
     ptStock = { symbol: sym, price: q.price, bid: q.bid, ask: q.ask };
     const chg = q.changePct != null ? ` <span class="${cls(q.changePct)}">${q.changePct > 0 ? '+' : ''}${q.changePct}%</span>` : '';
-    $('stQuote').innerHTML = `<b>${esc(sym)}</b> $${px(q.price)}${chg} · Bid ${px(q.bid)} · Ask ${px(q.ask)}`;
+    const spread = stockQuoteUsable(ptStock)
+      ? ` · Bid ${px(q.bid)} · Ask ${px(q.ask)}`
+      : ' · Bid/ask too wide right now, so orders fill at the last trade price';
+    $('stQuote').innerHTML = `<b>${esc(sym)}</b> $${px(q.price)}${chg}${spread}`;
     ptStockEst();
   } catch (e) {
     ptStock = null;
@@ -547,10 +550,17 @@ async function ptStockQuote() {
   }
 }
 
+// Mirrors stockFillPrice() in functions/lib/paper.js: IEX quotes can be
+// empty or absurdly wide (especially outside regular hours), and then the
+// server fills at the last trade instead of the bid/ask.
+function stockQuoteUsable(q) {
+  return q.bid && q.ask && q.ask >= q.bid && (q.ask - q.bid) / q.price <= 0.01;
+}
+
 function ptStockEst() {
   const qty = parseInt($('stQty').value, 10);
   if (!ptStock || !(qty > 0)) { $('stEst').textContent = ''; return; }
-  const ref = ptStock.ask || ptStock.price;
+  const ref = stockQuoteUsable(ptStock) ? ptStock.ask : ptStock.price;
   $('stEst').textContent = `Estimated cost: ${money(ref * qty)} (final price is set when the order fills)`;
 }
 
