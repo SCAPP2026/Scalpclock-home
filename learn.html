@@ -187,8 +187,16 @@ body.drawer-open{overflow:hidden}
 
 /* WATCH */
 .chart-wrap{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0;}
-.chart-wrap svg{display:block;width:100%;height:160px;}
-.chart-caption{font-size:.78rem;color:var(--t45);text-align:center;margin-top:8px;font-style:italic;}
+.chart-wrap svg{display:block;width:100%;height:auto;}
+.chart-insert{font-size:.84rem;line-height:1.45;color:var(--t85);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:8px;padding:9px 12px;margin-bottom:10px;}
+.ci-tag{display:block;font-size:.66rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--amber-ink);margin-bottom:2px;}
+.lesson-chart .cm-circle{fill:none;stroke:var(--amber);stroke-width:2.2;}
+.lesson-chart .cm-arrow{stroke:var(--amber);stroke-width:2.4;stroke-linecap:round;}
+.lesson-chart .cm-head{fill:var(--amber);}
+.lesson-chart .cm-hline{stroke:var(--amber-ink);stroke-width:1.4;stroke-dasharray:5 4;}
+.lesson-chart .cm-zone{fill:var(--amber);fill-opacity:.12;stroke:var(--amber);stroke-width:1.2;stroke-dasharray:4 3;}
+.lesson-chart .cm-label rect{fill:var(--panel);stroke:var(--amber);stroke-width:1.2;}
+.lesson-chart .cm-label text{fill:var(--text);font-family:var(--body,Inter,sans-serif);font-weight:600;}
 
 /* PRACTICE */
 .scenario-box{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0;}
@@ -1076,55 +1084,174 @@ function closesToCandles(data, opts={}) {
   });
 }
 
-// Volume series (watchType:'volume') aren't prices, so they draw as bars
-// rising from the baseline instead of candles.
-// Equity curves (watchType:'equity') chart an account balance, not a price,
-// so they stay a line with a filled area rather than candles.
-function buildLineSVG(data) {
-  const w=560,h=140,pad=16,min=Math.min(...data)-2,max=Math.max(...data)+2;
-  const xStep=(w-pad*2)/(data.length-1);
-  const y=v=>h-pad-((v-min)/(max-min))*(h-pad*2);
-  const pts=data.map((v,i)=>`${pad+i*xStep},${y(v)}`).join(' ');
-  const area=data.map((v,i)=>`${pad+i*xStep},${y(v)}`).join(' L ');
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
-<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#16d97e" stop-opacity="0.3"/>
-<stop offset="100%" stop-color="#16d97e" stop-opacity="0"/>
-</linearGradient></defs>
-<path d="M ${area} L ${pad+(data.length-1)*xStep},${h-pad} L ${pad},${h-pad} Z" fill="url(#cg)"/>
-<polyline points="${pts}" fill="none" stroke="#16d97e" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="${pad+(data.length-1)*xStep}" cy="${y(data[data.length-1])}" r="4" fill="#16d97e"/>
+// All three lesson chart types share one frame so the same annotation marks
+// (see WATCH_MARKS) can be drawn on any of them. Indexes in a mark are
+// 0-based positions in the lesson's watchData; values are in its units.
+// fs (label font size, in viewBox units) is raised on narrow screens by
+// renderWatchStep so labels stay readable once the SVG is scaled down.
+const CH = { W:420, H:250, padX:14, padT:44, padB:44, fs:11 };
+
+function chartFrame(lo, hi, n) {
+  const xStep=(CH.W-CH.padX*2)/n;
+  const span=(hi-lo)||1;
+  return {
+    xStep,
+    x: i => CH.padX+xStep*i+xStep/2,
+    y: v => CH.H-CH.padB-((v-lo)/span)*(CH.H-CH.padT-CH.padB),
+  };
+}
+
+function markRange(marks) {
+  return (marks||[]).filter(m=>m.h!=null).map(m=>m.h);
+}
+
+// Labels are laid out after every shape is placed: each label has a few
+// candidate spots (preferred side first) and takes the first one that
+// doesn't cover a candle, a circle, or an earlier label — or the least
+// covered one if none is clear.
+function labelBox(x, y, text, anchor) {
+  const w=text.length*CH.fs*0.58+12, h=CH.fs+7;
+  let left = anchor==='start' ? x : anchor==='end' ? x-w : x-w/2;
+  left=Math.max(2,Math.min(CH.W-w-2,left));
+  const top=Math.max(2,Math.min(CH.H-h-2,y-h/2));
+  return { x:left, y:top, w, h };
+}
+function overlapArea(a, b) {
+  const dx=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+  const dy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+  return dx>0&&dy>0 ? dx*dy : 0;
+}
+function placeLabels(requests, obstacles) {
+  const placed=[];
+  return requests.map(r=>{
+    let best=null, bestScore=Infinity;
+    for (const c of r.candidates) {
+      const box=labelBox(c[0], c[1], r.text, c[2]||'middle');
+      let score=0;
+      for (const o of obstacles) score+=overlapArea(box,o);
+      for (const p of placed) score+=overlapArea(box,p)*20;
+      if (score<bestScore) { best=box; bestScore=score; }
+      if (score===0) break;
+    }
+    placed.push(best);
+    return `<g class="cm-label"><rect x="${best.x}" y="${best.y}" width="${best.w}" height="${best.h}" rx="${best.h/2}"/><text x="${best.x+best.w/2}" y="${best.y+best.h/2+CH.fs*0.36}" text-anchor="middle" font-size="${CH.fs}">${r.text}</text></g>`;
+  }).join('\n');
+}
+
+// pts[i] = { x, top, bot, mid } in SVG coords for each bar/candle/point.
+function drawMarks(marks, pts, f) {
+  if (!marks || !marks.length) return '';
+  const shapes=[], labels=[];
+  const obstacles=pts.map(p=>({x:p.x-f.xStep*0.35, y:p.top, w:f.xStep*0.7, h:Math.max(2,p.bot-p.top)}));
+  const clampI=i=>Math.max(0,Math.min(pts.length-1,i));
+  const gap=CH.fs+10, half=(CH.fs+7)/2+3;
+  const stack=(x,y,dir,anchor)=>[0,1,2,3].map(k=>[x,y+dir*k*gap,anchor]);
+  for (const m of marks) {
+    if (m.z) {
+      const [a,b]=m.z.map(clampI);
+      const top=Math.min(...pts.slice(a,b+1).map(p=>p.top))-8;
+      const bot=Math.max(...pts.slice(a,b+1).map(p=>p.bot))+8;
+      const x0=pts[a].x-f.xStep/2, x1=pts[b].x+f.xStep/2, cx=(x0+x1)/2;
+      shapes.push(`<rect class="cm-zone" x="${x0}" y="${top}" width="${x1-x0}" height="${bot-top}" rx="6"/>`);
+      if (m.l) {
+        const above=stack(cx,top-half,-1), below=stack(cx,bot+half,1);
+        labels.push({text:m.l, candidates: m.p==='b'?[...below,...above]:[...above,...below]});
+      }
+    } else if (m.h!=null) {
+      const y=f.y(m.h);
+      shapes.push(`<line class="cm-hline" x1="${CH.padX}" x2="${CH.W-CH.padX}" y1="${y}" y2="${y}"/>`);
+      if (m.l) {
+        const L=CH.padX, R=CH.W-CH.padX, M=CH.W/2;
+        const up=[[L,y-half,'start'],[R,y-half,'end'],[M,y-half]], dn=[[L,y+half,'start'],[R,y+half,'end'],[M,y+half]];
+        let c=m.p2==='b'?[...dn,...up]:[...up,...dn];
+        if (m.p==='r') c=[...c.filter(x=>x[2]==='end'),...c.filter(x=>x[2]!=='end')];
+        labels.push({text:m.l, candidates:c});
+      }
+    } else if (m.a) {
+      const [a,b]=m.a.map(clampI);
+      const up=pts[b].mid<pts[a].mid;
+      // Rising moves get the arrow under the candles, falling moves above,
+      // so it never sits on top of the bars it is pointing out.
+      const off=m.p==='a'?-1:m.p==='b'?1:(up?1:-1);
+      const ya=(off>0?pts[a].bot:pts[a].top)+off*12;
+      const yb=(off>0?pts[b].bot:pts[b].top)+off*12;
+      shapes.push(`<line class="cm-arrow" x1="${pts[a].x}" y1="${ya}" x2="${pts[b].x}" y2="${yb}" marker-end="url(#cm-head)"/>`);
+      const len=Math.hypot(pts[b].x-pts[a].x, yb-ya), steps=Math.max(1,Math.round(len/10));
+      for (let k=0;k<=steps;k++) {
+        const t=k/steps;
+        obstacles.push({x:pts[a].x+(pts[b].x-pts[a].x)*t-4, y:ya+(yb-ya)*t-4, w:8, h:8});
+      }
+      if (m.l) {
+        const mx=(pts[a].x+pts[b].x)/2, my=(ya+yb)/2;
+        labels.push({text:m.l, candidates:[...stack(mx,my+off*(half+4),off), ...stack(mx,my-off*(half+4),-off)]});
+      }
+    } else if (m.c!=null) {
+      const p=pts[clampI(m.c)];
+      const rx=Math.max(11,f.xStep*0.62), ry=Math.max(12,(p.bot-p.top)/2+7);
+      const cy=(p.top+p.bot)/2;
+      shapes.push(`<ellipse class="cm-circle" cx="${p.x}" cy="${cy}" rx="${rx}" ry="${ry}"/>`);
+      obstacles.push({x:p.x-rx, y:cy-ry, w:rx*2, h:ry*2});
+      if (m.l) {
+        const above=stack(p.x,cy-ry-half,-1), below=stack(p.x,cy+ry+half,1);
+        labels.push({text:m.l, candidates: m.p==='b'?[...below,...above]:[...above,...below]});
+      }
+    }
+  }
+  return shapes.join('\n')+'\n'+placeLabels(labels, obstacles);
+}
+
+function chartSVG(body, marks) {
+  return `<svg class="lesson-chart" viewBox="0 0 ${CH.W} ${CH.H}" preserveAspectRatio="xMidYMid meet">
+<defs><marker id="cm-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="cm-head"/></marker></defs>
+${body}
+${marks}
 </svg>`;
 }
 
-function buildVolumeSVG(data) {
-  const w=560,h=140,pad=16,max=Math.max(...data);
-  const xStep=(w-pad*2)/data.length;
-  const barW=Math.max(4,xStep*0.7);
-  const bars=data.map((v,i)=>{
-    const bh=(v/max)*(h-pad*2);
-    return `<rect x="${pad+xStep*i+(xStep-barW)/2}" y="${h-pad-bh}" width="${barW}" height="${bh}" rx="1" fill="#16d97e" fill-opacity="0.75"/>`;
-  }).join('\n');
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${bars}</svg>`;
+// Volume series (watchType:'volume') aren't prices, so they draw as bars
+// rising from the baseline instead of candles.
+function buildVolumeSVG(data, marks) {
+  const max=Math.max(...data, ...markRange(marks));
+  const f=chartFrame(0, max, data.length);
+  const barW=Math.max(4,f.xStep*0.7);
+  const base=f.y(0);
+  const pts=data.map((v,i)=>({x:f.x(i), top:f.y(v), bot:base, mid:f.y(v)}));
+  const bars=pts.map(p=>`<rect x="${p.x-barW/2}" y="${p.top}" width="${barW}" height="${base-p.top}" rx="1" fill="#16d97e" fill-opacity="0.75"/>`).join('\n');
+  return chartSVG(bars, drawMarks(marks, pts, f));
+}
+
+// Equity curves (watchType:'equity') chart an account balance, not a price,
+// so they stay a line with a filled area rather than candles.
+function buildLineSVG(data, marks) {
+  const vals=[...data, ...markRange(marks)];
+  const f=chartFrame(Math.min(...vals)-2, Math.max(...vals)+2, data.length);
+  const pts=data.map((v,i)=>({x:f.x(i), top:f.y(v)-4, bot:f.y(v)+4, mid:f.y(v)}));
+  const line=pts.map(p=>`${p.x},${p.mid}`).join(' ');
+  const base=CH.H-CH.padB;
+  const body=`<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#16d97e" stop-opacity="0.3"/>
+<stop offset="100%" stop-color="#16d97e" stop-opacity="0"/>
+</linearGradient></defs>
+<path d="M ${pts[0].x},${base} L ${line.replace(/ /g,' L ')} L ${pts[pts.length-1].x},${base} Z" fill="url(#cg)"/>
+<polyline points="${line}" fill="none" stroke="#16d97e" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  return chartSVG(body, drawMarks(marks, pts, f));
 }
 
 function buildSVGChart(data, opts={}) {
   const candles=closesToCandles(data,opts);
-  const w=560,h=140,pad=16;
-  const allVals=candles.flatMap(c=>[c.h,c.l]);
-  const min=Math.min(...allVals)-2,max=Math.max(...allVals)+2;
-  const xStep=(w-pad*2)/candles.length;
-  const bodyW=Math.max(4,xStep*0.55);
-  const y=v=>h-pad-((v-min)/(max-min))*(h-pad*2);
+  const vals=[...candles.flatMap(c=>[c.h,c.l]), ...markRange(opts.marks)];
+  const f=chartFrame(Math.min(...vals)-1, Math.max(...vals)+1, candles.length);
+  const bodyW=Math.max(4,f.xStep*0.55);
+  const pts=candles.map((c,i)=>({x:f.x(i), top:f.y(c.h), bot:f.y(c.l), mid:f.y(c.c)}));
   const bars=candles.map((c,i)=>{
-    const cx=pad+xStep*i+xStep/2;
+    const cx=pts[i].x;
     const color=c.c>=c.o?'#16d97e':'#f54242';
-    const bodyTop=y(Math.max(c.o,c.c));
-    const bodyH=Math.max(2,y(Math.min(c.o,c.c))-bodyTop);
-    return `<line x1="${cx}" y1="${y(c.h)}" x2="${cx}" y2="${y(c.l)}" stroke="${color}" stroke-width="1.5"/>
+    const bodyTop=f.y(Math.max(c.o,c.c));
+    const bodyH=Math.max(2,f.y(Math.min(c.o,c.c))-bodyTop);
+    return `<line x1="${cx}" y1="${pts[i].top}" x2="${cx}" y2="${pts[i].bot}" stroke="${color}" stroke-width="1.5"/>
 <rect x="${cx-bodyW/2}" y="${bodyTop}" width="${bodyW}" height="${bodyH}" rx="1" fill="${color}"/>`;
   }).join('\n');
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${bars}</svg>`;
+  return chartSVG(bars, drawMarks(opts.marks, pts, f));
 }
 
 // Most of the 365-day curriculum is auto-generated from WEEK_DEFS (see
@@ -1245,6 +1372,378 @@ function pickWatchPattern(lesson) {
   };
 }
 
+// Hand-placed chart annotations for each lesson's Watch step, keyed by
+// watchTitle ("title@W<week>" where two weeks share a title). Indexes are
+// 0-based candles in watchData; h values are in the chart's own units.
+//   c: circle a candle   a: [from,to] arrow   h: level line   z: [from,to] zone
+//   l: label             p: 'a'/'b' label above/below (h: 'r' = right side)
+const WATCH_MARKS = {
+"Stock vs Option: Risk & Reward":[{h:44,l:"Entry $44"},{a:[4,14],l:"+$10 move"},{c:14,l:"Stock owner +$10/sh"}],
+"Intraday Volume Curve":[{c:0,l:"Open: heavy volume"},{z:[5,8],l:"Midday lull",p:"b"},{c:14,l:"Close: volume returns"}],
+"Anatomy of a Candlestick":[{c:3,l:"Green = buyers won",p:"a"},{c:9,l:"Red = sellers won",p:"b"},{c:13,l:"Wick = rejected high",p:"a"}],
+"Support & Resistance in Action":[{h:50,l:"Support ~$50",p2:"b"},{c:2,l:"Bounce 1",p:"b"},{c:4,l:"Bounce 2",p:"b"},{c:6,l:"Bounce 3",p:"b"},{h:54.5,l:"Resistance",p:"r"},{c:12,l:"Breaks above",p:"a"}],
+"Higher Highs & Higher Lows":[{c:4,l:"Higher low",p:"b"},{c:8,l:"Higher low",p:"b"},{c:12,l:"Higher low",p:"b"},{c:13,l:"Higher high",p:"a"}],
+"Volume Spike Before Breakout":[{h:40,l:"Resistance"},{z:[5,8],l:"Surge on heavy volume"},{c:8,l:"Peak",p:"a"}],
+"Week 1 Concepts Combined":[{z:[0,8],l:"Uptrend: higher lows",p:"b"},{h:48.5,l:"Resistance",p:"r"},{c:10,l:"Breakout",p:"b"},{a:[10,14],l:"Follow-through"}],
+"9-EMA Holding as Support in an Uptrend":[{c:3,l:"Dip to 9-EMA",p:"b"},{c:6,l:"Bounce",p:"b"},{c:9,l:"Bounce",p:"b"},{c:12,l:"Bounce",p:"b"},{a:[0,14],l:"Trend intact"}],
+"20-EMA and 50-SMA Aligned in an Uptrend":[{a:[0,14],l:"Price above both MAs"},{c:4,l:"Pullback holds",p:"b"},{c:11,l:"Pullback holds",p:"b"}],
+"Price Reclaiming the 200-Day MA":[{h:47,l:"200-day MA"},{c:9,l:"Reclaims the MA",p:"a"},{a:[9,14],l:"Bullish bias"}],
+"A Golden Cross Forming After a Bottom":[{c:5,l:"Bottom",p:"b"},{a:[5,14],l:"Rally turns MAs up"},{c:10,l:"Fast MA crosses slow",p:"a"}],
+"Bearish Divergence: Higher Price High, Fading Momentum":[{a:[0,3],l:"Strong momentum"},{c:6,l:"Momentum slowing",p:"a"},{c:14,l:"New high, weaker push",p:"a"}],
+"RSI-Style Extended Move Into Overbought Territory":[{a:[0,7],l:"Fast, extended rally"},{c:7,l:"RSI > 70 zone",p:"a"},{a:[8,14],l:"Snaps back"}],
+"Week 2 Recap: Trend, Crossover, and Momentum Together":[{c:3,l:"Reclaims average",p:"b"},{a:[3,9],l:"Momentum accelerates"},{c:9,l:"Stretched high",p:"a"},{a:[9,14],l:"Fades"}],
+"Stock Price Crossing the $50 Strike":[{h:50,l:"$50 strike"},{z:[0,5],l:"Out of the money",p:"a"},{c:6,l:"Crosses strike",p:"b"},{z:[7,14],l:"In the money",p:"b"}],
+"Choppy Price Action Into a Weekly Expiration":[{z:[0,14],l:"Whipsaw both ways"},{c:8,l:"Sharp drop",p:"b"},{c:13,l:"Sharp pop",p:"a"}],
+"Premium Rising With the Underlying Rally":[{h:50,l:"Strike $50"},{a:[0,14],l:"$50 → $60 rally"},{c:14,l:"Call premium up",p:"a"}],
+"Stock Chopping Sideways Near the Strike":[{h:50,l:"$50 strike"},{z:[0,14],l:"All time value at the strike",p:"b"}],
+"Steady Uptrend Driving a High-Delta Call":[{c:0,l:"$70",p:"b"},{a:[0,14],l:"Steady climb"},{c:14,l:"$85: call ≈ +$13",p:"a"}],
+"Flat Stock, Fading Option Premium":[{h:65,l:"Stuck near $65"},{z:[0,14],l:"Theta eats premium daily",p:"b"}],
+"Week 3 Recap: A Call Option Rallying Into Expiration":[{h:57,l:"Strike"},{a:[0,14],l:"Intrinsic value grows"},{c:14,l:"Expiration",p:"a"}],
+"Gamma Acceleration Near a Strike":[{h:57,l:"Strike"},{a:[4,9],l:"Gamma: move accelerates"},{z:[10,14],l:"Deep ITM: gamma fades",p:"b"}],
+"Widening Swings as IV Expands":[{z:[0,5],l:"Calm",p:"b"},{a:[6,13],l:"Swings widen as IV rises"},{c:14,l:"Bigger range",p:"b"}],
+"Rho's Slow, Small Drift Over Time":[{a:[0,14],l:"Tiny drift: rho is slow"},{h:70,l:"Start"}],
+"Calm Range, Then IV Expansion":[{z:[0,8],l:"Tight, quiet range",p:"a"},{c:9,l:"Expansion starts",p:"b"},{a:[9,14],l:"Big move IV priced in"}],
+"One Year of IV, Current Reading Near the Top":[{h:30,l:"52-wk IV low"},{h:88,l:"52-wk IV high",p:"r"},{c:14,l:"Today: high IV Rank",p:"b"}],
+"Premium Spikes Into Earnings, Then Crushes":[{a:[0,7],l:"IV builds into report"},{c:8,l:"Earnings",p:"a"},{c:9,l:"IV crush",p:"b"},{a:[9,14],l:"Premium collapses"}],
+"Week 4 Recap: Greeks in Action":[{a:[1,7],l:"Gamma builds"},{c:7,l:"Catalyst",p:"a"},{c:9,l:"IV crush",p:"b"}],
+"Bull Flag Forms After a Sharp Rally":[{a:[0,4],l:"Flagpole"},{z:[5,12],l:"Flag: tight drift down"},{c:13,l:"Breakout",p:"b"}],
+"Bear Flag: Bounce Before the Breakdown":[{a:[0,5],l:"Sharp sell-off"},{z:[6,12],l:"Weak bounce (flag)",p:"b"},{c:14,l:"Breakdown",p:"b"}],
+"Cup & Handle Rounds Out Before Breakout":[{z:[1,9],l:"Rounded cup",p:"b"},{c:12,l:"Handle dip",p:"b"},{h:80,l:"Prior high",p:"r"},{c:14,l:"Breakout",p:"a"}],
+"Head & Shoulders Tops Out an Uptrend":[{c:2,l:"Left shoulder",p:"a"},{c:7,l:"Head",p:"a"},{c:11,l:"Right shoulder",p:"a"},{h:59,l:"Neckline",p2:"b"},{c:13,l:"Neckline break",p:"b"}],
+"Double Top Rejects Resistance Twice":[{h:76,l:"Resistance"},{c:2,l:"Top 1",p:"b"},{c:8,l:"Top 2",p:"b"},{h:54,l:"Neckline",p:"r"},{a:[10,14],l:"Breakdown"}],
+"Ascending Triangle Presses Into Resistance":[{h:80,l:"Flat resistance"},{c:3,l:"Higher low",p:"b"},{c:5,l:"Higher low",p:"b"},{c:7,l:"Higher low",p:"b"},{c:11,l:"Breakout",p:"b"}],
+"Week 5 Case Study: Triangle, Flag & Double Top":[{h:50,l:"Triangle top",p:"r"},{c:6,l:"Breakout",p:"b"},{z:[6,8],l:"Flag",p:"b"},{c:9,l:"Top 1",p:"a"},{c:11,l:"Top 2",p:"a"},{a:[11,14],l:"Reversal"}],
+"Rising Wedge Breaking Down":[{z:[0,12],l:"Rising wedge narrows"},{c:13,l:"Breaks down",p:"b"}],
+"Flagpole Into a Tight Pennant":[{a:[0,5],l:"Flagpole"},{z:[6,12],l:"Pennant narrows"},{c:13,l:"Breakout",p:"b"}],
+"Gap Up That Partially Fills":[{h:53,l:"Pre-gap level"},{c:6,l:"Gap up",p:"a"},{a:[7,14],l:"Drifts back: gap fills"}],
+"Island Reversal at a Top":[{c:3,l:"Gap up",p:"b"},{z:[3,9],l:"Island at the highs"},{c:10,l:"Gap down",p:"a"}],
+"Three Drives to a Top":[{c:1,l:"Drive 1",p:"a"},{c:3,l:"Drive 2",p:"a"},{c:5,l:"Drive 3",p:"a"},{a:[5,8],l:"Sharp reversal"}],
+"Measured Move After Breakout":[{a:[0,3],l:"Leg 1: +$15"},{c:5,l:"Pullback",p:"b"},{a:[5,14],l:"Leg 2 ≈ same size"},{h:73,l:"Target",p:"r"}],
+"Week 6 Recap: Pattern to Breakout":[{a:[0,2],l:"Flagpole"},{z:[3,7],l:"Pennant",p:"b"},{c:8,l:"Breakout gap",p:"b"},{a:[8,14],l:"Toward target"}],
+"A Typical Scalping Price Chop":[{z:[0,14],l:"Small, fast swings"},{a:[2,3],l:"Scalp",p:"b"},{a:[12,13],l:"Scalp",p:"b"}],
+"Price Holding a Level Before a Breakout":[{h:58,l:"Level holding"},{z:[0,8],l:"Bids building",p:"b"},{c:9,l:"Breaks higher",p:"b"},{a:[9,14],l:"Offers absorbed"}],
+"A Slippage Gap on a Fast Fill":[{h:52,l:"Last quote ~$52"},{c:7,l:"Fill way above quote",p:"a"}],
+"Accelerating Prints on the Tape":[{z:[0,4],l:"Slow prints",p:"a"},{a:[5,14],l:"Tape speeds up"}],
+"A Fast Spike Requiring a Quick Exit":[{c:3,l:"Spike",p:"b"},{c:4,l:"Exit here",p:"a"},{a:[4,9],l:"Reversal: no time"}],
+"Breakout, Pullback, Continuation":[{h:65,l:"Resistance"},{c:4,l:"Breakout",p:"a"},{c:7,l:"Retest",p:"b"},{a:[8,14],l:"Continuation"}],
+"A Full Scalp Setup From Order Book to Exit":[{z:[0,4],l:"Bid support builds",p:"a"},{c:6,l:"Break",p:"b"},{c:9,l:"Retest",p:"b"},{c:14,l:"Exit",p:"b"}],
+"Same Setup, Two Position Sizes":[{c:8,l:"Same entry",p:"a"},{h:49,l:"Same stop"},{a:[9,14],l:"Loss = size × distance"}],
+"Stop Placed Below Swing Low Support":[{c:4,l:"Swing low",p:"b"},{h:57,l:"Stop just below"},{c:12,l:"Stop hit",p:"b"}],
+"Entry, Stop, and Target Mapped Out":[{h:47,l:"Entry"},{h:44,l:"Stop",p:"r",p2:"b"},{h:62,l:"Target",p:"r"},{a:[7,14],l:"Reward ≫ risk"}],
+"Equity Curve Hits the Daily Loss Line":[{h:66,l:"Daily loss limit (-3%)",p:"r",p2:"b"},{a:[0,11],l:"Losing streak",p:"a"},{c:14,l:"Limit hit: stop trading",p:"a"}],
+"Working Backward From Risk to Share Count":[{c:9,l:"Entry",p:"a"},{h:73,l:"Tight stop = more shares"},{h:70,l:"Wide stop = fewer shares",p:"r",p2:"b"}],
+"Counting Day Trades in a Rolling 5-Day Window":[{z:[0,4],l:"Day trades 1-3 OK",p:"b"},{z:[5,9],l:"4th = PDT flag",p:"b"},{z:[10,14],l:"Window rolls",p:"b"}],
+"Week 8 Recap: A Full Risk-Managed Trade":[{c:9,l:"Entry at support",p:"b"},{h:47,l:"Stop"},{h:58,l:"Target",p:"r"},{a:[9,14],l:"Plan plays out"}],
+"Stock Rallies Through the Call's Breakeven":[{h:50,l:"Strike"},{h:54,l:"Breakeven (strike + premium)",p:"r"},{c:11,l:"Profit starts",p:"b"}],
+"Stock Declines Below the Put's Breakeven":[{h:85,l:"Strike",p:"r"},{h:82,l:"Breakeven",p:"r",p2:"b"},{c:10,l:"Profit starts",p:"a"}],
+"Stock Drifts Sideways Under the Call Strike":[{h:64,l:"Call strike sold"},{z:[0,14],l:"Stays below: keep premium",p:"b"}],
+"Stock Holds Above the Put Strike Into Expiration":[{h:44,l:"Put strike sold",p2:"b"},{z:[0,14],l:"Stays above: premium kept"},{c:14,l:"Expires worthless",p:"a"}],
+"Shares Fall But the Put Limits the Damage":[{h:70,l:"Put strike"},{a:[7,14],l:"Below strike: put gains"},{c:14,l:"Loss capped",p:"b"}],
+"A Sharp Move Breaks Out of a Tight Range":[{z:[0,9],l:"Tight range",p:"a"},{c:10,l:"Big move starts",p:"b"},{a:[10,14],l:"Straddle profits"}],
+"Week 9 Recap: Options Strategies in Action":[{h:58,l:"Strike"},{a:[0,14],l:"Long calls gain"},{c:14,l:"Calls ITM",p:"a"}],
+"Stock Rises Into the Short Call Strike":[{h:42,l:"Long call strike",p2:"b"},{h:48,l:"Short call strike: max profit",p:"r"},{a:[0,11],l:"Profit grows"}],
+"Stock Falls Into the Short Put Strike":[{h:68,l:"Long put strike",p:"r"},{h:62,l:"Short put strike: max profit",p2:"b"},{a:[0,12],l:"Profit grows"}],
+"Price Stays Range-Bound Between the Short Strikes":[{h:57,l:"Short call strike"},{h:53,l:"Short put strike",p2:"b"},{z:[0,14],l:"Inside: max profit"}],
+"Two Spreads, Opposite Cash Flow at Entry":[{c:0,l:"Debit: pay to enter",p:"b"},{c:1,l:"Credit: collect cash",p:"a"},{a:[0,14],l:"Same path, different P&L"}],
+"Price Pins Near the Strike Into Near-Term Expiration":[{h:50,l:"Shared strike"},{z:[0,14],l:"Pinned: short leg decays",p:"b"}],
+"Long-Dated Call Substitutes for 100 Shares":[{c:0,l:"Buy deep ITM LEAPS",p:"b"},{a:[0,14],l:"Tracks the stock"},{c:7,l:"Sell short call",p:"a"},{c:13,l:"Sell again",p:"a"}],
+"Week 10 Recap: Spread Strategies Compared":[{h:58,l:"Entry"},{a:[0,14],l:"Moderate climb"},{c:14,l:"Bull spread wins",p:"a"}],
+"A Stock Gapping Up Pre-Market on News":[{h:51,l:"Yesterday's close",p2:"b"},{c:4,l:"News gap up",p:"b"},{z:[4,14],l:"Gap holds"}],
+"Gap Up That Fails and Fills Back Down":[{h:51,l:"Pre-gap level",p2:"b"},{c:3,l:"Gap up",p:"a"},{a:[3,11],l:"Fades: gap fills"}],
+"A Strong Opening Drive Higher":[{a:[0,4],l:"5 big green candles"},{z:[5,14],l:"Holds the gains",p:"a"}],
+"An Overextended Spike That Gets Faded":[{a:[0,3],l:"Spike"},{c:3,l:"Stalls",p:"a"},{a:[3,10],l:"Faded"}],
+"Price Bouncing Off a Rising VWAP Line":[{a:[0,14],l:"Rising VWAP",p:"b"},{c:2,l:"Bounce",p:"b"},{c:6,l:"Bounce",p:"b"},{c:10,l:"Bounce",p:"b"}],
+"Price Breaking Out Above the First Candle's High":[{h:52,l:"First candle high"},{z:[0,9],l:"Coils below",p:"b"},{c:10,l:"Breakout",p:"b"}],
+"A Full Opening 30 Minutes, Start to Finish":[{c:1,l:"Gap/drive",p:"b"},{c:3,l:"VWAP bounce",p:"b"},{h:60,l:"First candle high",p:"r"},{a:[6,14],l:"Extends higher"}],
+"Price Weaving Around a Rising VWAP":[{a:[0,14],l:"VWAP rising",p:"b"},{c:1,l:"Below",p:"b"},{c:2,l:"Above",p:"a"}],
+"VWAP Acting as Repeated Support":[{h:50,l:"VWAP",p2:"b"},{c:3,l:"Test 1",p:"b"},{c:8,l:"Test 2",p:"b"},{c:12,l:"Test 3",p:"b"}],
+"Failed Rejection Turns Into a Reclaim":[{h:46,l:"VWAP"},{c:3,l:"Rejected",p:"b"},{c:7,l:"Reclaim",p:"b"},{a:[7,14],l:"Holds above"}],
+"Price Stretches to the Upper Band, Then Reverts":[{h:52,l:"VWAP"},{h:68,l:"Upper band",p:"r"},{c:5,l:"Stretched",p:"a"},{a:[5,10],l:"Reverts to mean"}],
+"AVWAP Anchored to a Swing Low Holds as Support":[{c:0,l:"Anchor: swing low",p:"b"},{c:2,l:"Holds",p:"b"},{c:8,l:"Holds",p:"b"},{a:[2,14],l:"Rising AVWAP",p:"b"}],
+"Session Reset Creates a Gap in the VWAP Line":[{z:[0,5],l:"Day 1",p:"b"},{c:6,l:"New session: VWAP resets",p:"b"},{z:[6,14],l:"Day 2"}],
+"Week 12 Recap: Price and VWAP Interaction":[{c:1,l:"VWAP support",p:"b"},{a:[1,13],l:"Trends above VWAP",p:"b"},{c:13,l:"Upper band",p:"a"},{c:14,l:"Reverts",p:"b"}],
+"Higher Highs and Higher Lows Define an Uptrend":[{c:2,l:"HL",p:"b"},{c:6,l:"HL",p:"b"},{c:10,l:"HL",p:"b"},{c:9,l:"HH",p:"a"},{c:13,l:"HH",p:"a"}],
+"Price Closes Above the Prior Swing High":[{h:62,l:"Prior swing high"},{z:[6,8],l:"Consolidates",p:"b"},{c:9,l:"Break of structure",p:"b"}],
+"A Sharp Wick Sweeps Liquidity Above a Prior High":[{h:75,l:"Prior high: stops above"},{c:10,l:"Sweep",p:"a"},{a:[10,14],l:"Reverses lower"}],
+"A Gap Left Behind by a Fast Rally":[{z:[3,4],l:"Gap (untraded zone)",p:"a"},{c:8,l:"Dips into gap",p:"b"},{a:[8,14],l:"Continues"}],
+"The Last Down Candle Before a Sharp Rally":[{c:5,l:"Order block",p:"b"},{a:[5,9],l:"Sharp rally"},{c:10,l:"Retest",p:"b"}],
+"A Sharp Displacement Leg Breaks Out of Consolidation":[{z:[0,7],l:"Tight range",p:"a"},{c:8,l:"Displacement",p:"b"},{a:[8,10],l:"Impulse leg"}],
+"Week 13 Recap: Sweep, Displacement, and BOS Together":[{c:9,l:"Sweep",p:"a"},{c:11,l:"Shakeout",p:"b"},{a:[11,14],l:"Displacement"},{h:90,l:"BOS level",p:"r"}],
+"Tech Sector Outpacing the Broad Market":[{a:[0,14],l:"Sector: new highs"},{c:14,l:"Leadership",p:"a"}],
+"Cyclical Sector Breaking Out Off a Low":[{c:0,l:"Base / low",p:"b"},{a:[0,14],l:"Money rotates in"}],
+"A/D Line Rolling Over While Price Holds Up":[{c:6,l:"Breadth peaks",p:"a"},{a:[6,14],l:"Breadth rolls over"}],
+"Price Grinds Higher While Momentum Wobbles":[{a:[0,4],l:"Strong advance"},{z:[5,14],l:"Losing steam",p:"a"}],
+"Fear Spike Coincides With a Price Bottom":[{a:[0,7],l:"Selloff"},{c:7,l:"Peak fear = bottom",p:"b"},{a:[7,14],l:"Reversal"}],
+"VIX Spikes During a Selloff, Then Fades":[{h:15,l:"Normal VIX"},{c:8,l:"Fear spike",p:"a"},{a:[8,14],l:"Mean-reverts"}],
+"A Week of Sector & Breadth Signals":[{a:[0,14],l:"Price: new highs"},{z:[9,14],l:"Breadth weakening",p:"a"}],
+"Calm Before the Report, Gap After It":[{z:[0,8],l:"Tight pre-earnings range",p:"a"},{c:9,l:"Earnings gap",p:"b"}],
+"Price Pops, But Not Enough to Beat IV Crush":[{h:72,l:"Pre-earnings"},{c:9,l:"Small pop",p:"a"},{z:[9,14],l:"IV crush eats the gain",p:"b"}],
+"A Move Big Enough to Clear Both Strangle Legs":[{h:70,l:"Call leg + premium",p:"r"},{h:60,l:"Put leg − premium",p2:"b"},{c:9,l:"Gap clears it",p:"b"}],
+"Gap Runs Past the Covered Call Strike":[{h:65,l:"Call strike sold"},{c:9,l:"Gap past strike",p:"b"},{z:[9,14],l:"Upside capped",p:"a"}],
+"Gap Down Then a Partial Fade Back":[{h:80,l:"Prior close"},{c:9,l:"Gap down",p:"b"},{a:[9,14],l:"Fill / fade back"}],
+"Initial Pop Followed by Continued Drift":[{c:9,l:"Earnings pop",p:"b"},{a:[9,14],l:"Drift continues"}],
+"Week 15 Recap: The Full Earnings Cycle":[{z:[0,8],l:"Pre-earnings calm",p:"a"},{c:9,l:"Gap",p:"b"},{a:[10,14],l:"Drift"}],
+"Calm Before a Scheduled Data Release":[{z:[0,7],l:"Coils pre-release",p:"a"},{c:8,l:"Data hits",p:"a"},{z:[9,14],l:"Settles",p:"b"}],
+"The FOMC Whipsaw":[{c:5,l:"2pm decision spike",p:"b"},{c:6,l:"Peak",p:"a"},{a:[6,9],l:"Press conf reversal"}],
+"CPI Print Gap-Down":[{h:71,l:"Pre-CPI"},{c:5,l:"8:30 gap down",p:"b"},{z:[6,14],l:"Volatile settle",p:"a"}],
+"NFP Friday Whipsaw":[{c:5,l:"Jobs spike",p:"b"},{c:6,l:"Peak",p:"a"},{a:[6,8],l:"Fades fast"}],
+"Sector Bellwether Breakout":[{h:53,l:"Resistance"},{c:7,l:"Earnings breakout",p:"b"},{a:[7,14],l:"Peers follow"}],
+"PDUFA Date Overnight Gap":[{h:46,l:"Pre-decision"},{c:7,l:"FDA approval gap",p:"b"},{z:[0,6],l:"No stop can protect",p:"a"}],
+"Week 16 Recap: Reading the News Calendar":[{c:3,l:"CPI",p:"a"},{c:6,l:"FOMC",p:"a"},{c:10,l:"Selloff",p:"b"},{c:11,l:"FDA gap",p:"a"}],
+"Price Stalling at a Level 2 Ask Wall":[{h:64,l:"Ask wall"},{z:[5,9],l:"Wall tested",p:"b"},{c:11,l:"Wall clears",p:"b"}],
+"Tight Range While Market Makers Hold the Spread":[{h:62,l:"Ask side"},{h:60,l:"Bid side",p2:"b"},{z:[0,14],l:"MMs quote both sides"}],
+"Fake Sell Wall Pulled Before Breakout":[{h:47,l:"'Wall' that never fills"},{c:7,l:"Wall pulled",p:"b"},{a:[8,14],l:"Rips higher"}],
+"Quiet Tape Then a Dark Pool Print Hits":[{z:[0,8],l:"Quiet lit tape",p:"a"},{c:9,l:"Dark pool print",p:"b"}],
+"Breakout Following a Large Block Print":[{z:[0,6],l:"Quiet base",p:"a"},{c:7,l:"Block at the ask",p:"b"},{a:[7,14],l:"Continuation"}],
+"Higher High on Weakening Order Flow":[{a:[0,5],l:"Strong push 1"},{a:[8,12],l:"Weaker push 2"},{c:12,l:"Divergence",p:"a"}],
+"Week 17 Recap: From Quiet Tape to Fading Breakout":[{z:[0,4],l:"Stall at level",p:"a"},{a:[4,8],l:"Size clears"},{c:11,l:"Weaker high",p:"a"}],
+"Chasing a Late Breakout":[{a:[6,10],l:"Rocket move"},{c:10,l:"FOMO buy here",p:"a"},{a:[10,14],l:"Pullback"}],
+"Doubling Down After a Loss":[{c:4,l:"First loss",p:"b"},{c:7,l:"Revenge add (bigger)",p:"a"},{a:[7,14],l:"Drawdown deepens"}],
+"Ignoring a Broken Support Level":[{h:69,l:"Support"},{c:8,l:"Breaks: 'just noise'",p:"b"},{a:[8,14],l:"Real breakdown"}],
+"Anchored to the Old High":[{c:4,l:"High = the anchor",p:"a"},{h:80,l:"Waiting for this price",p:"r"},{z:[7,14],l:"Chops far below",p:"b"}],
+"Holding a Losing Position Too Long":[{c:1,l:"Small loss: exit?",p:"a"},{a:[1,14],l:"Grinds into big loss"}],
+"Sizing Up After a Winning Streak":[{a:[0,9],l:"Win streak"},{c:9,l:"Oversized bet",p:"a"},{a:[9,14],l:"Gains given back"}],
+"A Week of Emotional Trading Mistakes":[{c:4,l:"FOMO chase",p:"a"},{c:8,l:"Revenge add",p:"b"},{c:12,l:"Overconfident spike",p:"a"}],
+"Two Traders, Same Month of Trades":[{a:[0,5],l:"Losing streak"},{c:5,l:"Journaler cuts size",p:"b"},{a:[5,14],l:"Recovers"}],
+"Anatomy of a Reviewed Trade":[{c:4,l:"Entry",p:"b"},{h:44,l:"Stop",p2:"b"},{h:68,l:"Target",p:"r"},{c:14,l:"Actual exit",p:"b"}],
+"The FOMO Chase Pattern":[{a:[3,7],l:"Missed rally"},{c:8,l:"Late FOMO entry",p:"a"},{a:[9,14],l:"Reverses"}],
+"Pre-Market Drift Into the Opening Gap":[{z:[0,9],l:"Pre-market drift",p:"a"},{c:10,l:"9:30 open",p:"b"},{a:[10,14],l:"Volatile gap move"}],
+"Equity Curve Through a Drawdown and Recovery":[{c:0,l:"Peak",p:"b"},{c:7,l:"Drawdown low",p:"b"},{a:[7,14],l:"Cut size, recover",p:"a"}],
+"90 Days of Disciplined, Consistent Execution":[{a:[0,14],l:"Steady, one plan",p:"a"},{c:14,l:"Day 90",p:"b"}],
+"Week 19 Recap: A Disciplined Trader's Equity Curve":[{c:3,l:"Drawdown",p:"b"},{a:[3,14],l:"Process → steady growth",p:"a"}],
+"Higher Timeframe Uptrend With a 5-Minute Dip":[{z:[4,6],l:"5-min 'downtrend'",p:"b"},{a:[0,14],l:"Higher TF: uptrend",p:"a"}],
+"Price Riding Above a Rising Trend":[{a:[0,14],l:"Rising trendline",p:"b"},{c:3,l:"HL",p:"b"},{c:6,l:"HL",p:"b"},{c:9,l:"HL",p:"b"},{c:12,l:"HL",p:"b"}],
+"Nested Higher Highs and Higher Lows":[{c:1,l:"Up-leg",p:"a"},{c:2,l:"Pullback",p:"b"},{a:[0,14],l:"Bigger trend",p:"b"}],
+"Range Tightens, Then Breaks Out":[{z:[0,10],l:"Coiling range",p:"a"},{c:12,l:"Breakout",p:"b"}],
+"A Classic Range Day Oscillation":[{h:61,l:"Resistance"},{h:55,l:"Support",p:"r",p2:"b"},{c:3,l:"Fade",p:"a"},{c:4,l:"Buy",p:"b"}],
+"Opening Range Break Into a Trend Day":[{z:[0,4],l:"Opening range",p:"a"},{c:6,l:"ORB",p:"b"},{a:[6,14],l:"Trend day"}],
+"Trend Day Confirming a Higher-Timeframe Uptrend":[{z:[0,2],l:"Opening range",p:"b"},{c:3,l:"ORB",p:"b"},{a:[3,14],l:"Aligned with HTF trend"}],
+"SPY Drifting Steadily Higher All Day":[{a:[0,14],l:"Index grind lifts all"}],
+"Overnight Futures Grind Before the Cash Open":[{z:[0,8],l:"Overnight /ES session",p:"a"},{c:9,l:"Cash open",p:"b"},{a:[9,14],l:"Carries into the day"}],
+"QQQ Relative Strength Breaking Away From SPY":[{h:50,l:"Even with SPY"},{a:[0,14],l:"Rising = tech leads"}],
+"SPX Pinning Toward Cash Settlement at Expiration":[{z:[0,8],l:"Swings early",p:"b"},{h:60,l:"Settlement level",p:"r",p2:"b"},{z:[9,14],l:"Converges"}],
+"0DTE Option Whipsawing Within a Single Session":[{c:8,l:"Low",p:"b"},{c:9,l:"High",p:"a"},{z:[0,14],l:"Huge swings, minutes matter",p:"a"}],
+"Price Pinning in a Positive Gamma Regime":[{h:55,l:"Pinned strike"},{z:[0,14],l:"Dealer hedging dampens moves",p:"b"}],
+"Week 21 Recap: SPY, Futures & Options in Motion":[{a:[0,4],l:"Market drift"},{c:5,l:"Futures gap",p:"b"},{z:[10,14],l:"Late pin",p:"a"}],
+"RVOL Spike Signals a Stock Waking Up":[{z:[0,5],l:"Light volume",p:"a"},{c:6,l:"RVOL surge",p:"b"},{a:[6,14],l:"In play"}],
+"Holding Up While the Market Slides":[{c:2,l:"Dips with market",p:"b"},{c:4,l:"Reclaims level",p:"b"},{a:[4,14],l:"Relative strength"}],
+"Low Float Fuels an Outsized Spike":[{z:[0,3],l:"Quiet",p:"a"},{a:[3,7],l:"Low float spike"},{c:7,l:"Peak",p:"a"}],
+"Gap and Go on Catalyst News":[{h:50,l:"Prior close"},{c:4,l:"Catalyst gap",p:"b"},{a:[4,14],l:"Go: keeps trending"}],
+"Three Diminishing Pushes to New Highs":[{c:2,l:"Push 1",p:"a"},{c:5,l:"Push 2",p:"a"},{c:8,l:"Push 3 (smallest)",p:"a"},{a:[8,14],l:"Reversal"}],
+"Volume Climax Marks the Top":[{a:[0,6],l:"Surge"},{c:6,l:"Climax top",p:"a"},{a:[6,14],l:"Buyers exhausted"}],
+"A Full In-Play Momentum Day":[{c:2,l:"Catalyst gap",p:"b"},{c:4,l:"Wave",p:"a"},{c:7,l:"Climax",p:"a"},{a:[7,14],l:"Rolls over"}],
+"Selling High, Buying Back Low":[{c:0,l:"Sell short here",p:"a"},{c:14,l:"Buy to cover",p:"b"},{a:[0,14],l:"Profit"}],
+"Hard-to-Borrow Names Gap and Run":[{z:[0,5],l:"Tight supply",p:"a"},{a:[6,14],l:"Accelerates higher"}],
+"Breakout Ignites a Short Squeeze":[{z:[0,7],l:"Sideways base",p:"a"},{c:8,l:"Breakout",p:"b"},{a:[8,14],l:"Shorts cover: squeeze"}],
+"Wide Swings on a Heavily-Shorted Stock":[{z:[0,14],l:"Bulls vs bears: wide swings"},{c:12,l:"Low",p:"b"},{c:13,l:"High",p:"a"}],
+"Thin Volume Turns a Drift Into a Spike":[{a:[0,7],l:"Slow drift down",p:"a"},{c:7,l:"Buyers appear",p:"b"},{a:[7,14],l:"No exit for shorts"}],
+"A Short's Worst-Case: No Ceiling":[{h:36,l:"Short entry"},{a:[2,13],l:"No limit on the upside"},{c:14,l:"Loss keeps growing",p:"b"}],
+"Short Interest Builds, Then the Squeeze":[{a:[0,7],l:"Shorts pile in",p:"a"},{c:7,l:"Breakout",p:"b"},{a:[7,14],l:"Squeeze"}],
+"Futures Price Converging to Spot at Expiration":[{h:50,l:"Spot price",p:"r",p2:"b"},{a:[0,14],l:"Futures converge to spot"}],
+"CL Reacts to Weekly EIA Inventory Data":[{z:[0,7],l:"Before 10:30",p:"b"},{c:8,l:"EIA release",p:"b"}],
+"Gold Spikes During a Risk-Off Move":[{z:[0,4],l:"Calm",p:"a"},{a:[4,9],l:"Risk-off: gold bid"}],
+"Natural Gas Whipsaws on a Weather Forecast Shift":[{z:[0,14],l:"Forecast shift: whipsaw",p:"a"},{c:12,l:"Low",p:"b"},{c:13,l:"High",p:"a"}],
+"Price Gap at Contract Rollover":[{c:8,l:"Rollover gap",p:"b"},{z:[0,7],l:"Old contract",p:"a"},{z:[8,14],l:"New contract",p:"b"}],
+"Futures Trade Nearly Around the Clock":[{z:[0,6],l:"Regular hours",p:"a"},{z:[7,14],l:"Overnight keeps trading",p:"b"}],
+"Futures Price Action Across a Full Contract Cycle":[{z:[0,6],l:"Catalyst swings",p:"a"},{c:7,l:"Rollover gap",p:"b"}],
+"Bitcoin Never Closes: A Continuous Weekend Move":[{z:[5,9],l:"'Weekend': still trading",p:"b"},{a:[0,14],l:"No gap, no pause",p:"a"}],
+"Bitcoin Tracking a Risk-On, Risk-Off Swing":[{a:[0,3],l:"Risk-on"},{c:3,l:"Turn",p:"a"},{a:[3,10],l:"Risk-off with QQQ"}],
+"Quiet Accumulation Before a Breakout":[{z:[0,9],l:"Quiet accumulation",p:"a"},{c:10,l:"Breakout",p:"b"}],
+"IV Spike Into an Event, Then a Crush":[{c:3,l:"Event spike",p:"a"},{a:[3,5],l:"Crush"},{z:[5,14],l:"Flat again",p:"a"}],
+"A Liquidation Cascade and the Snapback":[{a:[2,8],l:"Forced selling cascade"},{c:8,l:"Longs flushed",p:"b"},{a:[8,11],l:"Snapback"}],
+"Wider Daily Swings Than a Typical Stock":[{z:[0,14],l:"Huge swings vs. stocks"},{c:13,l:"High",p:"a"},{c:14,l:"Low",p:"b"}],
+"Week 25 Recap: Crypto's Different Rhythm":[{a:[0,3],l:"Overnight drift"},{c:6,l:"Cascade low",p:"b"},{a:[6,14],l:"Recovery"}],
+"Confluence at Support: Signals Lining Up":[{h:60,l:"Prior support",p2:"b"},{c:6,l:"Test + momentum turns",p:"b"},{a:[6,14],l:"Range expands"}],
+"Two Weeks of Sideways Chop — Premium-Selling Territory":[{h:61,l:"Range top"},{h:55,l:"Range bottom",p:"r",p2:"b"},{z:[0,14],l:"Sell premium here"}],
+"A Liquidity Gap Blows Out the Spread":[{c:4,l:"Liquidity gap",p:"b"},{a:[4,14],l:"Stabilizes"}],
+"The Panic-Sell Low Right Before the Reversal":[{a:[0,6],l:"Sharp drop"},{c:6,l:"Panic sellers here",p:"b"},{a:[6,14],l:"Reversal"}],
+"The Earnings IV Crush: Volatility Collapses at the Gap":[{a:[0,7],l:"IV builds"},{c:9,l:"News: IV collapses",p:"b"}],
+"A Trade Executed Exactly to the Written Plan":[{c:2,l:"Planned entry",p:"b"},{h:58,l:"Stop (honored)",p2:"b"},{h:76,l:"Target hit",p:"r"},{a:[2,14],l:"Plan followed"}],
+"Mid-Year Review: A Full Trade Cycle":[{c:2,l:"Support bounce",p:"b"},{c:3,l:"Entry",p:"a"},{h:78,l:"Planned target",p:"r"}],
+"Price Overshooting Past a Ratio Spread's Sweet Spot":[{h:67,l:"Short strike: max profit"},{a:[8,14],l:"Overshoot erodes profit"}],
+"Broken Wing Butterfly's Ideal Pin Zone":[{h:63,l:"Short strikes"},{z:[5,8],l:"Pin zone: max profit",p:"a"},{a:[8,14],l:"Settles nearby"}],
+"Jade Lizard's One-Sided Risk":[{h:57,l:"Put strike: the only risk",p2:"b"},{a:[0,14],l:"Upside: no risk"}],
+"Testing the Short Call Side":[{h:62,l:"Short call strike"},{a:[0,10],l:"Grinding up"},{c:11,l:"Tested side",p:"a"}],
+"Rolling a Short Call Out in Time":[{h:66,l:"Short strike"},{c:8,l:"Roll out here",p:"a"},{z:[9,14],l:"New expiry, more time",p:"b"}],
+"Extrinsic Value Shrinking Into Ex-Dividend":[{h:70,l:"Strike (deep ITM)",p2:"b"},{c:14,l:"Ex-div: early assignment risk",p:"b"}],
+"Week 27 Recap: Managing Advanced Spreads":[{z:[0,5],l:"Choppy",p:"a"},{a:[5,14],l:"Trend: manage/roll"}],
+"Gamma Scalping a Long Straddle":[{c:1,l:"Sell delta",p:"a"},{c:2,l:"Buy delta",p:"b"},{z:[0,14],l:"Each swing = rebalance profit",p:"b"}],
+"Delta-Hedging a Short Call Position":[{a:[0,14],l:"Stock climbs"},{c:4,l:"Buy shares",p:"a"},{c:8,l:"Buy more",p:"a"},{c:13,l:"Buy more",p:"a"}],
+"Term Structure: Near-Term IV Spike":[{h:65,l:"Long-term IV"},{c:7,l:"Front-month spike",p:"a"},{c:8,l:"Normalizes",p:"b"}],
+"Fat Left Tail: A Slow Grind Up, Then a Sharp Drop":[{a:[0,11],l:"Slow grind up"},{c:12,l:"Sharp drop",p:"b"}],
+"Two Correlated Positions Moving as One":[{z:[0,14],l:"Swings amplify: one big bet"},{c:13,l:"High",p:"a"},{c:14,l:"Low",p:"b"}],
+"Bid-Ask Spread Capture Over Many Trades":[{h:52,l:"Sell the ask"},{h:50,l:"Buy the bid",p:"r",p2:"b"},{z:[0,14],l:"Spread captured each trip"}],
+"Week 28 Review: Options Greeks in Motion":[{z:[0,6],l:"Gamma chop",p:"b"},{c:7,l:"Event spike",p:"a"},{c:8,l:"Skew: sharp drop",p:"b"}],
+"Multi-Day Trend vs. Single-Day Chop":[{c:4,l:"Overnight gap",p:"b"},{c:10,l:"Overnight gap",p:"b"},{a:[0,14],l:"Swing captures it all"}],
+"Base of Higher Lows Before Breakout":[{c:1,l:"HL",p:"b"},{c:3,l:"HL",p:"b"},{c:5,l:"HL",p:"b"},{c:7,l:"HL",p:"b"},{h:64,l:"Resistance",p:"r"},{c:9,l:"Breakout",p:"b"}],
+"Steady Multi-Week Grind Higher":[{a:[0,14],l:"3-week grind"},{c:14,l:"Expiry needs runway",p:"a"}],
+"Earnings Gap After a Flat Pre-Report Drift":[{z:[0,6],l:"Flat into report",p:"a"},{c:7,l:"Earnings gap",p:"b"}],
+"Overnight Gap Down Through a Stop Level":[{h:66,l:"Stop level"},{c:7,l:"Gaps through stop",p:"b"}],
+"Support Bounce With a Defined Stop Distance":[{h:63,l:"Support / entry"},{h:60,l:"Stop",p:"r",p2:"b"},{c:7,l:"Entry",p:"b"},{a:[7,14],l:"Bounce"}],
+"Full Swing Trade Cycle: Base to Breakout to Earnings Gap":[{z:[0,2],l:"Base",p:"a"},{a:[2,6],l:"Breakout"},{c:7,l:"Earnings gap",p:"b"},{a:[10,14],l:"Continues"}],
+"Support Building From a Bid Stack":[{h:60,l:"Bid stack",p2:"b"},{c:3,l:"Hold 1",p:"b"},{c:7,l:"Hold 2",p:"b"},{c:12,l:"Hold 3",p:"b"}],
+"Price Capped by a Hidden Iceberg":[{h:80,l:"Iceberg refills"},{c:3,l:"Rejected",p:"a"},{c:9,l:"Rejected",p:"a"},{c:12,l:"Breaks through",p:"b"}],
+"A Stop Run Above the Prior High":[{h:83,l:"Prior high: stops"},{c:9,l:"Stop run",p:"a"},{a:[9,14],l:"Fades"}],
+"Momentum Ignition Off a Flat Base":[{z:[0,6],l:"Flat, light volume",p:"a"},{c:7,l:"Ignition",p:"b"},{a:[7,12],l:"Sharp breakout"}],
+"A Rally Losing Steam Into Exhaustion":[{a:[0,5],l:"Strong climb"},{z:[6,11],l:"Stalling",p:"a"},{a:[11,14],l:"Rolls over"}],
+"Resistance Break Confirmed by the Tape":[{h:65,l:"Resistance"},{z:[5,9],l:"Offer weakens",p:"b"},{c:10,l:"Clean break",p:"b"}],
+"Week 30 Recap: Tape in Action":[{c:1,l:"Absorption",p:"b"},{h:70,l:"Resistance",p:"r"},{c:11,l:"Ignition",p:"b"}],
+"A Session Shaped by Algo Footprints":[{a:[0,14],l:"Even steps: sliced order"},{c:2,l:"Step",p:"a"},{c:4,l:"Step",p:"a"}],
+"Price Oscillating Around the VWAP Line":[{h:61,l:"VWAP"},{c:1,l:"Above",p:"a"},{c:3,l:"Below",p:"b"},{c:7,l:"Below",p:"b"}],
+"Breakout Ignites a Cascading Momentum Rally":[{z:[0,6],l:"Tight range",p:"a"},{c:7,l:"Breakout",p:"b"},{a:[7,14],l:"Momentum algos pile in"}],
+"Price Overextends Then Snaps Back to the Mean":[{h:56,l:"Mean"},{c:6,l:"Overextended",p:"a"},{a:[6,10],l:"Snaps back"}],
+"A Retail Trap: Buying the Algo Spike Top":[{a:[3,6],l:"Algo spike"},{c:6,l:"Retail buys here",p:"a"},{a:[6,11],l:"Trapped"}],
+"Repeated Defense of a Round-Number Level":[{h:70,l:"Round number",p2:"b"},{c:3,l:"Defended",p:"b"},{c:7,l:"Defended",p:"b"},{c:12,l:"Defended",p:"b"}],
+"Full Week Recap: Algo Footprints in One Chart":[{h:55,l:"Round number"},{c:5,l:"Breakout",p:"a"},{c:9,l:"Faded → retest",p:"b"},{a:[9,14],l:"Confirmed"}],
+"One Stock Tracking Its Sector":[{a:[0,14],l:"Moves with sector peer"}],
+"Spread Widening Then Reverting to the Mean":[{h:70,l:"Average spread"},{c:5,l:"Stretched: enter",p:"a"},{c:11,l:"Reverted: exit",p:"b"}],
+"A Stationary, Range-Bound Spread":[{h:68,l:"Upper band"},{h:56,l:"Lower band",p:"r",p2:"b"},{z:[0,14],l:"Stays in band"}],
+"XOM and CVX Ratio Holding a Tight Range":[{z:[0,14],l:"Narrow band: same crude driver"}],
+"Spread Reaching a Z-Score Extreme":[{h:50,l:"Mean (z = 0)"},{c:7,l:"High z-score",p:"a"},{a:[7,14],l:"Mean-reverts"}],
+"A Spread That Never Reverts":[{h:52,l:"Entry: expected reversion"},{a:[4,11],l:"Keeps widening"},{c:14,l:"Open-ended loss",p:"b"}],
+"Full Week Recap: Spread Behavior Across Regimes":[{a:[0,5],l:"Widens"},{c:5,l:"Stabilizes",p:"a"},{a:[5,11],l:"Reverts"}],
+"Position Sizing Keeps One Loss From Sinking the Account":[{c:5,l:"Bad trade: small dip",p:"b"},{a:[5,14],l:"Keeps growing",p:"a"}],
+"SPY Move vs. an Unhedged Portfolio's Beta-Weighted Delta":[{a:[0,5],l:"SPY drops: portfolio too"},{c:5,l:"Unhedged loss",p:"b"}],
+"Portfolio Value During a Sector-Specific Selloff":[{c:5,l:"Sector news",p:"b"},{a:[4,7],l:"Concentrated hit"}],
+"Correlated Positions Falling Together in a Selloff":[{c:7,l:"All drop together",p:"b"},{z:[0,6],l:"Normally independent",p:"a"}],
+"Realizing a Loss Before Buying Back a Position":[{c:7,l:"Sell: lock in loss",p:"b"},{z:[8,14],l:"Wash-sale window",p:"a"}],
+"Equity Curve at Full Kelly Sizing":[{a:[0,11],l:"Fast growth...",p:"a"},{c:12,l:"Deep drawdown",p:"b"},{c:8,l:"Deep drawdown",p:"b"}],
+"Week 33 Recap: Portfolio Risk Coming Together":[{a:[0,14],l:"Steady, controlled growth"}],
+"Price Rotating Inside the Value Area@W34":[{h:63,l:"Value Area High"},{h:58,l:"Value Area Low",p:"r",p2:"b"},{z:[2,14],l:"Rotation inside value",p:"b"}],
+"Point of Control Pulling Price Back to Center":[{h:50,l:"POC"},{c:2,l:"Away",p:"a"},{c:5,l:"Away",p:"b"},{c:9,l:"Pulled back",p:"a"}],
+"Range Extension Above the Initial Balance":[{z:[0,6],l:"Initial Balance",p:"a"},{h:61,l:"IB high",p:"r"},{a:[7,14],l:"Range extension"}],
+"Single-Print Tail Left by a Fast Move":[{z:[1,3],l:"Single prints",p:"b"},{a:[1,4],l:"Fast move"}],
+"P-Shaped Profile from Late Short Covering":[{z:[0,7],l:"Thin base",p:"a"},{z:[10,14],l:"Volume builds at highs",p:"b"}],
+"Rejection Candle Confirms Value Area High":[{h:72,l:"Value Area High"},{c:7,l:"Wick rejection",p:"b"},{a:[8,14],l:"Back inside value"}],
+"Full Session Profile Recap":[{z:[0,3],l:"Initial Balance",p:"a"},{z:[4,9],l:"Value rotation",p:"b"},{a:[9,14],l:"P-shape push"}],
+"Pullback Bounces at the 61.8% Level":[{a:[0,5],l:"Rally"},{h:48,l:"61.8% retrace",p:"r",p2:"b"},{c:9,l:"Bounce",p:"b"},{a:[9,14],l:"Resumes"}],
+"Comparing Shallow vs Deep Retracement Levels":[{c:3,l:"38.2%",p:"b"},{c:6,l:"50%",p:"b"},{c:9,l:"61.8% holds",p:"b"},{a:[9,14],l:"Resumes"}],
+"Breakout Extending to the 161.8% Target":[{c:7,l:"Retrace low",p:"b"},{h:60,l:"Prior high"},{c:11,l:"Breakout",p:"b"},{h:74,l:"161.8% target",p:"r"}],
+"The XABCD Harmonic Structure":[{c:0,l:"X",p:"b"},{c:5,l:"A",p:"a"},{c:8,l:"B",p:"b"},{c:10,l:"C",p:"a"},{c:14,l:"D",p:"b"}],
+"A Gartley Pattern Completing at 78.6%":[{c:0,l:"X",p:"b"},{c:5,l:"A",p:"a"},{c:8,l:"B",p:"b"},{c:10,l:"C",p:"a"},{c:13,l:"D = 78.6% of XA",p:"b"}],
+"A Crab Pattern Extending Past Point X":[{h:70,l:"Point X"},{c:4,l:"A",p:"a"},{c:13,l:"D: 161.8% extension",p:"b"}],
+"Week 35 Recap: Retracement to Harmonic Completion":[{c:6,l:"Fib bounce",p:"b"},{a:[6,12],l:"Swing to completion"},{c:12,l:"Completion zone",p:"a"}],
+"Supply Zone vs a Simple Resistance Line":[{z:[6,9],l:"Supply zone"},{a:[9,14],l:"Hard reversal, 1st touch"}],
+"Demand Zone vs a Simple Support Line":[{z:[7,10],l:"Demand zone",p:"b"},{a:[10,14],l:"Hard reversal, 1st touch"}],
+"A Tight Base Right Before an Explosive Breakout":[{z:[0,8],l:"Base = new zone",p:"a"},{c:9,l:"Explosive move",p:"b"}],
+"First Test vs Second Test of the Same Zone":[{h:45,l:"Zone",p2:"b"},{c:5,l:"1st test: strong",p:"b"},{c:13,l:"2nd test: weaker",p:"b"}],
+"Zone Aligning With a Rising Moving Average":[{z:[6,9],l:"Zone + rising MA",p:"b"},{a:[9,14],l:"Sharp bounce"}],
+"Rejection Candle Confirms a Demand Zone":[{h:44,l:"Demand zone",p2:"b"},{c:8,l:"Rejection candle",p:"b"},{a:[9,14],l:"Entry confirmed"}],
+"Week 36 Review: Zones in Action":[{z:[0,3],l:"Base",p:"a"},{a:[3,6],l:"Explosive move"},{c:11,l:"Retest of zone",p:"b"},{a:[11,14],l:"Entry"}],
+"December Tax-Loss Dip, January Rebound":[{a:[0,7],l:"Tax-loss selling"},{c:7,l:"Year-end low",p:"b"},{a:[7,14],l:"January rebound"}],
+"Nov-Apr Strength vs. May-Oct Chop":[{a:[0,6],l:"Nov-Apr strength"},{z:[7,14],l:"May-Oct chop",p:"b"}],
+"Late-Summer Slide Through September":[{a:[0,12],l:"September slide"},{c:12,l:"Stabilizes",p:"b"}],
+"Price Pinned Near a Heavy Open-Interest Strike":[{h:50,l:"$50 strike (heavy OI)"},{z:[0,14],l:"Pinned into expiration",p:"b"}],
+"Volume-Driven Whipsaw Into the Close":[{z:[0,7],l:"Tight session",p:"b"},{c:8,l:"Close: spike",p:"a"},{c:9,l:"Flush",p:"b"}],
+"Late-December Drift Into a New-Year Pop":[{z:[0,8],l:"Holiday drift",p:"a"},{a:[8,14],l:"New-year pop"}],
+"A Year of Seasonal Patterns at a Glance":[{c:1,l:"Jan rebound",p:"a"},{z:[2,6],l:"Summer chop",p:"a"},{c:7,l:"Sept dip",p:"b"},{c:10,l:"Witching",p:"b"},{a:[10,14],l:"Santa rally"}],
+"Stock Reaction to a Rate Hike Announcement":[{a:[0,4],l:"Into the decision"},{c:5,l:"Bigger hike",p:"a"},{a:[5,14],l:"Sells off"}],
+"Stock Index Reaction Around Yield Curve Inversion":[{c:2,l:"Curve inverts",p:"a"},{a:[2,14],l:"Recession worries"}],
+"Commodity Price Fading as the Dollar Index Strengthens":[{a:[0,14],l:"DXY up → commodity down"}],
+"U.S. Futures Gapping Down After an Overnight Global Selloff":[{z:[0,4],l:"Prior session",p:"b"},{c:5,l:"Overnight gap down",p:"b"},{z:[6,14],l:"Stabilizes"}],
+"Market Grinding Higher During a QE-Style Liquidity Expansion":[{a:[0,14],l:"Liquidity grind, few pullbacks"}],
+"Index Forming Lower Highs and Lower Lows into a Weakening Backdrop":[{c:1,l:"LH",p:"a"},{c:5,l:"LH",p:"a"},{c:9,l:"LH",p:"a"},{c:4,l:"LL",p:"b"},{c:8,l:"LL",p:"b"},{c:14,l:"LL",p:"b"}],
+"Week 38 Recap: Macro Forces Moving a Market":[{z:[0,14],l:"Macro push and pull",p:"a"},{c:12,l:"Low",p:"b"}],
+"Position Size Shrinks as Volatility Expands":[{z:[0,6],l:"Calm: normal size",p:"a"},{z:[7,14],l:"Wide swings: cut size",p:"b"}],
+"A Tail Event Beyond the Expected VaR Range":[{h:60,l:"95% VaR floor",p2:"b"},{z:[0,11],l:"Predictable range"},{c:12,l:"Tail event",p:"b"}],
+"A Winning Trade's Adverse Dip Before Recovery":[{h:60,l:"Entry"},{c:4,l:"Max adverse excursion",p:"b"},{a:[4,14],l:"Recovers to win"}],
+"Correlated Positions Losing Together at Once":[{z:[0,6],l:"Each looks small",p:"b"},{a:[6,10],l:"All drop together"}],
+"Price Gaps Straight Through a Stop-Loss Level":[{h:62,l:"Stop level"},{c:9,l:"Fills way below stop",p:"b"}],
+"Account Equity Flatlines After Hitting the Monthly Cap":[{h:75,l:"−3% monthly cap",p2:"b"},{c:5,l:"Cap hit",p:"b"},{z:[7,14],l:"Flat: done for the month",p:"a"}],
+"Week 39 Recap: Risk Managed at Every Level":[{c:5,l:"Stopped out early",p:"b"},{c:12,l:"Monthly cap hit",p:"b"}],
+"Edge Plays Out Over Many Trades":[{c:2,l:"Loser",p:"b"},{c:5,l:"Winner",p:"a"},{a:[0,14],l:"Net upward drift",p:"b"}],
+"Backtested Equity Curve":[{a:[0,14],l:"Steady backtest growth",p:"a"}],
+"Backtest Fit vs Forward Results":[{a:[0,6],l:"Backtest: smooth"},{z:[7,14],l:"Forward test: choppier",p:"a"}],
+"A Defined Pullback Setup":[{c:4,l:"Pullback to support",p:"b"},{c:5,l:"Bounce = entry",p:"a"},{c:12,l:"Same setup again",p:"b"}],
+"An Abnormal Gap Breaks the Pattern":[{z:[0,7],l:"Normal behavior",p:"a"},{c:8,l:"Abnormal gap: override",p:"b"}],
+"Edge Decay Followed by Adaptation":[{a:[0,8],l:"Edge decays",p:"a"},{c:8,l:"Rule adjusted",p:"b"},{a:[8,14],l:"Recovers",p:"a"}],
+"A Full Strategy Development Journey":[{z:[0,5],l:"Backtest",p:"a"},{z:[6,8],l:"Forward test",p:"b"},{a:[8,14],l:"Live, adjusted",p:"a"}],
+"Equity Curve Toward a Monthly Income Target":[{h:69,l:"Capital target",p:"r"},{a:[0,14],l:"Compounding",p:"b"}],
+"Position Size Growing With Account Equity":[{z:[0,5],l:"Small swings",p:"a"},{z:[10,14],l:"Same 1%, bigger $ swings",p:"b"}],
+"Two Accounts, One Correlated Position":[{c:6,l:"Both drop together",p:"b"},{a:[0,14],l:"Combined equity",p:"a"}],
+"Realized Gains Before and After Tax Drag":[{c:14,l:"Gross gain",p:"a"},{h:72,l:"After-tax take-home",p:"r",p2:"b"}],
+"Drawdown Breach in a Funded Account":[{h:66,l:"Prop max drawdown",p2:"b"},{c:8,l:"Breach: account lost",p:"b"}],
+"Smoother Equity Curve of a Disciplined Trading Business":[{a:[0,14],l:"Low-volatility growth",p:"a"}],
+"Week 41 Recap: Full-Time Trading Fundamentals":[{a:[0,14],l:"Planned, scaled growth",p:"a"},{c:3,l:"Controlled dip",p:"b"}],
+"Confirmed Breakout vs a Fakeout":[{h:53,l:"Breakout level"},{c:7,l:"Breakout",p:"b"},{c:10,l:"Retest holds",p:"b"},{a:[10,14],l:"Confirmed"}],
+"A Late Entry Bought Near the Top":[{c:6,l:"Late entry",p:"a"},{c:12,l:"Panic exit at low",p:"b"}],
+"A Base Built From Higher Lows":[{c:2,l:"HL",p:"b"},{c:6,l:"HL",p:"b"},{c:10,l:"HL",p:"b"},{a:[0,14],l:"Stronger base",p:"b"}],
+"Anatomy of a Pump-and-Dump Spike":[{z:[0,4],l:"Quiet stock",p:"a"},{a:[4,9],l:"Pump (hype)"},{a:[9,14],l:"Dump"}],
+"A Steady, Well-Supported Uptrend":[{a:[0,14],l:"Steady HH/HL"},{c:3,l:"Shallow pullback",p:"b"},{c:9,l:"Shallow pullback",p:"b"}],
+"A Clean, Textbook Trend Structure":[{c:2,l:"HL",p:"b"},{c:4,l:"HL",p:"b"},{c:3,l:"HH",p:"a"},{c:5,l:"HH",p:"a"}],
+"The Full Cycle: Base, Breakout, Pullback, Continuation":[{z:[0,4],l:"Base",p:"a"},{c:5,l:"Breakout",p:"b"},{c:8,l:"Pullback",p:"b"},{a:[8,14],l:"Continuation"}],
+"A Controlled, Steady Session":[{a:[0,14],l:"Smooth, planned climb"}],
+"The Moment Before an Impulsive Trade":[{c:7,l:"Urge to chase",p:"a"},{z:[8,14],l:"Wait for the real setup",p:"a"}],
+"Afternoon Fatigue Drift":[{z:[0,6],l:"Morning: controlled",p:"a"},{z:[7,14],l:"Afternoon: erratic",p:"b"}],
+"Controlled Climb, Then an Oversized Reversal":[{a:[0,9],l:"Disciplined climb"},{c:10,l:"Impulsive spike",p:"a"},{a:[10,14],l:"Crash"}],
+"A Losing Month With a Sizing Cut":[{a:[0,5],l:"Steep losses"},{c:6,l:"Size cut",p:"b"},{z:[7,14],l:"Losses slow",p:"a"}],
+"Same Planned Loss, Two Different Reactions":[{c:4,l:"Entry",p:"a"},{h:57,l:"Planned stop",p2:"b"},{c:11,l:"Stopped as planned",p:"b"}],
+"Putting It All Together Under Pressure":[{a:[0,4],l:"Rough patch"},{c:4,l:"Rules kick in",p:"b"},{a:[4,14],l:"Controlled recovery"}],
+"A Momentum Push and Shallow Pullback":[{a:[3,8],l:"Momentum push"},{c:9,l:"Shallow pullback",p:"b"},{c:10,l:"Entry",p:"a"}],
+"Consolidation Box Breaks to New Highs":[{z:[0,8],l:"Consolidation box",p:"a"},{c:9,l:"Breakout",p:"b"},{a:[9,14],l:"Surge"}],
+"Opening 15 Minutes Sets the Range":[{h:55,l:"OR high"},{h:48,l:"OR low",p:"r",p2:"b"},{c:9,l:"Breaks OR high",p:"b"}],
+"Failed Breakdown Reclaims the Level":[{h:48,l:"Support"},{c:6,l:"Fake breakdown",p:"b"},{c:9,l:"Reclaimed",p:"b"},{a:[9,14],l:"Sellers trapped"}],
+"Pullback to VWAP Finds Support":[{h:58,l:"VWAP",p2:"b"},{c:6,l:"Tags VWAP",p:"b"},{a:[6,14],l:"Bounce"}],
+"New High of Day Triggers Follow-Through":[{h:72,l:"High of day"},{c:6,l:"Test 1",p:"b"},{c:9,l:"Test 2",p:"b"},{c:10,l:"Break HOD",p:"b"}],
+"Combining Setups: Range, VWAP, and HOD":[{c:2,l:"OR break",p:"b"},{c:5,l:"VWAP hold",p:"b"},{h:60,l:"HOD",p:"r"},{c:10,l:"HOD break",p:"b"}],
+"A Calm Session Turns Volatile Fast":[{z:[0,7],l:"Calm range",p:"b"},{c:8,l:"Sudden spike",p:"a"},{c:10,l:"Reversal",p:"b"}],
+"Gamma-Driven Whipsaw Near the Strike":[{h:60,l:"Strike"},{z:[0,5],l:"Small swings",p:"a"},{a:[9,14],l:"Gamma widens swings"}],
+"Open Volatility, Midday Lull, Close Volatility":[{z:[0,4],l:"Volatile open",p:"a"},{z:[5,11],l:"Midday lull",p:"a"},{z:[12,14],l:"Volatile close",p:"b"}],
+"A Breakout That Punishes a Naked Short":[{h:60,l:"Short entry"},{a:[4,10],l:"Breakout: unlimited risk"},{c:10,l:"Spread caps this",p:"a"}],
+"Wide-Range Session Matching an Elevated VIX":[{z:[0,14],l:"High VIX: wide daily ranges",p:"a"},{c:10,l:"Low",p:"b"},{c:9,l:"High",p:"a"}],
+"Reversal After a Missed Exit Point":[{h:69,l:"Profit target zone"},{c:5,l:"Should exit",p:"a"},{a:[5,14],l:"Gives it all back"}],
+"A Full 0DTE Session, Start to Finish":[{z:[0,4],l:"Volatile open",p:"b"},{z:[5,9],l:"Chop",p:"a"},{z:[10,14],l:"Volatile close",p:"b"}],
+"Accumulation Range Before a Breakout":[{z:[0,9],l:"Accumulation range",p:"a"},{c:10,l:"Breakout",p:"b"},{a:[10,14],l:"Markup"}],
+"Price Holds Steady Despite a Large Dark Pool Print":[{c:7,l:"Big dark pool print",p:"a"},{z:[0,14],l:"Quoted price doesn't move",p:"b"}],
+"Stock Breaks Out Days After a Call-Buying Spike":[{c:5,l:"Unusual call buying",p:"a"},{z:[0,9],l:"Consolidating",p:"b"},{c:10,l:"Breakout",p:"b"}],
+"Block Print Above the Ask Lifts Price Permanently":[{c:7,l:"Block above the ask",p:"b"},{h:66,l:"New floor holds",p:"r"}],
+"Price Reverses After Speculative Positioning Peaks":[{a:[0,9],l:"Crowd piles in"},{c:9,l:"Record net-long",p:"a"},{a:[9,14],l:"Reverses"}],
+"Signal Confirmed Only After Price Breaks Resistance":[{h:49,l:"Resistance"},{c:5,l:"Call buying (early)",p:"a"},{c:9,l:"Confirmed entry",p:"b"}],
+"Multiple Institutional Footprints Line Up Before a Breakout":[{c:3,l:"Accumulation",p:"b"},{c:7,l:"Block print",p:"b"},{c:9,l:"Call sweep",p:"b"},{a:[9,14],l:"Breakout"}],
+"Gap Up Open With Continuation":[{h:50,l:"Prior close"},{c:5,l:"Gap up",p:"b"},{a:[5,14],l:"Holds and goes"}],
+"Uptrend Day With Higher Lows":[{c:2,l:"HL",p:"b"},{c:6,l:"HL",p:"b"},{c:10,l:"HL",p:"b"},{a:[0,14],l:"Above VWAP",p:"b"}],
+"Climax High Followed By Sharp Reversal":[{c:6,l:"Climax high",p:"a"},{a:[6,14],l:"Closes near lows"}],
+"Range-Bound Chop Between Support And Resistance":[{h:52.5,l:"Resistance"},{h:48.5,l:"Support",p:"r",p2:"b"},{c:7,l:"False breakout",p:"a"}],
+"Post-Earnings Gap With IV Crush":[{z:[0,5],l:"IV elevated",p:"a"},{c:6,l:"Gap up + IV crush",p:"b"}],
+"Whipsaw At A Scheduled News Release":[{c:6,l:"Spike",p:"a"},{c:7,l:"Reverses",p:"b"},{z:[9,14],l:"Settles"}],
+"Gap, Trend, And Reversal In One Session":[{c:2,l:"Gap and go",p:"b"},{a:[2,9],l:"Midday trend"},{a:[9,14],l:"Reversal into close"}],
+"Price Rotating Inside the Value Area@W48":[{h:74,l:"VAH"},{h:64,l:"POC",p:"r"},{h:55,l:"VAL",p2:"b"},{c:7,l:"Rotates back",p:"b"}],
+"Repeated Rejection at a Resting Order Wall":[{h:73,l:"Order wall"},{c:5,l:"Rejected",p:"b"},{c:9,l:"Rejected",p:"b"},{c:14,l:"Wall gives way",p:"b"}],
+"Absorption Before a Breakout":[{z:[1,10],l:"Absorption: effort, no result",p:"a"},{c:11,l:"Release",p:"b"}],
+"Price Makes New Highs While Momentum Fades":[{a:[0,2],l:"Strong push"},{a:[9,11],l:"Weaker push"},{c:13,l:"Divergence",p:"a"}],
+"A Burst of Large Prints Precedes a Breakout":[{z:[7,10],l:"Prints speed up",p:"a"},{c:11,l:"Price accelerates",p:"b"}],
+"Multiple Signals Aligning at One Support Level":[{h:43,l:"Support level",p2:"b"},{c:4,l:"Stall + signals align",p:"b"},{a:[5,14],l:"Sharp reversal"}],
+"A Full Confluence Setup From Open to Breakout":[{z:[0,7],l:"Range rotation",p:"a"},{c:4,l:"Absorbs selling",p:"b"},{a:[7,14],l:"Breakout"}],
+"One Setup, Repeated Cleanly":[{z:[0,8],l:"Wait through the noise",p:"a"},{c:9,l:"THE setup",p:"b"}],
+"Volatile Open, Quiet Midday, Active Close":[{z:[0,4],l:"Volatile open",p:"b"},{z:[5,12],l:"Quiet midday",p:"a"},{a:[12,14],l:"Active close"}],
+"Sector Peers Grinding Together":[{a:[0,14],l:"Familiar stair-step"},{c:3,l:"Step",p:"b"},{c:6,l:"Step",p:"b"}],
+"Amplified Range vs a Plain Stock":[{z:[0,14],l:"Leveraged: amplified swings",p:"a"},{c:13,l:"High",p:"a"},{c:14,l:"Low",p:"b"}],
+"Slow Grind vs Sharp Scalp":[{a:[0,14],l:"Hold through small dips"},{c:3,l:"Don't exit here",p:"a"}],
+"A Codified Pullback-and-Break Setup":[{c:3,l:"Pullback to support",p:"b"},{h:58,l:"Prior high",p:"r"},{c:10,l:"Break to new high",p:"b"}],
+"A Full Session Built On One Edge":[{c:3,l:"Setup",p:"b"},{c:6,l:"Setup",p:"b"},{c:9,l:"Setup",p:"b"},{a:[0,14],l:"Repeatable structure"}],
+"Sell Low, Buy Back Too Soon":[{c:6,l:"Sell at a loss",p:"b"},{c:8,l:"Buy back",p:"a"},{z:[6,14],l:"30-day wash-sale window",p:"b"}],
+"Choppy Year, Marked at Zero Hour":[{z:[0,13],l:"Choppy trades all year",p:"a"},{c:14,l:"Dec 31 mark",p:"b"}],
+"Short Hold, Long-Term Tax Treatment":[{c:0,l:"Open SPX option",p:"b"},{c:14,l:"Close <3 wks: still 60/40",p:"b"}],
+"A Year of Hundreds of Small Trades":[{z:[0,14],l:"Too many trades to log by hand",p:"a"}],
+"Full-Year Equity Curve Review":[{a:[0,14],l:"Overall trend: up",p:"b"},{c:4,l:"Noise",p:"b"},{c:10,l:"Noise",p:"b"}],
+"Smoother Curve in Year Two":[{a:[0,14],l:"Steady Year 2",p:"a"},{c:2,l:"Shallow dip",p:"b"}],
+"Week 50 Recap: Tax Season Prep":[{c:2,l:"Loss",p:"b"},{c:3,l:"Win",p:"a"},{c:14,l:"Reconcile all",p:"a"}],
+"Skill-Stacking Growth Curve":[{c:3,l:"+ strategy 1",p:"b"},{c:7,l:"+ strategy 2",p:"b"},{c:10,l:"+ strategy 3",p:"b"}],
+"Drawdown Limit Test on an Eval Account":[{h:39,l:"Max drawdown limit",p2:"b"},{c:4,l:"Close call",p:"a"},{a:[11,14],l:"Survives",p:"a"}],
+"Personal Trading vs. Licensed Advising Paths":[{z:[0,10],l:"Personal capital plateau",p:"a"},{c:11,l:"Licensed adviser",p:"b"}],
+"Verified Equity Curve Over Time":[{c:2,l:"Losing day",p:"b"},{c:7,l:"Losing day",p:"b"},{a:[0,14],l:"Real record",p:"a"}],
+"Monthly Performance Reporting Cadence":[{c:2,l:"Down month: reported",p:"b"},{c:5,l:"Down month",p:"b"},{c:14,l:"Every month",p:"b"}],
+"Compounding a Small Account Over Time":[{a:[0,7],l:"Slow at first",p:"a"},{a:[7,14],l:"Compounding speeds up",p:"b"}],
+"Year 2 Roadmap: Putting It Together":[{a:[0,14],l:"Steady compounding",p:"a"},{c:14,l:"Year 2",p:"b"}],
+"Chaotic Early Trades vs a Disciplined Equity Curve":[{z:[0,6],l:"Untested: chaos",p:"a"},{a:[7,14],l:"Real process",p:"a"}],
+"Following a Written Rule vs Breaking It Under Stress":[{a:[0,7],l:"Rule honored"},{c:8,l:"Rule ignored",p:"a"},{a:[8,10],l:"Sharp drop"}],
+"Consistent Habits Produce a Steadier Equity Curve":[{a:[0,14],l:"Fixed risk = smooth curve",p:"a"}],
+"Compounding Small Consistent Gains Over Time":[{a:[0,14],l:"Small gains compound"}],
+"Explaining a Support Bounce to a New Trader":[{h:43,l:"Support",p2:"b"},{c:4,l:"Bounce 1",p:"b"},{c:10,l:"Bounce 2",p:"b"}],
+"Choppy Open Followed by a Disciplined, Checklist-Confirmed Entry":[{z:[0,7],l:"Choppy: wait",p:"a"},{c:9,l:"Checklist confirmed",p:"b"},{a:[9,14],l:"Entry pays"}],
+"365 Days of Compounded Skill and Discipline":[{c:0,l:"Day 1",p:"b"},{a:[0,14],l:"Process compounds"},{c:14,l:"Day 365",p:"b"}],
+};
+
 function renderWatchStep(body,footer) {
   const l=modalLesson;
   let data, caption, gaps;
@@ -1259,11 +1758,18 @@ function renderWatchStep(body,footer) {
     caption = picked.caption;
     gaps = picked.pattern === 'gapUp' || picked.pattern === 'gapDown';
   }
+  // Keep labels ~11px on screen: the chart is drawn 420 units wide, so on a
+  // narrower modal scale the label font up to compensate.
+  const chartPx = (body.clientWidth || CH.W) - 34;
+  CH.fs = 11 * Math.min(1.45, Math.max(1, CH.W / chartPx));
+  const marks = l.watchData ? (WATCH_MARKS[`${watchTitle}@W${l.week}`] || WATCH_MARKS[watchTitle]) : null;
   body.innerHTML=`<div class="step-tag">Step 2 of 5 · Watch</div>
 <div class="step-title">${watchTitle}</div>
 <div class="step-content"><p>Study this chart carefully before moving to practice:</p></div>
-<div class="chart-wrap">${l.watchType==='volume' ? buildVolumeSVG(data) : l.watchType==='equity' ? buildLineSVG(data) : buildSVGChart(data, { gaps })}</div>
-<p class="chart-caption">${caption}</p>`;
+<div class="chart-wrap">
+<div class="chart-insert"><span class="ci-tag">What to watch</span>${caption}</div>
+${l.watchType==='volume' ? buildVolumeSVG(data, marks) : l.watchType==='equity' ? buildLineSVG(data, marks) : buildSVGChart(data, { gaps, marks })}
+</div>`;
   footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" onclick="nextStep()">Next: Practice →</button>`;
 }
 
