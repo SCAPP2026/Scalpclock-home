@@ -1054,21 +1054,45 @@ function renderLearnStep(body,footer) {
   footer.innerHTML=`<button class="btn-p" onclick="nextStep()">Next: Watch a Chart →</button>`;
 }
 
-function buildSVGChart(data) {
-  const w=560,h=140,pad=16,min=Math.min(...data)-2,max=Math.max(...data)+2;
-  const xStep=(w-pad*2)/(data.length-1);
+// Lesson series are authored as closing prices, so derive OHLC candles from
+// them: each candle opens at the prior close, closes at its own value, and gets
+// a wick sized off the series range. Wicks use a seeded hash (not Math.random)
+// so the same lesson always draws the same chart. With opts.gaps, an outsized
+// move opens near its close instead, so gap lessons show a visible gap rather
+// than one giant candle.
+function closesToCandles(data, opts={}) {
+  const range=(Math.max(...data)-Math.min(...data))||1;
+  const moves=data.slice(1).map((v,i)=>Math.abs(v-data[i])).sort((a,b)=>a-b);
+  const medMove=moves[Math.floor(moves.length/2)]||1;
+  const seed=n=>{const x=Math.sin(n*12.9898+78.233)*43758.5453;return x-Math.floor(x);};
+  return data.map((c,i)=>{
+    let o=i===0?c-(data[1]-c)*0.6:data[i-1];
+    const move=c-o;
+    if(opts.gaps&&i>0&&Math.abs(move)>medMove*3) o=data[i-1]+move*0.85;
+    const wick=range*0.02;
+    const h=Math.max(o,c)+wick+seed(i+c)*range*0.05;
+    const l=Math.min(o,c)-wick-seed(i*7+c)*range*0.05;
+    return {o,h,l,c};
+  });
+}
+
+function buildSVGChart(data, opts={}) {
+  const candles=closesToCandles(data,opts);
+  const w=560,h=140,pad=16;
+  const allVals=candles.flatMap(c=>[c.h,c.l]);
+  const min=Math.min(...allVals)-2,max=Math.max(...allVals)+2;
+  const xStep=(w-pad*2)/candles.length;
+  const bodyW=Math.max(4,xStep*0.55);
   const y=v=>h-pad-((v-min)/(max-min))*(h-pad*2);
-  const pts=data.map((v,i)=>`${pad+i*xStep},${y(v)}`).join(' ');
-  const area=data.map((v,i)=>`${pad+i*xStep},${y(v)}`).join(' L ');
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
-<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#16d97e" stop-opacity="0.3"/>
-<stop offset="100%" stop-color="#16d97e" stop-opacity="0"/>
-</linearGradient></defs>
-<path d="M ${area} L ${pad+(data.length-1)*xStep},${h-pad} L ${pad},${h-pad} Z" fill="url(#cg)"/>
-<polyline points="${pts}" fill="none" stroke="#16d97e" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-${data.map((v,i)=>i===data.length-1?`<circle cx="${pad+i*xStep}" cy="${y(v)}" r="4" fill="#16d97e"/>`:''). join('')}
-</svg>`;
+  const bars=candles.map((c,i)=>{
+    const cx=pad+xStep*i+xStep/2;
+    const color=c.c>=c.o?'#16d97e':'#f54242';
+    const bodyTop=y(Math.max(c.o,c.c));
+    const bodyH=Math.max(2,y(Math.min(c.o,c.c))-bodyTop);
+    return `<line x1="${cx}" y1="${y(c.h)}" x2="${cx}" y2="${y(c.l)}" stroke="${color}" stroke-width="1.5"/>
+<rect x="${cx-bodyW/2}" y="${bodyTop}" width="${bodyW}" height="${bodyH}" rx="1" fill="${color}"/>`;
+  }).join('\n');
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${bars}</svg>`;
 }
 
 // Most of the 365-day curriculum is auto-generated from WEEK_DEFS (see
@@ -1169,42 +1193,44 @@ function pickWatchPattern(lesson) {
   const category = lesson.category || '';
   if (NON_CHART_CATEGORIES.includes(category)) {
     return {
-      data: CHART_PATTERNS.uptrend(),
+      data: CHART_PATTERNS.uptrend(), pattern: 'uptrend',
       caption: `This lesson is about trading mindset and career skills rather than a specific chart pattern — here's a reference price chart while you read on.`,
     };
   }
   const hay = `${lesson.title || ''} ${category}`.toLowerCase();
   for (const rule of WATCH_RULES) {
     if (rule.kw.some(k => hay.includes(k))) {
-      return { data: CHART_PATTERNS[rule.pattern](), caption: rule.caption };
+      return { data: CHART_PATTERNS[rule.pattern](), pattern: rule.pattern, caption: rule.caption };
     }
   }
   if (CATEGORY_DEFAULTS[category]) {
     const d = CATEGORY_DEFAULTS[category];
-    return { data: CHART_PATTERNS[d.pattern](), caption: d.caption };
+    return { data: CHART_PATTERNS[d.pattern](), pattern: d.pattern, caption: d.caption };
   }
   return {
-    data: CHART_PATTERNS.uptrend(),
+    data: CHART_PATTERNS.uptrend(), pattern: 'uptrend',
     caption: `A reference price chart for "${lesson.title}."`,
   };
 }
 
 function renderWatchStep(body,footer) {
   const l=modalLesson;
-  let data, caption;
+  let data, caption, gaps;
+  const watchTitle = l.watchTitle || l.title;
   if (l.watchData) {
     data = l.watchData;
     caption = l.watchCaption || 'Observe how price moves and what it tells you.';
+    gaps = /\bgap/i.test(`${watchTitle} ${caption}`);
   } else {
     const picked = pickWatchPattern(l);
     data = picked.data;
     caption = picked.caption;
+    gaps = picked.pattern === 'gapUp' || picked.pattern === 'gapDown';
   }
-  const watchTitle = l.watchTitle || l.title;
   body.innerHTML=`<div class="step-tag">Step 2 of 5 · Watch</div>
 <div class="step-title">${watchTitle}</div>
 <div class="step-content"><p>Study this chart carefully before moving to practice:</p></div>
-<div class="chart-wrap">${buildSVGChart(data)}</div>
+<div class="chart-wrap">${buildSVGChart(data, { gaps })}</div>
 <p class="chart-caption">${caption}</p>`;
   footer.innerHTML=`<button class="btn-s" onclick="prevStep()">← Back</button><button class="btn-p" onclick="nextStep()">Next: Practice →</button>`;
 }
