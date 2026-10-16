@@ -11,20 +11,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paper Trading — Practice Stocks & Options Risk-Free | ScalpClock</title>
-<meta name="description" content="Practice trading stocks and options with $25,000 in virtual cash at live market prices. Free paper trading account for every ScalpClock member.">
+<title>Free Paper Trading Account: Practice Stocks &amp; Options With $25K | ScalpClock</title>
+<meta name="description" content="Free paper trading simulator: trade stocks and options with $25,000 in virtual cash at live market prices. Real bid/ask fills, options chains, P&amp;L tracking.">
 <link rel="canonical" href="https://scalpclock.com/paper-trading">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ScalpClock">
-<meta property="og:title" content="Paper Trading — Practice Stocks & Options Risk-Free | ScalpClock">
-<meta property="og:description" content="Practice trading stocks and options with $25,000 in virtual cash at live market prices. Free paper trading account for every ScalpClock member.">
+<meta property="og:title" content="Free Paper Trading Account: Practice Stocks &amp; Options With $25K | ScalpClock">
+<meta property="og:description" content="Free paper trading simulator: trade stocks and options with $25,000 in virtual cash at live market prices. Real bid/ask fills, options chains, P&amp;L tracking.">
 <meta property="og:url" content="https://scalpclock.com/paper-trading">
 <meta property="og:image" content="https://scalpclock.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Paper Trading — Practice Stocks & Options Risk-Free | ScalpClock">
-<meta name="twitter:description" content="Practice trading stocks and options with $25,000 in virtual cash at live market prices. Free paper trading account for every ScalpClock member.">
+<meta name="twitter:title" content="Free Paper Trading Account: Practice Stocks &amp; Options With $25K | ScalpClock">
+<meta name="twitter:description" content="Free paper trading simulator: trade stocks and options with $25,000 in virtual cash at live market prices. Real bid/ask fills, options chains, P&amp;L tracking.">
 <meta name="twitter:image" content="https://scalpclock.com/og-image.png">
 
 <link rel="icon" href="/favicon.ico">
@@ -42,6 +42,8 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"></noscript>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "ScalpClock Paper Trading", "applicationCategory": "FinanceApplication", "operatingSystem": "Web", "isAccessibleForFree": true, "url": "https://scalpclock.com/paper-trading", "description": "Free paper trading simulator: trade stocks and options with $25,000 in virtual cash at live market prices, with real bid/ask fills, options chains and P&L tracking.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "ScalpClock", "url": "https://scalpclock.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is ScalpClock paper trading free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Every ScalpClock member gets a paper trading account with $25,000 in virtual cash at no cost. Creating a free account is all it takes."}}, {"@type": "Question", "name": "Can I paper trade options as well as stocks?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. You can buy and sell stocks, and buy calls and puts from a full options chain with bid, ask, delta and implied volatility for each contract. Selling to close works on any contract you hold. Writing (shorting) options is not supported yet."}}, {"@type": "Question", "name": "Are the prices real?", "acceptedAnswer": {"@type": "Answer", "text": "Stock prices are live trades and quotes from the IEX exchange. Option quotes come from CBOE and are delayed 15 to 20 minutes. Buys fill at the ask and sells fill at the bid, the same way a real market order would."}}, {"@type": "Question", "name": "When do paper trades fill?", "acceptedAnswer": {"@type": "Answer", "text": "Orders fill during regular market hours, 9:30 AM to 4:00 PM Eastern, Monday to Friday, excluding market holidays. Outside those hours the order is refused rather than filled at a stale price."}}, {"@type": "Question", "name": "What happens to options at expiration?", "acceptedAnswer": {"@type": "Answer", "text": "Any contract still open after its expiration settles automatically at its intrinsic value: in-the-money contracts are closed for the amount they are in the money, and out-of-the-money contracts expire worthless."}}, {"@type": "Question", "name": "Can I reset my paper trading account?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Reset clears your positions and history and restores the full $25,000 whenever you want to start over."}}, {"@type": "Question", "name": "Is paper trading the same as real trading?", "acceptedAnswer": {"@type": "Answer", "text": "No. It builds the habit and shows whether a strategy works mechanically, but it cannot copy the emotions of real money, partial fills, or slippage beyond the quoted price. Treat it as practice before trading a small real account."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Paper Trading", "item": "https://scalpclock.com/paper-trading"}]}</script>
 <style>
   :root{
@@ -181,6 +183,18 @@
   .selected-contract{font-family:var(--mono);font-size:.85rem;margin:10px 0 0;color:var(--text-dim);}
   .selected-contract b{color:var(--text);}
 
+  .pt-guide{margin-top:18px;display:flex;flex-direction:column;gap:14px;}
+  .pt-guide h2{font-family:var(--disp);font-weight:700;font-size:1.3rem;margin:0 0 8px;}
+  .pt-guide h3{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:0 0 6px;}
+  .pt-guide p,.pt-guide li{font-size:.88rem;line-height:1.7;color:var(--text-dim);}
+  .pt-guide ol{padding-left:20px;margin:8px 0 0;}
+  .pt-guide li{margin-bottom:6px;}
+  .pt-guide strong{color:var(--text);}
+  .pt-guide a{color:var(--bull);}
+  .pt-guide details{border-top:1px solid var(--border-soft);padding:10px 0;}
+  .pt-guide details:first-of-type{border-top:none;}
+  .pt-guide summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);}
+  .pt-guide details p{margin:8px 0 0;}
   .pt-disclaimer{text-align:center;font-size:.72rem;color:var(--text-faint);padding:6px 8px 0;line-height:1.5;}
 
   @media(max-width:600px){
@@ -244,6 +258,7 @@
   </div>
 </div>
 
+<noscript><div style="max-width:820px;margin:16px auto;padding:12px 16px;border:1px solid #f5a623;border-radius:10px;color:#f3d9a4;font:14px/1.6 sans-serif;">The paper trading app needs JavaScript. The guide and FAQ further down this page work without it.</div></noscript>
 <div class="wrap">
   <header>
     <div class="hdr-left">
@@ -358,6 +373,32 @@
       <div class="scroll-x"><table id="ptFills"></table></div>
     </div>
   </div>
+
+
+  <!-- How it works + FAQ (static, readable without signing in or JavaScript) -->
+  <section class="pt-guide" aria-labelledby="ptHow">
+    <div class="card">
+      <h2 id="ptHow">How paper trading works on ScalpClock</h2>
+      <p>Paper trading means placing practice trades with virtual money at real market prices. It is the safest way to learn how orders, options and position sizing actually behave before you put real money at risk.</p>
+      <ol>
+        <li><strong>Open your account.</strong> Sign in and you start with $25,000 in virtual cash. Nothing to download or connect.</li>
+        <li><strong>Trade stocks.</strong> Enter a ticker, get a live quote, choose a share count and buy or sell. Buys fill at the ask and sells at the bid.</li>
+        <li><strong>Trade options.</strong> Load a chain, pick an expiration, and tap any bid or ask to choose a call or put. Each contract shows its delta and implied volatility, and the ticket estimates the cost before you buy.</li>
+        <li><strong>Track every position.</strong> Open positions are marked to the market with unrealized profit and loss, and every fill is logged with its realized result.</li>
+        <li><strong>Review and reset.</strong> Compare results against your <a href="/journal">trade journal</a>, study the setups in the <a href="/learn">daily lessons</a> and <a href="/scalpchart?tab=replay">Replay</a>, and reset to $25,000 whenever you want a clean start.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>Paper trading FAQ</h2>
+      <details><summary>Is ScalpClock paper trading free?</summary><p>Yes. Every ScalpClock member gets a paper trading account with $25,000 in virtual cash at no cost. Creating a free account is all it takes.</p></details>
+      <details><summary>Can I paper trade options as well as stocks?</summary><p>Yes. You can buy and sell stocks, and buy calls and puts from a full options chain with bid, ask, delta and implied volatility for each contract. Selling to close works on any contract you hold. Writing (shorting) options is not supported yet.</p></details>
+      <details><summary>Are the prices real?</summary><p>Stock prices are live trades and quotes from the IEX exchange. Option quotes come from CBOE and are delayed 15 to 20 minutes. Buys fill at the ask and sells fill at the bid, the same way a real market order would.</p></details>
+      <details><summary>When do paper trades fill?</summary><p>Orders fill during regular market hours, 9:30 AM to 4:00 PM Eastern, Monday to Friday, excluding market holidays. Outside those hours the order is refused rather than filled at a stale price.</p></details>
+      <details><summary>What happens to options at expiration?</summary><p>Any contract still open after its expiration settles automatically at its intrinsic value: in-the-money contracts are closed for the amount they are in the money, and out-of-the-money contracts expire worthless.</p></details>
+      <details><summary>Can I reset my paper trading account?</summary><p>Yes. Reset clears your positions and history and restores the full $25,000 whenever you want to start over.</p></details>
+      <details><summary>Is paper trading the same as real trading?</summary><p>No. It builds the habit and shows whether a strategy works mechanically, but it cannot copy the emotions of real money, partial fills, or slippage beyond the quoted price. Treat it as practice before trading a small real account.</p></details>
+    </div>
+  </section>
 
   <div class="pt-disclaimer">Paper trading is a simulation for education. No real money or orders are involved, and simulated results don't account for every real-world factor like partial fills, slippage beyond the quote, or commissions. Past simulated performance does not predict real results.</div>
 </div>

@@ -44,6 +44,7 @@ const PAGE_META = {
   blog: { priority: "0.8", changefreq: "weekly" },
   "blog/category": { priority: "0.6", changefreq: "weekly" },
   "market-intelligence": { priority: "0.8", changefreq: "daily" },
+  "paper-trading": { priority: "0.8", changefreq: "weekly" },
   exitassistant: { priority: "0.7", changefreq: "weekly" },
   "trading-resources": { priority: "0.7", changefreq: "monthly" },
   about: { priority: "0.7", changefreq: "monthly" },
