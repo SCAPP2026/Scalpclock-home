@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.scalpclock.app",
+      "sha256_cert_fingerprints": [
+        "69:C5:2A:F6:03:9E:D1:3C:1C:7E:A5:41:23:7B:37:EA:63:B2:BF:C6:5B:62:C4:7C:C3:C7:58:11:BC:BD:E1:9D"
+      ]
+    }
+  }
+]

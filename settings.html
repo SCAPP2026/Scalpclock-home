@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Android app mode: loads /js/sc-app-mode.js only inside the Play app (see that file) -->
+<script>(function(){try{var s=sessionStorage;if(/[?&]source=twa\b/.test(location.search)||document.referrer.indexOf('android-app://')===0)s.setItem('sc_app','1');if(s.getItem('sc_app')==='1')document.write('<script src="/js/sc-app-mode.js"><\/script>')}catch(e){}})()</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M4F7X9HDDW"></script>
 <script>
@@ -290,6 +292,10 @@ body.drawer-open{overflow:hidden}
     <div class="account-row">
       <span class="account-key">Email Verified</span>
       <span class="account-val" id="emailVerified">—</span>
+    </div>
+    <div class="account-row">
+      <span class="account-key">Delete Account</span>
+      <a class="account-val" href="/delete-account" style="color:#ff5a5a;">Request deletion →</a>
     </div>
   </div>
 
