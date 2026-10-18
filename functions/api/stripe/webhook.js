@@ -380,7 +380,7 @@ function generateReferralCode() {
 // founding-status.js's public count — duplicated here rather than imported
 // per this codebase's existing "keep billing-critical constants in sync
 // across files" convention (see checkout.js's comment on FOUNDING_CAP).
-const FOUNDING_CAP_FOR_CLAIM = 308;
+const FOUNDING_CAP_FOR_CLAIM = 500;
 
 // Calls the atomic claim_founding_member() Postgres function (advisory-lock +
 // count-check + insert in one transaction — see the migration for why a plain
