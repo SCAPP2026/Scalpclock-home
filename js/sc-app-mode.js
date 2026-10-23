@@ -1,12 +1,14 @@
-// ── SC App Mode — Android app (Trusted Web Activity) purchase guard ──
-// Only ever loaded inside the Google Play app. Every page carries a one-line
+// ── SC App Mode — purchase guard for the Android (TWA) and iOS (Capacitor) apps ──
+// Only ever loaded inside the store apps. Every page carries a one-line
 // inline check in <head> that sets sessionStorage.sc_app when the page was
-// opened by the app (launch URL /learn?source=twa, or an android-app://
-// referrer) and only then document.write()s this file — regular website
-// visitors never download it and see the site exactly as before.
+// opened by an app (Android: launch URL /learn?source=twa or an android-app://
+// referrer; iOS: "ScalpClockApp-iOS" in the user agent) and only then
+// document.write()s this file — regular website visitors never download it
+// and see the site exactly as before.
 //
-// Why: Google Play's payments policy requires digital subscriptions bought
-// inside a Play app to go through Play Billing. ScalpClock sells Pro and
+// Why: Google Play's payments policy and App Store guideline 3.1.1 both
+// require digital subscriptions sold inside a store app to use the store's
+// own billing. ScalpClock sells Pro and
 // Founding Member via Stripe, so the app sells nothing: purchase CTAs are
 // hidden, /pricing and /success show a neutral notice, and Stripe checkout
 // requests are refused client-side as a backstop. Existing subscribers just
@@ -18,6 +20,12 @@
   'use strict';
   var root = document.documentElement;
   root.classList.add('sc-app');
+  var IOS = /ScalpClockApp-iOS/.test(navigator.userAgent);
+  if (IOS) {
+    root.classList.add('sc-app-ios');
+    // Native extras (daily reminder, haptics) — see that file.
+    document.write('<script src="/js/sc-ios-native.js" defer><\/script>');
+  }
 
   // Selectors go through CSS (not a one-time DOM sweep) so CTAs that other
   // scripts insert or rewrite later — FounderCTA banners, FounderNav turning
@@ -47,7 +55,7 @@
       var url = typeof input === 'string' ? input : (input && input.url) || '';
       if (BLOCKED.test(url)) {
         return Promise.resolve(new Response(
-          JSON.stringify({ error: 'Plans are not available for purchase in the Android app.' }),
+          JSON.stringify({ error: 'Plans are not available for purchase in the app.' }),
           { status: 403, headers: { 'Content-Type': 'application/json' } }
         ));
       }
@@ -63,7 +71,7 @@
         'font-family:Inter,system-ui,sans-serif;color:#eef3f0;">' +
         '<div style="font-size:2.2rem;margin-bottom:12px;">📚</div>' +
         '<h1 style="font-family:Rajdhani,sans-serif;font-size:1.5rem;margin:0 0 10px;">Plans aren’t available in the app</h1>' +
-        '<p style="color:rgba(238,243,240,.7);line-height:1.6;margin:0 0 22px;">Subscriptions can’t be purchased in the ScalpClock Android app. ' +
+        '<p style="color:rgba(238,243,240,.7);line-height:1.6;margin:0 0 22px;">Subscriptions can’t be purchased in the ScalpClock app. ' +
         'If you already have a plan, log in and it’s applied to your account automatically.</p>' +
         '<a href="/learn" style="display:inline-block;background:#16d97e;color:#04210f;font-weight:700;' +
         'text-decoration:none;padding:12px 22px;border-radius:10px;">Back to Daily Lessons</a></div>';
