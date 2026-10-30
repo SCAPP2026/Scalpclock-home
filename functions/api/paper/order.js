@@ -53,7 +53,7 @@ export async function onRequest(context) {
       if (qty > MAX_OPTION_QTY) return json({ error: `Max ${MAX_OPTION_QTY} contracts per order` }, 400);
       if (isExpired(p.expiry)) return json({ error: 'That contract has expired' }, 400);
       const chain = await optionChain(p.underlying);
-      const c = chain?.contracts.find(x => x.contract === p.contract);
+      const c = chain?.get(p.contract);
       if (!c) return json({ error: `No quote for ${p.contract} right now` }, 400);
       const price = side === 'buy' ? c.ask : c.bid;
       if (side === 'buy' && !(price > 0)) return json({ error: 'No ask price for that contract right now' }, 400);

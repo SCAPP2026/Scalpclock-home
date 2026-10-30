@@ -55,7 +55,7 @@ export async function onRequest(context) {
       if (p.asset_class === 'stock') {
         mark = quotes[p.symbol]?.price ?? null;
       } else {
-        mark = optionMark(chains[p.underlying]?.contracts.find(c => c.contract === p.symbol));
+        mark = optionMark(chains[p.underlying]?.get(p.symbol));
       }
       const value = mark != null ? mark * qty * mult : cost * qty * mult;
       marketValue += value;

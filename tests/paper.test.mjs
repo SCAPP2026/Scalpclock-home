@@ -150,6 +150,33 @@ check('chain honours expiry', (await cr2.json()).rows.length === 1);
 const cr3 = await chain({ env, request: new Request('https://x/api/paper/chain?symbol=ZZZZ') });
 check('chain unknown symbol 404', cr3.status === 404);
 
+// --- chainView fast path: sorted file in CBOE's real formatting --------------
+{
+  const recs = [];
+  for (const exp of ['261016', '261023', '261030']) {
+    for (let k = 400; k <= 700; k += 1) {
+      const st = String(k * 1000).padStart(8, '0');
+      recs.push({ option: `SPY${exp}C${st}`, bid: k / 100, ask: k / 100 + 0.05, open_interest: k });
+      recs.push({ option: `SPY${exp}P${st}`, bid: k / 200, ask: k / 200 + 0.05, open_interest: k });
+    }
+  }
+  // Python-style separators, like the live file: {"option": "SPY...", "bid": 1.0}
+  const text = JSON.stringify({ timestamp: 't', data: { options: recs, symbol: 'SPY', current_price: 584.2 } })
+    .replace(/":/g, '": ').replace(/,"/g, ', "');
+  const v = P.chainView(text, 'SPY');
+  check('view underlying', v.underlying === 584.2);
+  check('view expiries', JSON.stringify(v.expiries()) === '["2026-10-16","2026-10-23","2026-10-30"]', JSON.stringify(v.expiries()));
+  const nr = v.near('2026-10-23', 584.2, 6);
+  check('view near count', nr.length === 12, nr.length);
+  check('view near centred', nr[0].strike === 582 && nr.at(-1).strike === 587 && nr.every(c => c.expiry === '2026-10-23'),
+    nr.map(c => c.strike).join());
+  check('view near parses quote', nr.find(c => c.strike === 585 && c.type === 'call')?.bid === 5.85);
+  check('view near at chain edge', P.chainView(text, 'SPY').near('2026-10-30', 10, 4).map(c => c.strike).join() === '400,400,401,401');
+  check('view near past top', P.chainView(text, 'SPY').near('2026-10-16', 9999, 4).map(c => c.strike).join() === '699,699,700,700');
+  check('view get', v.get('SPY261030P00650000')?.openInterest === 650 && v.get('SPY261030P00650000')?.type === 'put');
+  check('view get missing', v.get('SPY261030P00650500') === null);
+}
+
 Date.now = realNow;
 console.log(`${passed} passed, ${failed} failed`);
 if (failed) process.exit(1);

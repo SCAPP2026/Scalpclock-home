@@ -4,6 +4,8 @@
 import { json, preflight, cleanSymbol, optionChain, stockQuotes, isExpired } from '../../lib/paper.js';
 
 const STRIKES_EACH_SIDE = 12;
+// Records to load either side of the money: calls + puts, with a little slack.
+const RECORDS_EACH_SIDE = 2 * (STRIKES_EACH_SIDE + 2);
 
 export async function onRequest(context) {
   const { env, request } = context;
@@ -12,17 +14,24 @@ export async function onRequest(context) {
   const symbol = cleanSymbol(url.searchParams.get('symbol'));
   if (!symbol) return json({ error: 'Enter a valid ticker symbol' }, 400);
 
+  // Same answer for everyone for 30s — serve repeats from the edge cache.
+  const cache = typeof caches !== 'undefined' ? caches.default : null;
+  const cacheKey = new Request(`${url.origin}/api/paper/chain?symbol=${symbol}&expiry=${url.searchParams.get('expiry') || ''}`);
+  if (cache) {
+    const hit = await cache.match(cacheKey).catch(() => null);
+    if (hit) return hit;
+  }
+
   const chain = await optionChain(symbol);
-  if (!chain || !chain.contracts.length) return json({ error: `No options found for ${symbol}` }, 404);
+  const expiries = (chain?.expiries() || []).filter(e => !isExpired(e)).slice(0, 40);
+  if (!expiries.length) return json({ error: `No options found for ${symbol}` }, 404);
 
   const live = (await stockQuotes(env, [symbol]))[symbol]?.price ?? null;
   const underlying = live ?? chain.underlying;
 
-  const contracts = chain.contracts.filter(c => !isExpired(c.expiry));
-  const expiries = [...new Set(contracts.map(c => c.expiry))].sort().slice(0, 40);
   const expiry = expiries.includes(url.searchParams.get('expiry')) ? url.searchParams.get('expiry') : expiries[0];
 
-  const forExp = contracts.filter(c => c.expiry === expiry);
+  const forExp = chain.near(expiry, underlying, RECORDS_EACH_SIDE);
   const strikes = [...new Set(forExp.map(c => c.strike))].sort((a, b) => a - b);
   let atm = 0;
   if (underlying != null) {
@@ -36,6 +45,8 @@ export async function onRequest(context) {
   };
   const rows = near.map(strike => ({ strike, call: pick('call', strike), put: pick('put', strike) }));
 
-  return json({ symbol, underlying, expiry, expiries, rows, delayed: true },
+  const res = json({ symbol, underlying, expiry, expiries, rows, delayed: true },
     200, { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=30' });
+  if (cache) context.waitUntil?.(cache.put(cacheKey, res.clone()).catch(() => {}));
+  return res;
 }

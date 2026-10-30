@@ -148,28 +148,150 @@ export function stockFillPrice(q, side) {
   return side === 'buy' ? ask : bid;
 }
 
-// CBOE delayed chain for one underlying, parsed. Returns
-// { underlying: price|null, contracts: [{contract, expiry, type, strike, bid, ask, last, iv, delta, volume, openInterest}] }
+// CBOE delayed chain for one underlying. Returns a view over the raw file:
+//   underlying          — price CBOE reports, or null
+//   expiries()          — sorted expiry dates (YYYY-MM-DD)
+//   near(expiry, price, n) — about n contracts either side of `price` for one expiry
+//   get(contract)       — one contract, or null
+// Contracts look like {contract, expiry, type, strike, bid, ask, last, iv, delta, volume, openInterest}.
+//
+// The file is 1.5–6 MB for busy tickers (SPY, TSLA, AAPL), and parsing all of
+// it blows the Worker CPU limit (Cloudflare error 1102). CBOE sorts records by
+// expiry, then strike, so we binary-search the raw text and only parse the
+// records a request needs. If the file isn't in that order we fall back to a
+// single scan of every contract symbol.
 export async function optionChain(symbol) {
   const r = await fetch(`https://cdn.cboe.com/api/global/delayed_quotes/options/${symbol}.json`, {
     headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ScalpClock/1.0)' },
     cf: { cacheTtl: 30, cacheEverything: true },
   });
   if (!r.ok) return null;
-  const raw = await r.json().catch(() => null);
-  const rows = raw?.data?.options || [];
-  const contracts = [];
-  for (const o of rows) {
-    const p = parseOcc(o.option);
-    if (!p || p.underlying !== symbol) continue;
-    contracts.push({
-      contract: p.contract, expiry: p.expiry, type: p.type, strike: p.strike,
-      bid: o.bid ?? null, ask: o.ask ?? null, last: o.last_trade_price ?? null,
-      iv: o.iv ?? null, delta: o.delta ?? null,
-      volume: o.volume ?? 0, openInterest: o.open_interest ?? 0,
-    });
+  const text = await r.text().catch(() => '');
+  return chainView(text, symbol);
+}
+
+const KEY = '"option"';
+
+// The record whose "option" key is at or after `pos`: key offset, end of the
+// contract string, and the contract symbol.
+function recordAt(text, pos) {
+  const i = text.indexOf(KEY, pos);
+  if (i === -1) return null;
+  const q1 = text.indexOf('"', i + KEY.length);
+  const q2 = q1 === -1 ? -1 : text.indexOf('"', q1 + 1);
+  if (q2 === -1) return null;
+  return { i, end: q2 + 1, contract: text.slice(q1 + 1, q2) };
+}
+
+// Offset `lo` such that the first record at/after `lo` is the first one in
+// [lo, hi) where after(parsedContract) is true. `after` must be monotone over
+// the file's order.
+function firstWhere(text, lo, hi, after) {
+  while (lo < hi) {
+    const mid = lo + ((hi - lo) >>> 1);
+    const r = recordAt(text, mid);
+    if (!r || r.i >= hi || after(parseOcc(r.contract))) hi = mid;
+    else lo = r.end;
   }
-  return { underlying: raw?.data?.current_price ?? null, contracts };
+  return lo;
+}
+
+function recordToContract(text, keyPos, symbol) {
+  // Records are flat objects, so the nearest braces bound the record.
+  const start = text.lastIndexOf('{', keyPos);
+  const end = text.indexOf('}', keyPos);
+  if (start === -1 || end === -1) return null;
+  let o;
+  try { o = JSON.parse(text.slice(start, end + 1)); } catch { return null; }
+  const p = parseOcc(o.option);
+  if (!p || p.underlying !== symbol) return null;
+  return {
+    contract: p.contract, expiry: p.expiry, type: p.type, strike: p.strike,
+    bid: o.bid ?? null, ask: o.ask ?? null, last: o.last_trade_price ?? null,
+    iv: o.iv ?? null, delta: o.delta ?? null,
+    volume: o.volume ?? 0, openInterest: o.open_interest ?? 0,
+  };
+}
+
+export function chainView(text, symbol) {
+  const priceAt = text.lastIndexOf('"current_price"');
+  const m = priceAt === -1 ? null : /^"current_price"\s*:\s*(-?\d+(?:\.\d+)?)/.exec(text.slice(priceAt, priceAt + 48));
+  const underlying = m ? Number(m[1]) : null;
+
+  // One {expiry, start, end} per expiry, found by binary search. null if the
+  // file isn't grouped by expiry the way we expect.
+  let blocks;
+  function getBlocks() {
+    if (blocks !== undefined) return blocks;
+    const out = [];
+    let r = recordAt(text, 0);
+    while (r) {
+      const p = parseOcc(r.contract);
+      if (!p || p.underlying !== symbol || (out.length && p.expiry <= out[out.length - 1].expiry)) return (blocks = null);
+      const end = firstWhere(text, r.end, text.length, q => !q || q.expiry > p.expiry);
+      out.push({ expiry: p.expiry, start: r.i, end });
+      r = recordAt(text, end);
+    }
+    return (blocks = out);
+  }
+
+  // Fallback: every record's symbol and offset, in one pass.
+  let index;
+  function getIndex() {
+    if (index) return index;
+    index = [];
+    let r = recordAt(text, 0);
+    while (r) {
+      const p = parseOcc(r.contract);
+      if (p && p.underlying === symbol) index.push({ ...p, at: r.i });
+      r = recordAt(text, r.end);
+    }
+    return index;
+  }
+
+  function expiries() {
+    const b = getBlocks();
+    if (b) return b.map(x => x.expiry);
+    return [...new Set(getIndex().map(x => x.expiry))].sort();
+  }
+
+  function near(expiry, price, n) {
+    const b = getBlocks();
+    let positions = [];
+    if (b) {
+      const blk = b.find(x => x.expiry === expiry);
+      if (!blk) return [];
+      const p = price == null ? blk.start
+        : firstWhere(text, blk.start, blk.end, q => !q || q.expiry > expiry || q.strike >= price);
+      for (let q = p, k = 0; k < n; k++) {
+        q = text.lastIndexOf(KEY, q - 1);
+        if (q < blk.start) break;
+        positions.unshift(q);
+      }
+      for (let r = recordAt(text, p), k = 0; r && r.i < blk.end && k < n; k++, r = recordAt(text, r.end)) {
+        positions.push(r.i);
+      }
+    } else {
+      const rows = getIndex().filter(x => x.expiry === expiry).sort((a, c) => a.strike - c.strike);
+      let atm = rows.findIndex(x => price != null && x.strike >= price);
+      if (atm === -1) atm = price == null ? 0 : rows.length;
+      positions = rows.slice(Math.max(0, atm - n), atm + n).map(x => x.at);
+    }
+    return positions.map(pos => recordToContract(text, pos, symbol)).filter(Boolean);
+  }
+
+  const cache = new Map();
+  function get(contract) {
+    if (cache.has(contract)) return cache.get(contract);
+    const k = text.indexOf(`"${contract}"`);
+    const keyPos = k === -1 ? -1 : text.lastIndexOf(KEY, k);
+    const out = keyPos === -1 ? null : recordToContract(text, keyPos, symbol);
+    const hit = out && out.contract === contract ? out : null;
+    cache.set(contract, hit);
+    return hit;
+  }
+
+  return { underlying, expiries, near, get };
 }
 
 export function optionMark(c) {
