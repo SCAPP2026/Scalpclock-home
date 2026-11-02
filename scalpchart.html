@@ -717,6 +717,9 @@
   .learn-btn{background:rgba(91,156,246,.1);border:1px solid rgba(91,156,246,.3);color:#5b9cf6;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.15s;}
   .learn-btn:hover{background:rgba(91,156,246,.18);}
   .learn-btn.active{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--warn);}
+  .fib-btn{background:rgba(138,164,192,.08);border:1px solid rgba(138,164,192,.25);color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.15s;margin-right:6px;}
+  .fib-btn:hover{background:rgba(212,175,55,.12);}
+  .fib-btn.active{background:rgba(212,175,55,.14);border-color:rgba(212,175,55,.5);color:#d4af37;}
   .learn-mode-bar{display:none;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(245,166,35,.07);border-bottom:1px solid rgba(245,166,35,.3);font-size:12px;color:var(--warn);}
   .learn-mode-bar.active{display:flex;}
   .learn-score-display{font-family:'JetBrains Mono',monospace;font-size:11px;}
@@ -1163,6 +1166,7 @@
   <div class="separator"></div>
   <button class="tf-btn active" style="pointer-events:none;color:var(--text);border:none;" id="tfLabel">Candlestick</button>
   <div style="flex:1"></div>
+  <button class="fib-btn" id="fibBtn" onclick="toggleFib()" title="Fibonacci Golden Wave: retracement levels from the recent swing high and low. Gold band = 50%–61.8% golden zone.">🌊 Golden Wave</button>
   <button class="learn-btn" id="learnModeBtn" onclick="toggleLearnMode()">📚 Learn Mode</button>
 </div>
 <div class="learn-mode-bar" id="learnModeBar">
@@ -2217,6 +2221,9 @@ function drawChart() {
     }
   }
 
+  // Fibonacci Golden Wave — lines + golden zone sit behind the candles
+  const fib = showFib ? drawFibLevels(visible, toX, toY, padL, W - padR) : null;
+
   // Candles
   let hoveredCardIdRange = null;
   visible.forEach((c, i) => {
@@ -2270,6 +2277,8 @@ function drawChart() {
     }
   });
 
+  if (fib) drawFibLabels(fib, padL);
+
   // Current price line
   const lastClose = visible[n - 1].close;
   const py = toY(lastClose);
@@ -2317,6 +2326,71 @@ function drawChart() {
   // Volume
   drawVolume(visible);
 }
+
+// ─── FIBONACCI GOLDEN WAVE ───────────────────────────────────────
+// Retracement levels from the swing high/low of the visible candles.
+// If the high came after the low, the move is up and levels measure the pullback down from the high;
+// otherwise the move is down and levels measure the bounce up from the low.
+let showFib = localStorage.getItem('sc_fib') === '1';
+const FIB_LEVELS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
+function toggleFib() {
+  showFib = !showFib;
+  localStorage.setItem('sc_fib', showFib ? '1' : '0');
+  document.getElementById('fibBtn').classList.toggle('active', showFib);
+  drawChart();
+}
+function drawFibLevels(visible, toX, toY, x0, x1) {
+  if (visible.length < 5) return null;
+  let hi = 0, lo = 0;
+  visible.forEach((c, i) => {
+    if (c.high > visible[hi].high) hi = i;
+    if (c.low < visible[lo].low) lo = i;
+  });
+  const H = visible[hi].high, L = visible[lo].low, diff = H - L;
+  if (diff <= 0) return null;
+  const up = hi > lo;
+  const priceAt = r => up ? H - r * diff : L + r * diff;
+  const startX = toX(Math.min(hi, lo));
+  const lines = FIB_LEVELS.map(r => ({ r, price: priceAt(r), y: toY(priceAt(r)) }));
+
+  ctx.save();
+  // Golden zone: 50% to 61.8%
+  const zy1 = toY(priceAt(0.5)), zy2 = toY(priceAt(0.618));
+  ctx.fillStyle = 'rgba(212,175,55,0.10)';
+  ctx.fillRect(startX, Math.min(zy1, zy2), x1 - startX, Math.abs(zy2 - zy1));
+  // Swing line from low to high
+  ctx.strokeStyle = 'rgba(212,175,55,0.35)';
+  ctx.setLineDash([2, 3]);
+  ctx.beginPath(); ctx.moveTo(toX(lo), toY(L)); ctx.lineTo(toX(hi), toY(H)); ctx.stroke();
+  // Level lines
+  lines.forEach(l => {
+    const golden = l.r === 0.618;
+    ctx.strokeStyle = golden ? 'rgba(212,175,55,0.85)' : l.r === 0.5 ? 'rgba(212,175,55,0.55)' : 'rgba(138,164,192,0.35)';
+    ctx.lineWidth = golden ? 1.5 : 1;
+    ctx.setLineDash(l.r === 0 || l.r === 1 ? [] : [5, 4]);
+    ctx.beginPath(); ctx.moveTo(startX, l.y); ctx.lineTo(x1, l.y); ctx.stroke();
+  });
+  ctx.restore();
+  return { lines, up };
+}
+function drawFibLabels(fib, x0) {
+  ctx.save();
+  ctx.font = '600 9px "JetBrains Mono", monospace';
+  ctx.textAlign = 'left';
+  fib.lines.forEach(l => {
+    const golden = l.r === 0.5 || l.r === 0.618;
+    const txt = (l.r * 100).toFixed(1).replace('.0', '') + '%  ' + l.price.toFixed(2);
+    const w = ctx.measureText(txt).width + 8;
+    const y = Math.max(10, l.y);
+    ctx.fillStyle = 'rgba(7,11,16,0.75)';
+    roundRectPath(ctx, x0 + 2, y - 7, w, 13, 3);
+    ctx.fill();
+    ctx.fillStyle = golden ? '#d4af37' : 'rgba(138,164,192,0.85)';
+    ctx.fillText(txt, x0 + 6, y + 3);
+  });
+  ctx.restore();
+}
+if (showFib) document.getElementById('fibBtn')?.classList.add('active');
 
 function checkCandleHighlight(i, n, visible) {
   const patterns = Object.entries(PATTERNS);
