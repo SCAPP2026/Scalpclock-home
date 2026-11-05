@@ -2382,7 +2382,9 @@
     document.getElementById('rewardVal').textContent = fmt(reward);
     document.getElementById('rrVal').textContent = rr.toFixed(1) + 'R';
     const stopBasisEl = document.getElementById('stopBasisVal');
-    if (stopBasisEl) stopBasisEl.textContent = 'Opposite side of the confirmed opening range (' + (dir === 'long' ? 'OR Low' : 'OR High') + ') — the level whose break invalidates this setup.';
+    if (stopBasisEl) stopBasisEl.textContent = engineCtx.stopBasis === 'ATR'
+      ? '0DTE stop: one average 15-minute candle range ($' + fmt(engineCtx.stopAtr) + ') ' + (dir === 'long' ? 'below the OR High' : 'above the OR Low') + '. Tighter than the far side of the range, so the same-day target pays more per dollar risked. Strategy rule, backtested on 1 year of SPY + QQQ.'
+      : 'Opposite side of the confirmed opening range (' + (dir === 'long' ? 'OR Low' : 'OR High') + ') — the level whose break invalidates this setup.';
     const retestZoneEl = document.getElementById('retestZoneVal');
     if (retestZoneEl){
       const level = dir === 'long' ? orHigh : orLow;

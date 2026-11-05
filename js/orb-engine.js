@@ -34,6 +34,11 @@
     // backtested on the same year of SPY + QQQ and lost on average (about -0.25R to -0.75R/trade),
     // so the engine deliberately does NOT enter after a breakout runs without a retest.
     MIN_TODAY_RR: 0.5,
+    // 0DTE stop: breakout level -/+ this many ATR15 (avg 15m candle range so far today),
+    // instead of the far side of the opening range. Strategy rule. 1-year check (Nov 2026):
+    // SPY +0.057R -> +0.087R/trade, QQQ -0.014R -> +0.008R; positive in both half-years on both.
+    // Still near breakeven — an improvement, not a proven edge.
+    ODTE_STOP_ATR_MULT: 1.0,
   };
 
   var STATES = {
@@ -322,6 +327,16 @@
       if (r.outcome === 'CONFIRMED') {
         var entryPrice = candle.close;
         var stopPrice = invalidation;
+        ctx.stopBasis = 'OR_SIDE';
+        if (ctx.targetMode === '0DTE' && ctx.adr > 0) {
+          var sofar = ctx.allCandles.slice(0, idx + 1);
+          var atr15 = sofar.reduce(function (s, c) { return s + (c.high - c.low); }, 0) / sofar.length;
+          var atrStop = dir === 'long' ? level - config.ODTE_STOP_ATR_MULT * atr15 : level + config.ODTE_STOP_ATR_MULT * atr15;
+          // Only use it when it sits on the correct side of entry.
+          if (atr15 > 0 && (dir === 'long' ? atrStop < entryPrice : atrStop > entryPrice)) {
+            stopPrice = atrStop; ctx.stopBasis = 'ATR'; ctx.stopAtr = atr15;
+          }
+        }
         var plan = deriveEntryPlan(entryPrice, stopPrice, dir);
         // 0DTE mode: exit at the same-day target instead of 2R (needs an ADR).
         var tl = deriveTargetTimeline({ entry: entryPrice, stop: stopPrice, dir: dir, adr: ctx.adr, candlesSoFar: ctx.allCandles.slice(0, idx + 1) }, config);

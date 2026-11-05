@@ -309,6 +309,18 @@ group('Deterministic Risk/Target/R:R (item #10 example)');
     assert(r.nextState===S.SESSION_COMPLETE && ctx3.targetTimeline.targets[0].hitIdx===6 && ctx3.targetTimeline.targets[1].hitIdx===6 && ctx3.targetTimeline.targets[2].hitIdx==null,
       'timeline targets keep being tracked after the trade exits');
   }
+  {
+    // 0DTE mode uses the ATR stop (level - 1 x avg 15m range); 2R mode keeps the far side of the OR.
+    const cs = [{open:100,high:100.6,low:100,close:100.3,volume:1},{open:100.4,high:101.0,low:100.4,close:100.9,volume:1},
+      {open:100.9,high:100.95,low:100.65,close:100.8,volume:1}];
+    for (const mode of ['0DTE','2R']) {
+      const cx = { orPeriod:1, allCandles:cs, sessionCandles:26, hasFailedBreakout:{long:false,short:false}, adr:3, targetMode:mode };
+      let st = S.WAITING_FOR_RANGE; cs.forEach((c,i)=>{ st = E.advanceState(st,i,c,cx).nextState; });
+      const atr = (0.6 + 0.6 + 0.3) / 3;
+      if (mode === '0DTE') assert(st===S.ENTRY_TRIGGERED && Math.abs(cx.stopPrice - (100.6 - atr)) < 1e-9 && cx.stopBasis==='ATR', '0DTE entry uses ATR stop below the breakout level');
+      else assert(st===S.ENTRY_TRIGGERED && cx.stopPrice === 100 && cx.stopBasis==='OR_SIDE', '2R entry keeps far-side-of-OR stop');
+    }
+  }
   assert(tl.lowReward === false && short.lowReward === true, 'timeline: flags 0DTE target under MIN_TODAY_RR as low reward');
 }
 
