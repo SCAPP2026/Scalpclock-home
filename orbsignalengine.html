@@ -2205,6 +2205,7 @@
   const NO_TRADE_REASON_TEXT = {
     OR_TOO_NARROW: 'Strategy rule: the opening range was under ' + (EC.OR_RANGE_MIN_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this tight (higher whipsaw risk under this model).',
     OR_TOO_WIDE: 'Strategy rule: the opening range was over ' + (EC.OR_RANGE_MAX_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this wide (the stop gets too far from entry for a realistic target).',
+    NO_NEW_SETUP: 'The breakout already happened earlier and was used up, and no new setup formed in the other direction within ' + EC.NO_BREAKOUT_CUTOFF_CANDLES + ' candles of the range. No more entries today — still tracking price to the close.',
     NO_BREAKOUT: 'Price held inside the opening range for ' + EC.NO_BREAKOUT_CUTOFF_CANDLES + '+ candles with no confirmed breakout in either direction.',
     BREAKOUT_FAILED_BOTH_DIRECTIONS: 'Breakout attempts in both directions failed this session (reclaimed, or ran too far without a retest). Strategy rule: only one attempt per direction per session.',
     SESSION_ENDED: 'The session ended before a confirmed, tradeable setup completed.',
@@ -2241,6 +2242,7 @@
     entryIdx = engineCtx.entryIdx; riskPlan = engineCtx.riskPlan;
 
     events.forEach(ev => handleEngineEvent(ev, idx, t));
+    if (engineCtx.targetTimeline) renderTargetTimeline();
 
     const label = orbStatusLabel(state, breakoutDir);
     setPhase(label.text, label.kind);
@@ -2310,11 +2312,23 @@
       track('trade_plan_viewed', { dir: ev.dir });
     }
     else if (ev.type === 'FAILED_BREAKOUT'){
+      if (ev.cause === 'EXTENDED_NO_RETEST' && ev.ranAway){
+        const word = ev.dir === 'long' ? 'Breakout' : 'Breakdown';
+        fire('amber', '🏃', word.toUpperCase() + ' RAN WITHOUT A RETEST',
+          word + ' worked — price is ' + fmt(ev.distance) + ' past the ' + (ev.dir === 'long' ? 'OR High' : 'OR Low') + ' — but it never pulled back, so there was no retest entry. Strategy rule: don\'t chase this far past the level. Still tracking the session.', t);
+        pushTimelineEntry(t, word + ' ran ' + fmt(ev.distance) + ' without a retest — missed move, no entry');
+        return;
+      }
       const causeText = ev.cause === 'RECLAIMED'
         ? 'Price reclaimed the range and closed back beyond the invalidation level. Strategy rule: only one breakout attempt per direction per session — this direction is done.'
         : 'Price ran ' + EC.EXTENDED_NO_RETEST_CANDLES + '+ candles past the breakout with no retest. Strategy rule: no new entries this far past an unconfirmed breakout — this direction is done.';
       fire('neutral', '❌', (ev.dir === 'long' ? 'BULLISH' : 'BEARISH') + ' BREAKOUT FAILED', causeText, t);
       pushTimelineEntry(t, (ev.dir === 'long' ? 'Bullish' : 'Bearish') + ' breakout failed (' + (ev.cause === 'RECLAIMED' ? 'reclaimed' : 'no retest in time') + ')');
+    }
+    else if (ev.type === 'TIMELINE_TARGET_REACHED'){
+      const name = { TODAY: 'Today (0DTE)', '1R': '1R', '2R': '2R (swing)' }[ev.key] || ev.key;
+      pushTimelineEntry(t, name + ' target ' + fmt(ev.price) + ' reached');
+      if (engineCtx.exitReason) fire('blue', '📍', name.toUpperCase() + ' TARGET REACHED', 'After the trade closed, price reached the ' + name + ' level at ' + fmt(ev.price) + '. Tracked for the Target Timeline.', t);
     }
     else if (ev.type === 'NO_TRADE'){
       stats.flats++; updateStats();
@@ -2417,7 +2431,9 @@
         + '<span class="tl-name">' + TL_NAMES[x.key] + (x.key === activeKey ? ' ◀' : '') + '</span>'
         + '<span class="tl-chip ' + x.horizon + '">' + h.chip + '</span>'
         + '<span class="tl-px">' + fmt(x.price) + ' <span style="color:var(--text-faint);font-weight:500">(' + (x.pct * 100).toFixed(2) + '%' + (x.rr != null ? ' · ' + x.rr.toFixed(1) + 'R' : '') + ')</span></span>'
-        + '<span class="tl-sub">' + h.sub + '</span></div>';
+        + '<span class="tl-sub">' + (x.hitIdx != null
+            ? '<b style="color:var(--bull)">✓ Reached at ' + to12h(times[x.hitIdx] || '') + ' ET</b>' + (x.hitIdx === entryIdx ? '' : ' · ' + Math.round((x.hitIdx - entryIdx) * 15) + ' min after entry')
+            : (times[revealIdx] === '15:45' ? 'Not reached this session. ' : 'Not reached yet. ') + h.sub) + '</span></div>';
     });
     html += '<div class="tl-meta" style="margin-top:8px;margin-bottom:0">Strategy rule based on recent ranges — an estimate, not a guarantee. In a 6-month SPY check, the Today target hit same-day ~58% of the time vs ~8% for 2R.</div>';
     body.innerHTML = html;
@@ -2438,6 +2454,8 @@
 
   function updateLiveR(currentPrice){
     if (entryPrice == null || stopPrice == null) return;
+    // After the trade closes, keep showing the result at the exit price.
+    if (engineCtx && engineCtx.exitPrice != null) currentPrice = engineCtx.exitPrice;
     const risk = Math.abs(entryPrice - stopPrice);
     if (risk <= 0) return;
     const raw = breakoutDir === 'long' ? currentPrice - entryPrice : entryPrice - currentPrice;
@@ -2454,7 +2472,6 @@
     else { stats.flats++; fire('neutral', icon, title, body, t); }
     updateStats();
     updateLiveR(price);
-    pause();
   }
 
   function updateStats(){
@@ -2579,7 +2596,8 @@
     if (!candles.length || revealIdx >= SESSION_CANDLES - 1){ pause(); return; }
     revealIdx++;
     evaluate(revealIdx);
-    if (state === 'NO_TRADE' || state === 'SESSION_COMPLETE') pause();
+    // Terminal states (no trade / trade closed) no longer pause playback —
+    // the chart, price and Target Timeline keep tracking to the close.
   }
 
   function play(){

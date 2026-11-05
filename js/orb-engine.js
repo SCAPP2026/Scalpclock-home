@@ -51,6 +51,7 @@
     OR_TOO_NARROW: 'OR_TOO_NARROW',
     OR_TOO_WIDE: 'OR_TOO_WIDE',
     NO_BREAKOUT: 'NO_BREAKOUT',
+    NO_NEW_SETUP: 'NO_NEW_SETUP',   // one direction already broke out and was used up; no setup in the other
     BREAKOUT_FAILED_BOTH_DIRECTIONS: 'BREAKOUT_FAILED_BOTH_DIRECTIONS',
     SESSION_ENDED: 'SESSION_ENDED',
   };
@@ -231,6 +232,19 @@
     var events = [];
     var reason = null;
 
+    // Keep tracking every Target Timeline level for the rest of the session —
+    // including after the trade has exited — so the page can show when (or
+    // whether) each one was reached.
+    if (ctx.targetTimeline && ctx.entryIdx != null && idx > ctx.entryIdx) {
+      ctx.targetTimeline.targets.forEach(function (t) {
+        if (t.hitIdx != null) return;
+        if (ctx.tradeDir === 'long' ? candle.high >= t.price : candle.low <= t.price) {
+          t.hitIdx = idx;
+          events.push({ type: 'TIMELINE_TARGET_REACHED', key: t.key, price: t.price });
+        }
+      });
+    }
+
     if (TRANSIENT_ADVANCE[state]) state = TRANSIENT_ADVANCE[state];
 
     // ---- Range forming / complete ----
@@ -285,7 +299,7 @@
       }
       var sinceRangeSet = idx - (ctx.orPeriod - 1);
       if (sinceRangeSet >= config.NO_BREAKOUT_CUTOFF_CANDLES) {
-        reason = NO_TRADE_REASONS.NO_BREAKOUT;
+        reason = (ctx.hasFailedBreakout.long || ctx.hasFailedBreakout.short) ? NO_TRADE_REASONS.NO_NEW_SETUP : NO_TRADE_REASONS.NO_BREAKOUT;
         events.push({ type: 'NO_TRADE', reason: reason });
         return { nextState: STATES.NO_TRADE, events: events, reason: reason };
       }
@@ -307,6 +321,7 @@
         // 0DTE mode: exit at the same-day target instead of 2R (needs an ADR).
         var tl = deriveTargetTimeline({ entry: entryPrice, stop: stopPrice, dir: dir, adr: ctx.adr, candlesSoFar: ctx.allCandles.slice(0, idx + 1) }, config);
         ctx.targetTimeline = tl;
+        ctx.tradeDir = dir;
         if (ctx.targetMode === '0DTE' && tl) {
           var td = tl.targets[0];
           plan = { entry: entryPrice, stop: stopPrice, risk: plan.risk, target: td.price, reward: td.dist, rr: td.rr, degenerate: plan.degenerate };
@@ -335,7 +350,10 @@
       // session's last candle).
       if (sinceBreakout >= config.EXTENDED_NO_RETEST_CANDLES) {
         ctx.hasFailedBreakout[dir] = true;
-        events.push({ type: 'FAILED_BREAKOUT', dir: dir, cause: 'EXTENDED_NO_RETEST', price: candle.close });
+        // ranAway: price is still beyond the level in the breakout direction —
+        // the move worked, there was just no retest entry.
+        var ranAway = dir === 'long' ? candle.close > level : candle.close < level;
+        events.push({ type: 'FAILED_BREAKOUT', dir: dir, cause: 'EXTENDED_NO_RETEST', ranAway: ranAway, distance: Math.abs(candle.close - level), price: candle.close });
         ctx.breakoutDir = null; ctx.breakoutIdx = null; ctx.breakoutVolumeSurge = null;
         return { nextState: STATES.FAILED_BREAKOUT, events: events, reason: reason };
       }

@@ -292,6 +292,23 @@ group('Deterministic Risk/Target/R:R (item #10 example)');
   const short = E.deriveTargetTimeline({ entry:100, stop:101, dir:'short', adr:0.5, candlesSoFar:[{high:101,low:99.8}] });
   assert(short.remainingToday === 0.075 && short.targets[0].price < 100 && short.targets[2].horizon === 'MULTI', 'timeline: short side, floor at 15% of ADR, far 2R -> MULTI');
   assert(E.deriveTargetTimeline({ entry:1, stop:0, dir:'long', adr:null, candlesSoFar:bars }) === null, 'timeline: no ADR -> null');
+  {
+    // Runaway breakdown with no retest (SPY 2026-11-05 shape), then a long trade whose timeline is tracked after exit.
+    const cs = [{open:100,high:100.4,low:99.8,close:99.9,volume:1},{open:99.9,high:99.9,low:99.3,close:99.4,volume:1},
+      {open:99.4,high:99.5,low:99.0,close:99.1,volume:1},{open:99.1,high:99.2,low:98.7,close:98.8,volume:1},{open:98.8,high:98.9,low:98.4,close:98.5,volume:1}];
+    const c2 = { orPeriod:1, allCandles:cs, sessionCandles:26, hasFailedBreakout:{long:false,short:false} };
+    let st = S.WAITING_FOR_RANGE, evs = [];
+    cs.forEach((c,i)=>{ const r=E.advanceState(st,i,c,c2); st=r.nextState; evs=evs.concat(r.events); });
+    const fb = evs.find(e=>e.type==='FAILED_BREAKOUT');
+    assert(fb && fb.cause==='EXTENDED_NO_RETEST' && fb.ranAway===true, 'runaway breakdown without retest is flagged ranAway (move worked, no entry)');
+  }
+  {
+    const ctx3 = { targetTimeline: E.deriveTargetTimeline({ entry:101, stop:100, dir:'long', adr:3, candlesSoFar:[{high:101,low:100}] }), entryIdx:3, tradeDir:'long',
+      allCandles:[], orPeriod:1, sessionCandles:26, hasFailedBreakout:{long:false,short:false} };
+    const r = E.advanceState(S.SESSION_COMPLETE, 6, {open:101,high:102.1,low:101,close:102}, ctx3);
+    assert(r.nextState===S.SESSION_COMPLETE && ctx3.targetTimeline.targets[0].hitIdx===6 && ctx3.targetTimeline.targets[1].hitIdx===6 && ctx3.targetTimeline.targets[2].hitIdx==null,
+      'timeline targets keep being tracked after the trade exits');
+  }
   assert(tl.lowReward === false && short.lowReward === true, 'timeline: flags 0DTE target under MIN_TODAY_RR as low reward');
 }
 
