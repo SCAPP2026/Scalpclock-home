@@ -75,12 +75,41 @@ export async function onRequest(context) {
     }
 
     const maxAge = date === todayET ? 15 : 3600;
-    return json({ symbol, date, session: sessionParam === 'premarket' ? 'premarket' : 'regular', candles }, 200, maxAge);
+    const out = { symbol, date, session: sessionParam === 'premarket' ? 'premarket' : 'regular', candles };
+
+    // Optional ?adr=1 — average regular-session high-low range of the prior
+    // 10 sessions, built from the same 15m IEX bars. The ORB Target Timeline
+    // uses it to size a same-day (0DTE) target. One extra subrequest; failure
+    // here never breaks the main response.
+    if (url.searchParams.get('adr') === '1' && sessionParam !== 'premarket') {
+      try { Object.assign(out, await priorSessionRanges(symbol, date, KEY_ID, SECRET)); } catch (_) {}
+    }
+    return json(out, 200, maxAge);
 
   } catch (e) {
     console.error('orb-bars error:', e.message);
     return json({ error: 'Failed to retrieve market data — please try again.' }, 500);
   }
+}
+
+async function priorSessionRanges(symbol, date, KEY_ID, SECRET) {
+  const start = new Date(date + 'T00:00:00Z');
+  start.setUTCDate(start.getUTCDate() - 18);
+  const u = `https://data.alpaca.markets/v2/stocks/${encodeURIComponent(symbol)}/bars`
+    + `?timeframe=15Min&start=${start.toISOString().slice(0, 10)}&end=${date}&limit=10000&sort=asc&feed=iex`;
+  const res = await fetch(u, { headers: { 'APCA-API-KEY-ID': KEY_ID, 'APCA-API-SECRET-KEY': SECRET } });
+  if (!res.ok) return {};
+  const byDay = {};
+  for (const b of (await res.json()).bars || []) {
+    const et = etParts(b.t);
+    if (et.date >= date || et.time < RTH_START || et.time >= RTH_END) continue;
+    const d = byDay[et.date] || (byDay[et.date] = { h: -Infinity, l: Infinity, n: 0 });
+    d.h = Math.max(d.h, b.h); d.l = Math.min(d.l, b.l); d.n++;
+  }
+  // Skip thin/half days so they don't drag the average down.
+  const ranges = Object.keys(byDay).sort().filter(k => byDay[k].n >= 20).slice(-10).map(k => +(byDay[k].h - byDay[k].l).toFixed(2));
+  if (ranges.length < 3) return {};
+  return { priorRanges: ranges, adr: +(ranges.reduce((a, b) => a + b, 0) / ranges.length).toFixed(2) };
 }
 
 // Timezone-safe ET date/time split for a UTC bar timestamp, DST-aware via Intl.

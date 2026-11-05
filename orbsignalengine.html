@@ -51,7 +51,7 @@
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "Web",
   "url": "https://scalpclock.com/orbsignalengine",
-  "description": "Practice and time Opening Range Breakout entries with live 15-minute bars, breakout + retest logic, 2R stop/target, and a no-trade filter checklist."
+  "description": "Practice and time Opening Range Breakout entries with live 15-minute bars, breakout + retest logic, a Target Timeline (same-day 0DTE target vs 2R swing target), and a no-trade filter checklist."
 }</script>
 <style>
   :root{
@@ -183,6 +183,18 @@
   .sidebar{display:flex;flex-direction:column;gap:14px;}
   .trade-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border-soft);font-size:12.5px;}
   .trade-row:last-child{border-bottom:none;}
+  .tl-meta{font-size:11.5px;color:var(--text-faint);line-height:1.6;margin-bottom:8px;}
+  .tl-meta b{color:var(--text-dim);font-family:var(--mono);font-weight:600;}
+  .tl-row{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:12.5px;}
+  .tl-row:last-child{border-bottom:none;}
+  .tl-row .tl-name{font-weight:700;color:var(--text-dim);}
+  .tl-row .tl-px{font-family:var(--mono);font-weight:600;text-align:right;}
+  .tl-row .tl-sub{grid-column:1/-1;font-size:11px;color:var(--text-faint);}
+  .tl-row.active{background:rgba(22,217,126,.05);border-radius:6px;padding-left:6px;padding-right:6px;}
+  .tl-chip{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:99px;justify-self:start;}
+  .tl-chip.TODAY{background:rgba(22,217,126,.14);color:var(--bull);}
+  .tl-chip.NEXT_1_2{background:rgba(245,166,35,.14);color:#f5a623;}
+  .tl-chip.MULTI{background:rgba(255,77,106,.12);color:var(--bear);}
   .trade-row .k{color:var(--text-faint);}
   .trade-row .v{font-family:var(--mono);font-weight:600;}
   .pnl-pos{color:var(--bull);}
@@ -546,6 +558,13 @@
           </select>
         </div>
         <div class="ctrl-group">
+          <label for="targetModeSelect">Target</label>
+          <select id="targetModeSelect" title="Today (0DTE): exit at a target sized to today's expected remaining move. Swing 2R: the original 2× risk target, which often takes 1–3 sessions.">
+            <option value="0DTE">Today (0DTE)</option>
+            <option value="2R">Swing (2R)</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
           <label for="speedSelect">Speed</label>
           <select id="speedSelect">
             <option value="1400">1x</option>
@@ -673,6 +692,13 @@
           <div class="trade-row"><span class="k">Reward</span><span class="v" id="rewardVal">—</span></div>
           <div class="trade-row"><span class="k">R:R</span><span class="v" id="rrVal">—</span></div>
           <div class="trade-row"><span class="k">Live R</span><span class="v" id="liveRVal">—</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="sectionTimeline">
+        <div class="card-head"><h2>🎯 Target Timeline</h2></div>
+        <div class="card-body" id="targetTimelineBody">
+          <div class="tl-meta">Shows when each target is realistically reachable. Appears once a retest confirms.</div>
         </div>
       </div>
 
@@ -915,6 +941,8 @@
   let times = [];
   let symbol = '';
   let orPeriod = 1;
+  let sessionAdr = null;   // 10-session average daily range (live) or an estimate (practice)
+  let sessionAdrEstimated = false;
   let speed = 700;
   let revealIdx = -1;
   let playing = false;
@@ -1886,6 +1914,8 @@
         entry: entryPrice, stop: stopPrice, target: targetPrice, exit: engineCtx.exitPrice,
         result: engineCtx.exitReason, rMultiple: rMultiple != null ? Number(rMultiple.toFixed(2)) : null,
         breakoutVolumeSurge, breakoutQuality: currentBreakoutQuality,
+        targetMode: engineCtx.targetMode, adr: sessionAdr,
+        targetTimeline: engineCtx.targetTimeline ? engineCtx.targetTimeline.targets.map(x => ({ key: x.key, price: Number(x.price.toFixed(2)), horizon: x.horizon })) : null,
         conditions: null,
       };
     }
@@ -1957,7 +1987,7 @@
     setInlineLoadStatus('⏳ Loading live session for ' + sym + '…', 'neutral');
     document.getElementById('loadLiveBtn').disabled = true;
     try {
-      const qs = new URLSearchParams({ symbol: sym });
+      const qs = new URLSearchParams({ symbol: sym, adr: '1' });
       if (dateVal) qs.set('date', dateVal);
       const resp = await fetch('/api/orb-bars?' + qs.toString());
       const data = await resp.json();
@@ -1968,6 +1998,8 @@
       times = data.candles.map(b => b.time);
       symbol = sym;
       SESSION_CANDLES = candles.length;
+      sessionAdr = data.adr > 0 ? data.adr : null;
+      sessionAdrEstimated = false;
       applySession('LIVE SESSION LOADED', 'blue', 'Live 15m bars loaded for ' + symbol + ' (' + SESSION_CANDLES + ' candles). Press Play to run the ORB engine on real data.', true);
       setInlineLoadStatus('✓ Live session loaded for ' + symbol + ' — ' + SESSION_CANDLES + ' candles. Click Start ORB Engine below.', 'bull');
       // Only today's session ever gets new bars as the day progresses — a
@@ -2013,7 +2045,18 @@
       hasFailedBreakout: { long: false, short: false },
       entryPrice: null, stopPrice: null, targetPrice: null, entryIdx: null, riskPlan: null,
       exitPrice: null, exitReason: null, lastEvaluatedIdx: null,
+      adr: null, targetMode: getTargetMode(), targetTimeline: null,
     };
+    if (!isLive || !(sessionAdr > 0)) {
+      // Practice sessions (or live data without history): estimate the daily
+      // range from this session's typical 15m candle. SPY's full-day range
+      // runs ~5.7x its average 15m candle range.
+      const avg15 = candles.reduce((sum, c) => sum + (c.high - c.low), 0) / (candles.length || 1);
+      sessionAdr = avg15 > 0 ? avg15 * 5.7 : null;
+      sessionAdrEstimated = true;
+    }
+    engineCtx.adr = sessionAdr;
+    renderTargetTimeline();
 
     const lows = candles.map(c => c.low), highs = candles.map(c => c.high);
     priceMin = Math.min.apply(null, lows) * 0.997;
@@ -2161,7 +2204,7 @@
 
   const NO_TRADE_REASON_TEXT = {
     OR_TOO_NARROW: 'Strategy rule: the opening range was under ' + (EC.OR_RANGE_MIN_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this tight (higher whipsaw risk under this model).',
-    OR_TOO_WIDE: 'Strategy rule: the opening range was over ' + (EC.OR_RANGE_MAX_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this wide (weaker reward-to-risk under the fixed 2R model).',
+    OR_TOO_WIDE: 'Strategy rule: the opening range was over ' + (EC.OR_RANGE_MAX_PCT*100).toFixed(2) + '% of price — this strategy excludes ranges this wide (the stop gets too far from entry for a realistic target).',
     NO_BREAKOUT: 'Price held inside the opening range for ' + EC.NO_BREAKOUT_CUTOFF_CANDLES + '+ candles with no confirmed breakout in either direction.',
     BREAKOUT_FAILED_BOTH_DIRECTIONS: 'Breakout attempts in both directions failed this session (reclaimed, or ran too far without a retest). Strategy rule: only one attempt per direction per session.',
     SESSION_ENDED: 'The session ended before a confirmed, tradeable setup completed.',
@@ -2280,7 +2323,7 @@
       pushTimelineEntry(t, 'No trade — ' + (NO_TRADE_REASON_TEXT[ev.reason] || ev.reason));
     }
     else if (ev.type === 'TARGET_HIT'){
-      exitTrade('WIN', ev.price, t, '🎯', 'TARGET HIT', 'Price reached the exact 2R target at ' + fmt(ev.price) + '. Consider closing — the setup has played out.');
+      exitTrade('WIN', ev.price, t, '🎯', 'TARGET HIT', 'Price reached the ' + (engineCtx.targetMode === '0DTE' && engineCtx.targetTimeline ? 'same-day (0DTE)' : '2R') + ' target at ' + fmt(ev.price) + '. Consider closing — the setup has played out.');
       pushTimelineEntry(t, 'Target hit at ' + fmt(ev.price));
     }
     else if (ev.type === 'STOP_HIT'){
@@ -2309,7 +2352,8 @@
     const optType = dir === 'long' ? 'CALLS' : 'PUTS';
     fire(dir === 'long' ? 'bull' : 'bear', dir === 'long' ? '🟢' : '🔴',
       (dir === 'long' ? 'BULLISH' : 'BEARISH') + ' ORB — ENTRY TRIGGERED',
-      'Retest held. Potential entry zone at ' + fmt(entry) + '. Invalidation ' + fmt(stop) + ', target ' + fmt(target) + ' (' + rr.toFixed(1) + 'R).', t,
+      'Retest held. Potential entry zone at ' + fmt(entry) + '. Invalidation ' + fmt(stop) + ', target ' + fmt(target) + ' (' + rr.toFixed(1) + 'R).'
+        + (engineCtx.targetTimeline && engineCtx.targetTimeline.lowReward ? ' ⚠️ Low reward for 0DTE — see Target Timeline.' : ''), t,
       'Directional bias only — this does not select a strike, expiration, or position size');
 
     document.getElementById('dirVal').textContent = dir === 'long' ? 'BULLISH ORB' : 'BEARISH ORB';
@@ -2333,7 +2377,64 @@
     }
     const qualEl = document.getElementById('breakoutQualityVal');
     if (qualEl) qualEl.textContent = currentBreakoutQuality != null ? currentBreakoutQuality + ' / 100' : '—';
+    renderTargetTimeline();
   }
+
+  // ---- Target Timeline ----
+  const TL_MODE_KEY = 'sc_orb_target_mode';
+  function getTargetMode(){
+    const el = document.getElementById('targetModeSelect');
+    return el && el.value === '2R' ? '2R' : '0DTE';
+  }
+  const TL_HORIZON = {
+    TODAY:    { chip: 'TODAY',      sub: 'Inside today’s expected remaining move — fits 0DTE.' },
+    NEXT_1_2: { chip: '1–2 DAYS',   sub: 'Bigger than what today usually has left. Often lands next session — use 1–2 DTE or later, not 0DTE.' },
+    MULTI:    { chip: '2–3+ DAYS',  sub: 'More than a full extra day of movement away. Swing target — not a 0DTE play.' },
+  };
+  const TL_NAMES = { TODAY: 'Today (0DTE)', '1R': '1R', '2R': '2R (swing)' };
+  function renderTargetTimeline(){
+    const body = document.getElementById('targetTimelineBody');
+    if (!body) return;
+    const adrTxt = sessionAdr > 0
+      ? 'Typical daily range' + (sessionAdrEstimated ? ' (estimated)' : ' (last 10 sessions)') + ': <b>$' + fmt(sessionAdr) + '</b>'
+      : 'Typical daily range unavailable for this symbol.';
+    const tl = engineCtx && engineCtx.targetTimeline;
+    if (!tl){
+      body.innerHTML = '<div class="tl-meta">' + adrTxt + '<br>Each target gets a timeline once a retest confirms.</div>';
+      return;
+    }
+    const activeKey = engineCtx.targetMode === '0DTE' ? 'TODAY' : '2R';
+    const entryT = times[entryIdx] || '';
+    let html = '<div class="tl-meta">' + adrTxt + ' · Already traded today: <b>$' + fmt(tl.usedToday) + '</b><br>'
+      + 'Expected move left today: <b>±$' + fmt(tl.remainingToday) + '</b> (as of ' + to12h(entryT) + ' ET)</div>';
+    if (tl.lowReward){
+      html += '<div class="tl-meta" style="color:#f5a623;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.3);border-radius:8px;padding:8px 10px">⚠️ <b style="color:#f5a623">Low reward for 0DTE:</b> today’s target is only '
+        + tl.targets[0].rr.toFixed(1) + 'R against the stop. Most of today’s move is already used. Strategy rule: skip 0DTE below ' + EC.MIN_TODAY_RR + 'R, or use the 1–2 DTE targets below.</div>';
+    }
+    tl.targets.forEach(x => {
+      const h = TL_HORIZON[x.horizon];
+      html += '<div class="tl-row' + (x.key === activeKey ? ' active' : '') + '">'
+        + '<span class="tl-name">' + TL_NAMES[x.key] + (x.key === activeKey ? ' ◀' : '') + '</span>'
+        + '<span class="tl-chip ' + x.horizon + '">' + h.chip + '</span>'
+        + '<span class="tl-px">' + fmt(x.price) + ' <span style="color:var(--text-faint);font-weight:500">(' + (x.pct * 100).toFixed(2) + '%' + (x.rr != null ? ' · ' + x.rr.toFixed(1) + 'R' : '') + ')</span></span>'
+        + '<span class="tl-sub">' + h.sub + '</span></div>';
+    });
+    html += '<div class="tl-meta" style="margin-top:8px;margin-bottom:0">Strategy rule based on recent ranges — an estimate, not a guarantee. In a 6-month SPY check, the Today target hit same-day ~58% of the time vs ~8% for 2R.</div>';
+    body.innerHTML = html;
+  }
+  (function initTargetMode(){
+    const el = document.getElementById('targetModeSelect');
+    if (!el) return;
+    try { if (localStorage.getItem(TL_MODE_KEY) === '2R') el.value = '2R'; } catch (e) {}
+    el.addEventListener('change', () => {
+      try { localStorage.setItem(TL_MODE_KEY, el.value); } catch (e) {}
+      track('target_mode_changed', { mode: el.value });
+      if (candles && candles.length){
+        applySession(isLiveData ? 'LIVE SESSION LOADED' : 'WAITING FOR SESSION', isLiveData ? 'blue' : 'neutral',
+          'Target mode set to ' + (el.value === '2R' ? 'Swing (2R)' : 'Today (0DTE)') + ' — press Play to re-run the session.', isLiveData);
+      }
+    });
+  })();
 
   function updateLiveR(currentPrice){
     if (entryPrice == null || stopPrice == null) return;

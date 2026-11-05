@@ -281,5 +281,19 @@ group('Deterministic Risk/Target/R:R (item #10 example)');
   assert(degenerate.degenerate === true, 'a zero-distance stop is surfaced explicitly, never silently floored');
 }
 
+// Target Timeline (v1.1)
+{
+  const bars = [{high:101,low:100},{high:101.2,low:100.5}];
+  const tl = E.deriveTargetTimeline({ entry:101, stop:100, dir:'long', adr:3, candlesSoFar:bars });
+  assert(Math.abs(tl.usedToday - 1.2) < 1e-9, 'timeline: used-today range = day high - day low');
+  assert(Math.abs(tl.remainingToday - 1.8) < 1e-9, 'timeline: remaining = ADR - used');
+  assert(Math.abs(tl.targets[0].price - 101.9) < 1e-9 && tl.targets[0].horizon === 'TODAY', 'timeline: 0DTE target = half of remaining, labeled TODAY');
+  assert(tl.targets[2].price === 103 && tl.targets[2].horizon === 'NEXT_1_2', 'timeline: 2R beyond remaining -> NEXT_1_2');
+  const short = E.deriveTargetTimeline({ entry:100, stop:101, dir:'short', adr:0.5, candlesSoFar:[{high:101,low:99.8}] });
+  assert(short.remainingToday === 0.075 && short.targets[0].price < 100 && short.targets[2].horizon === 'MULTI', 'timeline: short side, floor at 15% of ADR, far 2R -> MULTI');
+  assert(E.deriveTargetTimeline({ entry:1, stop:0, dir:'long', adr:null, candlesSoFar:bars }) === null, 'timeline: no ADR -> null');
+  assert(tl.lowReward === false && short.lowReward === true, 'timeline: flags 0DTE target under MIN_TODAY_RR as low reward');
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);
