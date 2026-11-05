@@ -2315,7 +2315,7 @@
       if (ev.cause === 'EXTENDED_NO_RETEST' && ev.ranAway){
         const word = ev.dir === 'long' ? 'Breakout' : 'Breakdown';
         fire('amber', '🏃', word.toUpperCase() + ' RAN WITHOUT A RETEST',
-          word + ' worked — price is ' + fmt(ev.distance) + ' past the ' + (ev.dir === 'long' ? 'OR High' : 'OR Low') + ' — but it never pulled back, so there was no retest entry. Strategy rule: don\'t chase this far past the level. Still tracking the session.', t);
+          word + ' worked — price is ' + fmt(ev.distance) + ' past the ' + (ev.dir === 'long' ? 'OR High' : 'OR Low') + ' — but it never pulled back, so there was no retest entry. Strategy rule: don\'t chase. In a 1-year SPY + QQQ backtest, chasing these moves or buying the first pullback lost money on average. Still tracking the session.', t);
         pushTimelineEntry(t, word + ' ran ' + fmt(ev.distance) + ' without a retest — missed move, no entry');
         return;
       }
@@ -2435,7 +2435,7 @@
             ? '<b style="color:var(--bull)">✓ Reached at ' + to12h(times[x.hitIdx] || '') + ' ET</b>' + (x.hitIdx === entryIdx ? '' : ' · ' + Math.round((x.hitIdx - entryIdx) * 15) + ' min after entry')
             : (times[revealIdx] === '15:45' ? 'Not reached this session. ' : 'Not reached yet. ') + h.sub) + '</span></div>';
     });
-    html += '<div class="tl-meta" style="margin-top:8px;margin-bottom:0">Strategy rule based on recent ranges — an estimate, not a guarantee. In a 6-month SPY check, the Today target hit same-day ~58% of the time vs ~8% for 2R.</div>';
+    html += '<div class="tl-meta" style="margin-top:8px;margin-bottom:0">Strategy rule based on recent ranges — an estimate, not a guarantee. In a 1-year SPY check, the Today target was hit the same day ~62% of the time vs under 10% for 2R.</div>';
     body.innerHTML = html;
   }
   (function initTargetMode(){

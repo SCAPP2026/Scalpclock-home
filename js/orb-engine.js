@@ -26,8 +26,13 @@
     // 6-month SPY check (Nov 2026) this hit same-day ~58% vs ~8% for 2R.
     TODAY_TARGET_FRACTION: 0.5,
     MIN_REMAINING_FRACTION: 0.15,
-    // Below this, the 0DTE target pays too little vs the stop. Strategy rule:
-    // in the same SPY check, skipping these raised avg result from ~+0.03R to ~+0.22R/trade (30 trades).
+    // Below this, the 0DTE target pays too little vs the stop. Strategy rule.
+    // 1-year check (Nov 2026, 15m OR, 0DTE mode): SPY avg +0.06R all trades vs +0.10R at >=0.5R (84 trades);
+    // QQQ roughly breakeven either way. No proven edge yet — keep copy as "strategy rule".
+    //
+    // Continuation entries after a runaway breakout (chase, first-pullback break, VWAP retest) were
+    // backtested on the same year of SPY + QQQ and lost on average (about -0.25R to -0.75R/trade),
+    // so the engine deliberately does NOT enter after a breakout runs without a retest.
     MIN_TODAY_RR: 0.5,
   };
 
