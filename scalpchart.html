@@ -1718,6 +1718,7 @@ async function loadTicker() {
     document.getElementById('alert-feed').innerHTML += '<div style="padding:6px 12px;font-size:11px;color:#f5a623;border-bottom:1px solid var(--border);">⚠️ Live data unavailable — showing sample chart. Market may be closed or API key not configured.</div>';
   }
   currentPrice = candles[candles.length - 1].close;
+  if (showFib) { fibSession = null; refreshFibSession(true); }
   resizeCanvases();
   updateOHLC(candles[candles.length - 1]);
   updatePrice(currentPrice, candles[0].open);
@@ -1745,7 +1746,7 @@ async function fetchRealCandles(symbol, tf) {
     const data = await res.json();
     if (data.candles && data.candles.length > 0) {
       return data.candles.map(c => ({
-        open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume
+        time: c.time, open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume
       }));
     }
   } catch (e) {
@@ -1762,6 +1763,7 @@ function startSimulation() {
       currentPrice = candles[candles.length - 1].close;
       updateOHLC(candles[candles.length - 1]);
       runPatternDetection();
+      refreshFibSession(false);
       drawChart();
       // Bars are flowing again — clear a prior DEMO/offline state instead of
       // leaving the label stuck on it forever even though real data (and the
@@ -2328,41 +2330,108 @@ function drawChart() {
 }
 
 // ─── FIBONACCI GOLDEN WAVE ───────────────────────────────────────
-// Retracement levels from the swing high/low of the visible candles.
-// If the high came after the low, the move is up and levels measure the pullback down from the high;
-// otherwise the move is down and levels measure the bounce up from the low.
+// Retracement levels for the 0DTE move: anchored to TODAY's regular session
+// (9:30–4:00 ET) high and low on every timeframe, from /api/orb-bars (15m RTH
+// bars — their highs/lows are the session's true extremes). The chart's own
+// bars mix prior sessions and after-hours, so they're only a fallback.
+// If the high came after the low, the move is up and levels measure the
+// pullback down from the high; otherwise the move is down and levels measure
+// the bounce up from the low.
 let showFib = localStorage.getItem('sc_fib') === '1';
 const FIB_LEVELS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
+let fibSession = null;          // { sym, date, isToday, H, L, up, hiBar, loBar, hiBar2, loBar2 }
+let fibSessionFetchedAt = 0, fibSessionLoading = false;
+const _etFmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+function etOf(iso) {
+  const m = {}; for (const p of _etFmt.formatToParts(new Date(iso))) m[p.type] = p.value;
+  return { date: m.year + '-' + m.month + '-' + m.day, time: (m.hour === '24' ? '00' : m.hour) + ':' + m.minute };
+}
 function toggleFib() {
   showFib = !showFib;
   localStorage.setItem('sc_fib', showFib ? '1' : '0');
   document.getElementById('fibBtn').classList.toggle('active', showFib);
+  if (showFib) refreshFibSession(true);
   drawChart();
+}
+async function refreshFibSession(force) {
+  if (!showFib || fibSessionLoading) return;
+  const sym = ticker;
+  const stale = !fibSession || fibSession.sym !== sym || (fibSession.isToday && Date.now() - fibSessionFetchedAt > 60000);
+  if (!force && !stale) return;
+  fibSessionLoading = true;
+  try {
+    const today = etOf(new Date().toISOString()).date;
+    // Today first; if the market hasn't opened (or it's a weekend/holiday), walk back to the last session.
+    for (let back = 0; back < 6; back++) {
+      const d = new Date(today + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - back);
+      const ds = d.toISOString().slice(0, 10);
+      if (back > 0 && (d.getUTCDay() === 0 || d.getUTCDay() === 6)) continue;
+      const res = await fetch('/api/orb-bars?symbol=' + encodeURIComponent(sym) + (back ? '&date=' + ds : ''));
+      if (!res.ok) continue;
+      const data = await res.json();
+      const bars = data.candles || [];
+      if (!bars.length) continue;
+      let hi = 0, lo = 0;
+      bars.forEach((b, k) => { if (b.high > bars[hi].high) hi = k; if (b.low < bars[lo].low) lo = k; });
+      // Same 15m bar holds both extremes: decide order inside it from the bar's shape.
+      const up = hi !== lo ? hi > lo : bars[hi].close >= bars[hi].open;
+      const win = k => ({ date: data.date, start: bars[k].time, end: bars[k + 1] ? bars[k + 1].time : '16:00' });
+      if (sym !== ticker) return;
+      fibSession = { sym, date: data.date, isToday: back === 0, H: bars[hi].high, L: bars[lo].low, up, hiWin: win(hi), loWin: win(lo) };
+      fibSessionFetchedAt = Date.now();
+      drawChart();
+      return;
+    }
+  } catch (e) { /* network blip — fall back to the visible-candle swing */ }
+  finally { fibSessionLoading = false; }
+}
+// Index of the visible candle (inside a 15m window) holding the extreme, or -1.
+function fibAnchorIdx(visible, win, wantHigh) {
+  let best = -1;
+  visible.forEach((c, i) => {
+    if (!c.time) return;
+    const et = etOf(c.time);
+    if (et.date !== win.date || et.time < win.start || et.time >= win.end) return;
+    if (best < 0 || (wantHigh ? c.high > visible[best].high : c.low < visible[best].low)) best = i;
+  });
+  return best;
 }
 function drawFibLevels(visible, toX, toY, x0, x1) {
   if (visible.length < 5) return null;
-  let hi = 0, lo = 0;
-  visible.forEach((c, i) => {
-    if (c.high > visible[hi].high) hi = i;
-    if (c.low < visible[lo].low) lo = i;
-  });
-  const H = visible[hi].high, L = visible[lo].low, diff = H - L;
+  let H, L, up, hi = -1, lo = -1, source;
+  const s = fibSession && fibSession.sym === ticker ? fibSession : null;
+  if (s && visible[visible.length - 1].time) {
+    H = s.H; L = s.L; up = s.up;
+    hi = fibAnchorIdx(visible, s.hiWin, true);
+    lo = fibAnchorIdx(visible, s.loWin, false);
+    source = s.isToday ? 'Today’s session swing (0DTE)' : 'Last session’s swing · ' + s.date;
+  } else {
+    hi = 0; lo = 0;
+    visible.forEach((c, i) => { if (c.high > visible[hi].high) hi = i; if (c.low < visible[lo].low) lo = i; });
+    H = visible[hi].high; L = visible[lo].low; up = hi > lo;
+    source = 'Visible candles (session data loading…)';
+  }
+  const diff = H - L;
   if (diff <= 0) return null;
-  const up = hi > lo;
   const priceAt = r => up ? H - r * diff : L + r * diff;
-  const startX = toX(Math.min(hi, lo));
+  // Start lines at the swing's first anchor if it's on screen, otherwise span the whole chart.
+  const firstAnchor = up ? lo : hi;
+  const startX = firstAnchor >= 0 ? toX(firstAnchor) : x0;
+  const g = _chartGeom, top = g.padT, bot = g.padT + g.chartH;
   const lines = FIB_LEVELS.map(r => ({ r, price: priceAt(r), y: toY(priceAt(r)) }));
 
   ctx.save();
+  ctx.beginPath(); ctx.rect(x0, top, x1 - x0, bot - top); ctx.clip();
   // Golden zone: 50% to 61.8%
   const zy1 = toY(priceAt(0.5)), zy2 = toY(priceAt(0.618));
   ctx.fillStyle = 'rgba(212,175,55,0.10)';
   ctx.fillRect(startX, Math.min(zy1, zy2), x1 - startX, Math.abs(zy2 - zy1));
-  // Swing line from low to high
-  ctx.strokeStyle = 'rgba(212,175,55,0.35)';
-  ctx.setLineDash([2, 3]);
-  ctx.beginPath(); ctx.moveTo(toX(lo), toY(L)); ctx.lineTo(toX(hi), toY(H)); ctx.stroke();
-  // Level lines
+  // Swing line from low to high (only when both ends are on screen)
+  if (hi >= 0 && lo >= 0) {
+    ctx.strokeStyle = 'rgba(212,175,55,0.35)';
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath(); ctx.moveTo(toX(lo), toY(L)); ctx.lineTo(toX(hi), toY(H)); ctx.stroke();
+  }
   lines.forEach(l => {
     const golden = l.r === 0.618;
     ctx.strokeStyle = golden ? 'rgba(212,175,55,0.85)' : l.r === 0.5 ? 'rgba(212,175,55,0.55)' : 'rgba(138,164,192,0.35)';
@@ -2371,17 +2440,35 @@ function drawFibLevels(visible, toX, toY, x0, x1) {
     ctx.beginPath(); ctx.moveTo(startX, l.y); ctx.lineTo(x1, l.y); ctx.stroke();
   });
   ctx.restore();
-  return { lines, up };
+  return { lines, up, source, top, bot };
 }
 function drawFibLabels(fib, x0) {
   ctx.save();
   ctx.font = '600 9px "JetBrains Mono", monospace';
   ctx.textAlign = 'left';
-  fib.lines.forEach(l => {
+  // Source tag, so it's clear which swing is measured
+  const tag = '🌊 ' + fib.source + (fib.up ? ' · up move' : ' · down move');
+  ctx.fillStyle = 'rgba(7,11,16,0.8)';
+  roundRectPath(ctx, x0 + 2, 2, ctx.measureText(tag).width + 10, 14, 3); ctx.fill();
+  ctx.fillStyle = '#d4af37'; ctx.fillText(tag, x0 + 7, 12);
+  // Levels outside the visible price range stack at the top/bottom edge with an arrow;
+  // then every label is nudged so none overlap (top to bottom, 14px apart).
+  const sorted = fib.lines.slice().sort((a, b) => a.y - b.y);
+  const placed = sorted.map(l => {
+    if (l.y < fib.top + 6) return { l, y: fib.top + 12, arrow: '▲ ' };
+    if (l.y > fib.bot - 2) return { l, y: fib.bot - 4, arrow: '▼ ' };
+    return { l, y: l.y, arrow: '' };
+  });
+  for (let k = 1; k < placed.length; k++) placed[k].y = Math.max(placed[k].y, placed[k - 1].y + 14);
+  const overflow = placed.length ? placed[placed.length - 1].y - (fib.bot - 4) : 0;
+  if (overflow > 0) {           // pushed past the bottom: shift the stack back up from the bottom
+    placed[placed.length - 1].y = fib.bot - 4;
+    for (let k = placed.length - 2; k >= 0; k--) placed[k].y = Math.min(placed[k].y, placed[k + 1].y - 14);
+  }
+  placed.forEach(({ l, y, arrow }) => {
     const golden = l.r === 0.5 || l.r === 0.618;
-    const txt = (l.r * 100).toFixed(1).replace('.0', '') + '%  ' + l.price.toFixed(2);
+    const txt = arrow + (l.r * 100).toFixed(1).replace('.0', '') + '%  ' + l.price.toFixed(2);
     const w = ctx.measureText(txt).width + 8;
-    const y = Math.max(10, l.y);
     ctx.fillStyle = 'rgba(7,11,16,0.75)';
     roundRectPath(ctx, x0 + 2, y - 7, w, 13, 3);
     ctx.fill();
