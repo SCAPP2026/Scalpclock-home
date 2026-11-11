@@ -296,6 +296,51 @@
   .skeleton{color:var(--text-faint);font-size:13px;padding:22px 0;text-align:center;}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
 
+
+  /* 5-Day Level Map */
+  .l5-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+  .l5-stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:11px 13px;min-width:0;}
+  .l5-stat .k{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);}
+  .l5-stat .v{font-family:var(--mono);font-size:1.12rem;font-weight:700;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .l5-stat .s{font-size:11.5px;color:var(--text-dim);margin-top:3px;line-height:1.4;}
+  .l5-gauge{position:relative;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(22,217,126,.35),rgba(138,164,192,.18) 50%,rgba(255,69,102,.35));margin-top:9px;}
+  .l5-gauge i{position:absolute;top:-4px;width:3px;height:14px;border-radius:2px;background:var(--text);box-shadow:0 0 0 2px var(--panel);transform:translateX(-50%);}
+  .l5-badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:3px 9px;border:1px solid rgba(91,156,246,.4);background:var(--blue-dim);color:#cfe1ff;white-space:nowrap;}
+  #l5chart{position:relative;height:400px;width:100%;}
+  #l5chart svg{display:block;width:100%;height:100%;}
+  .l5-tip{position:absolute;pointer-events:none;background:rgba(7,11,16,.96);border:1px solid var(--border);border-radius:9px;padding:8px 10px;font-size:11.5px;line-height:1.5;color:var(--text);min-width:150px;box-shadow:0 6px 20px rgba(0,0,0,.45);display:none;z-index:3;}
+  .l5-tip b{font-family:var(--mono);}
+  .l5-tip .r{display:flex;justify-content:space-between;gap:12px;} .l5-tip .r span:first-child{color:var(--text-dim);}
+  .l5-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text-dim);margin-top:8px;}
+  .l5-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .l5-legend i{display:inline-block;width:14px;height:8px;border-radius:2px;}
+  .l5-row{display:grid;grid-template-columns:4px 1fr auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-soft);align-items:start;}
+  .l5-row:last-child{border-bottom:none;}
+  .l5-row .bar5{border-radius:2px;align-self:stretch;}
+  .l5-row.support .bar5{background:var(--bull);} .l5-row.resistance .bar5{background:var(--bear);} .l5-row.testing .bar5{background:var(--amber);}
+  .l5-row .px{font-family:var(--mono);font-weight:700;font-size:13.5px;}
+  .l5-row.support .px{color:var(--bull);} .l5-row.resistance .px{color:var(--bear);} .l5-row.testing .px{color:var(--amber);}
+  .l5-row .why{font-size:11.5px;color:var(--text-dim);margin-top:2px;line-height:1.45;}
+  .l5-row .meta{text-align:right;font-size:11.5px;color:var(--text-dim);white-space:nowrap;}
+  .l5-row .meta b{display:block;font-family:var(--mono);font-size:12.5px;color:var(--text);}
+  .tier{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px;}
+  .tier.major{background:rgba(91,156,246,.18);color:#cfe1ff;} .tier.strong{background:var(--panel-alt);color:var(--text);border:1px solid var(--border);} .tier.minor{color:var(--text-faint);border:1px solid var(--border-soft);}
+  .flip{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;margin-left:4px;background:var(--amber-dim);color:var(--amber);vertical-align:1px;}
+  .meter{height:4px;border-radius:2px;background:var(--panel-alt);margin-top:6px;overflow:hidden;max-width:220px;}
+  .meter i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#3d6fb8,var(--blue));}
+  .l5-days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:14px;}
+  .l5-day{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:11px 12px;min-width:0;}
+  .l5-day .dh{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px;font-weight:700;}
+  .l5-day .dh span:last-child{font-family:var(--mono);}
+  .l5-day .rng{position:relative;height:22px;margin:10px 0 6px;}
+  .l5-day .rng .ln{position:absolute;left:0;right:0;top:10px;height:2px;background:var(--border);border-radius:1px;}
+  .l5-day .rng .bd{position:absolute;top:5px;height:12px;border-radius:3px;}
+  .l5-day .rng .cl{position:absolute;top:1px;width:2px;height:20px;background:var(--text);border-radius:1px;transform:translateX(-50%);}
+  .l5-day .hl3{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-dim);}
+  .l5-day .note{font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.4;}
+  .l5-reads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px;margin-top:14px;}
+  @media(max-width:980px){ .l5-stats{grid-template-columns:repeat(2,minmax(0,1fr));} .l5-days{grid-template-columns:repeat(3,minmax(0,1fr));} .l5-reads{grid-template-columns:1fr;} #l5chart{height:330px;} }
+  @media(max-width:560px){ .l5-days{grid-template-columns:repeat(2,minmax(0,1fr));} #l5chart{height:290px;} .l5-stat:first-child{grid-column:1/-1;} }
   @media(max-width:980px){
     .cards,.scen,.out-grid,.glance{grid-template-columns:1fr;}
     .chart-grid,.two{grid-template-columns:1fr;}
@@ -416,7 +461,7 @@
       <button data-sym="QQQ" aria-pressed="false">QQQ</button>
       <button data-sym="IWM" aria-pressed="false">IWM</button>
     </div>
-    <span class="faint" id="focusHint">Sections 3–5 follow this choice.</span>
+    <span class="faint" id="focusHint">Sections 3–5 and the 5-Day Level Map follow this choice.</span>
   </div>
 
   <!-- 3. CALLS VS PUTS -->
@@ -454,6 +499,34 @@
         <div class="lvl-list" id="levels"><div class="skeleton">Loading…</div></div>
       </div>
     </div>
+  </section>
+
+
+  <!-- 5b. 5-DAY LEVEL MAP -->
+  <section aria-labelledby="hL5" id="five-day-levels">
+    <div class="sec-head"><h2 id="hL5">5-Day Level Map — <span class="focusSym">SPY</span></h2><div class="tags"><span class="l5-badge" id="l5Badge">Rebuilt after every close</span><span class="tag fact">Fact</span><span class="tag calc">Calculated</span></div></div>
+    <p class="sec-sub">Support and resistance from the last five completed trading days only — the zones where buyers and sellers actually fought this week. Each level is scored 0–100 from how many independent reasons line up there (day highs and lows, 15-minute swing turns, the volume profile, 5-day VWAP) and how many times price came back and was turned away. The map rebuilds itself after each 4:00 PM ET close; the live price moves across it all day.</p>
+    <div class="l5-stats" id="l5Stats"><div class="skeleton" style="grid-column:1/-1">Loading 5-day levels…</div></div>
+    <div class="chart-grid">
+      <div class="panel">
+        <div id="l5chart" role="img" aria-label="Fifteen-minute candles for the last five sessions with support and resistance bands and the volume profile"></div>
+        <div class="l5-legend" aria-hidden="true">
+          <span><i style="background:rgba(22,217,126,.45)"></i>Support</span>
+          <span><i style="background:rgba(255,69,102,.45)"></i>Resistance</span>
+          <span><i style="background:rgba(245,166,35,.5)"></i>Testing now</span>
+          <span><i style="background:rgba(138,164,192,.45)"></i>Volume profile</span>
+          <span><i style="background:var(--blue)"></i>POC / live price</span>
+        </div>
+        <div class="chart-note">Brighter band = stronger level. Hover the chart for any 15-minute bar or level.</div>
+      </div>
+      <div class="panel">
+        <h3>Level ladder, highest to lowest</h3>
+        <div class="lvl-list" id="l5Ladder"><div class="skeleton">Loading…</div></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:14px"><h3>How the week set up</h3><div class="l5-reads" id="l5Reads"><div class="skeleton">Loading…</div></div></div>
+    <div class="l5-days" id="l5Days"></div>
+    <div class="src" id="l5Note"></div>
   </section>
 
   <!-- 6. RELATIVE STRENGTH -->
@@ -553,6 +626,7 @@
       <details><summary>What does the Market Intelligence Center show?</summary><p>It tracks SPY, QQQ and IWM in one place: price, VWAP, moving averages, support and resistance levels, which of the three is leading, the companies moving each ETF, upcoming economic releases, and what would need to happen before a calls or puts setup makes sense.</p></details>
       <details><summary>Is the SPY, QQQ and IWM data real-time?</summary><p>Prices are real-time trades from the IEX exchange, supplied by Alpaca. IEX is one exchange rather than the whole US market, so volume figures are IEX-only. Options figures come from CBOE and are delayed 15 to 20 minutes. Every section shows its source and timestamp.</p></details>
       <details><summary>How are the support and resistance levels calculated?</summary><p>From price history: the previous day's high, low and close, the premarket range, the first 15 minutes of trading (the opening range), VWAP, the 9 and 20 EMA, the 50 and 200 day SMA, last week's and last month's highs and lows, and zones where price has turned at least twice in recent months.</p></details>
+      <details><summary>How does the 5-Day Level Map work?</summary><p>It looks only at the last five completed trading days. Every day high and low, every turn on the 15-minute chart, the volume profile (where the most shares traded, and the value area holding 70% of the volume) and the 5-day VWAP become candidate levels. Candidates close together merge into one zone. Each zone scores up to 100: more points when several independent reasons agree, and more each time price came back to it and left on the same side (the level held). The map is rebuilt automatically after every 4:00 PM ET close; during the day only the live price moves, so a level can switch from resistance to support as price crosses it.</p></details>
       <details><summary>Why compare SPY, QQQ and IWM together?</summary><p>SPY is large US companies, QQQ is mostly big technology, and IWM is small companies. When all three move the same way, a move has broad participation. When they split, for example SPY and QQQ rising while IWM falls, the market is uneven and a directional trade deserves more caution.</p></details>
       <details><summary>Does it tell me whether to buy calls or puts?</summary><p>No. It shows whether conditions lean bullish, bearish or neutral, lists what would have to happen first, and says what would prove the idea wrong. It never picks a strike or expiry and it is not a prediction or investment advice.</p></details>
       <details><summary>What does the confidence level mean?</summary><p>Low, Medium or High describes how much of the evidence agrees: trend, VWAP, momentum, volume, levels, relative strength and confirmation from the other ETFs. It is not a win rate and has not been back-tested. Missing or stale data, or a major economic release within 24 hours, lowers it.</p></details>
@@ -635,6 +709,7 @@
     var jobs = [loadCore()];
     // Movers refresh every other cycle while the market is open, and with every cycle when closed.
     if (ticks === 1 || secs >= 300 || ticks % 2 === 1) jobs.push(loadMovers());
+    if (ticks === 1 || ticks % 2 === 1) jobs.push(loadLevels5());
     if (ticks === 1 || ticks % 20 === 0) loadSide();
     Promise.all(jobs).then(schedule);
   }
@@ -972,10 +1047,169 @@
     $('optNote').innerHTML = '<strong>Source:</strong> CBOE delayed quotes, about 15–20 minutes behind, contracts expiring in the next two weeks. <strong>How to read it:</strong> higher implied volatility means options are more expensive, so the ETF has to move further for a bought option to profit. A put/call ratio above 1 means more puts than calls traded — that can be hedging as easily as a bearish bet, so it is context, not a signal. For a specific contract, check its bid/ask spread and open interest in your broker before anything else. <a href="/learn-options-trading/options-basics/implied-volatility-explained">Implied volatility explained →</a>';
   }
 
+  // ── 5-Day Level Map ─────────────────────────────────────────────────────
+  function loadLevels5() {
+    return getJSON('/api/market-levels').then(function (d) {
+      if (!d || !d.symbols) throw new Error((d && d.error) || 'No data returned');
+      state.l5 = d; state.l5Err = null; renderL5();
+    }).catch(function (e) {
+      state.l5Err = e.message;
+      if (!state.l5) ['l5Ladder', 'l5Reads'].forEach(function (id) { $(id).innerHTML = '<div class="skeleton">5-day levels could not be loaded (' + esc(e.message) + '). Nothing is shown rather than made-up levels.</div>'; });
+      if (!state.l5) $('l5Stats').innerHTML = '';
+    });
+  }
+  function l5Sym() { return state.l5 && state.l5.symbols.filter(function (x) { return x.symbol === state.focus; })[0]; }
+  var L5C = { support: '22,217,126', resistance: '255,69,102', testing: '245,166,35' };
+  var L5A = { major: 0.26, strong: 0.16, minor: 0.08 };
+  function l5Zone(l) { return l.isZone ? num(l.lo) + '–' + num(l.hi) : num(l.price); }
+  function l5Day(t) { return new Date(t).toLocaleDateString('en-CA', { timeZone: ET }); }
+  function l5Label(t) { return new Date(t).toLocaleDateString('en-US', { timeZone: ET, weekday: 'short', month: 'numeric', day: 'numeric' }); }
+  function l5When(t) { return new Date(t).toLocaleString('en-US', { timeZone: ET, weekday: 'short', month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' ET'; }
+  function renderL5() {
+    var m = l5Sym();
+    if (!m) return;
+    if (!m.ok) {
+      ['l5Ladder', 'l5Reads'].forEach(function (id) { $(id).innerHTML = '<div class="skeleton">' + esc(m.error || 'Unavailable') + '</div>'; });
+      $('l5Stats').innerHTML = ''; $('l5chart').innerHTML = ''; $('l5Days').innerHTML = ''; return;
+    }
+    var price = m.refPrice;
+    $('l5Badge').textContent = etDay(m.window.from) + ' → ' + etDay(m.window.to) + ' · rebuilt after each close';
+    var nS = m.levels.filter(function (l) { return l.price === m.nearestSupport; })[0];
+    var nR = m.levels.filter(function (l) { return l.price === m.nearestResistance; })[0];
+    function tile(k, v, sub, extra) { return '<div class="l5-stat"><div class="k">' + k + '</div><div class="v">' + v + '</div>' + (extra || '') + '<div class="s">' + sub + '</div></div>'; }
+    function lvlTile(l, word) {
+      if (!l) return tile('Nearest ' + word, na('none in window'), word === 'support' ? 'Price is under every 5-day level' : 'Price is over every 5-day level');
+      return tile('Nearest ' + word, '<span class="' + (word === 'support' ? 'up' : 'down') + '">' + l5Zone(l) + '</span>', '<span class="mono">' + pct(l.distPct) + '</span> away · <span class="tier ' + l.tier + '" style="margin:0">' + l.tier + '</span> ' + l.score + (l.held ? ' · held ' + l.held + '×' : ''));
+    }
+    var st = m.structure;
+    $('l5Stats').innerHTML =
+      tile('5-day range', money(m.low5.price) + ' – ' + money(m.high5.price), m.rangePos == null ? '' : 'Price is at <b style="color:var(--text)">' + Math.round(m.rangePos * 100) + '%</b> of the range', m.rangePos == null ? '' : '<div class="l5-gauge" aria-hidden="true"><i style="left:' + (m.rangePos * 100).toFixed(1) + '%"></i></div>') +
+      lvlTile(nS, 'support') + lvlTile(nR, 'resistance') +
+      tile('Volume POC', m.profile ? money(m.profile.poc) : na(), m.profile ? 'Value area ' + money(m.profile.val) + '–' + money(m.profile.vah) : 'No volume profile') +
+      tile('Structure', '<span class="' + (st.tone === 'bullish' ? 'up' : st.tone === 'bearish' ? 'down' : '') + '" style="font-family:var(--sans);font-size:.98rem">' + esc(st.label.split(' — ')[0]) + '</span>', esc(st.label.split(' — ')[1] || '') + (st.hh + st.lh ? ' · ' + st.hh + '/' + (st.hh + st.lh) + ' higher highs' : ''));
+
+    // Ladder with a "you are here" marker at the live price.
+    var html = '', placed = false;
+    m.levels.forEach(function (l) {
+      if (!placed && l.price < price) { html += '<div class="here">' + esc(m.symbol) + ' ' + money(price) + (m.refIsLive ? '' : ' (last close)') + '</div>'; placed = true; }
+      html += '<div class="l5-row ' + l.role + '"><span class="bar5"></span><div><div><span class="px">' + l5Zone(l) + '</span><span class="tier ' + l.tier + '">' + l.tier + '</span>' + (l.flipped ? '<span class="flip">' + (l.flipped === 'resistance→support' ? 'R → S flip' : 'S → R flip') + '</span>' : '') + '</div>' +
+        '<div class="why">' + l.sources.slice(0, 3).map(esc).join(' · ') + '</div>' +
+        '<div class="meter" title="Strength ' + l.score + '/100"><i style="width:' + l.score + '%"></i></div></div>' +
+        '<div class="meta"><b class="' + cls(l.distPct) + '">' + pct(l.distPct) + '</b>' + (l.role === 'testing' ? 'testing now' : l.role) + '<br>tested ' + l.visits + '× · held ' + l.held + '</div></div>';
+    });
+    if (!placed) html += '<div class="here">' + esc(m.symbol) + ' ' + money(price) + '</div>';
+    $('l5Ladder').innerHTML = html;
+
+    $('l5Reads').innerHTML = m.playbook.map(function (r) { return '<div class="read ' + r.tone + '"><b>' + esc(r.title) + '</b><p>' + esc(r.text) + '</p></div>'; }).join('');
+
+    $('l5Days').innerHTML = m.days.map(function (d) {
+      var span = d.high - d.low || 1, a = (Math.min(d.open, d.close) - d.low) / span * 100, b = (Math.max(d.open, d.close) - d.low) / span * 100;
+      var col = d.close >= d.open ? 'rgba(22,217,126,.55)' : 'rgba(255,69,102,.55)';
+      var where = d.closeLoc >= 0.75 ? 'Closed near the high — buyers in control late' : d.closeLoc <= 0.25 ? 'Closed near the low — sellers in control late' : 'Closed mid-range — no one won the day';
+      return '<div class="l5-day"><div class="dh"><span>' + etDay(d.date) + '</span><span class="' + cls(d.changePct) + '">' + pct(d.changePct) + '</span></div>' +
+        '<div class="rng" title="Open-to-close body inside the day\'s range; white tick = close"><span class="ln"></span><span class="bd" style="left:' + a.toFixed(1) + '%;width:' + Math.max(1.5, b - a).toFixed(1) + '%;background:' + col + '"></span><span class="cl" style="left:' + (d.closeLoc * 100).toFixed(1) + '%"></span></div>' +
+        '<div class="hl3"><span>L ' + num(d.low) + '</span><span>H ' + num(d.high) + '</span></div>' +
+        '<div class="note">' + where + ' · range ' + num(d.rangePct) + '%</div></div>';
+    }).join('');
+
+    $('l5Note').innerHTML = '<strong>Source:</strong> ' + esc(state.l5.note) + ' Price: ' + (m.refIsLive ? 'latest IEX trade, ' + etShort(m.refPriceTs) : 'last regular-session close') + '. Levels from ' + etDay(m.window.from) + ' to ' + etDay(m.window.to) + '; the map rebuilds after the next close. <a href="/scalpchart?t=' + encodeURIComponent(m.symbol) + '&l5=1">Trade it on ScalpCharts with these levels →</a>';
+    drawL5(m);
+  }
+  function drawL5(m) {
+    var el = $('l5chart');
+    var W = el.clientWidth, H = el.clientHeight;
+    if (W < 80 || !m.bars15.length) return;
+    var bars = m.bars15, n = bars.length, tol = m.tolerance || 0;
+    var axisW = 62, profW = Math.max(40, Math.min(86, W * 0.13)), padT = 24, padB = 8, padL = 4;
+    var plotR = W - axisW - profW - 8, profL = plotR + 4, profR = profL + profW;
+    var step = (plotR - padL) / n, cw = Math.max(1, Math.min(9, step * 0.64));
+    var lo = Infinity, hi = -Infinity;
+    bars.forEach(function (b) { if (b.l < lo) lo = b.l; if (b.h > hi) hi = b.h; });
+    lo = Math.min(lo, m.refPrice); hi = Math.max(hi, m.refPrice);
+    var padP = (hi - lo) * 0.05 || 1; lo -= padP; hi += padP;
+    function y(p) { return padT + (hi - p) / (hi - lo) * (H - padT - padB); }
+    function x(i) { return padL + (i + 0.5) * step; }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
+    // Day separators + labels
+    var prevDay = null;
+    bars.forEach(function (b, i) {
+      var dk = l5Day(b.t);
+      if (dk !== prevDay) {
+        var xx = padL + i * step;
+        if (i > 0) s += '<line x1="' + xx + '" x2="' + xx + '" y1="' + padT + '" y2="' + (H - padB) + '" stroke="rgba(138,164,192,.16)" stroke-dasharray="3 4"/>';
+        // Room per day decides the label: "Mon, 10/5" when wide, "Mon" when narrow.
+        var lbl = (plotR - padL) / 5 > 70 ? l5Label(b.t) : l5Label(b.t).split(',')[0];
+        s += '<text x="' + (xx + 5) + '" y="15" font-size="10.5" font-weight="700" fill="#5a7292" font-family="Inter,sans-serif">' + esc(lbl) + '</text>';
+        prevDay = dk;
+      }
+    });
+    // Level bands behind everything
+    m.levels.forEach(function (l) {
+      var c = L5C[l.role] || L5C.testing, y1 = y(l.hi + tol / 2), y2 = y(l.lo - tol / 2);
+      s += '<rect x="' + padL + '" y="' + y1.toFixed(1) + '" width="' + (profR - padL) + '" height="' + Math.max(2, y2 - y1).toFixed(1) + '" fill="rgba(' + c + ',' + L5A[l.tier] + ')"/>';
+      s += '<line x1="' + padL + '" x2="' + profR + '" y1="' + y(l.price).toFixed(1) + '" y2="' + y(l.price).toFixed(1) + '" stroke="rgba(' + c + ',' + (l.tier === 'minor' ? .45 : .8) + ')" stroke-width="1"' + (l.tier === 'minor' ? ' stroke-dasharray="4 4"' : '') + '/>';
+    });
+    // Volume profile (IEX volume at price), anchored to the axis side
+    if (m.profile && m.profile.rows.length) {
+      var maxV = Math.max.apply(null, m.profile.rows.map(function (r) { return r.v; })) || 1;
+      m.profile.rows.forEach(function (r) {
+        var y1 = y(r.hi), y2 = y(r.lo), h = Math.max(1, y2 - y1 - 1), w = r.v / maxV * profW;
+        var isPoc = m.profile.poc >= r.lo && m.profile.poc <= r.hi, inVa = r.lo >= m.profile.val - 1e-9 && r.hi <= m.profile.vah + 1e-9;
+        s += '<rect x="' + (profR - w).toFixed(1) + '" y="' + y1.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="1.5" fill="' + (isPoc ? '#5b9cf6' : inVa ? 'rgba(138,164,192,.42)' : 'rgba(138,164,192,.2)') + '"/>';
+      });
+      var py = y(m.profile.poc).toFixed(1);
+      s += '<line x1="' + padL + '" x2="' + profR + '" y1="' + py + '" y2="' + py + '" stroke="rgba(91,156,246,.55)" stroke-dasharray="2 3"/>';
+    }
+    // Candles
+    bars.forEach(function (b, i) {
+      var up = b.c >= b.o, col = up ? '#16d97e' : '#ff4566', xx = x(i).toFixed(1);
+      var top = y(Math.max(b.o, b.c)), bh = Math.max(1, y(Math.min(b.o, b.c)) - top);
+      s += '<line x1="' + xx + '" x2="' + xx + '" y1="' + y(b.h).toFixed(1) + '" y2="' + y(b.l).toFixed(1) + '" stroke="' + col + '" stroke-width="1"/>';
+      s += '<rect x="' + (x(i) - cw / 2).toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + cw.toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="' + (cw > 4 ? 1 : 0) + '" fill="' + col + '"/>';
+    });
+    // Live price
+    var yp = y(m.refPrice);
+    s += '<line x1="' + padL + '" x2="' + profR + '" y1="' + yp.toFixed(1) + '" y2="' + yp.toFixed(1) + '" stroke="#5b9cf6" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    // Axis tags: strong/major levels, nudged apart; live price pill on top.
+    var tags = m.levels.filter(function (l) { return l.tier !== 'minor'; }).map(function (l) { return { y: y(l.price), l: l }; }).sort(function (a, b) { return a.y - b.y; });
+    for (var k = 1; k < tags.length; k++) tags[k].y = Math.max(tags[k].y, tags[k - 1].y + 15);
+    tags.forEach(function (t) {
+      if (Math.abs(t.y - yp) < 13 || t.y > H - 4) return;
+      var c = L5C[t.l.role] || L5C.testing;
+      s += '<rect x="' + (W - axisW + 4) + '" y="' + (t.y - 7).toFixed(1) + '" width="' + (axisW - 6) + '" height="14" rx="3" fill="rgba(' + c + ',.18)" stroke="rgba(' + c + ',.55)"/>';
+      s += '<text x="' + (W - axisW / 2 + 1) + '" y="' + (t.y + 3.5).toFixed(1) + '" text-anchor="middle" font-size="10" font-weight="600" fill="#dde8f5" font-family="JetBrains Mono,monospace">' + num(t.l.price) + '</text>';
+    });
+    s += '<rect x="' + (W - axisW + 2) + '" y="' + (yp - 9).toFixed(1) + '" width="' + (axisW - 2) + '" height="18" rx="4" fill="#5b9cf6"/>';
+    s += '<text x="' + (W - axisW / 2 + 1) + '" y="' + (yp + 4).toFixed(1) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="#06101f" font-family="JetBrains Mono,monospace">' + num(m.refPrice) + '</text>';
+    s += '<line id="l5x" x1="0" x2="0" y1="' + padT + '" y2="' + (H - padB) + '" stroke="rgba(221,232,245,.35)" stroke-dasharray="3 3" visibility="hidden"/>';
+    s += '</svg><div class="l5-tip" id="l5tip"></div>';
+    el.innerHTML = s;
+    var tip = $('l5tip'), cross = el.querySelector('#l5x');
+    el.onpointerleave = function () { tip.style.display = 'none'; cross.setAttribute('visibility', 'hidden'); };
+    el.onpointermove = function (ev) {
+      var r = el.getBoundingClientRect(), px = ev.clientX - r.left, py2 = ev.clientY - r.top;
+      var p = hi - (py2 - padT) / (H - padT - padB) * (hi - lo);
+      var lvl = m.levels.filter(function (l) { return p >= l.lo - tol / 2 - (hi - lo) * 0.004 && p <= l.hi + tol / 2 + (hi - lo) * 0.004; })[0];
+      var out = '';
+      if (px >= padL && px <= plotR) {
+        var i = Math.max(0, Math.min(n - 1, Math.floor((px - padL) / step))), b = bars[i];
+        cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i)); cross.setAttribute('visibility', 'visible');
+        out += '<div style="font-weight:700;margin-bottom:3px">' + esc(l5When(b.t)) + '</div><div class="r"><span>Open</span><b>' + num(b.o) + '</b></div><div class="r"><span>High</span><b>' + num(b.h) + '</b></div><div class="r"><span>Low</span><b>' + num(b.l) + '</b></div><div class="r"><span>Close</span><b>' + num(b.c) + '</b></div><div class="r"><span>IEX vol</span><b>' + compact(b.v) + '</b></div>';
+      } else cross.setAttribute('visibility', 'hidden');
+      if (lvl) out += '<div style="margin-top:' + (out ? 6 : 0) + 'px;padding-top:' + (out ? 6 : 0) + 'px;border-top:' + (out ? '1px solid #1e2d42' : 'none') + '"><b style="color:rgb(' + (L5C[lvl.role] || L5C.testing) + ')">' + l5Zone(lvl) + '</b> · ' + lvl.tier + ' ' + lvl.score + '/100<br><span style="color:#8aa4c0">' + lvl.sources.slice(0, 3).map(esc).join(' · ') + '</span></div>';
+      if (!out) { tip.style.display = 'none'; return; }
+      tip.innerHTML = out; tip.style.display = 'block';
+      var tw = tip.offsetWidth, th = tip.offsetHeight;
+      tip.style.left = Math.min(W - tw - 4, Math.max(4, px + 14)) + 'px';
+      tip.style.top = Math.min(H - th - 4, Math.max(4, py2 - th / 2)) + 'px';
+    };
+  }
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(function () { var m = l5Sym(); if (m && m.ok) drawL5(m); }).observe($('l5chart'));
+
   // ── wiring ──────────────────────────────────────────────────────────────
   function renderFocus(fit) {
     Array.prototype.forEach.call(document.querySelectorAll('.focusSym'), function (el) { el.textContent = state.focus; });
-    renderScenarios(); renderScore(); renderLevels(); renderChart(fit);
+    renderScenarios(); renderScore(); renderLevels(); renderChart(fit); renderL5();
   }
   function renderCore() {
     renderStatus(); renderBanners(); renderGlance(); renderCards(); renderComparison(); renderCalendar(); renderOutlook();

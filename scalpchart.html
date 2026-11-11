@@ -719,6 +719,23 @@
   .learn-btn.active{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--warn);}
   .fib-btn{background:rgba(138,164,192,.08);border:1px solid rgba(138,164,192,.25);color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.15s;margin-right:6px;}
   .fib-btn:hover{background:rgba(212,175,55,.12);}
+  .fib-btn.pm-on{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.5);color:#f5a623;}
+  .fib-btn.l5-on{background:rgba(91,156,246,.12);border-color:rgba(91,156,246,.5);color:#5b9cf6;}
+  /* Pre-market strip */
+  #pmStrip{display:none;align-items:stretch;gap:0;padding:0;background:linear-gradient(90deg,rgba(245,166,35,.07),rgba(14,24,36,0) 60%),var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+  #pmStrip::-webkit-scrollbar{display:none;}
+  #pmStrip.show{display:flex;}
+  .pm-head{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:7px 14px;border-right:1px solid var(--border);flex-shrink:0;}
+  .pm-head b{font-size:10.5px;letter-spacing:.09em;color:#f5a623;white-space:nowrap;}
+  .pm-head span{font-size:9.5px;color:var(--muted);white-space:nowrap;}
+  .pm-item{display:flex;flex-direction:column;justify-content:center;padding:6px 12px;border-right:1px solid rgba(30,45,66,.6);flex-shrink:0;}
+  .pm-item .k{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+  .pm-item .v{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#fff;white-space:nowrap;margin-top:1px;}
+  .pm-item .v.up{color:var(--bull);} .pm-item .v.dn{color:var(--bear);}
+  .pm-chip{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 6px;}
+  .pm-chip.ok{background:rgba(0,201,107,.14);color:var(--bull);} .pm-chip.warn{background:rgba(245,166,35,.14);color:#f5a623;} .pm-chip.bad{background:rgba(255,69,102,.14);color:var(--bear);} .pm-chip.n{background:rgba(138,164,192,.12);color:var(--muted);}
+  .pm-read{display:flex;align-items:center;padding:6px 14px;font-size:11px;color:var(--muted);line-height:1.4;min-width:260px;max-width:520px;flex:1 0 260px;}
+  @media(max-width:700px){ .tf-bar{flex-wrap:wrap;row-gap:6px;} #pmStrip{flex-wrap:wrap;overflow-x:visible;} .pm-head{flex-basis:100%;flex-direction:row;align-items:baseline;gap:8px;border-right:none;border-bottom:1px solid rgba(30,45,66,.6);padding:6px 12px;} .pm-item{flex:1 0 30%;border-bottom:1px solid rgba(30,45,66,.4);} .pm-read{flex-basis:100%;min-width:0;max-width:none;} }
   .fib-btn.active{background:rgba(212,175,55,.14);border-color:rgba(212,175,55,.5);color:#d4af37;}
   .learn-mode-bar{display:none;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(245,166,35,.07);border-bottom:1px solid rgba(245,166,35,.3);font-size:12px;color:var(--warn);}
   .learn-mode-bar.active{display:flex;}
@@ -1166,6 +1183,8 @@
   <div class="separator"></div>
   <button class="tf-btn active" style="pointer-events:none;color:var(--text);border:none;" id="tfLabel">Candlestick</button>
   <div style="flex:1"></div>
+  <button class="fib-btn" id="pmBtn" onclick="togglePremarket()" title="Pre-market: shade extended-hours candles, draw the pre-market high/low and previous close, and show the gap.">🌅 Pre-Market</button>
+  <button class="fib-btn" id="l5Btn" onclick="toggleL5()" title="5-Day Levels: support and resistance from the last five completed sessions (same map as Market Intelligence).">📐 5-Day Levels</button>
   <button class="fib-btn" id="fibBtn" onclick="toggleFib()" title="Fibonacci Golden Wave: retracement levels from the recent swing high and low. Gold band = 50%–61.8% golden zone.">🌊 Golden Wave</button>
   <button class="learn-btn" id="learnModeBtn" onclick="toggleLearnMode()">📚 Learn Mode</button>
 </div>
@@ -1184,6 +1203,8 @@
   <div class="ohlcv-item"><div class="ohlcv-lbl">Close</div><div class="ohlcv-val" id="ohlcC">—</div></div>
   <div class="ohlcv-item"><div class="ohlcv-lbl">Volume</div><div class="ohlcv-val" id="ohlcV">—</div></div>
 </div>
+
+<div id="pmStrip" aria-live="polite"></div>
 
 <div id="forming-wrap">
   <span style="font-size:11px;color:var(--muted)">Scanning for patterns...</span>
@@ -1725,6 +1746,7 @@ async function loadTicker() {
   runPatternDetection();
   startSimulation();
   startPricePoller();
+  refreshExtras(true);
   // Deep-linked from ORB Signal Engine's "Analyze with SampsonX" action (?coach=1) —
   // auto-open the coach panel on the latest candle, once, on this initial load only.
   if (_coachAutoOpenPending) {
@@ -1764,6 +1786,7 @@ function startSimulation() {
       updateOHLC(candles[candles.length - 1]);
       runPatternDetection();
       refreshFibSession(false);
+      refreshExtras(false);
       drawChart();
       // Bars are flowing again — clear a prior DEMO/offline state instead of
       // leaving the label stuck on it forever even though real data (and the
@@ -2223,6 +2246,9 @@ function drawChart() {
     }
   }
 
+  // Pre-market shading + PM / previous-close / 5-day level lines, behind everything else
+  const extLayer = (showPM || showL5) ? drawExtendedLayer(visible, toX, toY, gap, padL, W - padR) : null;
+
   // Fibonacci Golden Wave — lines + golden zone sit behind the candles
   const fib = showFib ? drawFibLevels(visible, toX, toY, padL, W - padR) : null;
 
@@ -2280,6 +2306,7 @@ function drawChart() {
   });
 
   if (fib) drawFibLabels(fib, padL);
+  if (extLayer) drawExtendedTags(extLayer, toY, W - padR);
 
   // Current price line
   const lastClose = visible[n - 1].close;
@@ -2478,6 +2505,191 @@ function drawFibLabels(fib, x0) {
   ctx.restore();
 }
 if (showFib) document.getElementById('fibBtn')?.classList.add('active');
+
+// ─── PRE-MARKET + 5-DAY LEVELS ───────────────────────────────────
+// Pre-market: /api/premarket (IEX 1-min bars) → strip above the chart, amber
+// shading on extended-hours candles, PMH / PML / previous-close lines.
+// 5-Day Levels: /api/market-levels (same map as Market Intelligence).
+let showPM = (() => { try { return localStorage.getItem('sc_pm') !== '0'; } catch (_) { return true; } })();
+let showL5 = (() => { try { return new URLSearchParams(location.search).get('l5') === '1' || localStorage.getItem('sc_l5') === '1'; } catch (_) { return false; } })();
+let pmData = null, pmAt = 0, pmLoading = false;
+let l5Data = null, l5At = 0, l5Loading = false;
+function _pmSave(k, v) { try { localStorage.setItem(k, v ? '1' : '0'); } catch (_) {} }
+function togglePremarket() {
+  showPM = !showPM; _pmSave('sc_pm', showPM);
+  document.getElementById('pmBtn').classList.toggle('pm-on', showPM);
+  renderPmStrip(); resizeCanvases();
+  if (showPM) refreshExtras(true);
+}
+function toggleL5() {
+  showL5 = !showL5; _pmSave('sc_l5', showL5);
+  document.getElementById('l5Btn').classList.toggle('l5-on', showL5);
+  renderPmStrip(); resizeCanvases();
+  if (showL5) refreshExtras(true);
+}
+async function refreshExtras(force) {
+  const sym = ticker;
+  const now = Date.now();
+  if (force && (!pmData || pmData.symbol !== sym)) pmData = null;
+  if (force && (!l5Data || l5Data.symbol !== sym)) l5Data = null;
+  const jobs = [];
+  if (showPM && !pmLoading && (force || now - pmAt > 30000)) {
+    pmLoading = true;
+    jobs.push(fetch('/api/premarket?symbol=' + encodeURIComponent(sym)).then(r => r.json()).then(d => {
+      if (sym === ticker) { pmData = d && d.ok ? d : { symbol: sym, ok: false, error: (d && d.error) || 'unavailable' }; pmAt = Date.now(); }
+    }).catch(() => {}).finally(() => { pmLoading = false; }));
+  }
+  if (showL5 && !l5Loading && (force || now - l5At > 60000)) {
+    l5Loading = true;
+    jobs.push(fetch('/api/market-levels?symbols=' + encodeURIComponent(sym)).then(r => r.json()).then(d => {
+      const m = d && d.symbols && d.symbols[0];
+      if (sym === ticker) { l5Data = m && m.ok ? m : { symbol: sym, ok: false, error: (m && m.error) || (d && d.error) || 'unavailable' }; l5At = Date.now(); }
+    }).catch(() => {}).finally(() => { l5Loading = false; }));
+  }
+  if (!jobs.length) return;
+  await Promise.all(jobs);
+  renderPmStrip();
+  resizeCanvases();          // the strip can change the chart's height
+}
+function _pmT(ms) { return ms ? new Date(ms).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' }) : '—'; }
+function _pmN(v) { return v == null ? '—' : Number(v).toFixed(2); }
+function _pmVol(v) { return v == null ? '—' : v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(1) + 'K' : String(v); }
+function renderPmStrip() {
+  const el = document.getElementById('pmStrip');
+  if (!el) return;
+  if (!showPM && !showL5) { el.classList.remove('show'); el.innerHTML = ''; return; }
+  const item = (k, v, cls) => '<div class="pm-item"><div class="k">' + k + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + v + '</div></div>';
+  let h = '';
+  if (showPM) {
+    const d = pmData;
+    if (!d) h += '<div class="pm-head"><b>🌅 PRE-MARKET</b><span>Loading…</span></div>';
+    else if (!d.ok) h += '<div class="pm-head"><b>🌅 PRE-MARKET</b><span>Unavailable</span></div><div class="pm-read">' + String(d.error || '').replace(/</g, '&lt;') + '</div>';
+    else {
+      const st = { premarket: 'LIVE NOW', regular: 'TODAY', afterhours: 'TODAY', closed: 'LAST SESSION' }[d.session.state] || '';
+      const day = new Date(d.session.date + 'T12:00:00Z').toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric' });
+      h += '<div class="pm-head" title="' + d.note.replace(/"/g, '&quot;') + '"><b>🌅 PRE-MARKET</b><span>' + st + ' · ' + day + ' · IEX ⓘ</span></div>';
+      if (d.gap) {
+        const up = d.gap.pct > 0, cls = d.gap.dir === 'flat' ? '' : up ? 'up' : 'dn';
+        h += item(d.gap.basis === 'open' ? 'Gap at open' : 'Indicated gap', (d.gap.dir === 'up' ? '▲ ' : d.gap.dir === 'down' ? '▼ ' : '') + (up ? '+' : '') + d.gap.pct.toFixed(2) + '%', cls);
+      }
+      h += item('Prev close', _pmN(d.prevClose));
+      if (d.premarket) {
+        h += item('PM high', _pmN(d.premarket.high), 'up') + item('PM low', _pmN(d.premarket.low), 'dn');
+        h += item(d.session.state === 'premarket' ? 'Last' : 'PM last', _pmN(d.session.state === 'premarket' ? d.last : d.premarket.last));
+        h += item('PM VWAP', _pmN(d.premarket.vwap)) + item('PM vol (IEX)', _pmVol(d.premarket.volume));
+      } else h += item('PM range', 'no IEX prints');
+      if (d.afterHours) h += item('After-hrs', _pmN(d.afterHours.low) + '–' + _pmN(d.afterHours.high));
+      // Status chip
+      let chip = '';
+      const r = d.regular;
+      if (r && d.gap && d.gap.dir !== 'flat') chip = r.gapFilled ? '<span class="pm-chip ok">Gap filled ' + _pmT(r.gapFilledAt) + '</span>' : '<span class="pm-chip warn">Gap open</span>';
+      if (r && d.premarket) chip += ' ' + (r.pmhBreakAt && r.pmlBreakAt ? '<span class="pm-chip n">PM range broken both ways</span>' : r.pmhBreakAt ? '<span class="pm-chip ok">PMH broke ' + _pmT(r.pmhBreakAt) + '</span>' : r.pmlBreakAt ? '<span class="pm-chip bad">PML broke ' + _pmT(r.pmlBreakAt) + '</span>' : '<span class="pm-chip warn">Inside PM range</span>');
+      if (!r && d.session.state === 'premarket') chip = '<span class="pm-chip warn">Pre-open</span>';
+      if (chip) h += '<div class="pm-item"><div class="k">Status</div><div class="v" style="margin-top:3px">' + chip + '</div></div>';
+      const line = (d.read || []).find(x => /Gap|gap|broke|range|No IEX/.test(x)) || (d.read || [])[0];
+      if (line) h += '<div class="pm-read">' + line.replace(/</g, '&lt;') + '</div>';
+    }
+  }
+  if (showL5) {
+    const m = l5Data;
+    h += '<div class="pm-head" style="border-left:1px solid var(--border)"><b style="color:#5b9cf6">📐 5-DAY LEVELS</b><span>' + (m && m.ok ? m.window.from.slice(5).replace('-', '/') + '–' + m.window.to.slice(5).replace('-', '/') + ' · rebuilt nightly' : m ? 'Unavailable' : 'Loading…') + '</span></div>';
+    if (m && m.ok) {
+      h += item('Support', _pmN(m.nearestSupport), 'up') + item('Resistance', _pmN(m.nearestResistance), 'dn');
+      h += item('5D range', _pmN(m.low5.price) + '–' + _pmN(m.high5.price));
+      if (m.profile) h += item('Vol POC', _pmN(m.profile.poc));
+    }
+  }
+  el.innerHTML = h;
+  el.classList.add('show');
+}
+// Extended-hours shading + PM / 5-day lines — drawn behind the candles.
+function drawExtendedLayer(visible, toX, toY, gap, x0, x1) {
+  const g = _chartGeom, top = g.padT, bot = g.padT + g.chartH;
+  const tags = [];
+  ctx.save();
+  ctx.beginPath(); ctx.rect(x0, top, x1 - x0, bot - top); ctx.clip();
+  if (showPM) {
+    // Runs of pre-market (4:00–9:30) and after-hours (16:00–20:00) candles.
+    let run = null;
+    const flush = () => {
+      if (!run) return;
+      const a = toX(run.s) - gap / 2, b = toX(run.e) + gap / 2;
+      ctx.fillStyle = run.k === 'pre' ? 'rgba(245,166,35,0.07)' : 'rgba(91,156,246,0.06)';
+      ctx.fillRect(a, top, b - a, bot - top);
+      ctx.strokeStyle = run.k === 'pre' ? 'rgba(245,166,35,0.35)' : 'rgba(91,156,246,0.3)';
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(b, top); ctx.lineTo(b, bot); ctx.stroke(); ctx.setLineDash([]);
+      if (b - a > 34) {
+        ctx.font = '700 9px "JetBrains Mono", monospace'; ctx.textAlign = 'left';
+        ctx.fillStyle = run.k === 'pre' ? 'rgba(245,166,35,0.85)' : 'rgba(91,156,246,0.8)';
+        ctx.fillText(run.k === 'pre' ? (b - a > 70 ? 'PRE-MARKET' : 'PRE') : (b - a > 70 ? 'AFTER HOURS' : 'AH'), a + 4, bot - 6);
+      }
+      run = null;
+    };
+    visible.forEach((c, i) => {
+      if (!c.time) { flush(); return; }
+      const t = etOf(c.time).time, m = parseInt(t.slice(0, 2), 10) * 60 + parseInt(t.slice(3), 10);
+      const k = m >= 240 && m < 570 ? 'pre' : m >= 960 && m < 1200 ? 'post' : null;
+      if (run && run.k === k) run.e = i; else { flush(); if (k) run = { k, s: i, e: i }; }
+    });
+    flush();
+  }
+  const hline = (p, color, dash, width) => {
+    const y = toY(p);
+    ctx.strokeStyle = color; ctx.lineWidth = width || 1; ctx.setLineDash(dash || []);
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke(); ctx.setLineDash([]);
+    return y;
+  };
+  if (showL5 && l5Data && l5Data.ok && l5Data.symbol === ticker) {
+    const tol = l5Data.tolerance || 0;
+    const rgb = { support: '0,201,107', resistance: '255,69,102', testing: '245,166,35' };
+    // Recompute role against the chart's live price so bands recolor as price crosses them.
+    const px = currentPrice || l5Data.refPrice;
+    l5Data.levels.forEach(l => {
+      const role = px > l.hi + tol * 0.25 ? 'support' : px < l.lo - tol * 0.25 ? 'resistance' : 'testing';
+      const c = rgb[role], a = l.tier === 'major' ? 0.09 : l.tier === 'strong' ? 0.055 : 0.03;
+      const y1 = toY(l.hi + tol / 2), y2 = toY(l.lo - tol / 2);
+      ctx.fillStyle = 'rgba(' + c + ',' + a + ')';
+      ctx.fillRect(x0, y1, x1 - x0, Math.max(2, y2 - y1));
+      hline(l.price, 'rgba(' + c + ',' + (l.tier === 'minor' ? 0.35 : 0.65) + ')', l.tier === 'minor' ? [4, 4] : [], 1);
+      if (l.tier !== 'minor') tags.push({ p: l.price, txt: '5D ' + l.tier[0].toUpperCase() + ' ' + l.price.toFixed(2), color: 'rgb(' + c + ')' });
+    });
+  }
+  if (showPM && pmData && pmData.ok && pmData.symbol === ticker) {
+    if (pmData.prevClose != null) { hline(pmData.prevClose, 'rgba(200,212,232,0.55)', [2, 3]); tags.push({ p: pmData.prevClose, txt: 'PREV CLOSE ' + pmData.prevClose.toFixed(2), color: '#c8d4e8' }); }
+    if (pmData.premarket) {
+      hline(pmData.premarket.high, 'rgba(245,166,35,0.85)', [6, 4], 1.2); tags.push({ p: pmData.premarket.high, txt: 'PM HIGH ' + pmData.premarket.high.toFixed(2), color: '#f5a623' });
+      hline(pmData.premarket.low, 'rgba(245,166,35,0.85)', [6, 4], 1.2); tags.push({ p: pmData.premarket.low, txt: 'PM LOW ' + pmData.premarket.low.toFixed(2), color: '#f5a623' });
+    }
+  }
+  ctx.restore();
+  return { tags, top, bot };
+}
+// Labels on the right edge of the plot; off-screen PM / prev-close levels stack at the edge with an arrow.
+function drawExtendedTags(layer, toY, xRight) {
+  if (!layer || !layer.tags.length) return;
+  ctx.save();
+  ctx.font = '700 9px "JetBrains Mono", monospace';
+  ctx.textAlign = 'right';
+  const placed = layer.tags.map(t => {
+    const y = toY(t.p);
+    if (y < layer.top + 6) return t.txt.startsWith('5D') ? null : { ...t, y: layer.top + 12, txt: '▲ ' + t.txt };
+    if (y > layer.bot - 2) return t.txt.startsWith('5D') ? null : { ...t, y: layer.bot - 6, txt: '▼ ' + t.txt };
+    return { ...t, y };
+  }).filter(Boolean).sort((a, b) => a.y - b.y);
+  for (let k = 1; k < placed.length; k++) placed[k].y = Math.max(placed[k].y, placed[k - 1].y + 13);
+  placed.forEach(t => {
+    if (t.y > layer.bot + 4) return;
+    const w = ctx.measureText(t.txt).width + 8;
+    ctx.fillStyle = 'rgba(7,11,16,0.82)';
+    roundRectPath(ctx, xRight - w - 2, t.y - 6.5, w, 12, 3); ctx.fill();
+    ctx.fillStyle = t.color;
+    ctx.fillText(t.txt, xRight - 6, t.y + 3);
+  });
+  ctx.restore();
+}
+if (showPM) document.getElementById('pmBtn')?.classList.add('pm-on');
+if (showL5) document.getElementById('l5Btn')?.classList.add('l5-on');
 
 function checkCandleHighlight(i, n, visible) {
   const patterns = Object.entries(PATTERNS);
