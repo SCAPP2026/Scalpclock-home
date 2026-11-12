@@ -14,7 +14,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import * as M from '../functions/lib/market-intel.js';
 import { buildCalendar } from '../functions/lib/market-intel-calendar.js';
-import { buildCoreResponse } from '../functions/lib/market-intel-response.js';
+import { buildCoreResponse, publicBody } from '../functions/lib/market-intel-response.js';
 import { build5DayLevels } from '../functions/lib/levels-5day.js';
 import { summarizePremarket } from '../functions/lib/premarket.js';
 
@@ -37,7 +37,16 @@ const server = http.createServer(async (req, res) => {
       const daily = {}, intraday = {}, today = M.etParts(NOW).date;
       for (const s of M.ETFS) { daily[s] = FIX.daily[s].filter(b => M.etParts(b.t + 12 * 3600e3).date <= today && b.t <= NOW); intraday[s] = barsUpTo(s, NOW); }
       const calendar = await buildCalendar({ fredKey: undefined, nowMs: NOW });
-      return send(200, buildCoreResponse({ daily, intraday, trades: {}, calendar, nowMs: NOW }));
+      return send(200, publicBody(buildCoreResponse({ daily, intraday, trades: {}, calendar, nowMs: NOW })));
+    }
+    if (url.pathname === '/api/market-intel-pro') {
+      const auth = req.headers.authorization || '';
+      if (!auth) return send(401, { ok: false, locked: 'signin' });
+      if (auth !== 'Bearer pro-token') return send(403, { ok: false, locked: 'upgrade' });
+      const daily = {}, intraday = {}, today = M.etParts(NOW).date;
+      for (const s of M.ETFS) { daily[s] = FIX.daily[s].filter(b => M.etParts(b.t + 12 * 3600e3).date <= today && b.t <= NOW); intraday[s] = barsUpTo(s, NOW); }
+      const full = buildCoreResponse({ daily, intraday, trades: {}, calendar: null, nowMs: NOW });
+      return send(200, { ok: true, asOf: full.asOf, session: full.session, etfs: full.etfs.map(e => ({ symbol: e.symbol, evidence: e.evidence })) });
     }
     if (url.pathname === '/api/market-levels') {
       if (levelsDown) return send(200, { ok: false, error: 'Market data provider error: HTTP 503' });
@@ -95,7 +104,7 @@ try {
   client.on(async msg => {
     if (msg.method === 'Fetch.requestPaused') {
       const isJs = /supabase-js|googletagmanager/.test(msg.params.request.url);
-      const body = /supabase-js/.test(msg.params.request.url) ? 'window.supabase={createClient:function(){return{auth:{getSession:async function(){return{data:{session:null}}},getUser:async function(){return{data:{user:null}}},onAuthStateChange:function(){return{data:{subscription:{unsubscribe(){}}}}}},from:function(){return{select:function(){return{eq:function(){return{maybeSingle:async function(){return{data:null}},single:async function(){return{data:null}}}}}}}}}}};' : '';
+      const body = /supabase-js/.test(msg.params.request.url) ? 'window.supabase={createClient:function(){return{auth:{getSession:async function(){var t=new URLSearchParams(location.search).get("tok");return{data:{session:t?{access_token:t,user:{app_metadata:{plan:"free"}}}:null}}},getUser:async function(){return{data:{user:null}}},onAuthStateChange:function(){return{data:{subscription:{unsubscribe(){}}}}}},from:function(){return{select:function(){return{eq:function(){return{maybeSingle:async function(){return{data:null}},single:async function(){return{data:null}}}}}}}}}}};' : '';
       await client.send('Fetch.fulfillRequest', { requestId: msg.params.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: isJs ? 'application/javascript' : 'text/css' }], body: Buffer.from(body).toString('base64') });
     } else if (msg.method === 'Runtime.exceptionThrown') errors.push(msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text);
   });
@@ -105,10 +114,13 @@ try {
     return r.result?.value;
   };
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+  // The stubbed Supabase client reads its session token from ?tok= (see the stub above).
+  let tok = '';
+  async function setToken(t) { tok = t ? 'tok=' + t : ''; }
   async function open(page, width, waitExpr) {
     errors = [];
     await client.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 });
-    await client.send('Page.navigate', { url: `http://127.0.0.1:${PORT}/${page}${page.includes('?') ? '&' : '?'}x=${Date.now()}` });
+    await client.send('Page.navigate', { url: `http://127.0.0.1:${PORT}/${page}${page.includes('?') ? '&' : '?'}x=${Date.now()}${tok ? '&' + tok : ''}` });
     for (let i = 0; i < 60; i++) { await sleep(150); try { if (await js(waitExpr)) break; } catch {} }
     await sleep(600);
   }
@@ -146,6 +158,39 @@ try {
     await js(`document.querySelector('#focusSeg button[data-sym="SPY"]').click()`);
     await sleep(300);
     await shot(`mi-l5-${width}`, '#five-day-levels');
+  }
+
+  console.log('\nEvidence Engine — access states');
+  {
+    const wait = `!!document.querySelector('#evidence .ev-lock, #evidence .ev-top')`;
+    await setToken(null);
+    await open('market-intelligence', 1280, wait);
+    assert(/Sign in to open the Evidence Engine/.test(await js(`document.getElementById('evidence').innerText`)), 'signed out → sign-in lock');
+    const core = await js(`fetch('/api/market-intel').then(r=>r.text())`);
+    const coreJ = JSON.parse(core);
+    assert(coreJ.etfs.every(e => !('evidence' in e)) && !/"bull":/.test(core) && Array.isArray(coreJ.proLocked), 'free core response carries no evidence scores');
+    assert(!/\d+\s*\/\s*100/.test(await js(`document.getElementById('evidence').innerText`)), 'locked view shows no scores');
+    await setToken('free-token');
+    await open('market-intelligence', 1280, wait);
+    assert(/part of ScalpClock Pro/.test(await js(`document.getElementById('evidence').innerText`)) && await js(`!!document.querySelector('#evidence a[href^="/pricing"]')`), 'free member → upgrade lock with pricing link');
+    await setToken('pro-token');
+    for (const width of [1280, 390]) {
+      await open('market-intelligence', width, `!!document.querySelector('#evidence .ev-top') && !document.querySelector('#evidence .ev-lock')`);
+      const t = await js(`document.getElementById('evidence').innerText`);
+      assert(/Bullish evidence/i.test(t) && /\/\s*100/.test(t), `pro @${width} → scores shown` + (/\/\s*100/.test(t) ? '' : ': ' + t.slice(0, 200)));
+      assert(await js(`document.querySelectorAll('#evidence .ev-cat').length`) === 8, 'all eight checks listed');
+      assert(await js(`document.querySelectorAll('#evidence .ck').length`) === 14, 'call + put checklists (7 each)');
+      assert(/Options liquidity/.test(t) && /No data/.test(t), 'missing liquidity is labelled, not filled');
+      assert(await js(`document.documentElement.scrollWidth - window.innerWidth`) <= 0, 'no horizontal overflow');
+      await js(`document.querySelector('#focusSeg button[data-sym="IWM"]').click()`);
+      await sleep(250);
+      assert(/IWM/.test(await js(`document.querySelector('#hEv').textContent`)), 'follows the ETF selector');
+      assert(errors.length === 0, 'no JS errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
+      await js(`document.querySelector('#focusSeg button[data-sym="SPY"]').click()`);
+      await sleep(250);
+      await shot(`mi-evidence-${width}`, '#evidence-engine');
+    }
+    await setToken(null);
   }
 
   console.log('\nMarket Intelligence — provider down');

@@ -16,7 +16,7 @@
 // There are no fallback numbers anywhere in this file.
 import { ETFS, marketSession } from '../lib/market-intel.js';
 import { buildCalendar } from '../lib/market-intel-calendar.js';
-import { buildCoreResponse } from '../lib/market-intel-response.js';
+import { buildCoreResponse, publicBody } from '../lib/market-intel-response.js';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -28,22 +28,34 @@ const DAY = 24 * 3600 * 1000;
 const CALENDAR_TTL = 30 * 60;   // seconds
 
 export async function onRequest(context) {
-  const { env, request } = context;
+  const { request } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (request.method !== 'GET') return new Response('Method not allowed', { status: 405, headers: CORS });
+  const { body, ttl } = await loadCoreBody(context);
+  // Free endpoint: the PRO-only fields (evidence engine) are stripped here and
+  // served by /api/market-intel-pro after a server-side entitlement check.
+  return json(publicBody(body), body.ok ? ttl : 0);
+}
 
+/**
+ * The full response (including PRO fields), shared by the free and PRO
+ * endpoints through one edge-cache entry so upstream is fetched once.
+ * Returns { body, ttl }.
+ */
+export async function loadCoreBody(context) {
+  const { env, request } = context;
   const nowMs = Date.now();
   const session = marketSession(nowMs);
   // Open market → short cache so many viewers share one upstream fetch.
   const ttl = session.state === 'closed' ? 300 : 20;
 
   const cache = caches.default;
-  const cacheKey = new Request(new URL('/api/market-intel?v=1', request.url).toString());
+  const cacheKey = new Request(new URL('/api/__market-intel-full?v=2', request.url).toString());
   const hit = await cache.match(cacheKey);
-  if (hit) return hit;
+  if (hit) return { body: await hit.json(), ttl };
 
   if (!env.ALPACA_KEY_ID || !env.ALPACA_SECRET) {
-    return json({ ok: false, error: 'Market data provider is not configured.', asOf: new Date(nowMs).toISOString(), session }, 0);
+    return { body: { ok: false, error: 'Market data provider is not configured.', asOf: new Date(nowMs).toISOString(), session }, ttl: 0 };
   }
   const headers = { 'APCA-API-KEY-ID': env.ALPACA_KEY_ID, 'APCA-API-SECRET-KEY': env.ALPACA_SECRET };
   const warnings = [];
@@ -56,7 +68,7 @@ export async function onRequest(context) {
       fetchLatestTrades(headers).catch(e => { warnings.push(`Latest-trade lookup failed (${e.message}); using the most recent bar close instead.`); return {}; }),
     ]);
   } catch (e) {
-    return json({ ok: false, error: `Market data provider error: ${e.message}`, asOf: new Date(nowMs).toISOString(), session }, 0);
+    return { body: { ok: false, error: `Market data provider error: ${e.message}`, asOf: new Date(nowMs).toISOString(), session }, ttl: 0 };
   }
 
   // Calendar is slow-moving and FRED-heavy — cached on its own clock.
@@ -65,10 +77,12 @@ export async function onRequest(context) {
     return null;
   });
   const body = buildCoreResponse({ daily, intraday, trades, calendar, nowMs, warnings });
-  if (!body.ok) return json(body, 0);
-  const res = json(body, ttl);
-  context.waitUntil(cache.put(cacheKey, res.clone()));
-  return res;
+  if (body.ok) {
+    context.waitUntil(cache.put(cacheKey, new Response(JSON.stringify(body), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': `public, max-age=${ttl}` },
+    })));
+  }
+  return { body, ttl };
 }
 
 async function cachedCalendar(cache, request, env, nowMs) {
@@ -117,7 +131,7 @@ async function fetchLatestTrades(headers) {
   return out;
 }
 
-function json(data, ttl) {
+export function json(data, ttl) {
   return new Response(JSON.stringify(data), {
     headers: {
       ...CORS,

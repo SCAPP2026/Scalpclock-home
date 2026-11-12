@@ -6,6 +6,7 @@ import {
   publicEtf, marketSession, etParts,
 } from './market-intel.js';
 import { measureReaction } from './market-intel-calendar.js';
+import { scoreEvidence } from './market-intel-evidence.js';
 
 const DAY = 24 * 3600 * 1000;
 
@@ -18,7 +19,7 @@ const DAY = 24 * 3600 * 1000;
  * @param {number} a.nowMs
  * @param {string[]} [a.warnings]
  */
-export function buildCoreResponse({ daily, intraday, trades, calendar, nowMs, warnings = [] }) {
+export function buildCoreResponse({ daily, intraday, trades, calendar, nowMs, warnings = [], liquidity = {}, evidenceConfig }) {
   const session = marketSession(nowMs);
   const asOf = new Date(nowMs).toISOString();
   const events = calendar ? calendar.events : null;
@@ -38,6 +39,10 @@ export function buildCoreResponse({ daily, intraday, trades, calendar, nowMs, wa
   const comparison = compareEtfs(etfs);
   const scores = etfs.map(e => scoreEtf(e, etfs, { nowMs, events }));
   const scenarios = etfs.map((e, i) => buildScenarios(e, scores[i], etfs, { nowMs }));
+  const evidence = etfs.map(e => scoreEvidence({
+    e, all: etfs, intradayRaw: intraday[e.symbol] || [], nowMs, events,
+    liquidity: liquidity[e.symbol] || null, config: evidenceConfig || {},
+  }));
   const outlooks = buildOutlooks(etfs, scores, comparison, { nowMs, events, macro: calendar ? calendar.macro : null });
 
   // Actual market reaction for anything released inside the intraday window.
@@ -65,12 +70,29 @@ export function buildCoreResponse({ daily, intraday, trades, calendar, nowMs, wa
       ...publicEtf(e),
       score: scores[i],
       scenarios: scenarios[i],
+      evidence: evidence[i],
       chart: chartData(daily[e.symbol] || [], intraday[e.symbol] || [], session.refDate),
     })),
     comparison, outlooks,
     calendar: calendar ? { events: calEvents, status: calendar.status } : null,
     macro: calendar ? calendar.macro : null,
     warnings,
+  };
+}
+
+// PRO-only fields. The public endpoint strips these; /api/market-intel-pro
+// serves them after a server-side entitlement check.
+export const PRO_FIELDS = ['evidence'];
+export function publicBody(body) {
+  if (!body || !body.ok) return body;
+  return {
+    ...body,
+    etfs: body.etfs.map(e => {
+      const out = { ...e };
+      for (const k of PRO_FIELDS) delete out[k];
+      return out;
+    }),
+    proLocked: PRO_FIELDS,
   };
 }
 

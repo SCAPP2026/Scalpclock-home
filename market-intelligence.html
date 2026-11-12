@@ -48,7 +48,7 @@
   "description": "Free SPY, QQQ and IWM dashboard: today's support and resistance, VWAP, trend, the stocks moving each ETF and the economic calendar, explained for options traders."
 }</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://scalpclock.com/"}, {"@type": "ListItem", "position": 2, "name": "Market Intelligence Center", "item": "https://scalpclock.com/market-intelligence"}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does the Market Intelligence Center show?", "acceptedAnswer": {"@type": "Answer", "text": "It tracks SPY, QQQ and IWM in one place: price, VWAP, moving averages, support and resistance levels, which of the three is leading, the companies moving each ETF, upcoming economic releases, and what would need to happen before a calls or puts setup makes sense."}}, {"@type": "Question", "name": "Is the SPY, QQQ and IWM data real-time?", "acceptedAnswer": {"@type": "Answer", "text": "Prices are real-time trades from the IEX exchange, supplied by Alpaca. IEX is one exchange rather than the whole US market, so volume figures are IEX-only. Options figures come from CBOE and are delayed 15 to 20 minutes. Every section shows its source and timestamp."}}, {"@type": "Question", "name": "How are the support and resistance levels calculated?", "acceptedAnswer": {"@type": "Answer", "text": "From price history: the previous day's high, low and close, the premarket range, the first 15 minutes of trading (the opening range), VWAP, the 9 and 20 EMA, the 50 and 200 day SMA, last week's and last month's highs and lows, and zones where price has turned at least twice in recent months."}}, {"@type": "Question", "name": "Why compare SPY, QQQ and IWM together?", "acceptedAnswer": {"@type": "Answer", "text": "SPY is large US companies, QQQ is mostly big technology, and IWM is small companies. When all three move the same way, a move has broad participation. When they split, for example SPY and QQQ rising while IWM falls, the market is uneven and a directional trade deserves more caution."}}, {"@type": "Question", "name": "Does it tell me whether to buy calls or puts?", "acceptedAnswer": {"@type": "Answer", "text": "No. It shows whether conditions lean bullish, bearish or neutral, lists what would have to happen first, and says what would prove the idea wrong. It never picks a strike or expiry and it is not a prediction or investment advice."}}, {"@type": "Question", "name": "What does the confidence level mean?", "acceptedAnswer": {"@type": "Answer", "text": "Low, Medium or High describes how much of the evidence agrees: trend, VWAP, momentum, volume, levels, relative strength and confirmation from the other ETFs. It is not a win rate and has not been back-tested. Missing or stale data, or a major economic release within 24 hours, lowers it."}}, {"@type": "Question", "name": "Is it free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The Market Intelligence Center is free for everyone and needs no account."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does the Market Intelligence Center show?", "acceptedAnswer": {"@type": "Answer", "text": "It tracks SPY, QQQ and IWM in one place: price, VWAP, moving averages, support and resistance levels, which of the three is leading, the companies moving each ETF, upcoming economic releases, and what would need to happen before a calls or puts setup makes sense."}}, {"@type": "Question", "name": "Is the SPY, QQQ and IWM data real-time?", "acceptedAnswer": {"@type": "Answer", "text": "Prices are real-time trades from the IEX exchange, supplied by Alpaca. IEX is one exchange rather than the whole US market, so volume figures are IEX-only. Options figures come from CBOE and are delayed 15 to 20 minutes. Every section shows its source and timestamp."}}, {"@type": "Question", "name": "How are the support and resistance levels calculated?", "acceptedAnswer": {"@type": "Answer", "text": "From price history: the previous day's high, low and close, the premarket range, the first 15 minutes of trading (the opening range), VWAP, the 9 and 20 EMA, the 50 and 200 day SMA, last week's and last month's highs and lows, and zones where price has turned at least twice in recent months."}}, {"@type": "Question", "name": "Why compare SPY, QQQ and IWM together?", "acceptedAnswer": {"@type": "Answer", "text": "SPY is large US companies, QQQ is mostly big technology, and IWM is small companies. When all three move the same way, a move has broad participation. When they split, for example SPY and QQQ rising while IWM falls, the market is uneven and a directional trade deserves more caution."}}, {"@type": "Question", "name": "Does it tell me whether to buy calls or puts?", "acceptedAnswer": {"@type": "Answer", "text": "No. It shows whether conditions lean bullish, bearish or neutral, lists what would have to happen first, and says what would prove the idea wrong. It never picks a strike or expiry and it is not a prediction or investment advice."}}, {"@type": "Question", "name": "What does the confidence level mean?", "acceptedAnswer": {"@type": "Answer", "text": "Low, Medium or High describes how much of the evidence agrees: trend, VWAP, momentum, volume, levels, relative strength and confirmation from the other ETFs. It is not a win rate and has not been back-tested. Missing or stale data, or a major economic release within 24 hours, lowers it."}}, {"@type": "Question", "name": "Is it free?", "acceptedAnswer": {"@type": "Answer", "text": "Almost all of it. Everything on the page is free and needs no account, except the Evidence Engine (separate bull and bear scores, the setup call and the live entry checklist), which is part of ScalpClock Pro."}}]}</script>
 <style>
   :root{
     --bg:#070b10;
@@ -297,6 +297,49 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
 
 
+  /* Evidence Engine (PRO) */
+  .pro-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;border-radius:5px;padding:2px 7px;background:linear-gradient(90deg,#16d97e,#5b9cf6);color:#04140f;}
+  .ev-top{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:12px;margin-bottom:14px;}
+  .ev-score .k{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);}
+  .ev-score .n{font-family:var(--mono);font-size:2.2rem;font-weight:700;line-height:1.1;margin-top:4px;}
+  .ev-score .n small{font-size:.95rem;color:var(--text-faint);font-weight:600;}
+  .ev-score .b{font-size:12px;color:var(--text-dim);margin-top:2px;}
+  .ev-meter{height:8px;border-radius:4px;background:var(--panel-alt);overflow:hidden;margin-top:10px;position:relative;}
+  .ev-meter i{display:block;height:100%;border-radius:4px;}
+  .ev-meter .tick{position:absolute;top:-2px;bottom:-2px;width:1px;background:rgba(221,232,245,.35);}
+  .ev-setup .lbl{display:inline-block;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.2rem;letter-spacing:.04em;border-radius:8px;padding:5px 11px;margin-top:6px;}
+  .ev-setup .lbl.call{background:var(--bull-dim);color:var(--bull);} .ev-setup .lbl.put{background:var(--bear-dim);color:var(--bear);} .ev-setup .lbl.wait{background:var(--amber-dim);color:var(--amber);} .ev-setup .lbl.none{background:var(--panel-alt);color:var(--text-dim);}
+  .ev-setup p{font-size:12.5px;line-height:1.55;color:var(--text-dim);margin:8px 0 0;}
+  .cond{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.07em;border-radius:6px;padding:3px 8px;border:1px solid var(--border);color:var(--text-dim);}
+  .cond.bull{color:var(--bull);border-color:rgba(22,217,126,.45);} .cond.bear{color:var(--bear);border-color:rgba(255,69,102,.45);}
+  .ev-cat{display:grid;grid-template-columns:minmax(150px,1.1fr) minmax(200px,1.4fr);gap:6px 16px;padding:10px 0;border-bottom:1px solid var(--border-soft);align-items:center;}
+  .ev-cat:last-child{border-bottom:none;}
+  .ev-cat .nm{font-size:13px;font-weight:700;} .ev-cat .nm small{color:var(--text-faint);font-weight:600;margin-left:4px;font-family:var(--mono);}
+  .ev-cat .rs{grid-column:1/-1;font-size:12px;line-height:1.5;color:var(--text-dim);}
+  .div-bar{display:grid;grid-template-columns:38px 1fr 1fr 38px;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;}
+  .div-bar .l{text-align:right;color:var(--bear);} .div-bar .r{color:var(--bull);}
+  .div-bar .half{height:8px;background:var(--panel-alt);position:relative;overflow:hidden;}
+  .div-bar .half.lft{border-radius:4px 0 0 4px;border-right:1px solid rgba(221,232,245,.35);} .div-bar .half.rgt{border-radius:0 4px 4px 0;}
+  .div-bar .half i{position:absolute;top:0;bottom:0;}
+  .div-bar .lft i{right:0;background:var(--bear);border-radius:4px 0 0 4px;} .div-bar .rgt i{left:0;background:var(--bull);border-radius:0 4px 4px 0;}
+  .ev-cat.off .div-bar{opacity:.35;}
+  .conf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cst{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border-radius:6px;padding:3px 8px;}
+  .cst.confirmed{background:var(--bull-dim);color:var(--bull);} .cst.developing{background:var(--amber-dim);color:var(--amber);} .cst.invalidated{background:var(--bear-dim);color:var(--bear);} .cst.expired,.cst.none{background:var(--panel-alt);color:var(--text-dim);}
+  .ck{display:flex;gap:8px;font-size:12.5px;line-height:1.45;padding:5px 0;border-bottom:1px dashed var(--border-soft);}
+  .ck:last-child{border-bottom:none;}
+  .ck b{flex:0 0 16px;font-family:var(--mono);}
+  .ck.y b{color:var(--bull);} .ck.n b{color:var(--bear);} .ck.u{color:var(--text-faint);} .ck.u b{color:var(--text-faint);}
+  #evidence ul{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text-dim);}
+  .ev-lock{position:relative;overflow:hidden;}
+  .ev-lock .ghost{filter:blur(1.5px);opacity:.4;pointer-events:none;user-select:none;}
+  .ev-lock .cta{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,rgba(7,11,16,.92),rgba(7,11,16,.75));}
+  .ev-lock h3{font-family:'Rajdhani',sans-serif;font-size:1.35rem;margin:6px 0 6px;}
+  .ev-lock p{max-width:520px;font-size:13px;line-height:1.6;color:var(--text-dim);margin:0 0 14px;}
+  .btn-pro{display:inline-block;background:var(--bull);color:#04140f;font-weight:800;font-size:13.5px;border-radius:9px;padding:10px 18px;text-decoration:none;margin:0 4px 6px;}
+  .btn-ghost{display:inline-block;border:1px solid var(--border);color:var(--text);font-weight:700;font-size:13.5px;border-radius:9px;padding:9px 16px;text-decoration:none;margin:0 4px 6px;}
+  @media(max-width:980px){ .ev-top{grid-template-columns:1fr 1fr;} .ev-top .ev-setup{grid-column:1/-1;} .conf-grid{grid-template-columns:1fr;} .ev-cat{grid-template-columns:1fr;} }
+
   /* 5-Day Level Map */
   .l5-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px;}
   .l5-stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:11px 13px;min-width:0;}
@@ -461,7 +504,7 @@
       <button data-sym="QQQ" aria-pressed="false">QQQ</button>
       <button data-sym="IWM" aria-pressed="false">IWM</button>
     </div>
-    <span class="faint" id="focusHint">Sections 3–5 and the 5-Day Level Map follow this choice.</span>
+    <span class="faint" id="focusHint">Scenarios, evidence, levels and the 5-day map follow this choice.</span>
   </div>
 
   <!-- 3. CALLS VS PUTS -->
@@ -476,6 +519,13 @@
     <div class="sec-head"><h2 id="hScore">Why that reading? — <span class="focusSym">SPY</span></h2><div class="tags"><span class="tag calc">Calculated</span><span class="tag interp">Interpretation</span></div></div>
     <p class="sec-sub">Eight checks, each scored +1 (bullish), 0 (no lean) or −1 (bearish). Three or more net points either way sets the bias. Confidence is Low, Medium or High depending on how much of the evidence agrees — it is not a win rate.</p>
     <div class="panel" id="score"><div class="skeleton">Loading…</div></div>
+  </section>
+
+  <!-- 4b. EVIDENCE ENGINE (PRO) -->
+  <section aria-labelledby="hEv" id="evidence-engine">
+    <div class="sec-head"><h2 id="hEv">Evidence Engine — <span class="focusSym">SPY</span></h2><div class="tags"><span class="pro-tag">PRO</span><span class="tag calc">Calculated</span><span class="tag interp">Interpretation</span></div></div>
+    <p class="sec-sub">Bullish and bearish evidence scored separately, each out of 100, across eight weighted checks. Missing data is never filled in: a check without data scores zero on both sides and lowers coverage. A setup only appears when one side clearly leads, and the entry checklist turns green only after a real 5-minute close confirms it.</p>
+    <div id="evidence"><div class="skeleton">Checking your access…</div></div>
   </section>
 
   <!-- 5. CHART + LEVELS -->
@@ -630,7 +680,7 @@
       <details><summary>Why compare SPY, QQQ and IWM together?</summary><p>SPY is large US companies, QQQ is mostly big technology, and IWM is small companies. When all three move the same way, a move has broad participation. When they split, for example SPY and QQQ rising while IWM falls, the market is uneven and a directional trade deserves more caution.</p></details>
       <details><summary>Does it tell me whether to buy calls or puts?</summary><p>No. It shows whether conditions lean bullish, bearish or neutral, lists what would have to happen first, and says what would prove the idea wrong. It never picks a strike or expiry and it is not a prediction or investment advice.</p></details>
       <details><summary>What does the confidence level mean?</summary><p>Low, Medium or High describes how much of the evidence agrees: trend, VWAP, momentum, volume, levels, relative strength and confirmation from the other ETFs. It is not a win rate and has not been back-tested. Missing or stale data, or a major economic release within 24 hours, lowers it.</p></details>
-      <details><summary>Is it free?</summary><p>Yes. The Market Intelligence Center is free for everyone and needs no account.</p></details>
+      <details><summary>Is it free?</summary><p>Almost all of it. Everything on this page is free and needs no account, except the Evidence Engine (the separate bull and bear scores, the setup call and the live entry checklist), which is part of ScalpClock Pro.</p></details>
     </div>
   </section>
 
@@ -710,6 +760,7 @@
     // Movers refresh every other cycle while the market is open, and with every cycle when closed.
     if (ticks === 1 || secs >= 300 || ticks % 2 === 1) jobs.push(loadMovers());
     if (ticks === 1 || ticks % 2 === 1) jobs.push(loadLevels5());
+    if (!state.proLock) jobs.push(loadPro());
     if (ticks === 1 || ticks % 20 === 0) loadSide();
     Promise.all(jobs).then(schedule);
   }
@@ -1047,6 +1098,75 @@
     $('optNote').innerHTML = '<strong>Source:</strong> CBOE delayed quotes, about 15–20 minutes behind, contracts expiring in the next two weeks. <strong>How to read it:</strong> higher implied volatility means options are more expensive, so the ETF has to move further for a bought option to profit. A put/call ratio above 1 means more puts than calls traded — that can be hedging as easily as a bearish bet, so it is context, not a signal. For a specific contract, check its bid/ask spread and open interest in your broker before anything else. <a href="/learn-options-trading/options-basics/implied-volatility-explained">Implied volatility explained →</a>';
   }
 
+  // ── Evidence Engine (PRO) ───────────────────────────────────────────────
+  // Access is decided on the server (/api/market-intel-pro verifies the
+  // Supabase token and plan). The browser only forwards its session token.
+  var SB_URL = 'https://fnuqxiflqqejjttxymbz.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZudXF4aWZscXFlamp0dHh5bWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MzMxODksImV4cCI6MjA5ODAwOTE4OX0.XE1-LPW0043gRFEAl9onCahkmpQ8BMAAtGkF9FqJLiY';
+  var sbc = null;
+  function sessionToken() {
+    if (!window.supabase || !window.supabase.createClient) return Promise.resolve(undefined);   // library not loaded yet
+    try { sbc = sbc || window.supabase.createClient(SB_URL, SB_ANON); } catch (e) { return Promise.resolve(null); }
+    return sbc.auth.getSession().then(function (r) { var s = r && r.data && r.data.session; return s ? s.access_token : null; }).catch(function () { return null; });
+  }
+  function loadPro() {
+    return sessionToken().then(function (tok) {
+      if (tok === undefined) return;                          // retried on window load
+      if (!tok) { state.proLock = 'signin'; renderEvidence(); return; }
+      return fetch('/api/market-intel-pro', { headers: { Accept: 'application/json', Authorization: 'Bearer ' + tok } }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          if (r.status === 401) { state.proLock = 'signin'; state.pro = null; }
+          else if (r.status === 403) { state.proLock = 'upgrade'; state.pro = null; }
+          else if (d && d.ok) { state.proLock = null; state.pro = d; state.proErr = null; }
+          else { state.proErr = (d && d.error) || ('HTTP ' + r.status); }
+          renderEvidence();
+          if (state.proLock) track('premium_paywall_view', { location: 'market_intel_evidence', reason: state.proLock });
+        });
+      });
+    }).catch(function (e) { state.proErr = e.message; renderEvidence(); });
+  }
+  var EV_CATS = ['VWAP positioning', 'EMA alignment (5-min 9/20/50)', 'Price structure', 'Volume confirmation', 'Support/resistance reaction', 'Market breadth (cross-ETF proxy)', 'Momentum (RSI 14)', 'Options liquidity'];
+  function renderEvidence() {
+    var el = $('evidence');
+    if (state.proLock) {
+      var signin = state.proLock === 'signin';
+      // Ghost preview: structure only, no numbers — nothing invented.
+      var ghost = '<div class="ev-top"><div class="panel ev-score"><div class="k">Bullish evidence</div><div class="ev-meter"><i style="width:0"></i></div></div><div class="panel ev-score"><div class="k">Bearish evidence</div><div class="ev-meter"><i style="width:0"></i></div></div><div class="panel ev-setup"><div class="k">Setup</div></div></div><div class="panel">' +
+        EV_CATS.map(function (c) { return '<div class="ev-cat off"><div class="nm">' + esc(c) + '</div><div class="div-bar"><span class="l">··</span><span class="half lft"></span><span class="half rgt"></span><span class="r">··</span></div></div>'; }).join('') + '</div>';
+      el.innerHTML = '<div class="ev-lock"><div class="ghost" aria-hidden="true">' + ghost + '</div><div class="cta"><span class="pro-tag">PRO</span><h3>' + (signin ? 'Sign in to open the Evidence Engine' : 'The Evidence Engine is part of ScalpClock Pro') + '</h3>' +
+        '<p>Two independent 100-point scores for calls and puts, a five-state market condition, a clear CALL SETUP / PUT SETUP / NO TRADE call, the exact reasons and what would invalidate them, and a live entry checklist that only confirms on a real 5-minute close.</p>' +
+        (signin ? '<div><a class="btn-pro" href="/login?tab=signup">Start free</a><a class="btn-ghost" href="/login">Sign in</a></div>'
+          : '<div><a class="btn-pro" href="/pricing?from=market_intel_evidence">Upgrade to Pro</a></div>') + '</div></div>';
+      return;
+    }
+    if (!state.pro) { el.innerHTML = '<div class="skeleton">' + (state.proErr ? 'Evidence could not be loaded (' + esc(state.proErr) + '). Nothing is shown rather than made-up scores.' : 'Checking your access…') + '</div>'; return; }
+    var x = state.pro.etfs.filter(function (e) { return e.symbol === state.focus; })[0], v = x && x.evidence;
+    if (!v) { el.innerHTML = '<div class="skeleton">No evidence for ' + esc(state.focus) + ' right now.</div>'; return; }
+    var bands = v.config.bands;
+    function meter(score, col) { return '<div class="ev-meter" role="img" aria-label="' + score + ' out of 100"><i style="width:' + score + '%;background:' + col + '"></i>' + [bands.mixed, bands.favorable, bands.strong].map(function (t) { return '<span class="tick" style="left:' + t + '%"></span>'; }).join('') + '</div>'; }
+    var setCls = /CALL/.test(v.setup) ? 'call' : /PUT/.test(v.setup) ? 'put' : /CONFIRMATION|VOLATILE/.test(v.setup) ? 'wait' : 'none';
+    var condCls = /BULL/.test(v.condition) ? 'bull' : /BEAR/.test(v.condition) ? 'bear' : '';
+    var html = '<div class="ev-top">' +
+      '<div class="panel ev-score"><div class="k">Bullish evidence</div><div class="n up">' + v.bull + '<small> / 100</small></div><div class="b">' + esc(v.bullBand) + '</div>' + meter(v.bull, 'var(--bull)') + '</div>' +
+      '<div class="panel ev-score"><div class="k">Bearish evidence</div><div class="n down">' + v.bear + '<small> / 100</small></div><div class="b">' + esc(v.bearBand) + '</div>' + meter(v.bear, 'var(--bear)') + '</div>' +
+      '<div class="panel ev-setup"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span class="cond ' + condCls + '">' + esc(v.condition) + '</span><span class="small faint">Data coverage ' + v.coverage + '/100</span></div><div class="lbl ' + setCls + '">' + esc(v.setup) + '</div><p>' + esc(v.setupWhy) + '</p></div></div>';
+    html += '<div class="panel"><h3>The eight checks <span class="small faint" style="font-weight:400">— bearish points left, bullish points right</span></h3>' + v.categories.map(function (c) {
+      var bw = c.weight ? (c.bear / c.weight * 100) : 0, uw = c.weight ? (c.bull / c.weight * 100) : 0;
+      return '<div class="ev-cat' + (c.dataOk ? '' : ' off') + '"><div class="nm">' + esc(c.label) + '<small>/' + c.weight + '</small>' + (c.source === 'delayed' ? ' <span class="tag fact" style="font-size:9px">delayed</span>' : '') + '</div>' +
+        '<div class="div-bar"><span class="l">' + (c.dataOk ? c.bear : '–') + '</span><span class="half lft"><i style="width:' + bw.toFixed(0) + '%"></i></span><span class="half rgt"><i style="width:' + uw.toFixed(0) + '%"></i></span><span class="r">' + (c.dataOk ? c.bull : '–') + '</span></div>' +
+        '<div class="rs">' + (c.dataOk ? '' : '<span class="na">No data — scores 0 both ways. </span>') + esc(c.reason) + '</div></div>';
+    }).join('') + '</div>';
+    function confBox(title, cs) {
+      return '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px"><h3 style="margin:0">' + title + '</h3><span class="cst ' + cs.state + '">' + esc(cs.label) + '</span></div><p class="small muted" style="margin:0 0 8px">' + esc(cs.detail) + '</p>' +
+        cs.checklist.map(function (k) { var m = k.met === true ? 'y' : k.met === false ? 'n' : 'u'; return '<div class="ck ' + m + '"><b aria-hidden="true">' + (m === 'y' ? '✓' : m === 'n' ? '✗' : '–') + '</b><span>' + esc(k.label) + '<span class="sr">' + (m === 'y' ? ' — met' : m === 'n' ? ' — not met' : ' — no data') + '</span></span></div>'; }).join('') + '</div>';
+    }
+    html += '<h3 style="margin:16px 0 8px">Entry confirmation</h3><div class="conf-grid">' + confBox('Calls', v.confirmation.call) + confBox('Puts', v.confirmation.put) + '</div>';
+    html += '<div class="two" style="margin-top:12px"><div class="panel"><h3>Why the leading side leads</h3>' + (v.reasons.length ? listHtml(v.reasons) : '<p class="small muted" style="margin:0">Neither side leads.</p>') + '</div><div class="panel"><h3>What would invalidate it</h3>' + listHtml(v.invalidation) + '</div></div>';
+    html += '<div class="src">' + esc(v.disclaimer) + (v.missing.length ? ' Missing right now: ' + esc(v.missing.join(', ')) + '.' : '') + ' Weights: ' + Object.keys(v.config.weights).map(function (k) { return k + ' ' + v.config.weights[k]; }).join(' · ') + '.</div>';
+    el.innerHTML = html;
+  }
+  window.addEventListener('load', function () { if (!state.pro && !state.proLock) loadPro(); });
+
   // ── 5-Day Level Map ─────────────────────────────────────────────────────
   function loadLevels5() {
     return getJSON('/api/market-levels').then(function (d) {
@@ -1209,7 +1329,7 @@
   // ── wiring ──────────────────────────────────────────────────────────────
   function renderFocus(fit) {
     Array.prototype.forEach.call(document.querySelectorAll('.focusSym'), function (el) { el.textContent = state.focus; });
-    renderScenarios(); renderScore(); renderLevels(); renderChart(fit); renderL5();
+    renderScenarios(); renderScore(); renderLevels(); renderChart(fit); renderL5(); renderEvidence();
   }
   function renderCore() {
     renderStatus(); renderBanners(); renderGlance(); renderCards(); renderComparison(); renderCalendar(); renderOutlook();

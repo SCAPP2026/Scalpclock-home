@@ -376,6 +376,9 @@ export function analyzeEtf({ symbol, daily: rawDaily, intraday, trade, nowMs }) 
 
   const day = hiLo(today.reg);
   const pre = hiLo(today.pre);
+  // Overnight = previous session's after-hours + today's premarket (IEX prints only).
+  const prevSessDate = Object.keys(sessions).filter(d => d < ref).sort().pop();
+  const overnight = hiLo([...(prevSessDate ? sessions[prevSessDate].post : []), ...today.pre]);
   const openPrice = today.reg.length ? today.reg[0].o : null;
   const sessionVwap = vwap(today.reg);
   if (session.state === 'regular' && sessionVwap == null) missing.push('session VWAP');
@@ -393,7 +396,7 @@ export function analyzeEtf({ symbol, daily: rawDaily, intraday, trade, nowMs }) 
     : (refDaily ? [...dCloses, refDaily.c] : dCloses);
   const iCloses = today.reg.map(b => b.c);
   const ma = {
-    dailyEma9: round(ema(dLive, 9)), dailyEma20: round(ema(dLive, 20)),
+    dailyEma9: round(ema(dLive, 9)), dailyEma20: round(ema(dLive, 20)), dailyEma50: round(ema(dLive, 50)),
     dailySma50: round(sma(dLive, 50)), dailySma200: round(sma(dLive, 200)),
     intradayEma9: round(ema(iCloses, 9)), intradayEma20: round(ema(iCloses, 20)),
   };
@@ -447,7 +450,7 @@ export function analyzeEtf({ symbol, daily: rawDaily, intraday, trade, nowMs }) 
   const recent = today.reg.slice(-4).map(b => b.c);
 
   const levels = buildLevels({
-    price, recent, prev, pre, or, day, sessionVwap, ma, prevWeek, prevMonth, hist, atrDaily,
+    price, recent, prev, pre, overnight, or, day, sessionVwap, ma, prevWeek, prevMonth, hist, atrDaily,
   });
 
   // Returns for the comparison module.
@@ -471,6 +474,7 @@ export function analyzeEtf({ symbol, daily: rawDaily, intraday, trade, nowMs }) 
     regClose: round(regClose), extChange: round(extChange), extChangePct: round(extChangePct),
     open: round(openPrice), dayHigh: round(day.high), dayLow: round(day.low),
     premarketHigh: round(pre.high), premarketLow: round(pre.low),
+    overnightHigh: round(overnight.high), overnightLow: round(overnight.low),
     openingRangeHigh: round(or.high), openingRangeLow: round(or.low),
     vwap: round(sessionVwap),
     vwapDistPct: round(pct(price, sessionVwap), 2),
@@ -509,7 +513,7 @@ function levelStatus(price, lo, hi, recent) {
   return { status: price > hi ? 'above' : 'below', distPct };
 }
 
-function buildLevels({ price, recent, prev, pre, or, day, sessionVwap, ma, prevWeek, prevMonth, hist, atrDaily }) {
+function buildLevels({ price, recent, prev, pre, overnight = { high: null, low: null }, or, day, sessionVwap, ma, prevWeek, prevMonth, hist, atrDaily }) {
   const out = [];
   const add = (key, label, tf, value, why, lo, hi) => {
     if (value == null && lo == null) return;
@@ -528,6 +532,18 @@ function buildLevels({ price, recent, prev, pre, or, day, sessionVwap, ma, prevW
     add('pdl', "Previous day's low", 'daily', prev.l, 'Yesterday\'s sellers ran out of steam here. Losing it means today is trading below everything from yesterday.');
     add('pdc', 'Previous close', 'daily', prev.c, 'The line between green and red on the day — above it the ETF is up, below it it is down.');
   }
+  if (prev) {
+    // Classic floor-trader pivots from yesterday's high, low and close.
+    const P = (prev.h + prev.l + prev.c) / 3, R = prev.h - prev.l;
+    const how = 'Classic pivot from yesterday\'s high, low and close: P = (H+L+C)/3';
+    add('pivot', 'Pivot point (P)', 'daily', P, `${how}. Many traders treat P as the day's balance point.`);
+    add('r1', 'Pivot R1', 'daily', 2 * P - prev.l, `${how}, R1 = 2P − L. A common first upside target or resistance.`);
+    add('s1', 'Pivot S1', 'daily', 2 * P - prev.h, `${how}, S1 = 2P − H. A common first downside target or support.`);
+    add('r2', 'Pivot R2', 'daily', P + R, `${how}, R2 = P + (H − L).`);
+    add('s2', 'Pivot S2', 'daily', P - R, `${how}, S2 = P − (H − L).`);
+  }
+  add('onh', 'Overnight high', 'intraday', overnight.high, 'Highest IEX print from yesterday\'s after-hours through today\'s premarket.');
+  add('onl', 'Overnight low', 'intraday', overnight.low, 'Lowest IEX print from yesterday\'s after-hours through today\'s premarket.');
   add('pmh', 'Premarket high', 'intraday', pre.high, 'The highest price before the opening bell. Often tested in the first hour.');
   add('pml', 'Premarket low', 'intraday', pre.low, 'The lowest price before the opening bell. Often tested in the first hour.');
   add('orh', 'Opening range high (first 15 min)', 'intraday', or.high, 'The top of the first 15 minutes of trading. A break above it is the classic opening-range breakout trigger.');
@@ -537,6 +553,7 @@ function buildLevels({ price, recent, prev, pre, or, day, sessionVwap, ma, prevW
   add('vwap', 'VWAP', 'intraday', sessionVwap, 'The average price paid today, weighted by volume. Above it, the average buyer today is in profit; below it, the average buyer is losing.');
   add('ema9', 'Daily 9 EMA', 'daily', ma.dailyEma9, 'A fast trend line. In a strong trend, pullbacks often stall near it.');
   add('ema20', 'Daily 20 EMA', 'daily', ma.dailyEma20, 'About one month of trading. A common pullback area in a healthy trend.');
+  add('ema50', 'Daily 50 EMA', 'daily', ma.dailyEma50, 'Medium-term trend line that reacts faster than the 50-day SMA.');
   add('sma50', '50-day SMA', 'daily', ma.dailySma50, 'A widely watched medium-term trend line.');
   add('sma200', '200-day SMA', 'daily', ma.dailySma200, 'The most widely watched long-term trend line.');
   if (prevWeek) {
